@@ -8,22 +8,23 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "schema": "./src/schema.ts"
+    "./schema": "./src/schema.ts"
   },
   "scripts": {
     "dev": "docker compose up",
     "check": "tsc --noEmit",
     "lint": "$(../../biome.sh) check .",
     "format": "$(../../biome.sh) check . --fix",
-		"db:push": "drizzle-kit push",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "postgres": "^3.4.8"
   },
