@@ -13,8 +13,6 @@
   "scripts": {
     "dev": "docker compose up",
     "check": "tsc --noEmit",
-    "lint": "$(../../biome.sh) check .",
-    "format": "$(../../biome.sh) check . --fix",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -26,7 +24,8 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
-    "postgres": "^3.4.8"
+    "postgres": "^3.4.8",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.8"
