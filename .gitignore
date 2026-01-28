@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 # subject :-)
 *.pdf
 
+# Turbo
+.turbo
+
