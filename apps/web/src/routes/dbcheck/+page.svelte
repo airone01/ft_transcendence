@@ -1,6 +1,6 @@
 <script lang="ts">
-  // This 'data' prop comes from the +page.server.ts file you just created
-  let { data } = $props();
+// This 'data' prop comes from the +page.server.ts file you just created
+const { data } = $props();
 </script>
 
 <div style="padding: 2rem; border: 2px solid #ccc; border-radius: 8px; margin-top: 2rem;">
