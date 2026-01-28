@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "docker compose up",
+    "check": "tsc --noEmit",
     "lint": "$(../../biome.sh) check .",
     "format": "$(../../biome.sh) check . --fix",
 		"db:push": "drizzle-kit push",
