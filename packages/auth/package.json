@@ -13,9 +13,10 @@
   "peerDependencies": {
     "typescript": "~5.9.3"
   },
-  "dependencies": {},
+  "dependencies": {
+    "drizzle-orm": "^0.45.1"
+  },
   "devDependencies": {
-    "@types/node": "^24",
-    "@transc/config": "workspace:*"
+    "@types/node": "^24"
   }
 }

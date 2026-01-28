@@ -35,17 +35,15 @@
     "packages/auth": {
       "name": "@transc/auth",
       "version": "0.1.0",
+      "dependencies": {
+        "drizzle-orm": "^0.45.1",
+      },
       "devDependencies": {
-        "@transc/config": "workspace:*",
         "@types/node": "^24",
       },
       "peerDependencies": {
         "typescript": "~5.9.3",
       },
-    },
-    "packages/config": {
-      "name": "@transc/config",
-      "version": "0.1.0",
     },
     "packages/db": {
       "name": "@transc/db",
@@ -269,8 +267,6 @@
     "@tailwindcss/vite": ["@tailwindcss/vite@4.1.18", "", { "dependencies": { "@tailwindcss/node": "4.1.18", "@tailwindcss/oxide": "4.1.18", "tailwindcss": "4.1.18" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7" } }, "sha512-jVA+/UpKL1vRLg6Hkao5jldawNmRo7mQYrZtNHMIVpLfLhDml5nMRUo/8MwoX2vNXvnaXNNMedrMfMugAVX1nA=="],
 
     "@transc/auth": ["@transc/auth@workspace:packages/auth"],
-
-    "@transc/config": ["@transc/config@workspace:packages/config"],
 
     "@transc/db": ["@transc/db@workspace:packages/db"],
 
