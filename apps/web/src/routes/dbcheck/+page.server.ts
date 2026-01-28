@@ -17,15 +17,16 @@ export async function load() {
 
     // This helps distinguish "DB is down" vs "Table missing"
     let status = "Error ❌";
-    if (e.code === "ECONNREFUSED") status = "DB Down ❌";
-    if (e.code === "42P01")
+    const f = e as Error & { code: string };
+    if (f.code === "ECONNREFUSED") status = "DB Down ❌";
+    if (f.code === "42P01")
       status = "Table missing (did you run `bun run db:push`) ⚠️";
 
     console.log(status);
     return {
       dbStatus: status,
       userCount: 0,
-      error: e.message,
+      error: f.message,
     };
   }
 }
