@@ -37,7 +37,6 @@ export interface Move {
   from: [number, number];
   to: [number, number];
   capture?: boolean;
-  castle?: "k" | "q";
+  castle?: "king" | "queen";
   promotion?: Piece;
-  enPassant?: boolean;
 }

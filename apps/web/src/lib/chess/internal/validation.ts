@@ -71,11 +71,12 @@ export function isCastleLegal(state: GameState, move: Move): boolean {
 
   if (isKingInCheck(state, isWhite)) return false;
 
-  const middleCol = move.castle === "k" ? 5 : 3;
+  const middleCol = move.castle === "king" ? 5 : 3;
   const stateMiddleMove = simulateKingStep(state, [row, 4], [row, middleCol]);
   if (isKingInCheck(stateMiddleMove, isWhite)) return false;
 
-  const stateFinalMove = simulateKingStep(state, [row, 4], move.to);
+  const endCol = move.castle === "king" ? 6 : 2;
+  const stateFinalMove = simulateKingStep(state, [row, 4], [row, endCol]);
   if (isKingInCheck(stateFinalMove, isWhite)) return false;
 
   return true;
@@ -113,10 +114,10 @@ export function applyMoveCopy(state: GameState, move: Move): GameState {
 
   // Castle
   if (move.castle) {
-    if (move.castle === "k") {
+    if (move.castle === "king") {
       newBoard[tr][tc - 1] = newBoard[tr][7];
       newBoard[tr][7] = null;
-    } else if (move.castle === "q") {
+    } else if (move.castle === "queen") {
       newBoard[tr][tc + 1] = newBoard[tr][0];
       newBoard[tr][0] = null;
     }
@@ -132,17 +133,24 @@ export function applyMoveCopy(state: GameState, move: Move): GameState {
       newCastling.blackQueenSide = false;
     }
   } else if (piece.toLowerCase() === "r") {
-    if (fr === 7 && fc === 0) newCastling.whiteQueenSide = false;
     if (fr === 7 && fc === 7) newCastling.whiteKingSide = false;
-    if (fr === 0 && fc === 0) newCastling.blackQueenSide = false;
+    if (fr === 7 && fc === 0) newCastling.whiteQueenSide = false;
     if (fr === 0 && fc === 7) newCastling.blackKingSide = false;
+    if (fr === 0 && fc === 0) newCastling.blackQueenSide = false;
+  } else if (state.board[tr][tc]?.toLowerCase() === "r") {
+    if (tr === 7 && tc === 7) newCastling.whiteKingSide = false;
+    if (tr === 7 && tc === 0) newCastling.whiteQueenSide = false;
+    if (tr === 0 && tc === 7) newCastling.blackKingSide = false;
+    if (tr === 0 && tc === 0) newCastling.blackQueenSide = false;
   }
 
   // En passant
   if (piece.toLowerCase() === "p" && state.enPassant) {
-    const dir = piece === piece.toUpperCase() ? 1 : -1;
-    newBoard[tr + dir][tc] = null;
-    // move.enPassant = true;
+    const [epr, epc] = state.enPassant;
+    if (epr === tr && epc === tc) {
+      const dir = piece === piece.toUpperCase() ? 1 : -1;
+      newBoard[tr + dir][tc] = null;
+    }
   }
 
   return {

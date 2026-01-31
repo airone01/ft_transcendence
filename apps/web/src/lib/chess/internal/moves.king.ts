@@ -63,7 +63,7 @@ export function castleMoves(state: GameState, from: [number, number]): Move[] {
         moves.push({
           from: from,
           to: [7, 6],
-          castle: "k",
+          castle: "king",
         });
       }
     }
@@ -73,7 +73,7 @@ export function castleMoves(state: GameState, from: [number, number]): Move[] {
         moves.push({
           from,
           to: [7, 2],
-          castle: "q",
+          castle: "queen",
         });
       }
     }
@@ -85,7 +85,7 @@ export function castleMoves(state: GameState, from: [number, number]): Move[] {
         moves.push({
           from,
           to: [0, 6],
-          castle: "k",
+          castle: "king",
         });
       }
     }
@@ -95,7 +95,7 @@ export function castleMoves(state: GameState, from: [number, number]): Move[] {
         moves.push({
           from,
           to: [0, 2],
-          castle: "q",
+          castle: "queen",
         });
       }
     }

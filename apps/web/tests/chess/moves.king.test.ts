@@ -88,7 +88,7 @@ describe("castleMoves", () => {
     expect(moves).toContainEqual({
       from: [7, 4],
       to: [7, 6],
-      castle: "k",
+      castle: "king",
     });
     expect(moves.length).toBe(1);
   });
@@ -100,7 +100,7 @@ describe("castleMoves", () => {
     expect(moves).toContainEqual({
       from: [7, 4],
       to: [7, 2],
-      castle: "q",
+      castle: "queen",
     });
     expect(moves.length).toBe(1);
   });
@@ -112,7 +112,7 @@ describe("castleMoves", () => {
     expect(moves).toContainEqual({
       from: [0, 4],
       to: [0, 6],
-      castle: "k",
+      castle: "king",
     });
     expect(moves.length).toBe(1);
   });
@@ -124,7 +124,7 @@ describe("castleMoves", () => {
     expect(moves).toContainEqual({
       from: [0, 4],
       to: [0, 2],
-      castle: "q",
+      castle: "queen",
     });
     expect(moves.length).toBe(1);
   });
@@ -161,7 +161,7 @@ describe("kingMoves", () => {
     const expected = [
       { from: [7, 4], to: [6, 4] },
       { from: [7, 4], to: [7, 5] },
-      { from: [7, 4], to: [7, 6], castle: "k" },
+      { from: [7, 4], to: [7, 6], castle: "king" },
     ];
 
     expect(moves).toEqual(expect.arrayContaining(expected));
@@ -196,7 +196,7 @@ describe("kingMoves", () => {
     expect(moves).toContainEqual({
       from: [0, 4],
       to: [0, 6],
-      castle: "k",
+      castle: "king",
     });
   });
 });

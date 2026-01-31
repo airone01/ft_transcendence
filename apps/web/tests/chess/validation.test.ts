@@ -95,63 +95,63 @@ describe("isKingInCheck", () => {
 describe("isCastleLegal", () => {
   test("allows white king side castle in empty position", () => {
     const state = parseFEN("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 6], castle: "k" };
+    const move: Move = { from: [7, 4], to: [7, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(true);
   });
 
   test("allows white queen side castle", () => {
     const state = parseFEN("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 2], castle: "q" };
+    const move: Move = { from: [7, 4], to: [7, 2], castle: "queen" };
 
     expect(isCastleLegal(state, move)).toBe(true);
   });
 
   test("disallows castling if king is in check", () => {
     const state = parseFEN("8/8/8/8/8/8/4r3/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 6], castle: "k" };
+    const move: Move = { from: [7, 4], to: [7, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(false);
   });
 
   test("disallows castling through check", () => {
     const state = parseFEN("8/8/8/8/8/8/5r2/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 6], castle: "k" };
+    const move: Move = { from: [7, 4], to: [7, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(false);
   });
 
   test("disallows castling into check", () => {
     const state = parseFEN("8/8/8/8/8/8/6r1/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 6], castle: "k" };
+    const move: Move = { from: [7, 4], to: [7, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(false);
   });
 
   test("disallows queen side castle through check", () => {
     const state = parseFEN("8/8/8/8/8/8/3r4/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 2], castle: "q" };
+    const move: Move = { from: [7, 4], to: [7, 2], castle: "queen" };
 
     expect(isCastleLegal(state, move)).toBe(false);
   });
 
   test("allows black king side castle", () => {
     const state = parseFEN("r3k2r/8/8/8/8/8/8/8 b KQkq - 0 1");
-    const move: Move = { from: [0, 4], to: [0, 6], castle: "k" };
+    const move: Move = { from: [0, 4], to: [0, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(true);
   });
 
   test("allows black queen side castle", () => {
     const state = parseFEN("r3k2r/8/8/8/8/8/8/8 b KQkq - 0 1");
-    const move: Move = { from: [0, 4], to: [0, 2], castle: "q" };
+    const move: Move = { from: [0, 4], to: [0, 2], castle: "queen" };
 
     expect(isCastleLegal(state, move)).toBe(true);
   });
 
   test("disallows black castling through attacked square", () => {
     const state = parseFEN("r3k2r/8/8/8/8/8/8/R4R2 b KQkq - 0 1");
-    const move: Move = { from: [0, 4], to: [0, 6], castle: "k" };
+    const move: Move = { from: [0, 4], to: [0, 6], castle: "king" };
 
     expect(isCastleLegal(state, move)).toBe(false);
   });
@@ -187,7 +187,7 @@ describe("applyMoveCopy", () => {
 
   test("moves king-side castle correctly", () => {
     const state = parseFEN("8/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 6], castle: "k" };
+    const move: Move = { from: [7, 4], to: [7, 6], castle: "king" };
     const newState = applyMoveCopy(state, move);
 
     expect(newState.board[7][6]).toBe("K");
@@ -198,7 +198,7 @@ describe("applyMoveCopy", () => {
 
   test("moves queen-side castle correctly", () => {
     const state = parseFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-    const move: Move = { from: [7, 4], to: [7, 2], castle: "q" };
+    const move: Move = { from: [7, 4], to: [7, 2], castle: "queen" };
     const newState = applyMoveCopy(state, move);
 
     expect(newState.board[7][2]).toBe("K");
@@ -283,8 +283,8 @@ describe("getLegalMoves", () => {
     const state = parseFEN("2r5/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
     const moves = getLegalMoves(state, [7, 4]);
 
-    expect(moves.some((m) => m.castle === "k")).toBe(true);
-    expect(moves.some((m) => m.castle === "q")).toBe(false);
+    expect(moves.some((m) => m.castle === "king")).toBe(true);
+    expect(moves.some((m) => m.castle === "queen")).toBe(false);
   });
 
   test("does not allow moves putting king in check", () => {
