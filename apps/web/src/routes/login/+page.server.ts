@@ -21,6 +21,14 @@ export const actions = {
     }
     const existingUser = usersList[0];
 
+    if (!existingUser.password) {
+      return fail(400, {
+        // TODO: specific message depending on the provider, because this is not precise enough for an average user
+        message:
+          "This account uses OAuth login. Please sign in with your OAuth provider.",
+      });
+    }
+
     const valid = await verifyPassword(existingUser.password, password);
     if (!valid) {
       return fail(400, { message: "Invalid email or password" });

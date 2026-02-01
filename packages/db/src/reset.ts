@@ -1,10 +1,35 @@
 import { db } from "./index";
-import { authSessions, users } from "./schema";
+import {
+  authSessions,
+  users,
+  games,
+  usersStats,
+  friendships,
+  gamesPlayers,
+  oauthAccounts,
+  gamesSpectators,
+} from "./schema";
 
 async function main() {
   try {
-    await db.delete(authSessions);
-    await db.delete(users);
+    // here go all the tables to delete
+    // just import a table schema and add it to this array to have it be reset when this script is called
+    const tablesMap = [
+      authSessions,
+      users,
+      games,
+      usersStats,
+      friendships,
+      gamesPlayers,
+      oauthAccounts,
+      gamesSpectators,
+    ];
+
+    await Promise.all(
+      tablesMap.map(async (el) => {
+        await db.delete(el);
+      }),
+    );
 
     console.log("✅ Database cleared");
     process.exit(0);

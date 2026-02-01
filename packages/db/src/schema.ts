@@ -21,7 +21,7 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     username: varchar("username", { length: 20 }).unique().notNull(),
     email: varchar("email").unique().notNull(),
-    password: varchar("password").notNull(),
+    password: varchar("password"),
     avatar: varchar("avatar", { length: 4096 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -30,6 +30,25 @@ export const users = pgTable(
       "users_email_lowercase_check",
       sql`${table.email} = lower(${table.email})`,
     ),
+  ],
+);
+
+// ############################ OAUTH ACCOUNT ############################
+
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    // "discord", "google", "github"
+    providerId: text("provider_id").notNull(),
+    // unique internal user ID (given by the provider, not by us)
+    providerUserId: text("provider_user_id").notNull(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.providerId, table.providerUserId] }),
+    index("oauth_account_user_id_idx").on(table.userId),
   ],
 );
 
