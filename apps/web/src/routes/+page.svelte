@@ -1,16 +1,31 @@
 <script lang="ts">
 import { Button } from "@transc/ui/components/ui/button/index.ts";
+import IconChessFilled from "virtual:icons/tabler/chess-filled";
 </script>
 
-<div class="min-h-full flex flex-col">
-  <div class="h-8 border-b"></div>
-  <div class="flex flex-col items-center justify-center pt-4">
-    <div class="container border aspect-square">
-      <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Title</h1>
-      <Button>btn-default</Button>
-      <Button variant="secondary">btn-secondary</Button>
-      <Button variant="outline">btn-outline</Button>
-      <Button variant="destructive">btn-destructive</Button>
+<div class="min-h-screen flex flex-col">
+  <header class="border-b sticky top-0 border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <div class="flex h-16 items-center justify-between px-4 w-full">
+      <a class="flex items-center gap-2 select-none cursor-pointer" href="/">
+        <IconChessFilled class="w-7 h-7" />
+        <span class="text-xl font-semibold tracking-tight">
+          Transcendence
+        </span>
+      </a>
+      <nav class="hidden items-center gap-6 md:flex">
+        <a>link1</a>
+        <a>link2</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="/login">
+        <Button variant="ghost" size="sm" class="cursor-pointer">
+          Log in
+        </Button>
+        </a>
+        <a href="/register">
+        <Button size="sm" class="cursor-pointer">Sign up</Button>
+        </a>
+      </div>
     </div>
-  </div>
+  </header>
 </div>
