@@ -16,7 +16,8 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@transc/db": "workspace:*"
+    "@transc/db": "workspace:*",
+    "@transc/ui": "workspace:*"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "^2.9.1",
