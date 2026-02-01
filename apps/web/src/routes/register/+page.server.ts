@@ -1,11 +1,11 @@
-import { fail, redirect } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { users } from "@transc/db/schema";
-import { eq } from "@transc/db/drizzle-orm";
+import { randomInt } from "node:crypto";
+import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { hashPassword } from "@transc/auth";
+import { db } from "@transc/db";
+import { eq } from "@transc/db/drizzle-orm";
+import { users } from "@transc/db/schema";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
-import { randomInt } from "crypto";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -40,7 +40,11 @@ export const actions = {
 
       const { token, expiresAt } = await auth.createSession(userId);
 
-      setSessionTokenCookie({ cookies } as any, token, expiresAt);
+      setSessionTokenCookie(
+        { cookies } as RequestEvent<Record<string, never>, null>,
+        token,
+        expiresAt,
+      );
     } catch (e) {
       console.error(e);
       return fail(500, { message: "Database error" });

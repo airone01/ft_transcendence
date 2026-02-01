@@ -1,8 +1,8 @@
-import { redirect } from "@sveltejs/kit";
-import { deleteSessionTokenCookie } from "$lib/server/auth";
+import { type RequestEvent, redirect } from "@sveltejs/kit";
 import { db } from "@transc/db";
-import { authSessions } from "@transc/db/schema";
 import { eq } from "@transc/db/drizzle-orm";
+import { authSessions } from "@transc/db/schema";
+import { deleteSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
 
 export const actions = {
@@ -13,7 +13,10 @@ export const actions = {
         .where(eq(authSessions.id, locals.session.id));
     }
 
-    deleteSessionTokenCookie({ cookies } as any);
+    deleteSessionTokenCookie({ cookies } as RequestEvent<
+      Record<string, never>,
+      null
+    >);
 
     throw redirect(302, "/");
   },

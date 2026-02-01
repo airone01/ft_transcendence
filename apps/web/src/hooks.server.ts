@@ -1,10 +1,10 @@
 import type { Handle } from "@sveltejs/kit";
-import { paraglideMiddleware } from "$lib/paraglide/server";
 import { sequence } from "@sveltejs/kit/hooks";
+import { paraglideMiddleware } from "$lib/paraglide/server";
 import {
   auth,
-  setSessionTokenCookie,
   deleteSessionTokenCookie,
+  setSessionTokenCookie,
 } from "$lib/server/auth";
 
 const handleParaglide: Handle = ({ event, resolve }) =>

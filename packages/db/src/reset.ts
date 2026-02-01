@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { users, authSessions } from "./schema";
+import { authSessions, users } from "./schema";
 
 async function main() {
   try {

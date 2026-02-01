@@ -1,8 +1,8 @@
-import { dev } from "$app/environment";
 import type { RequestEvent } from "@sveltejs/kit";
 import { createAuth } from "@transc/auth";
 import { db } from "@transc/db";
-import { users, authSessions } from "@transc/db/schema";
+import { authSessions, users } from "@transc/db/schema";
+import { dev } from "$app/environment";
 
 const SESSION_COOKIE_NAME = "auth_session";
 
@@ -14,8 +14,7 @@ export function setSessionTokenCookie(
   event.cookies.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
-    // secure: !dev,
-    secure: false,
+    secure: !dev,
     path: "/",
     expires: expiresAt,
   });
@@ -25,8 +24,7 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
   event.cookies.set(SESSION_COOKIE_NAME, "", {
     httpOnly: true,
     sameSite: "lax",
-    // secure: !dev,
-    secure: false,
+    secure: !dev,
     path: "/",
     maxAge: 0,
   });

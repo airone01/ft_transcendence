@@ -1,8 +1,8 @@
-import { fail, redirect } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { users } from "@transc/db/schema";
-import { eq } from "@transc/db/drizzle-orm";
+import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { verifyPassword } from "@transc/auth";
+import { db } from "@transc/db";
+import { eq } from "@transc/db/drizzle-orm";
+import { users } from "@transc/db/schema";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
 
@@ -28,7 +28,11 @@ export const actions = {
 
     const { token, expiresAt } = await auth.createSession(existingUser.id);
 
-    setSessionTokenCookie({ cookies } as any, token, expiresAt);
+    setSessionTokenCookie(
+      { cookies } as RequestEvent<Record<string, never>, null>,
+      token,
+      expiresAt,
+    );
 
     throw redirect(302, "/");
   },
