@@ -1,34 +1,41 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { db } from "@transc/db";
-import { user } from "@transc/db/schema";
+import { users } from "@transc/db/schema";
 import { eq } from "@transc/db/drizzle-orm";
 import { hashPassword } from "@transc/auth";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
+import { randomInt } from "crypto";
 
 export const actions = {
   default: async ({ request, cookies }) => {
     const data = await request.formData();
     const email = data.get("email") as string;
-    const password = data.get("password") as string;
+    // long name so as not to export it by accident
+    const unsecuredPassword = data.get("password") as string;
 
-    if (!email || !password) {
+    if (!email || !unsecuredPassword) {
       return fail(400, { message: "Missing fields" });
     }
 
-    const existing = await db.select().from(user).where(eq(user.email, email));
+    const existing = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
     if (existing.length > 0) {
       return fail(400, { message: "Email already registered" });
     }
 
-    const passwordHash = await hashPassword(password);
-    const userId = crypto.randomUUID();
+    const passwordHash = await hashPassword(unsecuredPassword);
+    const userId = randomInt(0, 1e6);
 
     try {
-      await db.insert(user).values({
+      await db.insert(users).values({
         id: userId,
         email,
-        passwordHash,
+        password: passwordHash,
+        username: "qsjqskdnqsdqsdsq",
+        createdAt: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 30),
       });
 
       const { token, expiresAt } = await auth.createSession(userId);

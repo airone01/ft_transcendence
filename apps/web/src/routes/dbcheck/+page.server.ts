@@ -1,15 +1,15 @@
 import { db } from "@transc/db";
-import { user } from "@transc/db/schema";
+import { users } from "@transc/db/schema";
 
 export async function load() {
   try {
     // The "Drizzle Way": Select from the schema object
     // We limit(1) because we don't care about the data, just the successful query
-    const users = await db.select().from(user).limit(1);
+    const usersList = await db.select().from(users).limit(1);
 
     return {
       dbStatus: "Connected to DB & schema synced ✅",
-      userCount: users.length,
+      userCount: usersList.length,
       error: null,
     };
   } catch (e: unknown) {

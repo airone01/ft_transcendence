@@ -7,8 +7,8 @@ export interface UserTableConstraint {
   [key: string]: any; // all else
 }
 
-// id, userId, and expiresAt contraints
-export interface SessionTableConstraint {
+// id, userId, and expiresAt constraints
+export interface AuthSessionsTableConstraint {
   id: PgColumn<any>;
   userId: PgColumn<any>;
   expiresAt: PgColumn<any>;
@@ -17,11 +17,11 @@ export interface SessionTableConstraint {
 
 export type AuthConfig<
   TUser extends UserTableConstraint,
-  TSession extends SessionTableConstraint,
+  TSession extends AuthSessionsTableConstraint,
 > = {
   db: any; // drizzle instance
   schema: {
-    user: TUser;
-    session: TSession;
+    users: TUser;
+    authSessions: TSession;
   };
 };

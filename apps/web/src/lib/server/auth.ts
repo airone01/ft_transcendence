@@ -2,7 +2,7 @@ import { dev } from "$app/environment";
 import type { RequestEvent } from "@sveltejs/kit";
 import { createAuth } from "@transc/auth";
 import { db } from "@transc/db";
-import { user, session } from "@transc/db/schema";
+import { users, authSessions } from "@transc/db/schema";
 
 const SESSION_COOKIE_NAME = "auth_session";
 
@@ -34,5 +34,5 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 
 export const auth = createAuth({
   db,
-  schema: { user, session },
+  schema: { users, authSessions },
 });

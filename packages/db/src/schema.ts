@@ -11,7 +11,9 @@ import {
   varchar,
   real,
   timestamp,
+  text,
 } from "drizzle-orm/pg-core";
+import { randomBytes } from "node:crypto";
 
 // ################################ USERS ################################
 
@@ -38,13 +40,16 @@ export const users = pgTable(
 export const authSessions = pgTable(
   "auth_sessions",
   {
-    id: serial("id").primaryKey(),
+    id: text("id").primaryKey(),
     userId: integer("user_id")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    token: varchar("token", { length: 255 }).unique().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
+    // token: text("token")
+    //   .$defaultFn(() => randomBytes(32).toString("hex"))
+    //   .unique()
+    //   .notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
   },
   (table) => [
     index("auth_sessions_user_id_idx").on(table.userId),

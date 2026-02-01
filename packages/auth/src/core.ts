@@ -2,13 +2,13 @@ import { eq } from "drizzle-orm";
 import { generateRandomString, hashToken } from "./crypto";
 import type {
   AuthConfig,
-  SessionTableConstraint,
+  AuthSessionsTableConstraint,
   UserTableConstraint,
 } from "./types";
 
 export class Auth<
   TUser extends UserTableConstraint,
-  TSession extends SessionTableConstraint,
+  TSession extends AuthSessionsTableConstraint,
 > {
   constructor(private config: AuthConfig<TUser, TSession>) {}
 
@@ -19,7 +19,7 @@ export class Auth<
     const sessionId = hashToken(token); // we store hash
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
-    await this.config.db.insert(this.config.schema.session).values({
+    await this.config.db.insert(this.config.schema.authSessions).values({
       id: sessionId,
       userId: userId,
       expiresAt,
@@ -33,25 +33,25 @@ export class Auth<
 
     const result = await this.config.db
       .select({
-        user: this.config.schema.user,
-        session: this.config.schema.session,
+        users: this.config.schema.users,
+        authSessions: this.config.schema.authSessions,
       })
-      .from(this.config.schema.session)
+      .from(this.config.schema.authSessions)
       .innerJoin(
-        this.config.schema.user,
-        eq(this.config.schema.session.userId, this.config.schema.user.id),
+        this.config.schema.users,
+        eq(this.config.schema.authSessions.userId, this.config.schema.users.id),
       )
-      .where(eq(this.config.schema.session.id, sessionId));
+      .where(eq(this.config.schema.authSessions.id, sessionId));
 
     if (result.length === 0) return { session: null, user: null };
 
-    const { user, session } = result[0];
+    const { users: user, authSessions: session } = result[0];
 
     // check expiration
     if (Date.now() >= session.expiresAt.getTime()) {
       await this.config.db
-        .delete(this.config.schema.session)
-        .where(eq(this.config.schema.session.id, sessionId));
+        .delete(this.config.schema.authSessions)
+        .where(eq(this.config.schema.authSessions.id, sessionId));
       return { session: null, user: null };
     }
 

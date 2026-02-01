@@ -1,10 +1,10 @@
 import { db } from "./index";
-import { user, session } from "./schema";
+import { users, authSessions } from "./schema";
 
 async function main() {
   try {
-    await db.delete(session);
-    await db.delete(user);
+    await db.delete(authSessions);
+    await db.delete(users);
 
     console.log("✅ Database cleared");
     process.exit(0);
