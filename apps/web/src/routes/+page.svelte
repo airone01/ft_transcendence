@@ -8,6 +8,8 @@ import { Button } from "@transc/ui/components/ui/button/index.ts";
     <div class="container border aspect-square">
       <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Title</h1>
       <Button>btn-default</Button>
+      <Button variant="secondary">btn-secondary</Button>
+      <Button variant="outline">btn-outline</Button>
       <Button variant="destructive">btn-destructive</Button>
     </div>
   </div>
