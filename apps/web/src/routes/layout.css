@@ -1,8 +1,9 @@
 @import "tailwindcss";
 @import "../../../../packages/ui/src/app.css";
 
-html, body {
-        @apply h-full;
+html,
+body {
+  @apply h-full;
 }
 
-@source "../../../../packages/ui/src"
+@source "../../../../packages/ui/src";

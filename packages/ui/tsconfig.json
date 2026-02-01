@@ -3,16 +3,12 @@
     // shadcn-specific
     "baseUrl": ".",
     "paths": {
-      "@transc/ui/*": [
-        "./src/*"
-      ]
+      "@transc/ui/*": ["./src/*"]
     },
     "declaration": true,
     "declarationMap": true,
     // Environment setup & latest features
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -34,11 +30,6 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": [
-    "src/**/*",
-    "drizzle.config.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*", "drizzle.config.ts"],
+  "exclude": ["node_modules"]
 }

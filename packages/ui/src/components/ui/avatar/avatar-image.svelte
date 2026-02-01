@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Avatar as AvatarPrimitive } from "bits-ui";
 import { cn } from "@transc/ui/utils";
+import { Avatar as AvatarPrimitive } from "bits-ui";
 
 let {
   ref = $bindable(null),

@@ -1,6 +1,6 @@
 <script lang="ts">
-import { Button } from "@transc/ui/components/ui/button/index.ts";
 import IconChessFilled from "virtual:icons/tabler/chess-filled";
+import { Button } from "@transc/ui/components/ui/button/index.ts";
 </script>
 
 <div class="min-h-screen flex flex-col">
