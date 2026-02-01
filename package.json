@@ -12,10 +12,14 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
+    "@types/pg": "^8.16.0",
     "turbo": "^2.7"
   },
   "workspaces": [
     "packages/*",
     "apps/*"
-  ]
+  ],
+  "dependencies": {
+    "pg": "^8.18.0"
+  }
 }
