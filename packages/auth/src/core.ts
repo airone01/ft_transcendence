@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { generateRandomString, hashPassword } from "./crypto";
+import { generateRandomString, hashToken } from "./crypto";
 import type {
   AuthConfig,
   SessionTableConstraint,
@@ -16,7 +16,7 @@ export class Auth<
     userId: string | number,
   ): Promise<{ token: string; expiresAt: Date }> {
     const token = generateRandomString(32); // secret cookie val
-    const sessionId = await hashPassword(token); // we store hash
+    const sessionId = hashToken(token); // we store hash
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
     await this.config.db.insert(this.config.schema.session).values({
@@ -29,7 +29,7 @@ export class Auth<
   }
 
   async validateSession(token: string) {
-    const sessionId = await hashPassword(token);
+    const sessionId = hashToken(token);
 
     const result = await this.config.db
       .select({

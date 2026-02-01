@@ -13,6 +13,6 @@ export const actions = {
 
     deleteSessionTokenCookie({ cookies } as any);
 
-    throw redirect(302, "/login");
+    throw redirect(302, "/");
   },
 } satisfies Actions;

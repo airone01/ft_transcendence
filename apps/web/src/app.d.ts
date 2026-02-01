@@ -7,7 +7,10 @@ declare global {
       user: typeof user.$inferSelect | null;
       session: typeof session.$inferSelect | null;
     }
-    // interface PageData {}
+    interface PageData {
+      user: typeof user.$inferSelect | null;
+      session: typeof session.$inferSelect | null;
+    }
     // interface PageState {}
     // interface Platform {}
   }
