@@ -11,3 +11,5 @@ export function createAuth<
 >(config: AuthConfig<TUser, TSession>) {
   return new Auth(config);
 }
+
+export { hashPassword, verifyPassword } from "./crypto";

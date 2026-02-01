@@ -3,7 +3,10 @@
 declare global {
   namespace App {
     // interface Error {}
-    // interface Locals {}
+    interface Locals {
+      user: typeof user.$inferSelect | null;
+      session: typeof session.$inferSelect | null;
+    }
     // interface PageData {}
     // interface PageState {}
     // interface Platform {}

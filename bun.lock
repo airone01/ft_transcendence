@@ -13,6 +13,7 @@
       "name": "@transc/web",
       "version": "0.1.0",
       "dependencies": {
+        "@transc/auth": "workspace:*",
         "@transc/db": "workspace:*",
       },
       "devDependencies": {
