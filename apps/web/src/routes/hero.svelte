@@ -12,7 +12,7 @@ import Button from "@transc/ui/components/ui/button/button.svelte";
     <div class="grid grid-cols-8 grid-rows-8 aspect-square w-full max-w-md border">
       {#each {length: 8}, row}
         {#each {length: 8}, col}
-          <div class={(row%2 ^ col%2) ? 'bg-foreground/80' : ''}></div>
+          <div class={(row%2 ^ col%2) ? 'bg-foreground/80' : 'bg-white'}></div>
         {/each}
       {/each}
     </div>

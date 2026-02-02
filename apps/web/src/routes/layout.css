@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss"; */
 @import "../../../../packages/ui/src/app.css";
 
 html,
@@ -6,4 +6,4 @@ body {
   @apply h-full;
 }
 
-@source "../../../../packages/ui/src";
+@source "../../../../packages/ui/**/*.{html,js,svelte,ts}";
