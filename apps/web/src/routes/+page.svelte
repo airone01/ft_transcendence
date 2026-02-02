@@ -1,6 +1,7 @@
 <script lang="ts">
 import IconChessFilled from "virtual:icons/tabler/chess-filled";
 import { Button } from "@transc/ui/components/ui/button/index.ts";
+import Hero from "./hero.svelte";
 </script>
 
 <div class="min-h-screen flex flex-col">
@@ -13,8 +14,8 @@ import { Button } from "@transc/ui/components/ui/button/index.ts";
         </span>
       </a>
       <nav class="hidden items-center gap-6 md:flex">
-        <a>link1</a>
-        <a>link2</a>
+        <!-- <a>link1</a> -->
+        <!-- <a>link2</a> -->
       </nav>
       <div class="flex items-center gap-3">
         <a href="/login">
@@ -28,4 +29,7 @@ import { Button } from "@transc/ui/components/ui/button/index.ts";
       </div>
     </div>
   </header>
+  <main class="flex-1 flex flex-col justify-center items-center">
+    <Hero />
+  </main>
 </div>

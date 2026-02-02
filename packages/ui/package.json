@@ -9,7 +9,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./components/*": "./src/components/*",
-    "./utils": "./src/utils.ts",
+    "./utils": "./src/utils",
     "./hooks/*": "./src/hooks/*",
     "./app.css": "./src/app.css"
   },
@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@internationalized/date": "^3.10.0",
-    "@lucide/svelte": "^0.563.1",
+    "@lucide/svelte": "^0.561.0",
     "@types/node": "^24",
     "bits-ui": "^2.14.4",
     "clsx": "^2.1.1",
