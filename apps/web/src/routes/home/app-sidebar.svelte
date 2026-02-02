@@ -88,7 +88,7 @@ const groups: Group[] = [
     {/each}
   </Sidebar.Content>
   <Sidebar.Footer>
-    <Item.Root variant="outline">
+    <Item.Root variant="outline" class="group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pb-1 transition-all">
       <Item.Media>
         <a href="/profile">
           <Avatar.Root class="ring ring-primary aspect-square w-full">
@@ -97,15 +97,15 @@ const groups: Group[] = [
           </Avatar.Root>
         </a>
       </Item.Media>
-      <Item.Content>
+      <Item.Content class="group-data-[collapsible=icon]:hidden">
         <a href="/profile">
           <Item.Title class="hover:underline">@username</Item.Title>
         </a>
         <Item.Description class="text-xs">10k+ Elo</Item.Description>
       </Item.Content>
-      <Item.Actions class="w-full">
+      <Item.Actions class="w-full group-data-[collapsible=icon]:hidden">
         <a href="/settings"><Button variant="outline" size="sm" class="cursor-pointer"><IconSettings /></Button></a>
-        <Button variant="outline" size="sm" class="grow cursor-pointer"><IconSearch /></Button><!-- no <a/> because it's the Command component --->
+        <Button variant="outline" size="sm" class="grow cursor-pointer"><IconSearch /></Button>
       </Item.Actions>
     </Item.Root>
   </Sidebar.Footer>
