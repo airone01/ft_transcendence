@@ -25,7 +25,7 @@ export class ChatRoom {
       timestamp: new Date().toISOString(),
     });
 
-    // Limiter l'historique
+    // history limit
     if (this.messageHistory.length > this.maxHistory) {
       this.messageHistory.shift();
     }

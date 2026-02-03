@@ -2,7 +2,7 @@ import { io, type Socket } from 'socket.io-client';
 import { writable, type Writable } from 'svelte/store';
 import { browser } from '$app/environment';
 
-// ─── Stores réactifs (accessibles depuis n'importe quel composant) ───────────
+// ─── Reactive stores (accessible from any component) ───────────
 
 export const socketConnected: Writable<boolean> = writable(false);
 export const socketReconnecting: Writable<boolean> = writable(false);

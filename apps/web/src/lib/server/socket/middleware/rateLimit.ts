@@ -7,8 +7,8 @@ interface RateLimitEntry {
 
 const rateLimits = new Map<string, RateLimitEntry>();
 
-const RATE_LIMIT_WINDOW = 1000; // 1 seconde
-const RATE_LIMIT_MAX = 10; // 10 events par seconde
+const RATE_LIMIT_WINDOW = 1000; // 1 sec
+const RATE_LIMIT_MAX = 10; // 10 events per sec
 
 export function checkRateLimit(socket: Socket): boolean {
   const key = socket.id;
@@ -17,7 +17,7 @@ export function checkRateLimit(socket: Socket): boolean {
   const entry = rateLimits.get(key);
 
   if (!entry || now > entry.resetTime) {
-    // Nouvelle fenêtre
+    // New window
     rateLimits.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
     return true; // OK
   }
@@ -26,13 +26,13 @@ export function checkRateLimit(socket: Socket): boolean {
 
   if (entry.count > RATE_LIMIT_MAX) {
     socket.emit("error", { message: "Rate limit exceeded" });
-    return false; // Bloqué
+    return false; // Blocked
   }
 
   return true;
 }
 
-// Wrapper pour les handlers : utilise checkRateLimit avant d'exécuter
+// Wrapper for handlers: uses checkRateLimit before executing
 export function withRateLimit(
   socket: Socket,
   handler: (...args: any[]) => void
@@ -44,7 +44,7 @@ export function withRateLimit(
   };
 }
 
-// Cleanup périodique des anciennes entrées
+// Cleanup periodic old entries
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of rateLimits.entries()) {

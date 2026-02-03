@@ -6,7 +6,7 @@ export async function authMiddleware(
   next: (err?: Error) => void
 ) {
   try {
-    // Récupérer token depuis cookie ou handshake auth
+    // Get token from cookie or handshake auth
     const token =
       socket.handshake.auth.token ||
       socket.handshake.headers.cookie?.match(/session=([^;]+)/)?.[1];
@@ -15,14 +15,14 @@ export async function authMiddleware(
       return next(new Error('Authentication required'));
     }
 
-    // Vérifier token
+    // Verify token
     const user = await verifyToken(token);
 
     if (!user) {
       return next(new Error('Invalid token'));
     }
 
-    // Attacher user data au socket
+    // Attach user data to socket
     socket.data.userId = user.id;
     socket.data.username = user.username;
     socket.data.role = user.role;

@@ -2,13 +2,13 @@ import type { Server, Socket } from "socket.io";
 import { db } from "@transc/db";
 import { game as gameTable } from "@transc/db/schema";
 
-// File d'attente par mode de jeu
+// Matchmaking queues
 const queues = new Map<string, Socket[]>();
 
 export function registerMatchmakingHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Rejoindre la file
+  // Join a queue
   socket.on("matchmaking:join", async (data: { mode: string }) => {
     const { mode } = data;
 
@@ -18,7 +18,7 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
 
     const queue = queues.get(mode)!;
 
-    // Vérifier si déjà dans une file
+    // Check if already in a queue
     const alreadyQueued = Array.from(queues.values()).some((q) =>
       q.some((s) => s.data.userId === userId)
     );
@@ -29,12 +29,12 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
     socket.emit("matchmaking:waiting", { mode, position: queue.length + 1 });
     queue.push(socket);
 
-    // Si 2 joueurs dans la file -> créer la partie
+    // If 2 players in the queue -> create the game
     if (queue.length >= 2) {
       const player1 = queue.shift()!;
       const player2 = queue.shift()!;
 
-      // Créer la partie en DB
+      // Create the game in DB
       const [newGame] = await db
         .insert(gameTable)
         .values({
@@ -47,13 +47,13 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
 
       const gameId = String(newGame.id);
 
-      // Notifier les deux joueurs
+      // Notify the two players
       player1.emit("matchmaking:matched", { gameId, color: "white" });
       player2.emit("matchmaking:matched", { gameId, color: "black" });
     }
   });
 
-  // Quitter la file
+  // Leave the queue
   socket.on("matchmaking:leave", (data: { mode: string }) => {
     const { mode } = data;
     const queue = queues.get(mode);

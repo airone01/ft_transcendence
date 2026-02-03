@@ -1,12 +1,12 @@
 import type { Socket } from "socket.io";
 import {
-  parseFEN,        // [chess] Parse un FEN string -> GameState
-  boardToFEN,      // [chess] Convertit un GameState -> FEN string
-  playMove,        // [chess] Applique un coup sur l'état et retourne le nouvel état
-  getLegalMoves,   // [chess] Retourne tous les coups légaux depuis une case
-  isCheckmate,     // [chess] Vérifie si la position est un échec et mat
-  isDraw,          // [chess] Vérifie si la position est un nul (stalemate, etc.)
-  isKingInCheck,   // [chess] Vérifie si le roi du joueur actuel est en échec
+  parseFEN,        // [chess] Parse a FEN string -> GameState
+  boardToFEN,      // [chess] Convert a GameState -> FEN string
+  playMove,        // [chess] Apply a move to the state and return the new state
+  getLegalMoves,   // [chess] Return all legal moves from a square
+  isCheckmate,     // [chess] Check if the position is checkmate
+  isDraw,          // [chess] Check if the position is a draw (stalemate, etc.)
+  isKingInCheck,   // [chess] Check if the current player's king is in check
 } from "$lib/chess";
 import type { GameState, Move } from "$lib/chess";
 import { db } from "@transc/db";
@@ -36,14 +36,14 @@ interface MakeMoveResult {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-/** Convertit "e2" -> [6, 4] (row, col) */
+/** Convert "e2" -> [6, 4] (row, col) */
 function algebraicToCoords(pos: string): [number, number] {
   const col = pos.charCodeAt(0) - "a".charCodeAt(0);
   const row = 8 - parseInt(pos[1]);
   return [row, col];
 }
 
-/** Convertit [6, 4] -> "e2" */
+/** Convert [6, 4] -> "e2" */
 function coordsToAlgebraic([row, col]: [number, number]): string {
   return String.fromCharCode(col + "a".charCodeAt(0)) + (8 - row);
 }
@@ -79,7 +79,7 @@ export class GameRoom {
     this.whiteId = gameData.whiteId;
     this.blackId = gameData.blackId;
 
-    // [chess] Initialise l'état de la partie depuis le FEN fourni ou le FEN de départ
+    // [chess] Initialize the game state from the provided FEN or the starting FEN
     this.state = parseFEN(
       gameData.fen ||
         "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -105,7 +105,7 @@ export class GameRoom {
   // ── Turn ─────────────────────────────────────────────────────────────────
 
   isPlayerTurn(userId: string): boolean {
-    // [chess] this.state.turn vient du GameState retourné par parseFEN / playMove
+    // [chess] this.state.turn comes from the GameState returned by parseFEN / playMove
     if (this.state.turn === "w") return userId === this.whiteId;
     return userId === this.blackId;
   }
@@ -126,7 +126,7 @@ export class GameRoom {
 
       const move: Move = { from, to };
 
-      // Promotion : mappe la lettre du client vers le caractère de pièce du moteur
+      // Promotion: map the client's letter to the engine's piece character
       if (input.promotion) {
         const promoMap: Record<string, string> = {
           q: this.state.turn === "w" ? "Q" : "q",
@@ -138,10 +138,10 @@ export class GameRoom {
           null) as Move["promotion"];
       }
 
-      // [chess] Récupère la liste des coups légaux depuis la case d'origine
+      // [chess] Get the list of legal moves from the starting square
       const legalMoves = getLegalMoves(this.state, from);
 
-      // Vérifie si le coup demandé est dans la liste retournée par le moteur
+      // Check if the requested move is in the list returned by the engine
       const isLegal = legalMoves.some(
         (m) =>
           m.to[0] === to[0] &&
@@ -153,7 +153,7 @@ export class GameRoom {
         return { valid: false, error: "Illegal move" };
       }
 
-      // [chess] Applique le coup sur l'état actuel -> retourne le nouvel état
+      // [chess] Apply the move to the current state -> return the new state
       this.state = playMove(this.state, move);
       this.lastMoveTime = new Date();
 
@@ -163,10 +163,10 @@ export class GameRoom {
         timestamp: new Date(),
       });
 
-      // [chess] Vérifie si la nouvelle position est un échec et mat
+      // [chess] Check if the new position is a checkmate
       const checkmate = isCheckmate(this.state);
 
-      // [chess] Vérifie si la nouvelle position est un nul
+      // [chess] Check if the new position is a draw
       const draw = isDraw(this.state);
 
       const gameOver = checkmate || draw;
@@ -175,7 +175,7 @@ export class GameRoom {
       let reason: string | null = null;
 
       if (checkmate) {
-        winner = userId; // celui qui a joué le coup qui met mat
+        winner = userId; // the player who made the checkmate move
         reason = "checkmate";
       } else if (draw) {
         reason = "draw";
@@ -183,9 +183,9 @@ export class GameRoom {
 
       return {
         valid: true,
-        // [chess] Convertit l'état actuel en FEN pour l'envoyer au client
+        // [chess] Convert the current state to FEN to send to the client
         fen: boardToFEN(this.state),
-        // [chess] Vérifie si le joueur qui doit jouer ensuite est en échec
+        // [chess] Check if the player who is to move next is in check
         check: !gameOver && this.isCurrentPlayerInCheck(),
         checkmate,
         stalemate: draw && !checkmate,
@@ -203,13 +203,13 @@ export class GameRoom {
   getState() {
     return {
       gameId: this.gameId,
-      // [chess] Convertit l'état en FEN pour le client
+      // [chess] Convert the state to FEN for the client
       fen: boardToFEN(this.state),
-      // [chess] Expose le tour actuel depuis le GameState
+      // [chess] Expose the current turn from the GameState
       turn: this.state.turn,
-      // [chess] Vérifie checkmate sur la position actuelle
+      // [chess] Check for checkmate on the current position
       isCheckmate: isCheckmate(this.state),
-      // [chess] Vérifie nul sur la position actuelle
+      // [chess] Check for draw on the current position
       isDraw: isDraw(this.state),
     };
   }
@@ -237,7 +237,7 @@ export class GameRoom {
     await db
       .update(gameTable)
       .set({
-        // [chess] Sauvegarde le FEN actuel en DB
+        // [chess] Save the current FEN to the DB
         fen: boardToFEN(this.state),
         moveCount: this.moveHistory.length,
       })
@@ -247,7 +247,7 @@ export class GameRoom {
   // ── Private ──────────────────────────────────────────────────────────────
 
   private isCurrentPlayerInCheck(): boolean {
-    // [chess] Délègue la vérification d'échec au moteur
+    // [chess] Delegate check verification to the engine
     return isKingInCheck(this.state, this.state.turn === "w");
   }
 }

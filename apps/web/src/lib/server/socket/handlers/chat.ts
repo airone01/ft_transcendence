@@ -5,20 +5,20 @@ import { chatMessage } from "@transc/db/schema";
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Message global
+  // Global message
   socket.on("chat:global", async (data: { content: string }) => {
     if (!data.content || data.content.trim().length === 0) {
       return socket.emit("chat:error", { message: "Empty message" });
     }
 
-    // Sauvegarder en DB
+    // Save to DB
     await db.insert(chatMessage).values({
       senderId: parseInt(userId),
-      gameId: null, // global = pas de gameId
+      gameId: null, // global = no gameId
       content: data.content.trim(),
     });
 
-    // Broadcast à tous
+    // Broadcast to all
     io.emit("chat:global", {
       userId,
       username: socket.data.username,
@@ -27,7 +27,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     });
   });
 
-  // Message dans une partie
+  // In-game message
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content } = data;
 
@@ -35,14 +35,14 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       return socket.emit("chat:error", { message: "Empty message" });
     }
 
-    // Sauvegarder en DB
+    // Save to DB
     await db.insert(chatMessage).values({
       senderId: parseInt(userId),
       gameId: parseInt(gameId),
       content: content.trim(),
     });
 
-    // Broadcast dans la room du jeu
+    // Broadcast to the game room
     io.to(`game:${gameId}`).emit("chat:game", {
       userId,
       username: socket.data.username,

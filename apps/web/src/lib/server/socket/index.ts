@@ -28,17 +28,17 @@ export function initSocketServer(httpServer: HTTPServer) {
   // Auth middleware
   io.use(authMiddleware);
 
-  // Démarrer heartbeat
+  // Run heartbeat
   startHeartbeat(io);
 
   io.on("connection", (socket) => {
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
-    // Rejoindre room personnelle
+    // Join personal room
     socket.join(`user:${userId}`);
 
-    // Essayer de restaurer une session précédente
+    // Try to restore a previous session
     restoreSessionOnReconnect(socket);
 
     // Register handlers
@@ -49,17 +49,17 @@ export function initSocketServer(httpServer: HTTPServer) {
 
     // Heartbeat pong
     socket.on("heartbeat:pong", () => {
-      // Client a répondu au ping, connection OK
+      // Client responded to ping, connection OK
     });
 
-    // Déconnexion
+    // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
-      // Sauvegarder session pour reconnexion
+      // Save session for reconnection
       saveSessionOnDisconnect(socket);
 
-      // Délai avant de marquer offline (permet reconnexion rapide)
+      // Delay before marking offline (allows quick reconnection)
       setTimeout(async () => {
         const userSockets = await io.in(`user:${userId}`).fetchSockets();
         if (userSockets.length === 0) {
@@ -69,7 +69,7 @@ export function initSocketServer(httpServer: HTTPServer) {
       }, 5000);
     });
 
-    // Erreurs
+    // Errors
     socket.on("error", (error) => {
       console.error(`[Socket] Error for user ${userId}:`, error);
     });
