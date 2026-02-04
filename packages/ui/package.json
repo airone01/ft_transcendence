@@ -9,12 +9,12 @@
   "exports": {
     ".": "./src/index.ts",
     "./components/*": "./src/components/*",
-    "./utils": "./src/utils",
+    "./utils": "./src/utils.ts",
     "./hooks/*": "./src/hooks/*",
     "./app.css": "./src/app.css"
   },
   "scripts": {
-    "check": "tsc --noEmit"
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"
@@ -28,6 +28,7 @@
     "@types/node": "^24",
     "bits-ui": "^2.14.4",
     "clsx": "^2.1.1",
+    "svelte-check": "^4.3.6",
     "tailwind-merge": "^3.4.0",
     "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4",

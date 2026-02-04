@@ -1,10 +1,5 @@
 <script lang="ts">
-import IconPawn from "virtual:icons/tabler/chess-filled";
-// import IconBishop from "virtual:icons/tabler/chess-bishop-filled";
-// import IconKing from "virtual:icons/tabler/chess-king-filled";
-// import IconQueen from "virtual:icons/tabler/chess-queen-filled";
-import IconKnight from "virtual:icons/tabler/chess-knight-filled";
-import IconRook from "virtual:icons/tabler/chess-rook-filled";
+import {ChessPawnIcon, ChessKingIcon, ChessQueenIcon, ChessRookIcon, ChessKnightIcon} from '@lucide/svelte'
 
 import {flip} from "svelte/animate";
 import {dndzone, type DndEvent, TRIGGERS} from "svelte-dnd-action";
@@ -25,9 +20,9 @@ let board: Square[] = Array.from({ length: 64 }, (_, i) => ({
   pieces: []
 }));
 
-board[0].pieces = [{ id: 101, name: "Rook", icon: IconRook}];
-board[1].pieces = [{ id: 102, name: "Knight", icon: IconKnight}];
-board[9].pieces = [{ id: 103, name: "Pawn", icon: IconPawn}];
+board[0].pieces = [{ id: 101, name: "Rook", icon: ChessRookIcon}];
+board[1].pieces = [{ id: 102, name: "Knight", icon: ChessKnightIcon}];
+board[9].pieces = [{ id: 103, name: "Pawn", icon: ChessPawnIcon}];
 
 const flipDurationMs = 200;
 function handleDndConsider(squareIndex: number, e: CustomEvent<DndEvent<Piece>>) {

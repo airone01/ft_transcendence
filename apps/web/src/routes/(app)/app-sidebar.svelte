@@ -1,12 +1,5 @@
 <script lang="ts">
-import IconBolt from "virtual:icons/tabler/bolt";
-import IconHome from "virtual:icons/tabler/home";
-import IconInbox from "virtual:icons/tabler/inbox";
-import IconPlay from "virtual:icons/tabler/play";
-import IconSearch from "virtual:icons/tabler/search";
-import IconSettings from "virtual:icons/tabler/settings";
-import IconSwords from "virtual:icons/tabler/swords";
-// import Icon from "virtual:icons/tabler/";
+import {BoltIcon, HouseIcon, InboxIcon, PlayIcon, SearchIcon, SettingsIcon, SwordsIcon} from '@lucide/svelte'
 import * as Sidebar from "@transc/ui/components/ui/sidebar/index.ts";
 import * as Item from "@transc/ui/components/ui/item/index.ts";
 import * as Avatar from "@transc/ui/components/ui/avatar/index.ts";
@@ -31,12 +24,12 @@ const groups: Group[] = [
       {
         title: "Home",
         url: "/home",
-        icon: IconHome,
+        icon: HouseIcon,
       },
       {
         title: "Inbox",
         url: "/inbox",
-        icon: IconInbox,
+        icon: InboxIcon,
       },
     ],
   },
@@ -46,17 +39,17 @@ const groups: Group[] = [
       {
         title: "Standard",
         url: "/play",
-        icon: IconPlay,
+        icon: PlayIcon,
       },
       {
         title: "Blitz",
         url: "/blitz",
-        icon: IconBolt,
+        icon: BoltIcon,
       },
       {
         title: "Competive",
         url: "/competitive",
-        icon: IconSwords,
+        icon: SwordsIcon,
       },
     ],
   },
@@ -104,8 +97,8 @@ const groups: Group[] = [
         <Item.Description class="text-xs">10k+ Elo</Item.Description>
       </Item.Content>
       <Item.Actions class="w-full group-data-[collapsible=icon]:hidden">
-        <a href="/settings"><Button variant="outline" size="sm" class="cursor-pointer"><IconSettings /></Button></a>
-        <Button variant="outline" size="sm" class="grow cursor-pointer"><IconSearch /></Button>
+        <a href="/settings"><Button variant="outline" size="sm" class="cursor-pointer"><SettingsIcon /></Button></a>
+        <Button variant="outline" size="sm" class="grow cursor-pointer"><SearchIcon /></Button>
       </Item.Actions>
     </Item.Root>
   </Sidebar.Footer>

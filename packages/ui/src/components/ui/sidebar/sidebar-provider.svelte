@@ -31,9 +31,9 @@ const sidebar = setSidebar({
 
     // sidebar state
     // document.cookie will be deprecated
-    await cookieStore.set(SIDEBAR_COOKIE_NAME, open);
+    await cookieStore.set(SIDEBAR_COOKIE_NAME, String(open));
     await cookieStore.set("path", "/");
-    await cookieStore.set("max-age", SIDEBAR_COOKIE_MAX_AGE);
+    await cookieStore.set("max-age", String(SIDEBAR_COOKIE_MAX_AGE));
     // document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
   },
 });
