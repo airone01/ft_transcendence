@@ -9,7 +9,7 @@ let { children } = $props();
   <AppSidebar />
   <div class="flex flex-col h-full w-full [&>main]:p-4">
     <header class="border-b w-full p-2">
-      <SidebarTrigger />
+      <SidebarTrigger class="cursor-pointer" />
     </header>
     {@render children?.()}
   </div>
