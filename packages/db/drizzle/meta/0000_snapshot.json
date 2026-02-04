@@ -77,12 +77,8 @@
           "name": "auth_sessions_user_id_users_id_fk",
           "tableFrom": "auth_sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -92,9 +88,7 @@
         "auth_sessions_token_unique": {
           "name": "auth_sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -162,12 +156,8 @@
           "name": "friendships_first_friend_id_users_id_fk",
           "tableFrom": "friendships",
           "tableTo": "users",
-          "columnsFrom": [
-            "first_friend_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["first_friend_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -175,12 +165,8 @@
           "name": "friendships_second_friend_id_users_id_fk",
           "tableFrom": "friendships",
           "tableTo": "users",
-          "columnsFrom": [
-            "second_friend_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["second_friend_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -188,10 +174,7 @@
       "compositePrimaryKeys": {
         "friendships_first_friend_id_second_friend_id_pk": {
           "name": "friendships_first_friend_id_second_friend_id_pk",
-          "columns": [
-            "first_friend_id",
-            "second_friend_id"
-          ]
+          "columns": ["first_friend_id", "second_friend_id"]
         }
       },
       "uniqueConstraints": {},
@@ -389,12 +372,8 @@
           "name": "games_players_game_id_games_id_fk",
           "tableFrom": "games_players",
           "tableTo": "games",
-          "columnsFrom": [
-            "game_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -402,12 +381,8 @@
           "name": "games_players_user_id_users_id_fk",
           "tableFrom": "games_players",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -415,20 +390,14 @@
       "compositePrimaryKeys": {
         "games_players_game_id_user_id_pk": {
           "name": "games_players_game_id_user_id_pk",
-          "columns": [
-            "game_id",
-            "user_id"
-          ]
+          "columns": ["game_id", "user_id"]
         }
       },
       "uniqueConstraints": {
         "games_game_id_color_unique": {
           "name": "games_game_id_color_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "game_id",
-            "color"
-          ]
+          "columns": ["game_id", "color"]
         }
       },
       "policies": {},
@@ -498,12 +467,8 @@
           "name": "games_spectators_game_id_games_id_fk",
           "tableFrom": "games_spectators",
           "tableTo": "games",
-          "columnsFrom": [
-            "game_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -511,12 +476,8 @@
           "name": "games_spectators_user_id_users_id_fk",
           "tableFrom": "games_spectators",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -524,10 +485,7 @@
       "compositePrimaryKeys": {
         "games_spectators_game_id_user_id_pk": {
           "name": "games_spectators_game_id_user_id_pk",
-          "columns": [
-            "game_id",
-            "user_id"
-          ]
+          "columns": ["game_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -584,16 +542,12 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -680,12 +634,8 @@
           "name": "users_stats_user_id_users_id_fk",
           "tableFrom": "users_stats",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -706,29 +656,17 @@
     "public.colors": {
       "name": "colors",
       "schema": "public",
-      "values": [
-        "white",
-        "black"
-      ]
+      "values": ["white", "black"]
     },
     "public.result": {
       "name": "result",
       "schema": "public",
-      "values": [
-        "white_win",
-        "black_win",
-        "draw",
-        "abort"
-      ]
+      "values": ["white_win", "black_win", "draw", "abort"]
     },
     "public.status": {
       "name": "status",
       "schema": "public",
-      "values": [
-        "waiting",
-        "ongoing",
-        "finished"
-      ]
+      "values": ["waiting", "ongoing", "finished"]
     }
   },
   "schemas": {},
