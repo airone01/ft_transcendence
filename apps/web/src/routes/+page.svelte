@@ -1,5 +1,5 @@
 <script lang="ts">
-import {ChessPawnIcon} from '@lucide/svelte'
+import { ChessPawnIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/components/ui/button/index.ts";
 </script>
 

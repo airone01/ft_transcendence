@@ -1,5 +1,8 @@
 <script lang="ts">
-import {Provider as SidebarProvider, Trigger as SidebarTrigger} from "@transc/ui/components/ui/sidebar/index.ts";
+import {
+  Provider as SidebarProvider,
+  Trigger as SidebarTrigger,
+} from "@transc/ui/components/ui/sidebar/index.ts";
 import AppSidebar from "./app-sidebar.svelte";
 
 let { children } = $props();

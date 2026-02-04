@@ -1,6 +1,12 @@
 <script lang="ts">
 import { Button } from "@transc/ui/components/ui/button/index.ts";
-import { Root as CardRoot, Header as CardHeader, Title as CardTitle, Description as CardDescription, Content as CardContent } from "@transc/ui/components/ui/card/index.ts";
+import {
+  Content as CardContent,
+  Description as CardDescription,
+  Header as CardHeader,
+  Root as CardRoot,
+  Title as CardTitle,
+} from "@transc/ui/components/ui/card/index.ts";
 
 import Board from "./board.svelte";
 </script>

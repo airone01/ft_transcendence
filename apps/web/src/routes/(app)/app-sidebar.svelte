@@ -1,10 +1,18 @@
 <script lang="ts">
-import {BoltIcon, HouseIcon, InboxIcon, PlayIcon, SearchIcon, SettingsIcon, SwordsIcon} from '@lucide/svelte'
-import * as Sidebar from "@transc/ui/components/ui/sidebar/index.ts";
-import * as Item from "@transc/ui/components/ui/item/index.ts";
+import {
+  BoltIcon,
+  HouseIcon,
+  InboxIcon,
+  PlayIcon,
+  SearchIcon,
+  SettingsIcon,
+  SwordsIcon,
+} from "@lucide/svelte";
 import * as Avatar from "@transc/ui/components/ui/avatar/index.ts";
+import { Button } from "@transc/ui/components/ui/button/index.js";
+import * as Item from "@transc/ui/components/ui/item/index.ts";
+import * as Sidebar from "@transc/ui/components/ui/sidebar/index.ts";
 import type { Component } from "svelte";
-    import { Button } from "@transc/ui/components/ui/button/index.js";
 
 // Menu items.
 type GroupItem = {

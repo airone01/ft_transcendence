@@ -1,11 +1,16 @@
 <script lang="ts">
-import {ChessPawnIcon, ChessKingIcon, ChessQueenIcon, ChessRookIcon, ChessKnightIcon} from '@lucide/svelte'
-
-import {flip} from "svelte/animate";
-import {dndzone, type DndEvent, TRIGGERS} from "svelte-dnd-action";
+import {
+  ChessKingIcon,
+  ChessKnightIcon,
+  ChessPawnIcon,
+  ChessQueenIcon,
+  ChessRookIcon,
+} from "@lucide/svelte";
 import type { Component } from "svelte";
+import { flip } from "svelte/animate";
+import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 
-type Piece = { id: number; name: string; icon: Component};
+type Piece = { id: number; name: string; icon: Component };
 type Square = {
   id: number;
   /* we do have to define piece*s* instead of a single piece per square, even
@@ -17,15 +22,18 @@ type Square = {
 
 let board: Square[] = Array.from({ length: 64 }, (_, i) => ({
   id: i,
-  pieces: []
+  pieces: [],
 }));
 
-board[0].pieces = [{ id: 101, name: "Rook", icon: ChessRookIcon}];
-board[1].pieces = [{ id: 102, name: "Knight", icon: ChessKnightIcon}];
-board[9].pieces = [{ id: 103, name: "Pawn", icon: ChessPawnIcon}];
+board[0].pieces = [{ id: 101, name: "Rook", icon: ChessRookIcon }];
+board[1].pieces = [{ id: 102, name: "Knight", icon: ChessKnightIcon }];
+board[9].pieces = [{ id: 103, name: "Pawn", icon: ChessPawnIcon }];
 
 const flipDurationMs = 200;
-function handleDndConsider(squareIndex: number, e: CustomEvent<DndEvent<Piece>>) {
+function handleDndConsider(
+  squareIndex: number,
+  e: CustomEvent<DndEvent<Piece>>,
+) {
   board[squareIndex].pieces = e.detail.items;
   board = [...board]; // trigger reactivity
 }
@@ -33,37 +41,40 @@ function handleDndConsider(squareIndex: number, e: CustomEvent<DndEvent<Piece>>)
 /**
  * @brief handles smooth drag and drop of pieces
  */
-function handleDndFinalize(squareIndex: number, e: CustomEvent<DndEvent<Piece>>) {
-  const {info, items} = e.detail;
+function handleDndFinalize(
+  squareIndex: number,
+  e: CustomEvent<DndEvent<Piece>>,
+) {
+  const { info, items } = e.detail;
 
   if (info.trigger === TRIGGERS.DROPPED_INTO_ANOTHER) {
     board[squareIndex].pieces = items;
     board = [...board];
     return;
   }
-  
+
   /* if we have multiple squares in a single zone (a capture), we strictly only
   want the one that was just dropped. */
   if (info.trigger === TRIGGERS.DROPPED_INTO_ZONE) {
     if (items.length > 1) {
-      const droppedPiece = items.find(p => String(p.id) === String(info.id));
+      const droppedPiece = items.find((p) => String(p.id) === String(info.id));
 
       if (droppedPiece) {
         // if we found the dropped piece, it becomes the only piece in this square
         board[squareIndex].pieces = [droppedPiece];
       } else {
         // this should never happen but you never know
-        console.error("id mismatch. debug info:", { 
-          wantedId: info.id, 
-          availableIds: items.map(i => i.id) 
+        console.error("id mismatch. debug info:", {
+          wantedId: info.id,
+          availableIds: items.map((i) => i.id),
         });
         board[squareIndex].pieces = items;
       }
-    } else
-      // moving out of a square, or dropping in an empty one
-      board[squareIndex].pieces = items;
-  
-    board = [...board]; 
+    }
+    // moving out of a square, or dropping in an empty one
+    else board[squareIndex].pieces = items;
+
+    board = [...board];
   }
 }
 </script>
