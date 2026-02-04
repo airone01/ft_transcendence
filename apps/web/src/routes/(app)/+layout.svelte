@@ -5,10 +5,12 @@ import AppSidebar from "./app-sidebar.svelte";
 let { children } = $props();
 </script>
  
-<Sidebar.Provider>
+<Sidebar.Provider class="h-full">
   <AppSidebar />
-  <main class="h-full w-full p-4">
-    <Sidebar.Trigger />
+  <div class="flex flex-col h-full w-full [&>main]:p-4">
+    <header class="border-b w-full p-2">
+      <Sidebar.Trigger />
+    </header>
     {@render children?.()}
-  </main>
+  </div>
 </Sidebar.Provider>
