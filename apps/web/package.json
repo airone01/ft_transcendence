@@ -29,6 +29,7 @@
     "@types/node": "^24",
     "svelte": "^5.48.2",
     "svelte-check": "^4.3.5",
+    "svelte-dnd-action": "^0.9.69",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "unplugin-icons": "^23.0.1",
