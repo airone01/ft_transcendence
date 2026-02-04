@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^24",
+    "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.8"
   }
 }
