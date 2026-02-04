@@ -1,5 +1,5 @@
 import { db } from "@transc/db";
-import { user } from "@transc/db/schema";
+import { users as user } from "@transc/db/schema";
 
 export async function load() {
   try {
