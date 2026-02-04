@@ -1,5 +1,5 @@
 {
-  "id": "969418c3-c72f-4266-b363-9994b9926ae5",
+  "id": "22f69b79-5c44-49a3-9708-6cf83b58e0a5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -199,7 +199,7 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
+          "type": "game_status",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -383,7 +383,7 @@
           "tableTo": "users",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -527,6 +527,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "status": {
+          "name": "status",
+          "type": "user_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'offline'"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -658,15 +666,20 @@
       "schema": "public",
       "values": ["white", "black"]
     },
+    "public.game_status": {
+      "name": "game_status",
+      "schema": "public",
+      "values": ["waiting", "ongoing", "finished"]
+    },
     "public.result": {
       "name": "result",
       "schema": "public",
       "values": ["white_win", "black_win", "draw", "abort"]
     },
-    "public.status": {
-      "name": "status",
+    "public.user_status": {
+      "name": "user_status",
       "schema": "public",
-      "values": ["waiting", "ongoing", "finished"]
+      "values": ["online", "offline", "ingame"]
     }
   },
   "schemas": {},
