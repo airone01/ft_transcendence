@@ -1,11 +1,11 @@
-import type { GameState, Move } from "$lib/chess/internal/types";
-import { isInBoard, printBoard } from "$lib/chess/internal/utils";
-import { pawnMoves } from "$lib/chess/internal/moves.pawn";
 import { bishopMoves } from "$lib/chess/internal/moves.bishop";
 import { kingMoves } from "$lib/chess/internal/moves.king";
 import { knightMoves } from "$lib/chess/internal/moves.knight";
+import { pawnMoves } from "$lib/chess/internal/moves.pawn";
 import { queenMoves } from "$lib/chess/internal/moves.queen";
 import { rookMoves } from "$lib/chess/internal/moves.rook";
+import type { GameState, Move } from "$lib/chess/internal/types";
+import { isInBoard } from "$lib/chess/internal/utils";
 
 /**
  * Returns all legal moves for the given piece.
@@ -177,7 +177,7 @@ export function isKingInCheck(state: GameState, isWhite: boolean): boolean {
       let moves: { to: [number, number] }[] = [];
 
       switch (piece.toLowerCase()) {
-        case "p":
+        case "p": {
           const dir = pieceIsWhite ? -1 : 1;
           const attackSquares: [number, number][] = [
             [r + dir, c - 1],
@@ -187,6 +187,7 @@ export function isKingInCheck(state: GameState, isWhite: boolean): boolean {
             .filter(([rr, cc]) => isInBoard([rr, cc]))
             .map((to) => ({ to }));
           break;
+        }
         case "n":
           moves = knightMoves(state, from);
           break;

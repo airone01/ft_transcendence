@@ -1,6 +1,5 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { isInBoard } from "$lib/chess/internal/utils";
-import { parseFEN } from "$lib/chess/internal/board";
 
 describe("isInBoard", () => {
   test("returns true for valid squares", () => {

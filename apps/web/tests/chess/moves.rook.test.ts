@@ -1,4 +1,4 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { parseFEN } from "$lib/chess/internal/board";
 import { rookMoves } from "$lib/chess/internal/moves.rook";
 
@@ -75,6 +75,6 @@ describe("rookMoves", () => {
     const state = parseFEN("8/8/8/3r4/8/8/8/8 b - - 0 1");
     const moves = rookMoves(state, [3, 3]);
 
-    expect(rookMoves(state, [3, 3]).length).toBe(14);
+    expect(moves.length).toBe(14);
   });
 });

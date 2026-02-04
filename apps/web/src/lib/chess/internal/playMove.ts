@@ -17,7 +17,7 @@ export function playMove(state: GameState, move: Move): GameState {
   const newState: GameState = applyMoveCopy(state, move);
 
   const [fr, fc] = move.from;
-  const [tr, tc] = move.to;
+  const [tr, _tc] = move.to;
   const piece: Piece | null = state.board[fr][fc];
 
   newState.turn = state.turn === "w" ? "b" : "w";

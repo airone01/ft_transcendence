@@ -1,7 +1,7 @@
-import { describe, test, expect, afterAll } from "bun:test";
-import { parseFEN, playMove, boardToFEN, coordsToAlgebraic } from "$lib/chess";
+import { afterAll, describe, expect, test } from "bun:test";
+import { boardToFEN, coordsToAlgebraic, parseFEN, playMove } from "$lib/chess";
 import { getAllLegalMoves } from "$lib/chess/internal/gameStatus";
-import perftPositionsAll from "./perftPositions.json" assert { type: "json" };
+import perftPositionsAll from "./perftPositions.json";
 
 const DEBUG = process.env.DEBUG === "1";
 
@@ -30,7 +30,7 @@ function perft(fen: string, depth: number): number {
   return nodes;
 }
 
-function perftDivide(fen: string, depth: number): number {
+function _perftDivide(fen: string, depth: number): number {
   if (depth === 0) return 1;
 
   const moves = getAllLegalMoves(parseFEN(fen));

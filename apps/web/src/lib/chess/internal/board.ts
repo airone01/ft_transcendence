@@ -1,8 +1,8 @@
 import type {
   Board,
-  GameState,
   CastlingRights,
   Color,
+  GameState,
 } from "$lib/chess/internal/types";
 import {
   algebraicToCoords,
@@ -31,8 +31,8 @@ export function parseFEN(fen: string): GameState {
   const board: Board = boardPart.split("/").map((row) => {
     const squares: (string | null)[] = [];
     for (const char of row) {
-      const n = parseInt(char);
-      if (isNaN(n)) {
+      const n = parseInt(char, 10);
+      if (Number.isNaN(n)) {
         squares.push(char);
       } else {
         for (let i = 0; i < n; i++) squares.push(null);
@@ -58,8 +58,8 @@ export function parseFEN(fen: string): GameState {
     turn,
     castling,
     enPassant,
-    halfMoveCount: parseInt(halfMoveCount),
-    fullMoveCount: parseInt(fullMoveCount),
+    halfMoveCount: parseInt(halfMoveCount, 10),
+    fullMoveCount: parseInt(fullMoveCount, 10),
   };
 }
 

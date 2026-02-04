@@ -1,4 +1,4 @@
-import type { GameState } from "$lib/chess/internal/types";
+import type { Piece } from "./types";
 
 /** @internal */
 export function isInBoard([row, col]: [number, number]): boolean {
@@ -7,16 +7,16 @@ export function isInBoard([row, col]: [number, number]): boolean {
 
 /**
  * Prints a chess board to the console.
- * @param {any[][]} board - an 8x8 array representing the chess board.
+ * @param {Piece[][]} board - an 8x8 array representing the chess board.
  * Each element in the array should be either null (representing an empty square) or a string representing a chess piece.
  */
-export function printBoard(board: any[][]) {
+export function printBoard(board: Piece[][]) {
   const columns = "  a b c d e f g h".split(" ");
   const rows = "8 7 6 5 4 3 2 1".split(" ");
   console.log(columns.join(" "));
   console.log(
     board
-      .map((r, i) => rows[i] + " " + r.map((c) => c ?? ".").join(" "))
+      .map((r, i) => `${`${rows[i]} ${r.map((c) => c ?? ".").join(" ")}`}`)
       .join("\n"),
   );
 }
@@ -30,7 +30,7 @@ export function printBoard(board: any[][]) {
  */
 export function algebraicToCoords(pos: string): [number, number] {
   const col = pos.charCodeAt(0) - "a".charCodeAt(0);
-  const row = 8 - parseInt(pos[1]);
+  const row = 8 - parseInt(pos[1], 10);
   return [row, col];
 }
 

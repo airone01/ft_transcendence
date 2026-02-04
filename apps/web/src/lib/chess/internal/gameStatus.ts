@@ -1,6 +1,5 @@
 import type { GameState, Move, Piece } from "$lib/chess/internal/types";
-import { isKingInCheck } from "$lib/chess/internal/validation";
-import { getLegalMoves } from "$lib/chess/internal/validation";
+import { getLegalMoves, isKingInCheck } from "$lib/chess/internal/validation";
 
 /**
  * Returns true if the current player is in checkmate, false otherwise.
@@ -65,8 +64,8 @@ export function getAllLegalMoves(state: GameState): Move[] {
 
 /** @internal */
 export function isInsufficientMaterial(state: GameState): boolean {
-  let whiteMinors: Piece[] = [];
-  let blackMinors: Piece[] = [];
+  const whiteMinors: Piece[] = [];
+  const blackMinors: Piece[] = [];
 
   let whiteSquare: number | null = null;
   let blackSquare: number | null = null;
@@ -126,6 +125,7 @@ export function isFiftyMoveRule(state: GameState): boolean {
 
 /** @internal */
 export function isThreefoldRepetition(state: GameState): boolean {
+  state;
   // TODO ?
   return false;
 }

@@ -1,9 +1,9 @@
-import { describe, test, expect } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { parseFEN } from "$lib/chess/internal/board";
 import {
-  normalKingMoves,
   castleMoves,
   kingMoves,
+  normalKingMoves,
 } from "$lib/chess/internal/moves.king";
 
 describe("normalKingMoves", () => {

@@ -1,21 +1,26 @@
-export type {
-  Color,
-  Piece,
-  Board,
-  CastlingRights,
-  GameState,
-  Move,
-} from "$lib/chess/internal/types";
+/* Public API */
 
-export { parseFEN, boardToFEN } from "$lib/chess/internal/board";
-
-export { isCheckmate, isDraw } from "./internal/gameStatus";
-
-export { getLegalMoves } from "$lib/chess/internal/validation";
+/* FEN related functions */
+export { boardToFEN, parseFEN } from "$lib/chess/internal/board";
 export { playMove } from "$lib/chess/internal/playMove";
 
+/* Types */
+export type {
+  Board,
+  CastlingRights,
+  Color,
+  GameState,
+  Move,
+  Piece,
+} from "$lib/chess/internal/types";
+
+/* Utils */
 export {
-  printBoard,
   algebraicToCoords,
   coordsToAlgebraic,
+  printBoard,
 } from "$lib/chess/internal/utils";
+
+/* Validation */
+export { getLegalMoves } from "$lib/chess/internal/validation";
+export { isCheckmate, isDraw } from "./internal/gameStatus";
