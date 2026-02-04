@@ -1,6 +1,7 @@
 CREATE TYPE "public"."colors" AS ENUM('white', 'black');--> statement-breakpoint
+CREATE TYPE "public"."game_status" AS ENUM('waiting', 'ongoing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."result" AS ENUM('white_win', 'black_win', 'draw', 'abort');--> statement-breakpoint
-CREATE TYPE "public"."status" AS ENUM('waiting', 'ongoing', 'finished');--> statement-breakpoint
+CREATE TYPE "public"."user_status" AS ENUM('online', 'offline', 'ingame');--> statement-breakpoint
 CREATE TABLE "auth_sessions" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
@@ -20,7 +21,7 @@ CREATE TABLE "friendships" (
 --> statement-breakpoint
 CREATE TABLE "games" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"status" "status" DEFAULT 'waiting' NOT NULL,
+	"status" "game_status" DEFAULT 'waiting' NOT NULL,
 	"time_control_seconds" integer NOT NULL,
 	"increment_seconds" integer NOT NULL,
 	"fen" varchar DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0' NOT NULL,
@@ -56,6 +57,7 @@ CREATE TABLE "users" (
 	"email" varchar NOT NULL,
 	"password" varchar NOT NULL,
 	"avatar" varchar(4096),
+	"status" "user_status" DEFAULT 'offline' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_username_unique" UNIQUE("username"),
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
@@ -77,7 +79,7 @@ ALTER TABLE "auth_sessions" ADD CONSTRAINT "auth_sessions_user_id_users_id_fk" F
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_first_friend_id_users_id_fk" FOREIGN KEY ("first_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_second_friend_id_users_id_fk" FOREIGN KEY ("second_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_players" ADD CONSTRAINT "games_players_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "games_players" ADD CONSTRAINT "games_players_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "games_players" ADD CONSTRAINT "games_players_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_spectators" ADD CONSTRAINT "games_spectators_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_spectators" ADD CONSTRAINT "games_spectators_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "users_stats" ADD CONSTRAINT "users_stats_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
