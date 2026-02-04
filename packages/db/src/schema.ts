@@ -1,16 +1,15 @@
 import { sql } from "drizzle-orm";
 import {
-  pgTable,
-  pgEnum,
-  primaryKey,
-  index,
-  unique,
   check,
-  serial,
+  index,
   integer,
-  varchar,
-  real,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  serial,
   timestamp,
+  unique,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 // ################################ USERS ################################
