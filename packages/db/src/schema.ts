@@ -15,6 +15,12 @@ import {
 
 // ################################ USERS ################################
 
+export const userStatus = pgEnum("user_status", [
+  "online",
+  "offline",
+  "ingame",
+]);
+
 export const users = pgTable(
   "users",
   {
@@ -23,6 +29,7 @@ export const users = pgTable(
     email: varchar("email").unique().notNull(),
     password: varchar("password"),
     avatar: varchar("avatar", { length: 4096 }),
+    status: userStatus().default("offline").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -132,7 +139,9 @@ export const gamesPlayers = pgTable(
       })
       .notNull(),
     userId: integer("user_id")
-      .references(() => users.id)
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
       .notNull(),
     color: colors().notNull(),
     eloBefore: integer("elo_before").notNull(),
@@ -173,7 +182,11 @@ export const gamesSpectators = pgTable(
 
 // ################################ GAMES ################################
 
-export const status = pgEnum("status", ["waiting", "ongoing", "finished"]);
+export const gameStatus = pgEnum("game_status", [
+  "waiting",
+  "ongoing",
+  "finished",
+]);
 export const result = pgEnum("result", [
   "white_win",
   "black_win",
@@ -185,7 +198,7 @@ export const games = pgTable(
   "games",
   {
     id: serial("id").primaryKey(),
-    status: status().default("waiting").notNull(),
+    status: gameStatus().default("waiting").notNull(),
     timeControlSeconds: integer("time_control_seconds").notNull(),
     incrementSeconds: integer("increment_seconds").notNull(),
     fen: varchar("fen")

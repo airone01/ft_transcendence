@@ -1,15 +1,40 @@
 <script lang="ts">
 import { authState } from "$lib/auth.svelte";
+import { ChessPawnIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/components/ui/button/index.ts";
 </script>
 
-{#if authState.isAuthenticated}
-  <h1>Welcome back, {authState.user?.email}!</h1>
-  <p>Your session expires on: {authState.session?.expiresAt.toLocaleDateString()}</p>
-  <form action="/logout" method="POST">
-    <button class="underline cursor-pointer">Logout</button>
-  </form>
-{:else}
-  You are logged out.
-  <a href="/login" class="underline">Login</a>
-  <a href="/register" class="underline">Register</a>
-{/if}
+<div class="min-h-screen flex flex-col">
+  <header class="border-b sticky top-0 border-border/40 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <div class="flex h-16 items-center justify-between px-4 w-full">
+      <a class="flex items-center gap-2 select-none cursor-pointer" href="/">
+        <ChessPawnIcon class="w-7 h-7" />
+        <span class="text-xl font-semibold tracking-tight">
+          Transcendence
+        </span>
+      </a>
+      <nav class="hidden items-center gap-6 md:flex">
+        <p>link1</p>
+        <p>link2</p>
+      </nav>
+      <div class="flex items-center gap-3">
+        {#if authState.isAuthenticated}
+          <form action="/logout" method="POST">
+            <Button variant="ghost" size="sm" class="cursor-pointer">Log out</Button>
+          </form>
+          <a href="/home">
+            <Button size="sm" class="cursor-pointer">Dashboard</Button>
+          </a>
+        {:else}
+          <a href="/login">
+            <Button variant="ghost" size="sm" class="cursor-pointer">Log in</Button>
+          </a>
+          <a href="/register">
+            <Button size="sm" class="cursor-pointer">Sign up</Button>
+          </a>
+        {/if}
+      </div>
+    </div>
+  </header>
+</div>
+>>>>>>> main
