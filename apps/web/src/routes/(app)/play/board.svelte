@@ -83,12 +83,13 @@ function handleDndFinalize(
 conic-gradient, but it does not completely patch it, and it enables
 aliasing/blur effect around the squares. So in the end I decided not to. -->
 <div 
-  class="w-full h-full border relative aspect-square rounded-md max-w-xl grid grid-rows-8 grid-cols-8 *:w-full *:h-full *:p-2 *:aspect-square select-none"
+  class="w-full h-full border relative aspect-square rounded-md max-w-xl grid grid-rows-8 grid-cols-8 select-none"
   style:background-image="conic-gradient(var(--secondary) 90deg, var(--primary) 90deg 180deg, var(--secondary) 180deg 270deg, var(--primary) 270deg)"
   style:background-size="25% 25%"
 >
   {#each board as square, index (square.id)}
     <div
+      class="p-2 w-full h-full text-3xl grid grid-cols-1 grid-rows-1 place-items-center"
       use:dndzone={{ items: square.pieces, flipDurationMs, dropTargetStyle: { outline: 'none' } }}
       on:consider={(e) => handleDndConsider(index, e)}
       on:finalize={(e) => handleDndFinalize(index, e)}
@@ -98,7 +99,10 @@ aliasing/blur effect around the squares. So in the end I decided not to. -->
       square/zone. This is also the reason why pieces go down to give space for
       the new one to come. -->
       {#each square.pieces as piece (piece.id)}
-        <div animate:flip={{duration: flipDurationMs}} class="cursor-grab active:cursor-grabbing h-full flex justify-center items-center">
+        <div 
+          animate:flip={{duration: flipDurationMs}} 
+          class="col-start-1 row-start-1 z-10 w-full h-full cursor-grab active:cursor-grabbing flex justify-center items-center"
+        >
           <svelte:component this={piece.icon} class="w-full h-full" />
         </div>
       {/each}
