@@ -90,7 +90,7 @@ aliasing/blur effect around the squares. So in the end I decided not to. -->
   {#each board as square, index (square.id)}
     <div
       class="p-2 w-full h-full text-3xl grid grid-cols-1 grid-rows-1 place-items-center"
-      use:dndzone={{ items: square.pieces, flipDurationMs, dropTargetStyle: { outline: 'none' } }}
+      use:dndzone={{ items: square.pieces, flipDurationMs, dropTargetClasses: [], dropAnimationDisabled: true }}
       on:consider={(e) => handleDndConsider(index, e)}
       on:finalize={(e) => handleDndFinalize(index, e)}
     >
@@ -103,7 +103,7 @@ aliasing/blur effect around the squares. So in the end I decided not to. -->
           animate:flip={{duration: flipDurationMs}} 
           class="col-start-1 row-start-1 z-10 w-full h-full cursor-grab active:cursor-grabbing flex justify-center items-center"
         >
-          <svelte:component this={piece.icon} class="w-full h-full" />
+          <svelte:component this={piece.icon} class="w-full h-full stroke-white" />
         </div>
       {/each}
     </div>
