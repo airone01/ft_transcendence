@@ -14,5 +14,14 @@ const updateUserSchema = z.object({
   avatar: z.string().optional(),
 });
 
+const friendInfo = z.object({
+  userId: z.number().int(),
+  username: z.string().min(3).max(20),
+  avatar: z.string().nullable(),
+  status: z.enum(["online", "offline", "ingame"]),
+  currentElo: z.number().int().min(0),
+});
+
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type FriendInfo = z.infer<typeof friendInfo>;

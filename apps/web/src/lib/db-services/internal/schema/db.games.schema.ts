@@ -1,4 +1,3 @@
-import { result } from "@transc/db/schema";
 import { z } from "zod";
 
 const createGameSchema = z.object({

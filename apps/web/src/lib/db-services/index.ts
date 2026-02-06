@@ -1,45 +1,59 @@
 /* Public API */
 
+/* Games Types */
+export type {
+  CreateGameInput,
+  EndGameInput,
+} from "./internal/schema/db.games.schema";
+
 /* DB Schema */
-export {
-  type User,
-  type AuthSession,
-  type Friendship,
-  type UserStats,
-  type Game,
-  type GamePlayer,
-  type GameSpectator,
+export type {
+  AuthSession,
+  Friendship,
+  Game,
+  GamePlayer,
+  GameSpectator,
+  User,
+  UserStats,
 } from "./internal/schema/db.schema";
 
 /* Users Types */
-export {
-  type CreateUserInput,
-  type UpdateUserInput,
+export type {
+  CreateUserInput,
+  FriendInfo,
+  UpdateUserInput,
 } from "./internal/schema/db.users.schema";
-export {
-  type CreateGameInput,
-  type EndGameInput,
-} from "./internal/schema/db.games.schema";
 
-/* Users Services */
-export {
-  dbCreateUser,
-  dbUpdateUser,
-  dbDeleteUser,
-  dbGetStats,
-} from "./internal/services/db.users.service";
+/* Utils Types */
+export type { Leaderboard } from "./internal/schema/db.utils.schema";
 
 /* Friends Services */
 export {
   dbAddFriend,
-  dbRemoveFriend,
   dbGetFriendsInfo,
+  dbRemoveFriend,
 } from "./internal/services/db.friends.service";
 
 /* Games Services */
 export {
+  dbAddSpectator,
   dbCreateGame,
-  dbStartGame,
+  dbEndGame,
   dbGetGame,
+  dbGetSpectators,
+  dbGetSpectatorsCount,
+  dbRemoveSpectator,
+  dbStartGame,
   dbUpdateGame,
 } from "./internal/services/db.games.service";
+
+/* Users Services */
+export {
+  dbCreateUser,
+  dbDeleteUser,
+  dbGetStats,
+  dbUpdateUser,
+} from "./internal/services/db.users.service";
+
+/* Utils Services */
+export { dbGetLeaderboard } from "./internal/services/db.utils.service";

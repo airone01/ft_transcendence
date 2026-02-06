@@ -1,8 +1,19 @@
-import { and, eq, ne, or } from "drizzle-orm";
 import { db } from "@transc/db";
 import { friendships, users, usersStats } from "@transc/db/schema";
+import { and, eq, ne, or } from "drizzle-orm";
+import type { FriendInfo } from "../schema/db.users.schema";
 
-export async function dbAddFriend(userId: number, friendId: number) {
+/**
+ * Adds a new friendship between two users.
+ * @param {number} userId - The id of the first user
+ * @param {number} friendId - The id of the second user
+ * @throws {Error} - If the friendship is not added
+ * @returns {Promise<void>} - Resolves when the friendship has been added
+ */
+export async function dbAddFriend(
+  userId: number,
+  friendId: number,
+): Promise<void> {
   try {
     const [friendship] = await db
       .insert(friendships)
@@ -19,7 +30,17 @@ export async function dbAddFriend(userId: number, friendId: number) {
   }
 }
 
-export async function dbRemoveFriend(userId: number, friendId: number) {
+/**
+ * Removes a friendship between two users.
+ * @param {number} userId - The id of the first user
+ * @param {number} friendId - The id of the second user
+ * @throws {Error} - If the friendship is not removed
+ * @returns {Promise<void>} - Resolves when the friendship has been removed
+ */
+export async function dbRemoveFriend(
+  userId: number,
+  friendId: number,
+): Promise<void> {
   try {
     const [friendship] = await db
       .delete(friendships)
@@ -44,13 +65,20 @@ export async function dbRemoveFriend(userId: number, friendId: number) {
   }
 }
 
-export async function dbGetFriendsInfo(userId: number) {
+/**
+ * Retrieves a list of friends for a given user.
+ * @param {number} userId - The id of the user to retrieve friends for
+ * @throws {Error} - If the user does not exist, or if an unexpected error occurs
+ * @returns {Promise<FriendInfo[]>} - Resolves with a list of friends
+ */
+export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
   try {
     const friends = await db
       .select({
         userId: users.id,
         username: users.username,
         avatar: users.avatar,
+        status: users.status,
         currentElo: usersStats.currentElo,
       })
       .from(friendships)
@@ -72,7 +100,7 @@ export async function dbGetFriendsInfo(userId: number) {
         ),
       );
 
-    return friends;
+    return friends as FriendInfo[];
   } catch (err) {
     console.error(err);
     throw err;

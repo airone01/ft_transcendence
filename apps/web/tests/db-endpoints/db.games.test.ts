@@ -1,18 +1,23 @@
 import { beforeAll, describe, test } from "bun:test";
+import { styleText } from "node:util";
 import { db } from "@transc/db";
 import { users } from "@transc/db/schema";
 import { eq } from "drizzle-orm";
 import {
   type CreateGameInput,
+  dbAddSpectator,
   dbCreateGame,
-  dbStartGame,
+  dbEndGame,
   dbGetGame,
+  dbGetSpectators,
+  dbGetSpectatorsCount,
+  dbRemoveSpectator,
+  dbStartGame,
   dbUpdateGame,
+  type Game,
 } from "$lib/db-services";
-import { dbEndGame } from "$lib/db-services/internal/services/db.games.service";
-import { strategy } from "$lib/paraglide/runtime";
 
-async function getUserId(username: string) {
+async function getUserId(username: string): Promise<number> {
   const [user] = await db
     .select({ id: users.id })
     .from(users)
@@ -22,14 +27,17 @@ async function getUserId(username: string) {
   return user.id;
 }
 
-let player1: number;
-let player2: number;
-beforeAll(async () => {
-  player1 = await getUserId("Valentin");
-  player2 = await getUserId("Erwan");
-});
+describe("games.service.ts tests", () => {
+  let gameId: number;
+  let player1: number;
+  let player2: number;
+  let spectator: number;
+  beforeAll(async () => {
+    player1 = await getUserId("Valentin");
+    player2 = await getUserId("Erwan");
+    spectator = await getUserId("Simon");
+  });
 
-describe.only("games.service.ts tests", () => {
   test("createGame", async () => {
     try {
       const gameInput: CreateGameInput = {
@@ -39,7 +47,12 @@ describe.only("games.service.ts tests", () => {
         incrementSeconds: 0,
       };
 
-      await dbCreateGame(gameInput);
+      gameId = await dbCreateGame(gameInput);
+
+      console.log(
+        styleText("bold", "Game created with ID: ") +
+          styleText(["bold", "yellow"], `${gameId}`),
+      );
     } catch (err) {
       console.error(err);
     }
@@ -47,7 +60,7 @@ describe.only("games.service.ts tests", () => {
 
   test("startGame", async () => {
     try {
-      await dbStartGame(45);
+      await dbStartGame(gameId);
     } catch (err) {
       console.error(err);
     }
@@ -55,12 +68,12 @@ describe.only("games.service.ts tests", () => {
 
   test("updateGame", async () => {
     try {
-      const game = await dbUpdateGame(
-        45,
+      const gameInfo: Game = await dbUpdateGame(
+        gameId,
         "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
       );
 
-      console.table(game);
+      console.table(gameInfo);
     } catch (err) {
       console.error(err);
     }
@@ -68,22 +81,55 @@ describe.only("games.service.ts tests", () => {
 
   test("getGame", async () => {
     try {
-      const game = await dbGetGame(45);
+      const gameInfo = await dbGetGame(gameId);
+
+      console.table(gameInfo);
     } catch (err) {
       console.error(err);
     }
   });
 
-  test.only("endGame", async () => {
+  test("addSpectator", async () => {
     try {
-      const gameId = await dbCreateGame({
-        whiteUserId: player1,
-        blackUserId: player2,
-        timeControlSeconds: 60,
-        incrementSeconds: 0,
-      });
+      await dbAddSpectator(gameId, spectator);
+    } catch (err) {
+      console.error(err);
+    }
+  });
 
-      await dbStartGame(gameId);
+  test("getSpectators", async () => {
+    try {
+      const spectators = await dbGetSpectators(gameId);
+
+      console.table(spectators);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  test("getSpectatorsCount", async () => {
+    try {
+      const spectatorsCount = await dbGetSpectatorsCount(gameId);
+
+      console.log(
+        styleText("bold", "Spectators count: ") +
+          styleText(["bold", "yellow"], `${spectatorsCount}`),
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  test("removeSpectator", async () => {
+    try {
+      await dbRemoveSpectator(gameId, spectator);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+
+  test("endGame", async () => {
+    try {
       await dbEndGame({ gameId: gameId, result: "draw" });
     } catch (err) {
       console.error(err);

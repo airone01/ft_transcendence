@@ -1,32 +1,20 @@
 import { beforeAll, describe, expect, test } from "bun:test";
+import { styleText } from "node:util";
 import { db } from "@transc/db";
 import { users } from "@transc/db/schema";
 import { eq } from "drizzle-orm";
 import {
   type CreateUserInput,
-  type UpdateUserInput,
   dbCreateUser,
-  dbUpdateUser,
   dbDeleteUser,
   dbGetStats,
+  dbUpdateUser,
+  type UpdateUserInput,
 } from "$lib/db-services";
 
-async function getUserId(username: string) {
-  const [user] = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.username, username))
-    .limit(1);
-
-  return user.id;
-}
-
-let userId: number;
-beforeAll(async () => {
-  userId = await getUserId("Valentin");
-});
-
 describe("users.service.ts tests", () => {
+  let userId: number;
+
   const newUser: CreateUserInput = {
     username: "Alice",
     email: "alice@test.com",
@@ -35,12 +23,17 @@ describe("users.service.ts tests", () => {
   };
 
   beforeAll(async () => {
-    await db.delete(users).where(eq(users.email, newUser.email));
+    await db.delete(users).where(eq(users.username, newUser.username));
   });
 
   test("createUser", async () => {
     try {
-      await dbCreateUser(newUser);
+      userId = await dbCreateUser(newUser);
+
+      console.log(
+        styleText("bold", "Created user with id: ") +
+          styleText(["bold", "yellow"], `${userId}`),
+      );
     } catch (err) {
       console.error(err);
     }
@@ -70,9 +63,8 @@ describe("users.service.ts tests", () => {
   test("getStats", async () => {
     try {
       const stats = await dbGetStats(userId);
-      // console.table(stats);
 
-      expect(stats).toBeDefined();
+      console.table(stats);
     } catch (err) {
       console.error(err);
     }

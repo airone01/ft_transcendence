@@ -1,7 +1,7 @@
 import { beforeAll, describe, test } from "bun:test";
 import { db } from "@transc/db";
-import { users } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
+import { friendships, users } from "@transc/db/schema";
+import { and, eq, or } from "drizzle-orm";
 import {
   dbAddFriend,
   dbGetFriendsInfo,
@@ -18,14 +18,30 @@ async function getUserId(username: string) {
   return user.id;
 }
 
-let userId: number;
-let friendId: number;
-beforeAll(async () => {
-  userId = await getUserId("Erwan");
-  friendId = await getUserId("Simon");
-});
+describe.only("friends.service.ts tests", () => {
+  let userId: number;
+  let friendId: number;
 
-describe("friends.service.ts tests", () => {
+  beforeAll(async () => {
+    userId = await getUserId("Erwan");
+    friendId = await getUserId("Simon");
+
+    await db
+      .delete(friendships)
+      .where(
+        or(
+          and(
+            eq(friendships.firstFriendId, userId),
+            eq(friendships.secondFriendId, friendId),
+          ),
+          and(
+            eq(friendships.firstFriendId, friendId),
+            eq(friendships.secondFriendId, userId),
+          ),
+        ),
+      );
+  });
+
   test("addFriend", async () => {
     try {
       await dbAddFriend(userId, friendId);
@@ -34,18 +50,19 @@ describe("friends.service.ts tests", () => {
     }
   });
 
-  test("removeFriend", async () => {
+  test("getFriendsInfo", async () => {
     try {
-      await dbRemoveFriend(userId, friendId);
+      const friends = await dbGetFriendsInfo(userId);
+
+      console.table(friends);
     } catch (err) {
       console.error(err);
     }
   });
 
-  test("getFriendsInfo", async () => {
+  test("removeFriend", async () => {
     try {
-      const friends = await dbGetFriendsInfo(userId);
-      console.table(friends);
+      await dbRemoveFriend(userId, friendId);
     } catch (err) {
       console.error(err);
     }

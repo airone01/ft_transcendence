@@ -1,7 +1,12 @@
-import { and, eq, ne, or } from "drizzle-orm";
 import { db } from "@transc/db";
-import { games, gamesPlayers, usersStats } from "@transc/db/schema";
-import type { CreateGameInput, EndGameInput } from "$lib/db-services";
+import {
+  games,
+  gamesPlayers,
+  gamesSpectators,
+  usersStats,
+} from "@transc/db/schema";
+import { and, count, eq } from "drizzle-orm";
+import type { CreateGameInput, EndGameInput, Game } from "$lib/db-services";
 
 const getElo = async (userId: number) => {
   return await db
@@ -10,7 +15,15 @@ const getElo = async (userId: number) => {
     .where(eq(usersStats.userId, userId));
 };
 
-export async function dbCreateGame(gameInput: CreateGameInput) {
+/**
+ * Creates a new game in the database.
+ * @param {CreateGameInput} gameInput - The input for creating a new game, including the IDs of the players and the time control and increment values.
+ * @returns {Promise<number>} - The ID of the created game.
+ * @throws {Error} - If the game creation fails, it throws an error.
+ */
+export async function dbCreateGame(
+  gameInput: CreateGameInput,
+): Promise<number> {
   try {
     const [game] = await db
       .insert(games)
@@ -59,7 +72,13 @@ export async function dbCreateGame(gameInput: CreateGameInput) {
   }
 }
 
-export async function dbStartGame(gameId: number) {
+/**
+ * Starts a game by updating its status to "ongoing" and setting the startedAt timestamp
+ * @param {number} gameId - The id of the game to start
+ * @throws {Error} - If the game is not found or if an unexpected error occurs
+ * @returns {Promise<void>} - Resolves when the game has been successfully started
+ */
+export async function dbStartGame(gameId: number): Promise<void> {
   try {
     const [game] = await db
       .update(games)
@@ -77,18 +96,36 @@ export async function dbStartGame(gameId: number) {
   }
 }
 
-export async function dbGetGame(gameId: number) {
+/**
+ * Retrieves a game by its id, including the number of spectators.
+ * @param {number} gameId - The id of the game to retrieve
+ * @throws {Error} - If the game is not found or if an unexpected error occurs
+ * @returns {Promise<Game>}- Resolves with the game info, including the number of spectators
+ */
+export async function dbGetGame(gameId: number): Promise<Game> {
   try {
     const [game] = await db.select().from(games).where(eq(games.id, gameId));
 
-    return game;
+    if (!game) throw new Error("DB: Game not found");
+
+    return game as Game;
   } catch (err) {
     console.error(err);
     throw err;
   }
 }
 
-export async function dbUpdateGame(gameId: number, newFen: string) {
+/**
+ * Updates a game in the database with a new FEN string.
+ * @param {number} gameId - The id of the game to update
+ * @param {string} newFen - The new FEN string to update the game with
+ * @throws {Error} - If the game is not found or if an unexpected error occurs
+ * @returns {Promise<Game>} - Resolves with the updated game info
+ */
+export async function dbUpdateGame(
+  gameId: number,
+  newFen: string,
+): Promise<Game> {
   try {
     const [game] = await db
       .update(games)
@@ -100,7 +137,7 @@ export async function dbUpdateGame(gameId: number, newFen: string) {
 
     if (!game) throw new Error("DB: Game not updated");
 
-    return game;
+    return game as Game;
   } catch (err) {
     console.error(err);
     throw err;
@@ -113,8 +150,8 @@ function EloRating(
   k: number,
   result: string,
 ): [number, number] {
-  const eA = 1.0 / (1 + Math.pow(10, (rB - rA) / 400.0));
-  const eB = 1.0 / (1 + Math.pow(10, (rA - rB) / 400.0));
+  const eA = 1.0 / (1 + 10 ** ((rB - rA) / 400.0));
+  const eB = 1.0 / (1 + 10 ** ((rA - rB) / 400.0));
 
   let outcome: number = 0.5;
   if (result === "A") outcome = 1;
@@ -126,7 +163,13 @@ function EloRating(
   ];
 }
 
-export async function dbEndGame(endGameInput: EndGameInput) {
+/**
+ * Ends a game by updating its status to "finished" and setting the endedAt timestamp, and also updates the elo of the players in the game
+ * @param {EndGameInput} endGameInput - The input to end the game
+ * @throws {Error} - If the game is not found or if an unexpected error occurs
+ * @returns {Promise<void>} - Resolves when the game has been successfully ended
+ */
+export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
   try {
     const [game] = await db
       .update(games)
@@ -209,8 +252,115 @@ export async function dbEndGame(endGameInput: EndGameInput) {
       .returning();
 
     if (!user1Updated || !user2Updated) throw new Error("DB: User not updated");
+
+    const removedSpectators = await db
+      .delete(gamesSpectators)
+      .where(eq(gamesSpectators.gameId, game.id))
+      .returning();
+
+    if (!removedSpectators) throw new Error("DB: Spectators not removed");
   } catch (err) {
-    // console.error(err);
+    console.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Adds a new spectator to a game.
+ * @param {number} gameId - The id of the game to add the spectator to
+ * @param {number} userId - The id of the user to add as a spectator
+ * @throws {Error} - If the game does not exist, or if the user is already a spectator
+ * @returns {Promise<void>} - Resolves when the spectator has been added
+ */
+export async function dbAddSpectator(
+  gameId: number,
+  userId: number,
+): Promise<void> {
+  try {
+    const [spectator] = await db
+      .insert(gamesSpectators)
+      .values({
+        gameId: gameId,
+        userId: userId,
+      })
+      .returning();
+
+    if (!spectator) throw new Error("DB: Spectator not added");
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Removes a spectator from a game.
+ * @param {number} gameId - The id of the game to remove the spectator from
+ * @param {number} userId - The id of the user to remove as a spectator
+ * @throws {Error} - If the game does not exist, or if the user is not a spectator
+ * @returns {Promise<void>} - Resolves when the spectator has been removed
+ */
+export async function dbRemoveSpectator(
+  gameId: number,
+  userId: number,
+): Promise<void> {
+  try {
+    const [spectator] = await db
+      .delete(gamesSpectators)
+      .where(
+        and(
+          eq(gamesSpectators.gameId, gameId),
+          eq(gamesSpectators.userId, userId),
+        ),
+      )
+      .returning();
+
+    if (!spectator) throw new Error("DB: Spectator not removed");
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Retrieves a list of users who are spectators of a game.
+ * @param {number} gameId - The id of the game to retrieve spectators from
+ * @throws {Error} - If the game does not exist, or if an unexpected error occurs
+ * @returns {Promise<{ userId: number }[]>} - Resolves with a list of spectators
+ */
+export async function dbGetSpectators(
+  gameId: number,
+): Promise<{ userId: number }[]> {
+  try {
+    const spectators = await db
+      .select({ userId: gamesSpectators.userId })
+      .from(gamesSpectators)
+      .where(eq(gamesSpectators.gameId, gameId));
+
+    if (!spectators) throw new Error("DB: Spectators not found");
+
+    return spectators;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Retrieves the number of spectators for a game.
+ * @param {number} gameId - The id of the game to retrieve spectators count from
+ * @throws {Error} - If the game does not exist, or if an unexpected error occurs
+ * @returns {Promise<number>} - Resolves with the number of spectators
+ */
+export async function dbGetSpectatorsCount(gameId: number): Promise<number> {
+  try {
+    const [spectatorCount] = await db
+      .select({ count: count(gamesSpectators.gameId) })
+      .from(gamesSpectators)
+      .where(eq(gamesSpectators.gameId, gameId));
+
+    return spectatorCount.count;
+  } catch (err) {
+    console.error(err);
     throw err;
   }
 }
