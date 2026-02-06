@@ -18,7 +18,7 @@ async function getUserId(username: string) {
   return user.id;
 }
 
-describe.only("friends.service.ts tests", () => {
+describe("friends.service.ts tests", () => {
   let userId: number;
   let friendId: number;
 
