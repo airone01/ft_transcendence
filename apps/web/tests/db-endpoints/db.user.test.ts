@@ -8,6 +8,7 @@ import {
   dbCreateUser,
   dbDeleteUser,
   dbGetStats,
+  dbGetUser,
   dbUpdateUser,
   type UpdateUserInput,
 } from "$lib/db-services";
@@ -45,6 +46,16 @@ describe("users.service.ts tests", () => {
       .limit(1);
 
     expect(user.length).toBe(1);
+  });
+
+  test("getUser", async () => {
+    try {
+      const user = await dbGetUser(userId);
+
+      console.table(user);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   const updatedUser: UpdateUserInput = {

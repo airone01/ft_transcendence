@@ -5,15 +5,8 @@ import {
   gamesSpectators,
   usersStats,
 } from "@transc/db/schema";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, inArray, sql } from "drizzle-orm";
 import type { CreateGameInput, EndGameInput, Game } from "$lib/db-services";
-
-const getElo = async (userId: number) => {
-  return await db
-    .select({ elo: usersStats.currentElo })
-    .from(usersStats)
-    .where(eq(usersStats.userId, userId));
-};
 
 /**
  * Creates a new game in the database.
@@ -25,47 +18,60 @@ export async function dbCreateGame(
   gameInput: CreateGameInput,
 ): Promise<number> {
   try {
-    const [game] = await db
-      .insert(games)
-      .values({
-        timeControlSeconds: gameInput.timeControlSeconds,
-        incrementSeconds: gameInput.incrementSeconds,
-        createdAt: new Date(),
-      })
-      .returning();
+    return await db.transaction(async (tx) => {
+      const [game] = await db
+        .insert(games)
+        .values({
+          timeControlSeconds: gameInput.timeControlSeconds,
+          incrementSeconds: gameInput.incrementSeconds,
+        })
+        .returning();
 
-    if (!game) throw new Error("DB: Game not created");
+      if (!game) throw new Error("DB: Game not created");
 
-    const [whitePlayerElo] = await getElo(gameInput.whiteUserId);
-    const [blackPlayerElo] = await getElo(gameInput.blackUserId);
+      const elos = await tx
+        .select({
+          userId: usersStats.userId,
+          elo: usersStats.currentElo,
+        })
+        .from(usersStats)
+        .where(
+          inArray(usersStats.userId, [
+            gameInput.whiteUserId,
+            gameInput.blackUserId,
+          ]),
+        );
 
-    if (!whitePlayerElo || !blackPlayerElo)
-      throw new Error("DB: Player elo not found");
+      if (elos.length !== 2) {
+        throw new Error("DB: Player elo not found");
+      }
 
-    const [whitePlayer] = await db
-      .insert(gamesPlayers)
-      .values({
-        gameId: game.id,
-        userId: gameInput.whiteUserId,
-        color: "white",
-        eloBefore: whitePlayerElo.elo,
-      })
-      .returning();
+      const findWhite = elos.find((e) => e.userId === gameInput.whiteUserId);
+      const findBlack = elos.find((e) => e.userId === gameInput.blackUserId);
+      if (!findWhite || !findBlack) throw new Error("DB: Player elo not found");
 
-    const [blackPlayer] = await db
-      .insert(gamesPlayers)
-      .values({
-        gameId: game.id,
-        userId: gameInput.blackUserId,
-        color: "black",
-        eloBefore: blackPlayerElo.elo,
-      })
-      .returning();
+      const players = await tx
+        .insert(gamesPlayers)
+        .values([
+          {
+            gameId: game.id,
+            userId: gameInput.whiteUserId,
+            color: "white",
+            eloBefore: findWhite.elo,
+          },
+          {
+            gameId: game.id,
+            userId: gameInput.blackUserId,
+            color: "black",
+            eloBefore: findBlack.elo,
+          },
+        ])
+        .returning();
 
-    if (!whitePlayer || !blackPlayer)
-      throw new Error("DB: White or black player not added");
+      if (players.length !== 2) throw new Error("DB: Players not added");
 
-    return game.id;
+      return game.id;
+    });
   } catch (err) {
     console.error(err);
     throw err;
@@ -171,94 +177,76 @@ function EloRating(
  */
 export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
   try {
-    const [game] = await db
-      .update(games)
-      .set({
-        status: "finished",
-        result: endGameInput.result,
-        endedAt: new Date(),
-      })
-      .where(eq(games.id, endGameInput.gameId))
-      .returning();
+    await db.transaction(async (tx) => {
+      const [game] = await tx
+        .update(games)
+        .set({
+          status: "finished",
+          result: endGameInput.result,
+          endedAt: new Date(),
+        })
+        .where(eq(games.id, endGameInput.gameId))
+        .returning();
 
-    if (!game) throw new Error("DB: Game not ended");
+      if (!game) throw new Error("DB: Game not ended");
 
-    const [gamePlayer1, gamePlayer2] = await db
-      .select()
-      .from(gamesPlayers)
-      .where(eq(gamesPlayers.gameId, endGameInput.gameId))
-      .limit(2);
+      const [p1, p2] = await tx
+        .select()
+        .from(gamesPlayers)
+        .where(eq(gamesPlayers.gameId, endGameInput.gameId))
+        .limit(2);
 
-    if (!gamePlayer1 || !gamePlayer2) throw new Error("DB: Game not found");
+      if (!p1 || !p2) throw new Error("DB: Game not found");
 
-    let result: string = "draw";
-    if (endGameInput.result === "white_win")
-      result = gamePlayer1.color === "white" ? "A" : "B";
-    else if (endGameInput.result === "black_win")
-      result = gamePlayer1.color === "black" ? "A" : "B";
+      let result: "A" | "B" | "draw" = "draw";
+      if (endGameInput.result === "white_win")
+        result = p1.color === "white" ? "A" : "B";
+      else if (endGameInput.result === "black_win")
+        result = p1.color === "black" ? "A" : "B";
 
-    const [newPlayer1Elo, newPlayer2Elo] = EloRating(
-      gamePlayer1.eloBefore,
-      gamePlayer2.eloBefore,
-      30,
-      result,
-    );
+      const [elo1, elo2] = EloRating(p1.eloBefore, p2.eloBefore, 30, result);
 
-    const gamePlayer1Updated = await db
-      .update(gamesPlayers)
-      .set({
-        eloAfter: newPlayer1Elo,
-      })
-      .where(
-        and(
-          eq(gamesPlayers.gameId, game.id),
-          eq(gamesPlayers.userId, gamePlayer1.userId),
-        ),
-      )
-      .returning();
+      const updatedPlayers = await tx
+        .update(gamesPlayers)
+        .set({
+          eloAfter: sql`
+          CASE
+            WHEN ${gamesPlayers.userId} = ${p1.userId}
+              THEN CAST(${elo1} AS INTEGER)
+            ELSE CAST(${elo2} AS INTEGER)
+          END
+        `,
+        })
+        .where(eq(gamesPlayers.gameId, game.id))
+        .returning();
 
-    const gamePlayer2Updated = await db
-      .update(gamesPlayers)
-      .set({
-        eloAfter: newPlayer2Elo,
-      })
-      .where(
-        and(
-          eq(gamesPlayers.gameId, game.id),
-          eq(gamesPlayers.userId, gamePlayer2.userId),
-        ),
-      )
-      .returning();
+      if (updatedPlayers.length !== 2)
+        throw new Error("DB: Players elo not updated");
 
-    if (!gamePlayer1Updated || !gamePlayer2Updated)
-      throw new Error("DB: Game player not updated");
+      const updatedUsers = await tx
+        .update(usersStats)
+        .set({
+          currentElo: sql`
+          CASE
+            WHEN ${usersStats.userId} = ${p1.userId}
+              THEN CAST(${elo1} AS INTEGER)
+            ELSE CAST(${elo2} AS INTEGER)
+          END
+        `,
+          updatedAt: new Date(),
+        })
+        .where(inArray(usersStats.userId, [p1.userId, p2.userId]))
+        .returning();
 
-    const user1Updated = await db
-      .update(usersStats)
-      .set({
-        currentElo: newPlayer1Elo,
-        updatedAt: new Date(),
-      })
-      .where(eq(usersStats.userId, gamePlayer1.userId))
-      .returning();
+      if (updatedUsers.length !== 2) throw new Error("DB: User not updated");
 
-    const user2Updated = await db
-      .update(usersStats)
-      .set({
-        currentElo: newPlayer2Elo,
-        updatedAt: new Date(),
-      })
-      .where(eq(usersStats.userId, gamePlayer2.userId))
-      .returning();
+      const removedSpectators = await tx
+        .delete(gamesSpectators)
+        .where(eq(gamesSpectators.gameId, game.id))
+        .returning();
 
-    if (!user1Updated || !user2Updated) throw new Error("DB: User not updated");
-
-    const removedSpectators = await db
-      .delete(gamesSpectators)
-      .where(eq(gamesSpectators.gameId, game.id))
-      .returning();
-
-    if (!removedSpectators) throw new Error("DB: Spectators not removed");
+      if (!removedSpectators) throw new Error("DB: Spectators not removed");
+    });
   } catch (err) {
     console.error(err);
     throw err;

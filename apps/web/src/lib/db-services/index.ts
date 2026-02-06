@@ -25,7 +25,10 @@ export type {
 } from "./internal/schema/db.users.schema";
 
 /* Utils Types */
-export type { Leaderboard } from "./internal/schema/db.utils.schema";
+export type {
+  GameHistory,
+  Leaderboard,
+} from "./internal/schema/db.utils.schema";
 
 /* Friends Services */
 export {
@@ -52,8 +55,12 @@ export {
   dbCreateUser,
   dbDeleteUser,
   dbGetStats,
+  dbGetUser,
   dbUpdateUser,
 } from "./internal/services/db.users.service";
 
 /* Utils Services */
-export { dbGetLeaderboard } from "./internal/services/db.utils.service";
+export {
+  dbGetLeaderboard,
+  dbGetUserGameHistory,
+} from "./internal/services/db.utils.service";

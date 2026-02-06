@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import type {
   CreateUserInput,
   UpdateUserInput,
+  User,
   UserStats,
 } from "$lib/db-services";
 
@@ -17,26 +18,55 @@ export async function dbCreateUser(
   userInput: CreateUserInput,
 ): Promise<number> {
   try {
+    const userId = await db.transaction(async (tx) => {
+      const [newUser] = await tx
+        .insert(users)
+        .values({
+          username: userInput.username,
+          email: userInput.email,
+          password: userInput.password,
+          avatar: userInput.avatar,
+        })
+        .returning();
+
+      const [stats] = await tx
+        .insert(usersStats)
+        .values({
+          userId: newUser.id,
+        })
+        .returning({ id: usersStats.userId });
+
+      return stats.id;
+    });
+
+    return userId;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+/**
+ * Retrieves a user by its id.
+ * @param {number} userId - The id of the user to retrieve
+ * @throws {Error} - If the user is not found, or if an unexpected error occurs
+ * @returns {Promise<User>} - A promise that resolves with the user info when the user is found, or rejects if the user retrieval fails
+ */
+export async function dbGetUser(userId: number): Promise<User> {
+  try {
     const [user] = await db
-      .insert(users)
-      .values({
-        username: userInput.username,
-        email: userInput.email,
-        password: userInput.password,
-        avatar: userInput.avatar,
+      .select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        avatar: users.avatar,
+        status: users.status,
+        createdAt: users.createdAt,
       })
-      .returning();
+      .from(users)
+      .where(eq(users.id, userId));
 
-    if (!user) throw new Error("DB: User not created");
-
-    const [userStats] = await db
-      .insert(usersStats)
-      .values({ userId: user.id })
-      .returning();
-
-    if (!userStats) throw new Error("DB: User stats not created");
-
-    return user.id;
+    return user as User;
   } catch (err) {
     console.error(err);
     throw err;
