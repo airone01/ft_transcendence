@@ -1,12 +1,9 @@
 <script lang="ts">
 import {
-  BoltIcon,
   HouseIcon,
-  InboxIcon,
   PlayIcon,
   SearchIcon,
-  SettingsIcon,
-  SwordsIcon,
+  EllipsisIcon,
 } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Button } from "@transc/ui/button";
@@ -47,14 +44,9 @@ const groups: Group[] = [
     items: [
       {
         title: "Home",
-        url: "/home",
+        url: "/",
         icon: HouseIcon,
-      },
-      {
-        title: "Inbox",
-        url: "/inbox",
-        icon: InboxIcon,
-      },
+      }
     ],
   },
   {
@@ -64,16 +56,6 @@ const groups: Group[] = [
         title: "Standard",
         url: "/play",
         icon: PlayIcon,
-      },
-      {
-        title: "Blitz",
-        url: "/blitz",
-        icon: BoltIcon,
-      },
-      {
-        title: "Competive",
-        url: "/competitive",
-        icon: SwordsIcon,
       },
     ],
   },
@@ -121,7 +103,7 @@ const groups: Group[] = [
         <ItemDescription class="text-xs">10k+ Elo</ItemDescription>
       </ItemContent>
       <ItemActions class="w-full group-data-[collapsible=icon]:hidden">
-        <Button href="/settings" variant="outline" size="sm" class="cursor-pointer"><SettingsIcon /></Button>
+        <Button variant="outline" size="sm" class="cursor-pointer"><EllipsisIcon /></Button>
         <Button variant="outline" size="sm" class="grow cursor-pointer"><SearchIcon /></Button>
       </ItemActions>
     </Item>

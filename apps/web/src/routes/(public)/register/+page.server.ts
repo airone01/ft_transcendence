@@ -14,11 +14,12 @@ import type { Actions } from "./$types";
 
 export const actions = {
   default: async ({ request, cookies }) => {
+    // NOTE: a forged request WILL crash the app here if those are not strings
+    // need type verification with zod
     const data = await request.formData();
     const email = data.get("email") as string;
     const username = data.get("email") as string;
-    // long name so as not to export it by accident
-    const unsecuredPassword = data.get("password") as string;
+    const unsecuredPassword = data.get("password") as string; // long name so as not to export it by accident
 
     if (!email || !unsecuredPassword) {
       return fail(400, { message: "Missing fields" });
