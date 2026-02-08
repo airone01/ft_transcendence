@@ -18,7 +18,9 @@
   "dependencies": {
     "@transc/auth": "workspace:*",
     "@transc/db": "workspace:*",
-    "@transc/ui": "workspace:*"
+    "@transc/ui": "workspace:*",
+    "sveltekit-superforms": "^2.29.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "^2.9.1",

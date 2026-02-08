@@ -4,7 +4,7 @@ import { db } from "@transc/db";
 import { authSessions, users } from "@transc/db/schema";
 import { dev } from "$app/environment";
 
-const SESSION_COOKIE_NAME = "auth_session";
+const SESSION_COOKIE_NAME = "session_token";
 
 export function setSessionTokenCookie(
   event: RequestEvent,

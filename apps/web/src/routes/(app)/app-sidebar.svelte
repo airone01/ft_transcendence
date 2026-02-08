@@ -105,7 +105,7 @@ const groups: Group[] = [
         <Item.Description class="text-xs">10k+ Elo</Item.Description>
       </Item.Content>
       <Item.Actions class="w-full group-data-[collapsible=icon]:hidden">
-        <a href="/settings"><Button variant="outline" size="sm" class="cursor-pointer"><SettingsIcon /></Button></a>
+        <Button href="/settings" variant="outline" size="sm" class="cursor-pointer"><SettingsIcon /></Button>
         <Button variant="outline" size="sm" class="grow cursor-pointer"><SearchIcon /></Button>
       </Item.Actions>
     </Item.Root>

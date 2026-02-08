@@ -5,7 +5,7 @@ import {
 } from "@transc/ui/components/ui/sidebar/index.ts";
 import AppSidebar from "./app-sidebar.svelte";
 
-let { children } = $props();
+const { children } = $props();
 </script>
  
 <SidebarProvider class="h-full">

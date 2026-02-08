@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
-import { env } from "$env/dynamic/private";
 import { randomBytes } from "crypto";
+import { env } from "$env/dynamic/private";
 
 export const GET = async ({ cookies }) => {
   const state = randomBytes(16).toString("hex"); // for sec

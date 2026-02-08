@@ -6,6 +6,11 @@ import { users } from "@transc/db/schema";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
 
+/* Dev note: The login and register pages could be made much more safe by
+ * leveraging formsnap, superforms and zod together, as explained in the Svelte
+ * shadcn page for formsnap https://www.shadcn-svelte.com/docs/components/form.
+ * This might be worth invisegating. */
+
 export const actions = {
   default: async ({ request, cookies }) => {
     const data = await request.formData();

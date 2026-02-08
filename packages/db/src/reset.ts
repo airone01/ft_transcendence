@@ -1,13 +1,13 @@
 import { db } from "./index";
 import {
   authSessions,
-  users,
-  games,
-  usersStats,
   friendships,
+  games,
   gamesPlayers,
-  oauthAccounts,
   gamesSpectators,
+  oauthAccounts,
+  users,
+  usersStats,
 } from "./schema";
 
 async function main() {

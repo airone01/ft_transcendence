@@ -1,10 +1,10 @@
 import { error, redirect } from "@sveltejs/kit";
-import { env } from "$env/dynamic/private";
 import { db } from "@transc/db";
-import { users, oauthAccounts } from "@transc/db/schema";
-import { eq, and } from "@transc/db/drizzle-orm";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
+import { and, eq } from "@transc/db/drizzle-orm";
+import { oauthAccounts, users } from "@transc/db/schema";
 import { dev } from "$app/environment";
+import { env } from "$env/dynamic/private";
+import { auth, setSessionTokenCookie } from "$lib/server/auth";
 
 // helper interface for discord response typing
 interface DiscordUser {
