@@ -12,11 +12,24 @@ import { Input } from "@transc/ui/input";
 import { Label } from "@transc/ui/label";
 import { enhance } from "$app/forms";
 import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
+import { toast } from "svelte-sonner";
 
 function toggleMode() {
   authDialogState.mode =
     authDialogState.mode === "login" ? "register" : "login";
 }
+
+const submitHandler = () => {
+  return async ({ result, update }: any) => {
+    if (result.type === 'redirect' || result.type === 'success') {
+      toast.success(authDialogState.mode === 'login' ? "Logged in successfully!" : "Account created!");
+      authDialogState.isOpen = false;
+    } else if (result.type === 'failure') {
+      toast.error(result.data?.message || "An error occurred.");
+    }
+    await update();
+  };
+};
 </script>
 
 <Dialog bind:open={authDialogState.isOpen}>
@@ -36,14 +49,7 @@ function toggleMode() {
       <form
         action="/login"
         method="POST"
-        use:enhance={() => {
-          return async ({ result, update }) => {
-            if (result.type === 'redirect' || result.type === 'success') {
-              authDialogState.isOpen = false;
-            }
-            await update();
-          };
-        }}
+        use:enhance={submitHandler}
         class="flex flex-col gap-4 py-4"
       >
         <div class="grid gap-2">
@@ -60,14 +66,7 @@ function toggleMode() {
       <form
         action="/register"
         method="POST"
-        use:enhance={() => {
-          return async ({ result, update }) => {
-            if (result.type === 'redirect' || result.type === 'success') {
-              authDialogState.isOpen = false;
-            }
-            await update();
-          };
-        }}
+        use:enhance={submitHandler}
         class="flex flex-col gap-4 py-4"
       >
         <div class="grid gap-2">

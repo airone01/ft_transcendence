@@ -12,7 +12,6 @@
     "./utils": "./src/utils.ts",
     "./hooks/*": "./src/hooks/*",
     "./app.css": "./src/app.css",
-
     "./avatar": "./src/components/ui/avatar/index.ts",
     "./button": "./src/components/ui/button/index.ts",
     "./card": "./src/components/ui/card/index.ts",
@@ -25,6 +24,7 @@
     "./sheet": "./src/components/ui/sheet/index.ts",
     "./sidebar": "./src/components/ui/sidebar/index.ts",
     "./skeleton": "./src/components/ui/skeleton/index.ts",
+    "./sonner": "./src/components/ui/sonner/index.ts",
     "./tooltip": "./src/components/ui/tooltip/index.ts"
   },
   "scripts": {
@@ -43,7 +43,9 @@
     "bits-ui": "^2.14.4",
     "clsx": "^2.1.1",
     "formsnap": "^2.0.1",
+    "mode-watcher": "^1.1.0",
     "svelte-check": "^4.3.6",
+    "svelte-sonner": "^1.0.7",
     "sveltekit-superforms": "^2.28.1",
     "tailwind-merge": "^3.4.0",
     "tailwind-variants": "^3.2.2",
