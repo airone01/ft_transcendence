@@ -11,7 +11,7 @@
       "**",
       "!apps/web/project.inlang/settings.json",
       "!apps/web/static/swagger-ui",
-      "!/apps/web/**/*.svelte",
+      "!/**/*.svelte",
       "!/nix",
       "!.direnv"
     ]

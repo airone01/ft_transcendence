@@ -11,7 +11,21 @@
     "./components/*": "./src/components/*",
     "./utils": "./src/utils.ts",
     "./hooks/*": "./src/hooks/*",
-    "./app.css": "./src/app.css"
+    "./app.css": "./src/app.css",
+
+    "./avatar": "./src/components/ui/avatar/index.ts",
+    "./button": "./src/components/ui/button/index.ts",
+    "./card": "./src/components/ui/card/index.ts",
+    "./dialog": "./src/components/ui/dialog/index.ts",
+    "./form": "./src/components/ui/form/index.ts",
+    "./input": "./src/components/ui/input/index.ts",
+    "./item": "./src/components/ui/item/index.ts",
+    "./label": "./src/components/ui/label/index.ts",
+    "./separator": "./src/components/ui/separator/index.ts",
+    "./sheet": "./src/components/ui/sheet/index.ts",
+    "./sidebar": "./src/components/ui/sidebar/index.ts",
+    "./skeleton": "./src/components/ui/skeleton/index.ts",
+    "./tooltip": "./src/components/ui/tooltip/index.ts"
   },
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.json"

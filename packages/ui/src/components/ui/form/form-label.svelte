@@ -1,9 +1,9 @@
 <script lang="ts">
-import { Label } from "@transc/ui/components/ui/label/index.js";
+import { Label } from "@transc/ui/label";
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import type * as FormPrimitive from "formsnap";
+import * as FormPrimitive from "formsnap";
 
-const {
+let {
   ref = $bindable(null),
   children,
   class: className,
@@ -16,7 +16,7 @@ const {
 		<Label
 			{...props}
 			data-slot="form-label"
-			class={cn("data-[fs-error]:text-destructive", className)}
+			class={cn("data-fs-error:text-destructive", className)}
 		>
 			{@render children?.()}
 		</Label>

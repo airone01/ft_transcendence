@@ -8,13 +8,12 @@ import {
   SettingsIcon,
   SwordsIcon,
 } from "@lucide/svelte";
-import * as Avatar from "@transc/ui/components/ui/avatar/index.ts";
-import { Button } from "@transc/ui/components/ui/button/index.js";
-import * as Item from "@transc/ui/components/ui/item/index.ts";
-import * as Sidebar from "@transc/ui/components/ui/sidebar/index.ts";
+import { Avatar, AvatarImage, AvatarFallback } from "@transc/ui/avatar";
+import { Button } from "@transc/ui/button";
+import { Item, ItemMedia, ItemTitle, ItemActions, ItemContent, ItemDescription } from "@transc/ui/item";
+import { Sidebar, SidebarMenuButton, SidebarMenu, SidebarGroup, SidebarContent, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarFooter } from "@transc/ui/sidebar";
 import type { Component } from "svelte";
 
-// Menu items.
 type GroupItem = {
   title: string;
   url: string;
@@ -64,50 +63,50 @@ const groups: Group[] = [
 ];
 </script>
  
-<Sidebar.Root collapsible="icon">
-  <Sidebar.Content>
+<Sidebar collapsible="icon">
+  <SidebarContent>
     {#each groups as group}
-      <Sidebar.Group>
-        <Sidebar.GroupLabel>{group.label}</Sidebar.GroupLabel>
-        <Sidebar.GroupContent>
-          <Sidebar.Menu>
+      <SidebarGroup>
+        <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
             {#each group.items as item (item.title)}
-              <Sidebar.MenuItem>
-                <Sidebar.MenuButton>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
                   {#snippet child({ props }: {props: Record<string, unknown>})}
                     <a href={item.url} {...props}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
                   {/snippet}
-                </Sidebar.MenuButton>
-              </Sidebar.MenuItem>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             {/each}
-          </Sidebar.Menu>
-        </Sidebar.GroupContent>
-      </Sidebar.Group>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
     {/each}
-  </Sidebar.Content>
-  <Sidebar.Footer>
-    <Item.Root variant="outline" class="group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pb-1 transition-all">
-      <Item.Media>
+  </SidebarContent>
+  <SidebarFooter>
+    <Item variant="outline" class="group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pb-1 transition-all">
+      <ItemMedia>
         <a href="/profile">
-          <Avatar.Root class="ring ring-primary aspect-square w-full">
-            <Avatar.Image src="https://files.catbox.moe/u40330.jpg" alt="@username" />
-            <Avatar.Fallback>UN</Avatar.Fallback>
-          </Avatar.Root>
+          <Avatar class="ring ring-primary aspect-square w-full">
+            <AvatarImage src="https://files.catbox.moe/u40330.jpg" alt="@username" />
+            <AvatarFallback>UN</AvatarFallback>
+          </Avatar>
         </a>
-      </Item.Media>
-      <Item.Content class="group-data-[collapsible=icon]:hidden">
+      </ItemMedia>
+      <ItemContent class="group-data-[collapsible=icon]:hidden">
         <a href="/profile">
-          <Item.Title class="hover:underline">@username</Item.Title>
+          <ItemTitle class="hover:underline">@username</ItemTitle>
         </a>
-        <Item.Description class="text-xs">10k+ Elo</Item.Description>
-      </Item.Content>
-      <Item.Actions class="w-full group-data-[collapsible=icon]:hidden">
+        <ItemDescription class="text-xs">10k+ Elo</ItemDescription>
+      </ItemContent>
+      <ItemActions class="w-full group-data-[collapsible=icon]:hidden">
         <Button href="/settings" variant="outline" size="sm" class="cursor-pointer"><SettingsIcon /></Button>
         <Button variant="outline" size="sm" class="grow cursor-pointer"><SearchIcon /></Button>
-      </Item.Actions>
-    </Item.Root>
-  </Sidebar.Footer>
-</Sidebar.Root>
+      </ItemActions>
+    </Item>
+  </SidebarFooter>
+</Sidebar>

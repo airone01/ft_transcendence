@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Button } from "@transc/ui/components/ui/button/index.ts";
+import { Button } from "@transc/ui/button";
 </script>
 
 <main>

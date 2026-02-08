@@ -2,9 +2,9 @@
 import {
   Button,
   type ButtonProps,
-} from "@transc/ui/components/ui/button/index.js";
+} from "@transc/ui/button";
 
-const { ref = $bindable(null), ...restProps }: ButtonProps = $props();
+let { ref = $bindable(null), ...restProps }: ButtonProps = $props();
 </script>
 
 <Button bind:ref type="submit" {...restProps} />

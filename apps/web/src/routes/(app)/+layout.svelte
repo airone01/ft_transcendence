@@ -2,7 +2,7 @@
 import {
   Provider as SidebarProvider,
   Trigger as SidebarTrigger,
-} from "@transc/ui/components/ui/sidebar/index.ts";
+} from "@transc/ui/sidebar";
 import AppSidebar from "./app-sidebar.svelte";
 
 const { children } = $props();

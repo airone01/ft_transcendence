@@ -1,8 +1,9 @@
 <script lang="ts">
 import { ChessPawnIcon } from "@lucide/svelte";
-import { Button } from "@transc/ui/components/ui/button/index.ts";
+import { Button } from "@transc/ui/button";
 import { authState } from "$lib/auth.svelte";
-import Hero from "./hero.svelte";
+import Hero from "$lib/components/hero.svelte";
+import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 </script>
 
 <div class="min-h-screen h-full flex flex-col">
@@ -24,8 +25,8 @@ import Hero from "./hero.svelte";
           </form>
           <Button href="/home" size="sm" class="cursor-pointer">Dashboard</Button>
         {:else}
-          <Button href="/login" variant="ghost" size="sm" class="cursor-pointer">Log in</Button>
-          <Button href="/register" size="sm" class="cursor-pointer">Sign up</Button>
+          <Button onclick={() => openAuthDialog("login")} variant="ghost" size="sm" class="cursor-pointer">Log in</Button>
+          <Button onclick={() => openAuthDialog("register")} size="sm" class="cursor-pointer">Sign up</Button>
         {/if}
       </div>
     </div>

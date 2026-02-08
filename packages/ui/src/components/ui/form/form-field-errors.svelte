@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import type * as FormPrimitive from "formsnap";
+import * as FormPrimitive from "formsnap";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   errorClasses,
