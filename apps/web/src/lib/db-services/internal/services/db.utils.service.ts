@@ -2,12 +2,16 @@ import { db } from "@transc/db";
 import { games, gamesPlayers, users, usersStats } from "@transc/db/schema";
 import { and, desc, eq, ne } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { GameHistory, Leaderboard } from "$lib/db-services";
+import {
+  type GameHistory,
+  type Leaderboard,
+  UnknownError,
+} from "$lib/db-services";
 
 /**
  * Retrieves the leaderboard of users sorted by their elo in descending order.
  * The leaderboard only contains the top 20 users.
- * @throws {Error} - If the leaderboard is not found, or if an unexpected error occurs
+ * @throws {UnknownError} - If the leaderboard is not found, or if an unexpected error occurs
  * @returns {Promise<Leaderboard>} - Resolves with the leaderboard of users
  */
 export async function dbGetLeaderboard(): Promise<Leaderboard> {
@@ -23,23 +27,19 @@ export async function dbGetLeaderboard(): Promise<Leaderboard> {
       .orderBy(desc(usersStats.currentElo))
       .limit(20);
 
-    if (!leaderboard) throw new Error("DB: Leaderboard not found");
-
     return leaderboard as Leaderboard;
   } catch (err) {
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
- * Retrieves the game history of a given user.
- * The game history contains the last 10 games of the user,
- * sorted in descending order by the end time of the game.
- * The game history includes the opponent's user id, username, past elo, and avatar.
+ * Retrieves the game history of a user.
+ * The game history only contains the last 10 games a user has played, sorted in descending order by the end time of the game.
  * @param {number} userId - The id of the user to retrieve game history for
- * @throws {Error} - If the game history is not found, or if an unexpected error occurs
- * @returns {Promise<GameHistory>} - A promise that resolves with the game history of the user
+ * @throws {UnknownError} - If the game history is not found, or if an unexpected error occurs
+ * @returns {Promise<GameHistory>} - Resolves with the game history of the user
  */
 export async function dbGetUserGameHistory(
   userId: number,
@@ -72,11 +72,9 @@ export async function dbGetUserGameHistory(
       .orderBy(desc(games.endedAt))
       .limit(10);
 
-    if (!history) throw new Error("DB: Game history not found");
-
     return history as GameHistory;
   } catch (err) {
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }

@@ -1,14 +1,24 @@
 import { db } from "@transc/db";
 import { friendships, users, usersStats } from "@transc/db/schema";
-import { and, eq, ne, or } from "drizzle-orm";
-import type { FriendInfo } from "../schema/db.users.schema";
+import { and, DrizzleQueryError, eq, ne, or } from "drizzle-orm";
+import type { DatabaseError } from "pg";
+import {
+  DBAddFriendFriendshipAlreadyExistsError,
+  DBAddFriendWrongFriendshipError,
+  DBUserNotFoundError,
+  type FriendInfo,
+  UnknownError,
+} from "$lib/db-services";
 
 /**
- * Adds a new friendship between two users.
- * @param {number} userId - The id of the first user
- * @param {number} friendId - The id of the second user
- * @throws {Error} - If the friendship is not added
- * @returns {Promise<void>} - Resolves when the friendship has been added
+ * Adds a friend to a user.
+ * @param {number} userId - The id of the user to add a friend to
+ * @param {number} friendId - The id of the friend to add
+ * @throws {DBAddFriendFriendshipAlreadyExistsError} - If the two users are already friends
+ * @throws {DBAddFriendWrongFriendshipError} - If the two users are the same person
+ * @throws {DBUserNotFoundError} - If the user or friend is not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - Resolves when the friend has been successfully added
  */
 export async function dbAddFriend(
   userId: number,
@@ -23,19 +33,56 @@ export async function dbAddFriend(
       })
       .returning();
 
-    if (!friendship) throw new Error("DB: Friendship not added");
+    if (!friendship) throw new DBUserNotFoundError();
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
+
+    if (err instanceof DrizzleQueryError) {
+      const cause = err.cause;
+
+      if (cause && typeof cause === "object" && "code" in cause) {
+        const pgError = cause as DatabaseError;
+
+        if (pgError.code === "23503") {
+          if (
+            pgError.constraint &&
+            (pgError.constraint === "friendships_first_friend_id_users_id_fk" ||
+              pgError.constraint === "friendships_second_friend_id_users_id_fk")
+          )
+            throw new DBUserNotFoundError();
+        }
+
+        if (pgError.code === "23505") {
+          if (
+            pgError.constraint &&
+            pgError.constraint ===
+              "friendships_first_friend_id_second_friend_id_pk"
+          )
+            throw new DBAddFriendFriendshipAlreadyExistsError();
+        }
+
+        if (pgError.code === "23514") {
+          if (
+            pgError.constraint &&
+            pgError.constraint === "friendships_duplicates_check"
+          )
+            throw new DBAddFriendWrongFriendshipError();
+        }
+      }
+    }
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
- * Removes a friendship between two users.
- * @param {number} userId - The id of the first user
- * @param {number} friendId - The id of the second user
- * @throws {Error} - If the friendship is not removed
- * @returns {Promise<void>} - Resolves when the friendship has been removed
+ * Removes a friend from a user's friends list.
+ * @param {number} userId - The id of the user to remove the friend from
+ * @param {number} friendId - The id of the friend to remove
+ * @throws {DBAddFriendWrongFriendshipError} - If the user and friend are not friends
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - Resolves when the friend has been removed
  */
 export async function dbRemoveFriend(
   userId: number,
@@ -58,18 +105,20 @@ export async function dbRemoveFriend(
       )
       .returning();
 
-    if (!friendship) throw new Error("DB: Friendship not removed");
+    if (!friendship) throw new DBAddFriendWrongFriendshipError();
   } catch (err) {
+    if (err instanceof DBAddFriendWrongFriendshipError) throw err;
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
- * Retrieves a list of friends for a given user.
+ * Retrieves the list of friends for a given user.
  * @param {number} userId - The id of the user to retrieve friends for
- * @throws {Error} - If the user does not exist, or if an unexpected error occurs
- * @returns {Promise<FriendInfo[]>} - Resolves with a list of friends
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<FriendInfo[]>} - A promise that resolves with the list of friends, or rejects if an unexpected error occurs
  */
 export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
   try {
@@ -103,6 +152,6 @@ export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
     return friends as FriendInfo[];
   } catch (err) {
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }

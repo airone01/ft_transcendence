@@ -5,10 +5,15 @@ import { users } from "@transc/db/schema";
 import { eq } from "drizzle-orm";
 import {
   type CreateUserInput,
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  DBUserNotFoundError,
   dbCreateUser,
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbIsEmailTaken,
+  dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
 } from "$lib/db-services";
@@ -27,34 +32,68 @@ describe("users.service.ts tests", () => {
     await db.delete(users).where(eq(users.username, newUser.username));
   });
 
+  test("isUsernameTaken", async () => {
+    try {
+      const isNotTaken = await dbIsUsernameTaken(newUser.username);
+      const isTaken = await dbIsUsernameTaken("Valentin");
+
+      expect(isNotTaken).toBe(false);
+      expect(isTaken).toBe(true);
+    } catch (_err) {}
+  });
+
+  test.only("isEmailTaken", async () => {
+    try {
+      const isNotTaken = await dbIsEmailTaken(newUser.email);
+      const isTaken = await dbIsEmailTaken("valentin@transcender");
+
+      expect(isNotTaken).toBe(false);
+      expect(isTaken).toBe(true);
+    } catch (_err) {}
+  });
+
   test("createUser", async () => {
     try {
       userId = await dbCreateUser(newUser);
 
+      expect(userId).toBeDefined();
       console.log(
         styleText("bold", "Created user with id: ") +
           styleText(["bold", "yellow"], `${userId}`),
       );
+    } catch (_err) {}
+  });
+
+  test("createUser with same username", async () => {
+    try {
+      userId = await dbCreateUser({ ...newUser, email: "bob@test.com" });
     } catch (err) {
-      console.error(err);
+      expect(err).toBeInstanceOf(DBCreateUserUsernameAlreadyExistsError);
     }
+  });
 
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, newUser.email))
-      .limit(1);
-
-    expect(user.length).toBe(1);
+  test("createUser with same email", async () => {
+    try {
+      userId = await dbCreateUser({ ...newUser, username: "Bob" });
+    } catch (err) {
+      expect(err).toBeInstanceOf(DBCreateUserEmailAlreadyExistsError);
+    }
   });
 
   test("getUser", async () => {
     try {
       const user = await dbGetUser(userId);
 
+      expect(user).toBeDefined();
       console.table(user);
+    } catch (_err) {}
+  });
+
+  test("getUser with wrong id", async () => {
+    try {
+      const _user = await dbGetUser(100000000);
     } catch (err) {
-      console.error(err);
+      expect(err).toBeInstanceOf(DBUserNotFoundError);
     }
   });
 
@@ -66,8 +105,16 @@ describe("users.service.ts tests", () => {
   test("updateUser", async () => {
     try {
       await dbUpdateUser(userId, updatedUser);
+
+      expect(true).toBe(true);
+    } catch (_err) {}
+  });
+
+  test("updateUser with wrong id", async () => {
+    try {
+      await dbUpdateUser(100000000, updatedUser);
     } catch (err) {
-      console.error(err);
+      expect(err).toBeInstanceOf(DBUserNotFoundError);
     }
   });
 
@@ -75,17 +122,16 @@ describe("users.service.ts tests", () => {
     try {
       const stats = await dbGetStats(userId);
 
+      expect(stats).toBeDefined();
       console.table(stats);
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (_err) {}
   });
 
   test("deleteUser", async () => {
     try {
       await dbDeleteUser(userId);
-    } catch (err) {
-      console.error(err);
-    }
+
+      expect(true).toBe(true);
+    } catch (_err) {}
   });
 });

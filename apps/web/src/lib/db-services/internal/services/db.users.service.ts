@@ -1,18 +1,60 @@
 import { db } from "@transc/db";
 import { users, usersStats } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
-import type {
-  CreateUserInput,
-  UpdateUserInput,
-  User,
-  UserStats,
+import { DrizzleQueryError, eq } from "drizzle-orm";
+import type { DatabaseError } from "pg";
+import {
+  type CreateUserInput,
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  DBUserNotFoundError,
+  UnknownError,
+  type UpdateUserInput,
+  type User,
+  type UserStats,
 } from "$lib/db-services";
 
 /**
+ * Checks if a given username is taken in the database.
+ * @param {string} username - The username to check
+ * @returns {Promise<boolean>} - A promise that resolves with true if the username is taken, false otherwise
+ */
+export async function dbIsUsernameTaken(username: string): Promise<boolean> {
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+
+    return !!user;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Checks if a given email is taken in the database.
+ * @param {string} email - The email to check
+ * @returns {Promise<boolean>} - A promise that resolves with true if the email is taken, false otherwise
+ */
+export async function dbIsEmailTaken(email: string): Promise<boolean> {
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+
+    return !!user;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
  * Creates a new user in the database.
- * @param {CreateUserInput} userInput - The input for creating a new user, including the username, email, password and avatar
- * @throws {Error} - If the user is not created, or if an unexpected error occurs
- * @returns {Promise<number>} - A promise that resolves with the id of the created user when the user is created, or rejects if the user creation fails
+ * @param {CreateUserInput} userInput - The input to create a new user, including the username, email, password, and avatar.
+ * @throws {DBCreateUserUsernameAlreadyExistsError} - If the username is already taken
+ * @throws {DBCreateUserEmailAlreadyExistsError} - If the email is already in use
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<number>} - A promise that resolves with the ID of the created user
  */
 export async function dbCreateUser(
   userInput: CreateUserInput,
@@ -41,16 +83,38 @@ export async function dbCreateUser(
 
     return userId;
   } catch (err) {
+    if (err instanceof DrizzleQueryError) {
+      const cause = err.cause;
+
+      if (cause && typeof cause === "object" && "code" in cause) {
+        const pgError = cause as DatabaseError;
+
+        if (pgError.code === "23505") {
+          if (
+            pgError.constraint &&
+            pgError.constraint === "users_username_unique"
+          )
+            throw new DBCreateUserUsernameAlreadyExistsError();
+          else if (
+            pgError.constraint &&
+            pgError.constraint === "users_email_unique"
+          )
+            throw new DBCreateUserEmailAlreadyExistsError();
+        }
+      }
+    }
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
- * Retrieves a user by its id.
+ * Retrieves a user from the database by their ID.
  * @param {number} userId - The id of the user to retrieve
- * @throws {Error} - If the user is not found, or if an unexpected error occurs
- * @returns {Promise<User>} - A promise that resolves with the user info when the user is found, or rejects if the user retrieval fails
+ * @throws {DBUserNotFoundError} - If the user is not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User>} - A promise that resolves with the user if found, or rejects if the user is not found or an unexpected error occurs
  */
 export async function dbGetUser(userId: number): Promise<User> {
   try {
@@ -66,20 +130,17 @@ export async function dbGetUser(userId: number): Promise<User> {
       .from(users)
       .where(eq(users.id, userId));
 
+    if (!user) throw new DBUserNotFoundError();
+
     return user as User;
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
-/**
- * Updates a user in the database with a new username, email, password and avatar.
- * @param {number} userId - The id of the user to update
- * @param {UpdateUserInput} userInput - The input for updating a user, including the new username, email, password and avatar
- * @throws {Error} - If the user is not found, or if an unexpected error occurs
- * @returns {Promise<void>} - A promise that resolves when the user is updated, or rejects if the user update fails.
- */
 export async function dbUpdateUser(
   userId: number,
   userInput: UpdateUserInput,
@@ -96,18 +157,21 @@ export async function dbUpdateUser(
       .where(eq(users.id, userId))
       .returning();
 
-    if (!user) throw new Error("DB: User not updated");
+    if (!user) throw new DBUserNotFoundError();
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
  * Deletes a user from the database.
  * @param {number} userId - The id of the user to delete
- * @throws {Error} - If the user is not found, or if an unexpected error occurs
- * @returns {Promise<void>} - A promise that resolves when the user is deleted, or rejects if the user deletion fails.
+ * @throws {DBUserNotFoundError} - If the user is not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - A promise that resolves when the user is deleted, or rejects if the user is not found or an unexpected error occurs
  */
 export async function dbDeleteUser(userId: number): Promise<void> {
   try {
@@ -116,18 +180,21 @@ export async function dbDeleteUser(userId: number): Promise<void> {
       .where(eq(users.id, userId))
       .returning();
 
-    if (!user) throw new Error("DB: User not deleted");
+    if (!user) throw new DBUserNotFoundError();
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }
 
 /**
  * Retrieves the user stats for a given user.
  * @param {number} userId - The id of the user to retrieve stats for
- * @throws {Error} - If the user is not found, or if an unexpected error occurs
- * @returns {Promise<UserStats>} - Resolves with the user stats, including the number of games played, wins, losses, draws, and the current elo
+ * @throws {DBUserNotFoundError} - If the user is not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<UserStats>} - A promise that resolves with the user stats, or rejects if the user is not found or an unexpected error occurs
  */
 export async function dbGetStats(userId: number): Promise<UserStats> {
   try {
@@ -136,11 +203,13 @@ export async function dbGetStats(userId: number): Promise<UserStats> {
       .from(usersStats)
       .where(eq(usersStats.userId, userId));
 
-    if (!user) throw new Error("DB: User not found");
+    if (!user) throw new DBUserNotFoundError();
 
     return user as UserStats;
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
+
     console.error(err);
-    throw err;
+    throw new UnknownError();
   }
 }

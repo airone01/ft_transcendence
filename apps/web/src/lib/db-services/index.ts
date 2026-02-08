@@ -1,5 +1,18 @@
 /* Public API */
 
+/* Errors */
+export {
+  DBAddFriendFriendshipAlreadyExistsError,
+  DBAddFriendWrongFriendshipError,
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  DBGameNotFoundError,
+  DBPlayersNotFoundError,
+  DBRemoveSpectatorError,
+  DBUserNotFoundError,
+  UnknownError,
+} from "./internal/db.errors";
+
 /* Games Types */
 export type {
   CreateGameInput,
@@ -56,6 +69,8 @@ export {
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbIsEmailTaken,
+  dbIsUsernameTaken,
   dbUpdateUser,
 } from "./internal/services/db.users.service";
 
