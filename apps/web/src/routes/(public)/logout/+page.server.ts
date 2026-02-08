@@ -18,6 +18,6 @@ export const actions = {
       null
     >);
 
-    throw redirect(302, "/");
+    return { success: true };
   },
 } satisfies Actions;

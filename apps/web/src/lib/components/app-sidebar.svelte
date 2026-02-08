@@ -2,19 +2,7 @@
 import {
   HouseIcon,
   PlayIcon,
-  SearchIcon,
-  EllipsisIcon,
 } from "@lucide/svelte";
-import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
-import { Button } from "@transc/ui/button";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
-} from "@transc/ui/item";
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@transc/ui/sidebar";
+import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import type { Component } from "svelte";
 
 type GroupItem = {
@@ -87,25 +76,6 @@ const groups: Group[] = [
     {/each}
   </SidebarContent>
   <SidebarFooter>
-    <Item variant="outline" class="group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:border-none group-data-[collapsible=icon]:pb-1 transition-all">
-      <ItemMedia>
-        <a href="/profile">
-          <Avatar class="ring ring-primary aspect-square w-full">
-            <AvatarImage src="https://files.catbox.moe/u40330.jpg" alt="@username" />
-            <AvatarFallback>UN</AvatarFallback>
-          </Avatar>
-        </a>
-      </ItemMedia>
-      <ItemContent class="group-data-[collapsible=icon]:hidden">
-        <a href="/profile">
-          <ItemTitle class="hover:underline">@username</ItemTitle>
-        </a>
-        <ItemDescription class="text-xs">10k+ Elo</ItemDescription>
-      </ItemContent>
-      <ItemActions class="w-full group-data-[collapsible=icon]:hidden">
-        <Button variant="outline" size="sm" class="cursor-pointer"><EllipsisIcon /></Button>
-        <Button variant="outline" size="sm" class="grow cursor-pointer"><SearchIcon /></Button>
-      </ItemActions>
-    </Item>
+    <UserItem />
   </SidebarFooter>
 </Sidebar>
