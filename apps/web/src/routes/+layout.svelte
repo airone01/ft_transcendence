@@ -3,8 +3,8 @@ import "./layout.css";
 import "@transc/ui/app.css";
 import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
-import { locales, localizeHref } from "$lib/paraglide/runtime";
 import AuthDialog from "$lib/components/auth-dialog.svelte";
+import { locales, localizeHref } from "$lib/paraglide/runtime";
 
 const { children } = $props();
 </script>

@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@transc/ui/dialog";
-  import { Button } from "@transc/ui/button";
-  import { Input } from "@transc/ui/input";
-  import { Label } from "@transc/ui/label";
-  import { KeyRoundIcon } from "@lucide/svelte";
-  import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
+import { KeyRoundIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@transc/ui/dialog";
+import { Input } from "@transc/ui/input";
+import { Label } from "@transc/ui/label";
+import { enhance } from "$app/forms";
+import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
 
-  function toggleMode() {
-    authDialogState.mode = authDialogState.mode === "login" ? "register" : "login";
-  }
+function toggleMode() {
+  authDialogState.mode =
+    authDialogState.mode === "login" ? "register" : "login";
+}
 </script>
 
 <Dialog bind:open={authDialogState.isOpen}>

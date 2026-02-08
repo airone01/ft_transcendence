@@ -9,9 +9,9 @@
     "ignoreUnknown": false,
     "includes": [
       "**",
+      "!**/*.svelte",
       "!apps/web/project.inlang/settings.json",
       "!apps/web/static/swagger-ui",
-      "!/**/*.svelte",
       "!/nix",
       "!.direnv"
     ]
@@ -36,22 +36,5 @@
     "formatter": {
       "quoteStyle": "double"
     }
-  },
-  "overrides": [
-    {
-      "includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
-      "linter": {
-        "rules": {
-          "style": {
-            "useConst": "off",
-            "useImportType": "off"
-          },
-          "correctness": {
-            "noUnusedVariables": "off",
-            "noUnusedImports": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

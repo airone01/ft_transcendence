@@ -2,9 +2,9 @@ import { error, redirect } from "@sveltejs/kit";
 import { db } from "@transc/db";
 import { and, eq } from "@transc/db/drizzle-orm";
 import { oauthAccounts, users } from "@transc/db/schema";
-import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
+import type { RequestEvent } from "./$types";
 
 // helper interface for discord response typing
 interface DiscordUser {
@@ -15,7 +15,8 @@ interface DiscordUser {
   avatar: string;
 }
 
-export const GET = async ({ event, url, cookies, locals }) => {
+export const GET = async (event: RequestEvent) => {
+  const { url, cookies } = event;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const storedState = cookies.get("oauth_state");
@@ -108,13 +109,7 @@ export const GET = async ({ event, url, cookies, locals }) => {
 
     // then session and cookie
     const { token, expiresAt } = await auth.createSession(userId);
-    cookies.set("session_token", token, {
-      httpOnly: true,
-      path: "/",
-      secure: !dev,
-      sameSite: "lax", // must be lax for OAuth redirects to work properly
-      expires: expiresAt,
-    });
+    setSessionTokenCookie(event, token, expiresAt);
   } catch (e) {
     console.error("OAuth Error:", e);
     return error(500, "Authentication failed");

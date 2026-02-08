@@ -8,10 +8,27 @@ import {
   SettingsIcon,
   SwordsIcon,
 } from "@lucide/svelte";
-import { Avatar, AvatarImage, AvatarFallback } from "@transc/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Button } from "@transc/ui/button";
-import { Item, ItemMedia, ItemTitle, ItemActions, ItemContent, ItemDescription } from "@transc/ui/item";
-import { Sidebar, SidebarMenuButton, SidebarMenu, SidebarGroup, SidebarContent, SidebarGroupContent, SidebarGroupLabel, SidebarMenuItem, SidebarFooter } from "@transc/ui/sidebar";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+} from "@transc/ui/item";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@transc/ui/sidebar";
 import type { Component } from "svelte";
 
 type GroupItem = {

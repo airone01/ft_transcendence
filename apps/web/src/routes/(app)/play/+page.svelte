@@ -1,9 +1,9 @@
 <script lang="ts">
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
-  Card,
   CardTitle,
 } from "@transc/ui/card";
 

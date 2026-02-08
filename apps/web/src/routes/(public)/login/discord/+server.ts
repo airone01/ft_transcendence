@@ -1,8 +1,9 @@
+import { randomBytes } from "node:crypto";
 import { redirect } from "@sveltejs/kit";
-import { randomBytes } from "crypto";
 import { env } from "$env/dynamic/private";
+import type { RequestEvent } from "./$types";
 
-export const GET = async ({ cookies }) => {
+export const GET = async ({ cookies }: RequestEvent) => {
   const state = randomBytes(16).toString("hex"); // for sec
 
   cookies.set("oauth_state", state, {
