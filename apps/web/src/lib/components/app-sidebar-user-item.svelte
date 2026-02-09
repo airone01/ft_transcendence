@@ -21,14 +21,14 @@ let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
 {#if user}
-  <div class="flex p-4 gap-2 w-full">
+  <div class="group flex items-center gap-3 p-2 w-full hover:bg-accent/50 transition-colors group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
     <a href="/profile" class="shrink-0">
-      <Avatar class="ring ring-primary aspect-square w-full">
+      <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />
         <AvatarFallback class="bg-linear-to-r from-blue-600 to-fuchsia-500 text-background">{initials}</AvatarFallback>
       </Avatar>
     </a>
-    <div class="flex flex-col justify-center shrink w-full min-w-0 h-full">
+    <div class="flex flex-col justify-center shrink w-full min-w-0 h-full group-data-[state=collapsed]:hidden">
       <Tooltip>
         <TooltipTrigger class="h-4 flex justify-center items-center">
           <a href="/profile" class="hover:underline text-sm w-full truncate leading-none -inset-y-1">
@@ -42,7 +42,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
       <div class="text-xs w-full truncate leading-none text-muted-foreground">...more info</div>
     </div>
     <DropdownMenu>
-      <DropdownMenuTrigger class="shrink-0">
+      <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
         <Button variant="outline" size="sm" class="cursor-pointer"><EllipsisIcon /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
