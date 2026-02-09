@@ -1,6 +1,5 @@
 import type { Server, Socket } from "socket.io";
-import { db } from "@transc/db";
-import { game as gameTable } from "@transc/db/schema";
+import { dbCreateGame, type CreateGameInput } from "$lib/db-services";
 
 // Matchmaking queues
 const queues = new Map<string, Socket[]>();
@@ -34,22 +33,24 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
       const player1 = queue.shift()!;
       const player2 = queue.shift()!;
 
-      // Create the game in DB
-      const [newGame] = await db
-        .insert(gameTable)
-        .values({
-          whiteId: parseInt(player1.data.userId),
-          blackId: parseInt(player2.data.userId),
-          status: "in_progress",
-          startedAt: new Date(),
-        })
-        .returning();
+      try {
+        const gameInput: CreateGameInput = {
+          whiteUserId: parseInt(player1.data.userId),
+          blackUserId: parseInt(player2.data.userId),
+          timeControlSeconds: getTimeControlForMode(mode),
+          incrementSeconds: getIncrementForMode(mode),
+        };
 
-      const gameId = String(newGame.id);
+        const gameId = await dbCreateGame(gameInput);
 
-      // Notify the two players
-      player1.emit("matchmaking:matched", { gameId, color: "white" });
-      player2.emit("matchmaking:matched", { gameId, color: "black" });
+        // Notify the two players
+        player1.emit("matchmaking:matched", { gameId: String(gameId), color: "white" });
+        player2.emit("matchmaking:matched", { gameId: String(gameId), color: "black" });
+      } catch (error) {
+        console.error("Failed to create game:", error);
+        player1.emit("matchmaking:error", { message: "Failed to create game" });
+        player2.emit("matchmaking:error", { message: "Failed to create game" });
+      }
     }
   });
 
@@ -63,4 +64,24 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
     }
     socket.emit("matchmaking:left", { mode });
   });
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function getTimeControlForMode(mode: string): number {
+  switch (mode) {
+    case "blitz": return 300; // 5 min
+    case "rapid": return 900; // 15 min
+    case "casual":
+    default: return 600; // 10 min
+  }
+}
+
+function getIncrementForMode(mode: string): number {
+  switch (mode) {
+    case "blitz": return 2;
+    case "rapid": return 10;
+    case "casual":
+    default: return 5;
+  }
 }

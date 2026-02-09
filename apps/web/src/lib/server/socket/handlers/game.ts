@@ -1,8 +1,9 @@
 import type { Server, Socket } from "socket.io";
 import { GameRoom } from "../rooms/GameRoom";
-import { db } from "@transc/db";
-import { game as gameTable } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  dbGetGame,
+  DBGameNotFoundError,
+} from "$lib/db-services";
 
 const activeGames = new Map<string, GameRoom>();
 
@@ -13,26 +14,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   socket.on("game:join", async (data: { gameId: string }) => {
     try {
       const { gameId } = data;
-
-      // Search game in DB
-      const game = await db
-        .select()
-        .from(gameTable)
-        .where(eq(gameTable.id, parseInt(gameId)))
-        .limit(1);
-
-      if (game.length === 0) {
-        return socket.emit("game:error", { message: "Game not found" });
-      }
-
-      const gameData = game[0];
-
-      if (
-        String(gameData.whiteId) !== userId &&
-        String(gameData.blackId) !== userId
-      ) {
-        return socket.emit("game:error", { message: "Not authorized" });
-      }
+      const game = await dbGetGame(parseInt(gameId));
 
       // Join the room
       socket.join(`game:${gameId}`);
@@ -40,13 +22,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       // Create or get GameRoom
       let gameRoom = activeGames.get(gameId);
       if (!gameRoom) {
-        gameRoom = new GameRoom(gameId, {
-          whiteId: String(gameData.whiteId),
-          blackId: String(gameData.blackId),
-          fen: gameData.fen,
-          startedAt: gameData.startedAt || undefined,
-        });
-        activeGames.set(gameId, gameRoom);
+        // PROBLÈME: dbGetGame ne retourne pas whiteId/blackId
+        socket.emit("game:error", { message: "Game players info not available - DB service needed" });
+        return;
       }
 
       gameRoom.addPlayer(socket);
@@ -60,6 +38,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         username: socket.data.username,
       });
     } catch (error) {
+      if (error instanceof DBGameNotFoundError) {
+        return socket.emit("game:error", { message: "Game not found" });
+      }
+      console.error("Failed to join game:", error);
       socket.emit("game:error", { message: "Failed to join game" });
     }
   });
@@ -110,6 +92,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         activeGames.delete(gameId);
       }
     } catch (error) {
+      console.error("Move error:", error);
       socket.emit("game:error", { message: "Invalid move" });
     }
   });

@@ -9,9 +9,11 @@ import {
   isKingInCheck,   // [chess] Check if the current player's king is in check
 } from "$lib/chess";
 import type { GameState, Move } from "$lib/chess";
-import { db } from "@transc/db";
-import { game as gameTable } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
+import {
+  dbUpdateGame,
+  dbEndGame,
+  type EndGameInput,
+} from "$lib/db-services";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -221,27 +223,39 @@ export class GameRoom {
   // ── DB ───────────────────────────────────────────────────────────────────
 
   async endGame(reason: string, winnerId?: string) {
-    await db
-      .update(gameTable)
-      .set({
-        status: "finished",
-        winnerId: winnerId ? parseInt(winnerId) : null,
-        endReason: reason as any,
-        finishedAt: new Date(),
-        pgn: this.moveHistory.map((m) => `${m.from}${m.to}`).join(" "),
-      })
-      .where(eq(gameTable.id, parseInt(this.gameId)));
+    try {
+      let result: "white_win" | "black_win" | "draw" | "abort";
+
+      if (reason === "checkmate") {
+        result = winnerId === this.whiteId ? "white_win" : "black_win";
+      } else if (reason === "resignation") {
+        result = winnerId === this.whiteId ? "white_win" : "black_win";
+      } else if (reason === "agreement" || reason === "stalemate") {
+        result = "draw";
+      } else {
+        result = "abort";
+      }
+
+      const endGameInput: EndGameInput = {
+        gameId: parseInt(this.gameId),
+        result,
+      };
+
+      await dbEndGame(endGameInput);
+    } catch (error) {
+      console.error("Failed to end game in DB:", error);
+      throw error;
+    }
   }
 
   async saveToDatabase() {
-    await db
-      .update(gameTable)
-      .set({
-        // [chess] Save the current FEN to the DB
-        fen: boardToFEN(this.state),
-        moveCount: this.moveHistory.length,
-      })
-      .where(eq(gameTable.id, parseInt(this.gameId)));
+    try {
+      const newFen = boardToFEN(this.state);
+      await dbUpdateGame(parseInt(this.gameId), newFen);
+    } catch (error) {
+      console.error("Failed to save game to DB:", error);
+      throw error;
+    }
   }
 
   // ── Private ──────────────────────────────────────────────────────────────
