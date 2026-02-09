@@ -59,7 +59,7 @@ let logoutForm: HTMLFormElement;
             };
           }}
         >
-          <DropdownMenuItem type="submit" onclick={() => logoutForm.requestSubmit()}>Log out</DropdownMenuItem>
+          <DropdownMenuItem onclick={() => logoutForm.requestSubmit()}>Log out</DropdownMenuItem>
         </form>
       </DropdownMenuContent>
     </DropdownMenu>

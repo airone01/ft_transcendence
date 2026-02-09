@@ -53,7 +53,7 @@ const erwanRes = await db
 if (!erwanRes) {
   process.exit(0);
 }
-const erwan = erwanRes;
+const erwann = erwanRes;
 
 const enzoRes = await db
   .insert(users)
@@ -89,8 +89,8 @@ const simon = simonRes;
 
 await db.insert(friendships).values([
   {
-    firstFriendId: Math.min(valentin, erwan),
-    secondFriendId: Math.max(valentin, erwan),
+    firstFriendId: Math.min(valentin, erwann),
+    secondFriendId: Math.max(valentin, erwann),
   },
   {
     firstFriendId: Math.min(valentin, enzo),
@@ -101,12 +101,12 @@ await db.insert(friendships).values([
     secondFriendId: Math.max(valentin, simon),
   },
   {
-    firstFriendId: Math.min(erwan, enzo),
-    secondFriendId: Math.max(erwan, enzo),
+    firstFriendId: Math.min(erwann, enzo),
+    secondFriendId: Math.max(erwann, enzo),
   },
   {
-    firstFriendId: Math.min(erwan, simon),
-    secondFriendId: Math.max(erwan, simon),
+    firstFriendId: Math.min(erwann, simon),
+    secondFriendId: Math.max(erwann, simon),
   },
   {
     firstFriendId: Math.min(enzo, simon),
@@ -118,7 +118,7 @@ await db.insert(friendships).values([
 
 await db.insert(usersStats).values([
   { userId: valentin, wins: 1, losses: 2, draws: 1, currentElo: 1200 },
-  { userId: erwan, wins: 2, losses: 0, draws: 2, currentElo: 1300 },
+  { userId: erwann, wins: 2, losses: 0, draws: 2, currentElo: 1300 },
   { userId: enzo, wins: 1, losses: 1, draws: 0, currentElo: 800 },
   { userId: simon, wins: 3, losses: 1, draws: 0, currentElo: 1500 },
 ]);
@@ -126,25 +126,26 @@ await db.insert(usersStats).values([
 // seed auth sessions
 await db.insert(authSessions).values([
   {
+    id: "c3eb3df7-62c2-4ee7-9f35-9335c6948e38",
     userId: valentin,
-    token: "VALENTIN_TOKEN",
     createdAt: new Date(Date.now() - 2000 * 60 * 60 * 24),
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
   },
   {
-    userId: erwan,
-    token: "ERWAN_TOKEN",
+    id: "76f15c39-9208-4571-a42e-0b3fc35cc507",
+    userId: erwann,
     createdAt: new Date(Date.now() - 10000 * 60 * 60 * 24),
     expiresAt: new Date(Date.now() - 5000 * 60 * 60 * 24),
   },
   {
+    id: "b2ea84d6-106b-428e-b7ee-d7654417bcca",
     userId: enzo,
-    token: "ENZO_TOKEN",
+    createdAt: new Date(Date.now() - 10000 * 60 * 60 * 24),
     expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
   },
   {
+    id: "7ec5564e-ecb2-4700-adf8-2d9adafdcc06",
     userId: simon,
-    token: "SIMON_TOKEN",
     createdAt: new Date(Date.now() - 3000 * 60 * 60 * 24),
     expiresAt: new Date(Date.now() + 3000 * 60 * 60 * 24),
   },
@@ -210,7 +211,7 @@ await db.insert(gamesPlayers).values([
   },
   {
     gameId: game1 as number,
-    userId: erwan,
+    userId: erwann,
     color: "black",
     eloBefore: 1300,
   },
@@ -223,7 +224,7 @@ await db.insert(gamesPlayers).values([
   },
   {
     gameId: game2 as number,
-    userId: erwan,
+    userId: erwann,
     color: "white",
     eloBefore: 1200,
     eloAfter: 1300,
