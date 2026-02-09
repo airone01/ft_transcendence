@@ -1,4 +1,4 @@
-import { type RequestEvent, redirect } from "@sveltejs/kit";
+import type { RequestEvent } from "@sveltejs/kit";
 import { db } from "@transc/db";
 import { eq } from "@transc/db/drizzle-orm";
 import { authSessions } from "@transc/db/schema";
