@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { Avatar, AvatarFallback, AvatarImage } from '@transc/ui/avatar';
-  import { Card, CardTitle, CardHeader, CardDescription } from '@transc/ui/card';
-  import { Skeleton } from "@transc/ui/skeleton";
-  import { TriangleAlert } from '@lucide/svelte';
+import { Avatar, AvatarFallback, AvatarImage } from '@transc/ui/avatar';
+import { Card, CardTitle, CardHeader, CardDescription } from '@transc/ui/card';
+import { Skeleton } from "@transc/ui/skeleton";
+import { TriangleAlert } from '@lucide/svelte';
 
-  let { data } = $props();
+let { data } = $props();
 </script>
 
 <main class="flex flex-col justify-center items-center p-4">
-  
+
   {#await data.userPromise}
-  
+
     <Card class="w-87.5">
       <CardHeader class="flex flex-row items-center gap-4">
         <Skeleton class="h-16 w-16 rounded-full" />
@@ -22,7 +22,7 @@
     </Card>
 
   {:then user} 
-  
+
     <Card class="w-87.5">
       <CardHeader class="flex flex-row items-center gap-4">
         <Avatar class="w-16 h-16 ring ring-primary">
