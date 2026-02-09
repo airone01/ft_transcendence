@@ -2,7 +2,9 @@ import type { Server, Socket } from "socket.io";
 import { GameRoom } from "../rooms/GameRoom";
 import {
   dbGetGame,
+  dbGetPlayers,
   DBGameNotFoundError,
+  DBPlayersNotFoundError,
 } from "$lib/db-services";
 
 const activeGames = new Map<string, GameRoom>();
@@ -14,7 +16,17 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   socket.on("game:join", async (data: { gameId: string }) => {
     try {
       const { gameId } = data;
+
       const game = await dbGetGame(parseInt(gameId));
+      const players = await dbGetPlayers(parseInt(gameId));
+
+      // Vérifier que le userId correspond à un des joueurs
+      if (
+        String(players.whitePlayerId) !== userId &&
+        String(players.blackPlayerId) !== userId
+      ) {
+        return socket.emit("game:error", { message: "Not authorized" });
+      }
 
       // Join the room
       socket.join(`game:${gameId}`);
@@ -22,9 +34,13 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       // Create or get GameRoom
       let gameRoom = activeGames.get(gameId);
       if (!gameRoom) {
-        // PROBLÈME: dbGetGame ne retourne pas whiteId/blackId
-        socket.emit("game:error", { message: "Game players info not available - DB service needed" });
-        return;
+        gameRoom = new GameRoom(gameId, {
+          whiteId: String(players.whitePlayerId),
+          blackId: String(players.blackPlayerId),
+          fen: game.fen,
+          startedAt: game.startedAt || undefined,
+        });
+        activeGames.set(gameId, gameRoom);
       }
 
       gameRoom.addPlayer(socket);
@@ -40,6 +56,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     } catch (error) {
       if (error instanceof DBGameNotFoundError) {
         return socket.emit("game:error", { message: "Game not found" });
+      }
+      if (error instanceof DBPlayersNotFoundError) {
+        return socket.emit("game:error", { message: "Players not found" });
       }
       console.error("Failed to join game:", error);
       socket.emit("game:error", { message: "Failed to join game" });
