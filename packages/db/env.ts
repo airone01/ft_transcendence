@@ -4,11 +4,15 @@ import "dotenv/config";
 const {
   success,
   error,
-  data: connectionString,
-} = z.string().safeParse(process.env.DATABASE_URL);
+  data: env,
+} = z
+  .object({
+    DATABASE_URL: z.string(),
+  })
+  .safeParse(process.env);
 
 if (!success) {
   throw new Error(`Env error: ${error}\n`);
 }
 
-export { connectionString };
+export { env };

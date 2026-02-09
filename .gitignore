@@ -144,5 +144,6 @@ vite.config.ts.timestamp-*
 # Turbo
 .turbo
 
+# nix
 /.direnv
 
