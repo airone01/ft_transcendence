@@ -16,10 +16,12 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
+    "@transc/auth": "workspace:*",
     "@transc/db": "workspace:*",
     "@transc/ui": "workspace:*",
     "drizzle-orm": "^0.45.1",
     "pg": "^8.18.0",
+    "sveltekit-superforms": "^2.29.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -35,6 +37,7 @@
     "svelte": "^5.48.2",
     "svelte-check": "^4.3.5",
     "svelte-dnd-action": "^0.9.69",
+    "svelte-sonner": "^1.0.7",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"

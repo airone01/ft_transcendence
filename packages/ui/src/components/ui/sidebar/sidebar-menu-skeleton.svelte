@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Skeleton } from "@transc/ui/components/ui/skeleton/index.js";
+import { Skeleton } from "@transc/ui/skeleton";
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 

@@ -7,6 +7,7 @@ import {
   pgTable,
   primaryKey,
   serial,
+  text,
   timestamp,
   unique,
   varchar,
@@ -26,7 +27,7 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     username: varchar("username", { length: 20 }).unique().notNull(),
     email: varchar("email").unique().notNull(),
-    password: varchar("password").notNull(),
+    password: varchar("password"),
     avatar: varchar("avatar", { length: 4096 }),
     status: userStatus().default("offline").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -39,18 +40,36 @@ export const users = pgTable(
   ],
 );
 
+// ############################ OAUTH ACCOUNT ############################
+
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    // "discord", "google", "github"
+    providerId: text("provider_id").notNull(),
+    // unique internal user ID (given by the provider, not by us)
+    providerUserId: text("provider_user_id").notNull(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.providerId, table.providerUserId] }),
+    index("oauth_account_user_id_idx").on(table.userId),
+  ],
+);
+
 // ############################ AUTH_SESSIONS ############################
 
 export const authSessions = pgTable(
   "auth_sessions",
   {
-    id: serial("id").primaryKey(),
+    id: text("id").primaryKey(),
     userId: integer("user_id")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
-    token: varchar("token", { length: 255 }).unique().notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    expiresAt: timestamp("expires_at", { mode: "date" }).notNull(),
   },
   (table) => [
     index("auth_sessions_user_id_idx").on(table.userId),

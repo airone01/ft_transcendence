@@ -1,10 +1,6 @@
 {
   "compilerOptions": {
-    // shadcn-specific
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    // no emit specific
     "declaration": true,
     "declarationMap": true,
     // Environment setup & latest features

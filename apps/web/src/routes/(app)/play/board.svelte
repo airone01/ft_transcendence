@@ -29,7 +29,8 @@ board[0].pieces = [{ id: 101, name: "Rook", icon: ChessRookIcon }];
 board[1].pieces = [{ id: 102, name: "Knight", icon: ChessKnightIcon }];
 board[9].pieces = [{ id: 103, name: "Pawn", icon: ChessPawnIcon }];
 
-const flipDurationMs = 200;
+const flipDurationMs = 50;
+
 function handleDndConsider(
   squareIndex: number,
   e: CustomEvent<DndEvent<Piece>>,
@@ -90,7 +91,7 @@ aliasing/blur effect around the squares. So in the end I decided not to. -->
   {#each board as square, index (square.id)}
     <div
       class="p-2 w-full h-full text-3xl grid grid-cols-1 grid-rows-1 place-items-center"
-      use:dndzone={{ items: square.pieces, flipDurationMs, dropTargetClasses: [], dropAnimationDisabled: true }}
+      use:dndzone={{ items: square.pieces, flipDurationMs, dropTargetClasses: [], dropAnimationDisabled: false, useCursorForDetection: true }}
       on:consider={(e) => handleDndConsider(index, e)}
       on:finalize={(e) => handleDndFinalize(index, e)}
     >
