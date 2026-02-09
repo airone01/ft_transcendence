@@ -111,7 +111,7 @@ describe("isFiftyMoveRule", () => {
   });
 });
 
-describe.only("isThreefoldRepetition", () => {
+describe("isThreefoldRepetition", () => {
   test("true when threefold repetition", () => {
     let state = startGame();
 
