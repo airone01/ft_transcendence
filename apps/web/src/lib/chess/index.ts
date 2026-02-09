@@ -1,5 +1,8 @@
 /* Public API */
 
+/* Errors */
+export { EndGame, InvalidMove } from "$lib/chess/internal/errors";
+
 /* FEN related functions */
 export { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
 

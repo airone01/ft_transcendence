@@ -6,6 +6,7 @@ import { queenMoves } from "$lib/chess/internal/moves/moves.queen";
 import { rookMoves } from "$lib/chess/internal/moves/moves.rook";
 import type { GameState, Move } from "$lib/chess/internal/types";
 import { isInBoard } from "$lib/chess/internal/utils";
+import { InvalidMove } from "./errors";
 
 /**
  * Returns all legal moves for the given piece.
@@ -107,7 +108,7 @@ export function applyMoveCopy(state: GameState, move: Move): GameState {
   const [tr, tc] = move.to;
 
   const piece = newBoard[fr][fc];
-  if (!piece) throw new Error("No piece to move");
+  if (!piece) throw new InvalidMove();
 
   if (state.board[tr][tc]) move.capture = true;
 
