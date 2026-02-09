@@ -126,7 +126,7 @@ export function isFiftyMoveRule(state: GameState): boolean {
 
 /** @internal */
 export function isThreefoldRepetition(state: GameState): boolean {
-  let currentFEN = boardToFEN(state).split(" ").slice(0, 4).join(" ");
+  const currentFEN = boardToFEN(state).split(" ").slice(0, 4).join(" ");
   let count = 0;
 
   for (const oldFEN of state.historyFEN) {

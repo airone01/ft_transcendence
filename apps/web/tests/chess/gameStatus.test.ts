@@ -1,19 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
+import { playMove, printBoard, printHistory, startGame } from "$lib/chess";
 import {
   isCheckmate,
   isFiftyMoveRule,
   isInsufficientMaterial,
   isStalemate,
 } from "$lib/chess/internal/gameEndChecks";
-import {
-  playMove,
-  printBoard,
-  printHistory,
-  startGame,
-  type GameState,
-} from "$lib/chess";
-import { applyMoveCopy } from "$lib/chess/internal/validation";
+import { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
 
 describe("isCheckmate", () => {
   test("detects queen + king mate", () => {

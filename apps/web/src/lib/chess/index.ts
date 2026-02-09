@@ -18,11 +18,11 @@ export type {
 
 /* Utils */
 export {
-  startGame,
   algebraicToCoords,
   coordsToAlgebraic,
   printBoard,
   printHistory,
+  startGame,
 } from "$lib/chess/internal/utils";
 
 /* Validation */

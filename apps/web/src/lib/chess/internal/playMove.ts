@@ -1,9 +1,5 @@
 import type { GameState, Move, Piece } from "$lib/chess/internal/types";
-import {
-  applyMoveCopy,
-  getLegalMoves,
-  isLegalMove,
-} from "$lib/chess/internal/validation";
+import { applyMoveCopy, getLegalMoves } from "$lib/chess/internal/validation";
 import { isCheckmate, isDraw } from "./gameEndChecks";
 import { boardToFEN } from "./handleFEN";
 
