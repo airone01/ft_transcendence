@@ -1,9 +1,9 @@
-import { bishopMoves } from "$lib/chess/internal/moves.bishop";
-import { kingMoves } from "$lib/chess/internal/moves.king";
-import { knightMoves } from "$lib/chess/internal/moves.knight";
-import { pawnMoves } from "$lib/chess/internal/moves.pawn";
-import { queenMoves } from "$lib/chess/internal/moves.queen";
-import { rookMoves } from "$lib/chess/internal/moves.rook";
+import { bishopMoves } from "$lib/chess/internal/moves/moves.bishop";
+import { kingMoves } from "$lib/chess/internal/moves/moves.king";
+import { knightMoves } from "$lib/chess/internal/moves/moves.knight";
+import { pawnMoves } from "$lib/chess/internal/moves/moves.pawn";
+import { queenMoves } from "$lib/chess/internal/moves/moves.queen";
+import { rookMoves } from "$lib/chess/internal/moves/moves.rook";
 import type { GameState, Move } from "$lib/chess/internal/types";
 import { isInBoard } from "$lib/chess/internal/utils";
 

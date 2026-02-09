@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
 import type { Move } from "$lib/chess/internal/types";
 import {
   applyMoveCopy,

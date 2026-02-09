@@ -1,7 +1,7 @@
 /* Public API */
 
 /* FEN related functions */
-export { boardToFEN, parseFEN } from "$lib/chess/internal/board";
+export { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
 export { playMove } from "$lib/chess/internal/playMove";
 
 /* Types */
@@ -23,4 +23,4 @@ export {
 
 /* Validation */
 export { getLegalMoves } from "$lib/chess/internal/validation";
-export { isCheckmate, isDraw } from "./internal/gameStatus";
+export { isCheckmate, isDraw } from "./internal/gameEndChecks";
