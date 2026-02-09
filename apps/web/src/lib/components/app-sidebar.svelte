@@ -1,6 +1,7 @@
 <script lang="ts">
 import { page } from "$app/state";
 import {
+    BotIcon,
   ChessPawnIcon,
   HandshakeIcon,
   HouseIcon,
@@ -22,6 +23,7 @@ import {
 } from "@transc/ui/sidebar";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import type { Component } from "svelte";
+import { Button } from "@transc/ui/button";
 
 type GroupItem = {
   title: string;
@@ -104,7 +106,14 @@ const groups: Group[] = [
       </SidebarGroup>
     {/each}
   </SidebarContent>
-  <SidebarFooter class="p-0 border-t">
+  <SidebarFooter class="p-0 flex flex-col *:border-t gap-0 group-data-[collapsible=icon]:border-t">
+    <div class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/50 transition-all">
+      <SidebarGroupLabel>Quick Play</SidebarGroupLabel>
+      <div class="flex flex-col gap-2">
+        <Button href="/play" class="overflow-clip"><ZapIcon/>Matchmaking</Button>
+        <Button href="/play/bot" variant="outline" class="overflow-clip"><BotIcon/>Play vs AI</Button>
+      </div>
+    </div>
     <UserItem />
   </SidebarFooter>
 </Sidebar>
