@@ -16,7 +16,8 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@transc/db": "workspace:*"
+    "@transc/db": "workspace:*",
+    "drizzle-orm": "^0.45.1"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "^2.9.1",
