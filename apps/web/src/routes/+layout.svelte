@@ -6,6 +6,7 @@ import favicon from "$lib/assets/favicon.svg";
 import AuthDialog from "$lib/components/auth-dialog.svelte";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { Toaster } from "@transc/ui/sonner";
+import { TooltipProvider } from "@transc/ui/tooltip";
 
 const { children } = $props();
 </script>
@@ -13,7 +14,10 @@ const { children } = $props();
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <Toaster />
 <AuthDialog />
+
+<TooltipProvider>
 {@render children()}
+</TooltipProvider>
 
 <div style="display:none">
 	{#each locales as locale}

@@ -70,8 +70,8 @@ const submitHandler = () => {
         class="flex flex-col gap-4 py-4"
       >
         <div class="grid gap-2">
-          <Label for="username">Username</Label>
-          <Input id="username" name="username" type="text" placeholder="Username" required />
+          <Label for="reg-username">Username</Label>
+          <Input id="reg-username" name="username" type="text" placeholder="Username" required />
         </div>
         <div class="grid gap-2">
           <Label for="reg-email">Email</Label>

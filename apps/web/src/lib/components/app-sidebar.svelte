@@ -75,7 +75,7 @@ const groups: Group[] = [
       </SidebarGroup>
     {/each}
   </SidebarContent>
-  <SidebarFooter>
+  <SidebarFooter class="p-0 border-t">
     <UserItem />
   </SidebarFooter>
 </Sidebar>

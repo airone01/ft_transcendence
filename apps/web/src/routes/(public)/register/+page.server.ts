@@ -18,7 +18,7 @@ export const actions = {
     // need type verification with zod
     const data = await request.formData();
     const email = data.get("email") as string;
-    const username = data.get("email") as string;
+    const username = data.get("username") as string;
     const unsecuredPassword = data.get("password") as string; // long name so as not to export it by accident
 
     if (!email || !unsecuredPassword) {
