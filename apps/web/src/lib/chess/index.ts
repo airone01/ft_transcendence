@@ -22,5 +22,5 @@ export {
 } from "$lib/chess/internal/utils";
 
 /* Validation */
-export { getLegalMoves } from "$lib/chess/internal/validation";
+export { getLegalMoves, isKingInCheck } from "$lib/chess/internal/validation";
 export { isCheckmate, isDraw } from "./internal/gameStatus";

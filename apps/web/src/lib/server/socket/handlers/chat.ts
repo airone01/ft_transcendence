@@ -1,5 +1,6 @@
 import type { Server, Socket } from "socket.io";
 import { db } from "@transc/db";
+import { chatMessage } from "@transc/db/schema"; // ← import manquant
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
