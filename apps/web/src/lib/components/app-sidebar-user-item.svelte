@@ -21,7 +21,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
 {#if user}
-  <div class="group flex items-center gap-3 p-2 w-full hover:bg-accent/50 transition-colors group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
+  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/50 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
     <a href="/profile" class="shrink-0">
       <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />

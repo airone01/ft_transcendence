@@ -1,4 +1,5 @@
 <script lang="ts">
+import { page } from "$app/state";
 import {
   HouseIcon,
   PlayIcon,
@@ -60,7 +61,7 @@ const groups: Group[] = [
           <SidebarMenu>
             {#each group.items as item (item.title)}
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton isActive={item.url === "/" ? page.url.pathname === "/" : page.url.pathname.startsWith(item.url)}>
                   {#snippet child({ props }: {props: Record<string, unknown>})}
                     <a href={item.url} {...props}>
                       <item.icon />

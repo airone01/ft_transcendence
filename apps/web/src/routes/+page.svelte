@@ -6,7 +6,6 @@
 </script>
 
 {#if data.user}
-  <AppShell>
     <main>
       <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
         Taxing Laughter: The Joke Tax Chronicles
@@ -118,7 +117,6 @@
         always be careful of bad ideas.
       </p>
     </main>
-  </AppShell>
 {:else}
   <LandingPage />
 {/if}

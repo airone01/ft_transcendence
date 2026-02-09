@@ -13,6 +13,7 @@ declare global {
     interface PageData {
       user: User | null;
       session: typeof session.$inferSelect | null;
+      sidebarOpen: boolean;
     }
     // interface PageState {}
     // interface Platform {}
