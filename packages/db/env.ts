@@ -1,9 +1,18 @@
+import { z } from "zod";
 import "dotenv/config";
 
-const connectionString = process.env.DATABASE_URL;
+const {
+  success,
+  error,
+  data: env,
+} = z
+  .object({
+    DATABASE_URL: z.string(),
+  })
+  .safeParse(process.env);
 
-if (!connectionString) {
-  throw new Error("DATABASE_URL is not set");
+if (!success) {
+  throw new Error(`Env error: ${error}\n`);
 }
 
-export { connectionString };
+export { env };

@@ -1,0 +1,201 @@
+openapi: 3.1.0
+
+info:
+  title: ft_transcendence API
+  description: API for the ft_transcendence project
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5173/api
+
+paths:
+  /users/{userId}:
+    description: "test"
+    get:
+      tags: 
+        - users
+      summary: Récupère un utilisateur
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - createdAt
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+          maxLength: 20
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          description: "Hashed password, never expose in public API responses"
+        avatar:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+
+    AuthSession:
+      type: object
+      required:
+        - id
+        - userId
+        - token
+        - createdAt
+        - expiresAt
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        token:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+
+    Friendship:
+      type: object
+      required:
+        - firstFriendId
+        - secondFriendId
+        - createdAt
+      properties:
+        firstFriendId:
+          type: integer
+        secondFriendId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    Game:
+      type: object
+      required:
+        - id
+        - status
+        - timeControlSeconds
+        - incrementSeconds
+        - fen
+        - createdAt
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+          enum: [waiting, ongoing, finished]
+        timeControlSeconds:
+          type: integer
+          minimum: 1
+        incrementSeconds:
+          type: integer
+          minimum: 0
+        fen:
+          type: string
+        result:
+          type: string
+          enum: [white_win, black_win, draw, abort]
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+
+    GamePlayer:
+      type: object
+      required:
+        - gameId
+        - userId
+        - color
+        - eloBefore
+      properties:
+        gameId:
+          type: integer
+        userId:
+          type: integer
+        color:
+          type: string
+          enum: [white, black]
+        eloBefore:
+          type: integer
+          minimum: 1
+        eloAfter:
+          type: integer
+          minimum: 1
+          nullable: true
+
+    GameSpectator:
+      type: object
+      required:
+        - gameId
+        - userId
+      properties:
+        gameId:
+          type: integer
+        userId:
+          type: integer
+
+    UserStats:
+      type: object
+      required:
+        - userId
+        - gamesPlayed
+        - wins
+        - losses
+        - draws
+        - currentElo
+        - updatedAt
+      properties:
+        userId:
+          type: integer
+        gamesPlayed:
+          type: integer
+          default: 0
+        wins:
+          type: integer
+          default: 0
+        losses:
+          type: integer
+          default: 0
+        draws:
+          type: integer
+          default: 0
+        currentElo:
+          type: integer
+          minimum: 1
+          default: 1000
+        updatedAt:
+          type: string
+          format: date-time
