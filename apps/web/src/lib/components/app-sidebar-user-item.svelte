@@ -17,12 +17,11 @@ import { toast } from "svelte-sonner";
 const user = $derived(page.data.user);
 const initials = $derived(user?.username?.slice(0, 2).toUpperCase() || "??");
 let logoutForm: HTMLFormElement | undefined = $state();
-
 </script>
 
 {#if user}
   <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/50 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
-    <a href="/profile" class="shrink-0">
+    <a href="/profile/me" class="shrink-0">
       <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />
         <AvatarFallback class="bg-linear-to-r from-blue-600 to-fuchsia-500 text-background">{initials}</AvatarFallback>
@@ -30,8 +29,8 @@ let logoutForm: HTMLFormElement | undefined = $state();
     </a>
     <div class="flex flex-col justify-center shrink w-full min-w-0 h-full group-data-[state=collapsed]:hidden">
       <Tooltip>
-        <TooltipTrigger class="h-4 flex justify-center items-center">
-          <a href="/profile" class="hover:underline text-sm w-full truncate leading-none -inset-y-1">
+        <TooltipTrigger class="h-4 flex justify-center w-fit max-w-full">
+          <a href="/profile/me" class="text-left hover:underline text-sm max-w-full w-fit truncate leading-none">
             {user.username}
           </a>
         </TooltipTrigger>
@@ -39,7 +38,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
           <p>{user.username}</p>
         </TooltipContent>
       </Tooltip>
-      <div class="text-xs w-full truncate leading-none text-muted-foreground">...more info</div>
+      <div class="text-xs truncate leading-none text-muted-foreground max-w-full w-fit">...more info</div>
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
