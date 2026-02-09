@@ -17,7 +17,7 @@ $effect(() => {
 <SidebarProvider class="h-full" bind:open>
   <AppSidebar />
   <div class="flex flex-col h-full w-full [&>main]:p-4">
-    <header class="border-b w-full p-2">
+    <header class="border-b w-full p-2 h-11">
       <SidebarTrigger class="cursor-pointer" />
     </header>
     {@render children?.()}

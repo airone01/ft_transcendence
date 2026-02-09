@@ -1,8 +1,12 @@
 <script lang="ts">
 import { page } from "$app/state";
 import {
+  ChessPawnIcon,
+  HandshakeIcon,
   HouseIcon,
-  PlayIcon,
+  TrophyIcon,
+  UserIcon,
+  ZapIcon,
 } from "@lucide/svelte";
 import {
   Sidebar,
@@ -11,6 +15,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -36,16 +41,31 @@ const groups: Group[] = [
         title: "Home",
         url: "/",
         icon: HouseIcon,
+      },
+      {
+        title: "My Profile",
+        url: "/profile/me",
+        icon: UserIcon,
+      },
+      {
+        title: "Friends",
+        url: "/profile/me/friends",
+        icon: HandshakeIcon,
       }
     ],
   },
   {
-    label: "Play Now",
+    label: "Chess",
     items: [
       {
-        title: "Standard",
+        title: "Play Now",
         url: "/play",
-        icon: PlayIcon,
+        icon: ZapIcon,
+      },
+      {
+        title: "Ranking",
+        url: "/ranking",
+        icon: TrophyIcon,
       },
     ],
   },
@@ -53,6 +73,14 @@ const groups: Group[] = [
 </script>
  
 <Sidebar collapsible="icon">
+  <SidebarHeader class="border-b flex flex-row gap-2 select-none p-2 items-center h-11">
+    <div class="h-full w-8 flex justify-center items-center shrink-0">
+      <ChessPawnIcon class="h-full w-full aspect-square" />
+    </div>
+    <p class="font-bold font-sans group-data-[collapsible=icon]:hidden shrink overflow-clip min-w-0 max-w-full">
+      ft_transcendence
+    </p>
+  </SidebarHeader>
   <SidebarContent>
     {#each groups as group}
       <SidebarGroup>
