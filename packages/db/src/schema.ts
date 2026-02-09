@@ -211,7 +211,7 @@ export const games = pgTable(
   },
   (table) => [
     index("games_status_idx").on(table.status),
-    index("games_created_at_idx").on(table.createdAt),
+    index("games_ended_at_idx").on(table.endedAt),
     check(
       "games_time_control_seconds_check",
       sql`${table.timeControlSeconds} > 0`,
