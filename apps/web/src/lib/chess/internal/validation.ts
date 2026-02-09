@@ -6,6 +6,7 @@ import { queenMoves } from "$lib/chess/internal/moves/moves.queen";
 import { rookMoves } from "$lib/chess/internal/moves/moves.rook";
 import type { GameState, Move } from "$lib/chess/internal/types";
 import { isInBoard } from "$lib/chess/internal/utils";
+import { boardToFEN } from "./handleFEN";
 
 /**
  * Returns all legal moves for the given piece.
@@ -47,10 +48,13 @@ export function getLegalMoves(
   return pseudoMoves.filter((move) => isLegalMove(state, move));
 }
 
-/** @public */
+/** @internal */
 export function isLegalMove(state: GameState, move: Move): boolean {
   const piece = state.board[move.from[0]][move.from[1]];
   if (!piece) return false;
+
+  if (piece === piece.toUpperCase() && state.turn === "b") return false;
+  if (piece === piece.toLowerCase() && state.turn === "w") return false;
 
   if (move.castle) return isCastleLegal(state, move);
 
@@ -158,6 +162,7 @@ export function applyMoveCopy(state: GameState, move: Move): GameState {
     board: newBoard,
     castling: newCastling,
     enPassant: newEnPassant,
+    historyFEN: state.historyFEN,
   };
 }
 

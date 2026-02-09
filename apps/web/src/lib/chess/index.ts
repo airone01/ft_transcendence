@@ -2,6 +2,8 @@
 
 /* FEN related functions */
 export { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
+
+/* Move related functions */
 export { playMove } from "$lib/chess/internal/playMove";
 
 /* Types */
@@ -16,9 +18,11 @@ export type {
 
 /* Utils */
 export {
+  startGame,
   algebraicToCoords,
   coordsToAlgebraic,
   printBoard,
+  printHistory,
 } from "$lib/chess/internal/utils";
 
 /* Validation */

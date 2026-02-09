@@ -1,11 +1,19 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/handleFEN";
+import { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
 import {
   isCheckmate,
   isFiftyMoveRule,
   isInsufficientMaterial,
   isStalemate,
 } from "$lib/chess/internal/gameEndChecks";
+import {
+  playMove,
+  printBoard,
+  printHistory,
+  startGame,
+  type GameState,
+} from "$lib/chess";
+import { applyMoveCopy } from "$lib/chess/internal/validation";
 
 describe("isCheckmate", () => {
   test("detects queen + king mate", () => {
@@ -107,5 +115,64 @@ describe("isFiftyMoveRule", () => {
   test("true when above 100", () => {
     const state = parseFEN("8/8/8/8/8/8/8/Kk6 w - - 150 10");
     expect(isFiftyMoveRule(state)).toBe(true);
+  });
+});
+
+describe.only("isThreefoldRepetition", () => {
+  test("true when threefold repetition", () => {
+    let state = startGame();
+
+    printBoard(state.board);
+    console.log("Current FEN:", boardToFEN(state));
+    console.log("History FEN:");
+    printHistory(state.historyFEN);
+
+    try {
+      for (let i = 0; i < 5; i++) {
+        state = playMove(state, {
+          from: [7, 6],
+          to: [5, 5],
+        });
+
+        printBoard(state.board);
+        console.log("Current FEN:", boardToFEN(state));
+        console.log("History FEN:");
+        printHistory(state.historyFEN);
+
+        state = playMove(state, {
+          from: [0, 1],
+          to: [2, 2],
+        });
+        printBoard(state.board);
+        console.log("Current FEN:", boardToFEN(state));
+        console.log("History FEN:");
+        printHistory(state.historyFEN);
+
+        state = playMove(state, {
+          from: [5, 5],
+          to: [7, 6],
+        });
+
+        printBoard(state.board);
+        console.log("Current FEN:", boardToFEN(state));
+        console.log("History FEN:");
+        printHistory(state.historyFEN);
+
+        state = playMove(state, {
+          from: [2, 2],
+          to: [0, 1],
+        });
+
+        printBoard(state.board);
+        console.log("Current FEN:", boardToFEN(state));
+        console.log("History FEN:");
+        printHistory(state.historyFEN);
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log(e.message);
+        if (e.message === "Game finished!") return;
+      } else console.log(e);
+    }
   });
 });

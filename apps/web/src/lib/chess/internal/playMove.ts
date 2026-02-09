@@ -1,5 +1,11 @@
 import type { GameState, Move, Piece } from "$lib/chess/internal/types";
-import { applyMoveCopy, isLegalMove } from "$lib/chess/internal/validation";
+import {
+  applyMoveCopy,
+  getLegalMoves,
+  isLegalMove,
+} from "$lib/chess/internal/validation";
+import { isCheckmate, isDraw } from "./gameEndChecks";
+import { boardToFEN } from "./handleFEN";
 
 /**
  *
@@ -12,7 +18,12 @@ import { applyMoveCopy, isLegalMove } from "$lib/chess/internal/validation";
  * @returns The resulting game state after applying the move.
  */
 export function playMove(state: GameState, move: Move): GameState {
-  if (!isLegalMove(state, move)) throw new Error("Illegal Move!");
+  if (isCheckmate(state) || isDraw(state)) throw new Error("Game finished!");
+
+  const moves = getLegalMoves(state, move.from);
+
+  if (!moves.find((m) => m.to[0] === move.to[0] && m.to[1] === move.to[1]))
+    throw new Error("Illegal Move!");
 
   const newState: GameState = applyMoveCopy(state, move);
 
@@ -51,8 +62,7 @@ export function playMove(state: GameState, move: Move): GameState {
 
   if (newState.turn === "w") newState.fullMoveCount++;
 
-  // TODO ?
-  //   newState.history = [...state.history, boardToFEN(newState)];
+  newState.historyFEN.push(boardToFEN(newState));
 
   return newState;
 }
