@@ -34,11 +34,11 @@ export const GET = async (event: RequestEvent) => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        client_id: env.DISCORD_CLIENT_ID,
-        client_secret: env.DISCORD_CLIENT_SECRET,
+        client_id: env.DISCORD_CLIENT_ID ?? "",
+        client_secret: env.DISCORD_CLIENT_SECRET ?? "",
         grant_type: "authorization_code",
         code: code,
-        redirect_uri: env.DISCORD_REDIRECT_URI,
+        redirect_uri: env.DISCORD_REDIRECT_URI ?? "",
       }),
     });
 

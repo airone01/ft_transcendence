@@ -15,8 +15,8 @@ export const GET = async ({ cookies }: RequestEvent) => {
   });
 
   const url = new URL("https://discord.com/oauth2/authorize");
-  url.searchParams.set("client_id", env.DISCORD_CLIENT_ID);
-  url.searchParams.set("redirect_uri", env.DISCORD_REDIRECT_URI);
+  url.searchParams.set("client_id", env.DISCORD_CLIENT_ID ?? "");
+  url.searchParams.set("redirect_uri", env.DISCORD_REDIRECT_URI ?? "");
   url.searchParams.set("response_type", "code");
   url.searchParams.set("scope", "identify email");
   url.searchParams.set("state", state);
