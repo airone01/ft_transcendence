@@ -1,13 +1,13 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { hashPassword } from "@transc/auth";
+import {
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  dbCreateUser,
+  dbIsEmailTaken,
+} from "$lib/db-services";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
-import {
-  dbIsEmailTaken,
-  dbCreateUser,
-  DBCreateUserUsernameAlreadyExistsError,
-  DBCreateUserEmailAlreadyExistsError,
-} from "$lib/db-services";
 
 /* Dev note: The login and register pages could be made much more safe by
  * leveraging formsnap, superforms and zod together, as explained in the Svelte

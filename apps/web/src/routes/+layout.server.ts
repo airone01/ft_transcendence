@@ -1,7 +1,7 @@
-import type { LayoutServerLoad } from "./$types";
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { profileFormSchema } from "$lib/schemas/settings";
+import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const sidebarCookie = cookies.get("sidebar:state");

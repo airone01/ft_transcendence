@@ -1,11 +1,11 @@
 export const settingsDialogState = $state({
-	isOpen: false,
+  isOpen: false,
 });
 
 export function openSettingsDialog() {
-	settingsDialogState.isOpen = true;
+  settingsDialogState.isOpen = true;
 }
 
 export function closeSettingsDialog() {
-	settingsDialogState.isOpen = false;
+  settingsDialogState.isOpen = false;
 }

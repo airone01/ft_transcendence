@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { redirect } from "@sveltejs/kit";
-import { env } from "$env/dynamic/private";
 import { dev } from "$app/environment";
+import { env } from "$env/dynamic/private";
 import type { RequestEvent } from "./$types";
 
 export const GET = async ({ cookies }: RequestEvent) => {

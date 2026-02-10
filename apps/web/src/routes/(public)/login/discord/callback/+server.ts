@@ -3,9 +3,9 @@ import { db } from "@transc/db";
 import { and, eq } from "@transc/db/drizzle-orm";
 import { oauthAccounts, users } from "@transc/db/schema";
 import { env } from "$env/dynamic/private";
+import { dbCreateUser } from "$lib/db-services";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { RequestEvent } from "./$types";
-import { dbCreateUser } from "$lib/db-services";
 
 // helper interface for discord response typing
 interface DiscordUser {

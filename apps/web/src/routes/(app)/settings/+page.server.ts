@@ -1,12 +1,12 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { superValidate } from "sveltekit-superforms";
-import { zod } from "sveltekit-superforms/adapters";
-import { eq } from "drizzle-orm";
 import { db } from "@transc/db";
 import { users } from "@transc/db/schema";
+import { eq } from "drizzle-orm";
+import { superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { dbUpdateUser } from "$lib/db-services";
 import { profileFormSchema } from "$lib/schemas/settings";
 import type { Actions, PageServerLoad } from "./$types";
-import { dbUpdateUser } from "$lib/db-services";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
@@ -37,7 +37,7 @@ export const actions: Actions = {
         .update(users)
         .set({ username: form.data.username })
         .where(eq(users.id, locals.user.id));
-    } catch (error) {
+    } catch (_error) {
       return fail(500, { form, message: "Could not update profile." });
     }
 
