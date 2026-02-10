@@ -9,7 +9,7 @@ import {
 } from "$lib/chess/internal/validation";
 
 describe("isKingInCheck", () => {
-  test("returns false for an isolated king", () => {
+  test("returns false for an isolated king ", () => {
     const state = parseFEN("8/8/8/3K4/8/8/8/8 w - - 0 1");
     expect(isKingInCheck(state, true)).toBe(false);
   });
