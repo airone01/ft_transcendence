@@ -4,8 +4,11 @@
 export {
   DBAddFriendFriendshipAlreadyExistsError,
   DBAddFriendWrongFriendshipError,
+  DBChatChannelNotFoundError,
+  DBCreateChatChannelError,
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
+  DBDeleteChatChannelError,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
   DBRemoveSpectatorError,
@@ -22,6 +25,9 @@ export type {
 /* DB Schema */
 export type {
   AuthSession,
+  ChatChannel,
+  ChatChannelMember,
+  ChatMessage,
   Friendship,
   Game,
   GamePlayer,
@@ -29,6 +35,9 @@ export type {
   User,
   UserStats,
 } from "./internal/schema/db.schema";
+
+/* Chat Types */
+export type { ChatChannelType } from "./internal/schema/db.chat.schema";
 
 /* Users Types */
 export type {
@@ -42,6 +51,15 @@ export type {
   GameHistory,
   Leaderboard,
 } from "./internal/schema/db.utils.schema";
+
+/* Chat Services */
+export {
+  dbCreateChatChannel,
+  dbDeleteChatChannel,
+  dbSendToGame,
+  dbSendToGlobal,
+  dbSendToFriend,
+} from "./internal/services/db.chat.service";
 
 /* Friends Services */
 export {

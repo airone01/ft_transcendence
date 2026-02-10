@@ -1,5 +1,5 @@
 import { db } from "@transc/db";
-import { users, usersStats } from "@transc/db/schema";
+import { chatChannelMembers, users, usersStats } from "@transc/db/schema";
 import { DrizzleQueryError, eq } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
@@ -77,6 +77,14 @@ export async function dbCreateUser(
           userId: newUser.id,
         })
         .returning({ id: usersStats.userId });
+
+      const [chat] = await tx
+        .insert(chatChannelMembers)
+        .values({
+          userId: stats.id,
+          channelId: 1,
+        })
+        .returning();
 
       return stats.id;
     });

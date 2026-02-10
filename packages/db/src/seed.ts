@@ -1,6 +1,7 @@
 import { db } from ".";
 import {
   authSessions,
+  chatChannels,
   friendships,
   games,
   gamesPlayers,
@@ -8,9 +9,6 @@ import {
   users,
   usersStats,
 } from "./schema";
-
-// await db.delete(users).where(eq(users.username, "Simon"));
-// process.exit(0);
 
 // delete all data
 await db.delete(friendships);
@@ -21,7 +19,15 @@ await db.delete(gamesSpectators);
 await db.delete(users);
 await db.delete(games);
 
-// process.exit(0);
+// seed chat
+
+const chatChannel = await db
+  .insert(chatChannels)
+  .values({
+    id: 1,
+    type: "global",
+  })
+  .returning({ id: chatChannels.id });
 
 // seed users
 

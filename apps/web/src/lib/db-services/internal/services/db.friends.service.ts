@@ -1,24 +1,32 @@
 import { db } from "@transc/db";
-import { friendships, users, usersStats } from "@transc/db/schema";
+import {
+  chatChannelMembers,
+  chatChannels,
+  friendships,
+  users,
+  usersStats,
+} from "@transc/db/schema";
 import { and, DrizzleQueryError, eq, ne, or } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
   DBAddFriendWrongFriendshipError,
+  DBCreateChatChannelError,
   DBUserNotFoundError,
   type FriendInfo,
   UnknownError,
 } from "$lib/db-services";
 
+
 /**
- * Adds a friend to a user.
- * @param {number} userId - The id of the user to add a friend to
+ * Adds a friend to a user's friends list.
+ * @param {number} userId - The id of the user to add the friend to
  * @param {number} friendId - The id of the friend to add
- * @throws {DBAddFriendFriendshipAlreadyExistsError} - If the two users are already friends
- * @throws {DBAddFriendWrongFriendshipError} - If the two users are the same person
- * @throws {DBUserNotFoundError} - If the user or friend is not found
+ * @throws {DBAddFriendFriendshipAlreadyExistsError} - If the user and friend are already friends
+ * @throws {DBAddFriendWrongFriendshipError} - If the user and friend are not friends
+ * @throws {DBUserNotFoundError} - If either the user or friend does not exist
  * @throws {UnknownError} - If an unexpected error occurs
- * @returns {Promise<void>} - Resolves when the friend has been successfully added
+ * @returns {Promise<void>} - A promise that resolves when the friend has been added
  */
 export async function dbAddFriend(
   userId: number,
@@ -34,8 +42,34 @@ export async function dbAddFriend(
       .returning();
 
     if (!friendship) throw new DBUserNotFoundError();
+
+    const [channel] = await db
+      .insert(chatChannels)
+      .values({
+        type: "private",
+      })
+      .returning();
+
+    if (!channel) throw new DBCreateChatChannelError();
+
+    const channelMembers = await db
+      .insert(chatChannelMembers)
+      .values([
+        {
+          channelId: channel.id,
+          userId: userId,
+        },
+        {
+          channelId: channel.id,
+          userId: friendId,
+        },
+      ])
+      .returning();
+
+    if (channelMembers.length !== 2) throw new DBCreateChatChannelError();
   } catch (err) {
     if (err instanceof DBUserNotFoundError) throw err;
+    if (err instanceof DBCreateChatChannelError) throw err;
 
     if (err instanceof DrizzleQueryError) {
       const cause = err.cause;
