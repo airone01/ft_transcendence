@@ -13,6 +13,18 @@ import { enhance } from "$app/forms";
 import { invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
 import { toast } from "svelte-sonner";
+import { openSettingsDialog } from "$lib/stores/settings-dialog.svelte";
+
+const logoutFunc = () => {
+  return async ({ result }: any) => {
+    if (result.type === 'redirect' || result.type === 'success') {
+      toast.success("You logged out. See you soon!");
+      await invalidateAll(); // invalidates data to redraw interface
+    } else {
+      toast.error("Failed to log out");
+    }
+  };
+};
 
 const user = $derived(page.data.user);
 const initials = $derived(user?.username?.slice(0, 2).toUpperCase() || "??");
@@ -49,19 +61,11 @@ let logoutForm: HTMLFormElement | undefined = $state();
           action="/logout" 
           method="POST" 
           bind:this={logoutForm}
-          use:enhance={() => {
-            return async ({ result }) => {
-              if (result.type === 'redirect' || result.type === 'success') {
-                toast.success("You logged out. See you soon!");
-                await invalidateAll(); // invalidates data to redraw interface
-              } else {
-                toast.error("Failed to log out");
-              }
-            };
-          }}
+          use:enhance={logoutFunc}
         >
           <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>Log out</DropdownMenuItem>
         </form>
+        <DropdownMenuItem onclick={openSettingsDialog}>Settings</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

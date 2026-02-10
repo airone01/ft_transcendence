@@ -19,6 +19,7 @@ export class Auth<
     const sessionId = hashToken(token); // we store hash
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
+    // TODO!!!
     await this.config.db.insert(this.config.schema.authSessions).values({
       id: sessionId,
       userId: userId,
