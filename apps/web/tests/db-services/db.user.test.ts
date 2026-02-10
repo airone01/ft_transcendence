@@ -12,11 +12,11 @@ import {
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbGetUserByEmail,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
-  dbGetUserByEmail,
 } from "$lib/db-services";
 
 describe("users.service.ts tests", () => {
