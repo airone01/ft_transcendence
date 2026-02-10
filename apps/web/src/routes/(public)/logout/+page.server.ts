@@ -9,9 +9,13 @@ export const actions = {
   default: async ({ locals, cookies }) => {
     if (locals.session) {
       // TODO!!!
-      await db
-        .delete(authSessions)
-        .where(eq(authSessions.id, locals.session.id));
+      try {
+        await db
+          .delete(authSessions)
+          .where(eq(authSessions.id, locals.session.id));
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     deleteSessionTokenCookie({ cookies } as RequestEvent<

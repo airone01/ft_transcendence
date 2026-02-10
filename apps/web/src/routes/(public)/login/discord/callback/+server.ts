@@ -5,6 +5,7 @@ import { oauthAccounts, users } from "@transc/db/schema";
 import { env } from "$env/dynamic/private";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { RequestEvent } from "./$types";
+import { dbCreateUser } from "$lib/db-services";
 
 // helper interface for discord response typing
 interface DiscordUser {
@@ -88,16 +89,12 @@ export const GET = async (event: RequestEvent) => {
         userId = existingEmailUser[0].id;
       } else {
         // brand new user: create fresh acc
-        const newUser = await db
-          .insert(users)
-          .values({
-            email: discordUser.email,
-            username: discordUser.username,
-            // no password because oauth
-          })
-          .returning({ id: users.id });
-
-        userId = newUser[0].id;
+        userId = await dbCreateUser({
+          email: discordUser.email,
+          username: discordUser.username, // NOTE: This could go very wrong if two users have the same username
+          avatar: discordUser.avatar,
+          // no password bc oauth
+        });
       }
 
       // link
