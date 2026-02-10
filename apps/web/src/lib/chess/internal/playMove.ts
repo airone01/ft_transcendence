@@ -1,18 +1,25 @@
 import type { GameState, Move, Piece } from "$lib/chess/internal/types";
-import { applyMoveCopy, isLegalMove } from "$lib/chess/internal/validation";
+import { applyMoveCopy, getLegalMoves } from "$lib/chess/internal/validation";
+import { EndGame, InvalidMove } from "./errors";
+import { isCheckmate, isDraw } from "./gameEndChecks";
+import { boardToFEN } from "./handleFEN";
 
 /**
+ * Applies a move to a GameState object.
  *
- * Applies a move to a game state.
- * Throws an error if the move is illegal.
- *
- * @param state The game state to apply the move to.
- * @param move The move to apply.
- * @throws {Error} If the move is illegal.
- * @returns The resulting game state after applying the move.
+ * @param state The GameState object to apply the move to.
+ * @param move The Move object to apply to the GameState.
+ * @throws {EndGame} If the game is over (checkmate or draw).
+ * @throws {InvalidMove} If the move is invalid.
+ * @returns The new GameState object after the move has been applied.
  */
 export function playMove(state: GameState, move: Move): GameState {
-  if (!isLegalMove(state, move)) throw new Error("Illegal Move!");
+  if (isCheckmate(state) || isDraw(state)) throw new EndGame();
+
+  const moves = getLegalMoves(state, move.from);
+
+  if (!moves.find((m) => m.to[0] === move.to[0] && m.to[1] === move.to[1]))
+    throw new InvalidMove();
 
   const newState: GameState = applyMoveCopy(state, move);
 
@@ -51,8 +58,7 @@ export function playMove(state: GameState, move: Move): GameState {
 
   if (newState.turn === "w") newState.fullMoveCount++;
 
-  // TODO ?
-  //   newState.history = [...state.history, boardToFEN(newState)];
+  newState.historyFEN.push(boardToFEN(newState));
 
   return newState;
 }

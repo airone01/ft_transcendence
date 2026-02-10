@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
-import { rookMoves } from "$lib/chess/internal/moves.rook";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
+import { rookMoves } from "$lib/chess/internal/moves/moves.rook";
 
 describe("rookMoves", () => {
   test("generates all horizontal and vertical moves from center", () => {

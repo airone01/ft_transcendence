@@ -1,10 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
 import {
   castleMoves,
   kingMoves,
   normalKingMoves,
-} from "$lib/chess/internal/moves.king";
+} from "$lib/chess/internal/moves/moves.king";
 
 describe("normalKingMoves", () => {
   test("generates 8 moves from center", () => {
