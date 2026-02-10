@@ -118,24 +118,33 @@ export async function dbCreateUser(
  */
 export async function dbGetUser(userId: number): Promise<User> {
   try {
-    const [user] = await db
-      .select({
-        id: users.id,
-        username: users.username,
-        email: users.email,
-        avatar: users.avatar,
-        status: users.status,
-        createdAt: users.createdAt,
-      })
-      .from(users)
-      .where(eq(users.id, userId));
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
 
     if (!user) throw new DBUserNotFoundError();
 
-    return user as User;
+    return user;
   } catch (err) {
     if (err instanceof DBUserNotFoundError) throw err;
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves a user from the database by their email.
+ * @param {string} email - The email of the user to retrieve
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User | undefined>} - A promise that resolves with the user if found, undefined otherwise
+ */
+export async function dbGetUserByEmail(
+  email: string,
+): Promise<User | undefined> {
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+
+    return user ?? undefined;
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
@@ -205,7 +214,7 @@ export async function dbGetStats(userId: number): Promise<UserStats> {
 
     if (!user) throw new DBUserNotFoundError();
 
-    return user as UserStats;
+    return user;
   } catch (err) {
     if (err instanceof DBUserNotFoundError) throw err;
 

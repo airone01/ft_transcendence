@@ -16,6 +16,7 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
+  dbGetUserByEmail,
 } from "$lib/db-services";
 
 describe("users.service.ts tests", () => {
@@ -61,6 +62,23 @@ describe("users.service.ts tests", () => {
         styleText("bold", "Created user with id: ") +
           styleText(["bold", "yellow"], `${userId}`),
       );
+    } catch (_err) {}
+  });
+
+  test("getUserByEmail", async () => {
+    try {
+      const user = await dbGetUserByEmail(newUser.email);
+
+      expect(user).toBeDefined();
+      console.table(user);
+    } catch (_err) {}
+  });
+
+  test("getUserByEmail with wrong email", async () => {
+    try {
+      const user = await dbGetUserByEmail("alice@transcender");
+
+      expect(user).not.toBeDefined();
     } catch (_err) {}
   });
 
