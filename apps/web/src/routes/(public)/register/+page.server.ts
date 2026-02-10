@@ -1,11 +1,13 @@
-import { randomInt } from "node:crypto";
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { hashPassword } from "@transc/auth";
-import { db } from "@transc/db";
-import { eq } from "@transc/db/drizzle-orm";
-import { users } from "@transc/db/schema";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
+import {
+  dbIsEmailTaken,
+  dbCreateUser,
+  DBCreateUserUsernameAlreadyExistsError,
+  DBCreateUserEmailAlreadyExistsError,
+} from "$lib/db-services";
 
 /* Dev note: The login and register pages could be made much more safe by
  * leveraging formsnap, superforms and zod together, as explained in the Svelte
@@ -21,28 +23,19 @@ export const actions = {
     const username = data.get("username") as string;
     const unsecuredPassword = data.get("password") as string; // long name so as not to export it by accident
 
-    if (!email || !unsecuredPassword) {
-      return fail(400, { message: "Missing fields" });
-    }
+    if (!email || !unsecuredPassword)
+      return fail(400, { message: "Missing fields." }); // i18n
 
-    const existing = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
-    if (existing.length > 0) {
-      return fail(400, { message: "Email already registered" });
-    }
+    if (await dbIsEmailTaken(email))
+      return fail(400, { message: "Email already registered." }); // i18n
 
     const passwordHash = await hashPassword(unsecuredPassword);
-    const userId = randomInt(0, 1e6);
 
     try {
-      await db.insert(users).values({
-        id: userId,
+      const userId = await dbCreateUser({
         email,
         password: passwordHash,
         username,
-        createdAt: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 30),
       });
 
       const { token, expiresAt } = await auth.createSession(userId);
@@ -53,8 +46,12 @@ export const actions = {
         expiresAt,
       );
     } catch (e) {
+      if (e instanceof DBCreateUserUsernameAlreadyExistsError)
+        return fail(400, { message: "Username already taken." }); // i18n
+      if (e instanceof DBCreateUserEmailAlreadyExistsError)
+        return fail(400, { message: "Email already registered." }); // i18n
       console.error(e);
-      return fail(500, { message: "Database error" });
+      return fail(500, { message: "Unknown database error." }); // i18n
     }
 
     throw redirect(302, "/");

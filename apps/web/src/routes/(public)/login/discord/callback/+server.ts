@@ -54,6 +54,7 @@ export const GET = async (event: RequestEvent) => {
 
     // we got internal discord user info
     // rest of func is DB logic
+    // TODO!!!
 
     // check if this discord ID is already linked
     const existingAccount = await db

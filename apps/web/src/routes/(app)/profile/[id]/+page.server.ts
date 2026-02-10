@@ -6,10 +6,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   const userId = params.id;
 
   const fetchUser = async () => {
-    if (!userId || userId === "me") {
-      if (!locals.user) throw error(401, "You must be logged in.");
+    if (!userId || userId === "me")
       return locals.user;
-    }
     const id = parseInt(userId, 10);
     if (Number.isNaN(id)) throw error(400, "Invalid user ID");
     const user = await dbGetUser(id);

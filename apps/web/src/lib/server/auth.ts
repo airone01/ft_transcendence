@@ -5,6 +5,7 @@ import { authSessions, users } from "@transc/db/schema";
 import { dev } from "$app/environment";
 
 const SESSION_COOKIE_NAME = "session_token";
+const OAUTH_SESSION_COOKIE_NAME = "oauth_state";
 
 export function setSessionTokenCookie(
   event: RequestEvent,
@@ -22,6 +23,13 @@ export function setSessionTokenCookie(
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
   event.cookies.set(SESSION_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: !dev,
+    path: "/",
+    maxAge: 0,
+  });
+  event.cookies.set(OAUTH_SESSION_COOKIE_NAME, "", {
     httpOnly: true,
     sameSite: "lax",
     secure: !dev,

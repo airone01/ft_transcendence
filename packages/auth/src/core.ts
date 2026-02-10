@@ -31,6 +31,7 @@ export class Auth<
   async validateSession(token: string) {
     const sessionId = hashToken(token);
 
+    // TODO!!!
     const result = await this.config.db
       .select({
         users: this.config.schema.users,

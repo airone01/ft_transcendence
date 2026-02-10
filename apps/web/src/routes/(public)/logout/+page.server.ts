@@ -1,4 +1,4 @@
-import type { RequestEvent } from "@sveltejs/kit";
+import { redirect, type RequestEvent } from "@sveltejs/kit";
 import { db } from "@transc/db";
 import { eq } from "@transc/db/drizzle-orm";
 import { authSessions } from "@transc/db/schema";
@@ -8,6 +8,7 @@ import type { Actions } from "./$types";
 export const actions = {
   default: async ({ locals, cookies }) => {
     if (locals.session) {
+      // TODO!!!
       await db
         .delete(authSessions)
         .where(eq(authSessions.id, locals.session.id));
@@ -18,6 +19,6 @@ export const actions = {
       null
     >);
 
-    return { success: true };
+    throw redirect(302, "/");
   },
 } satisfies Actions;
