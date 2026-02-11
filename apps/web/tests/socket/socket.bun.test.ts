@@ -1,5 +1,4 @@
 //tests/socket/socket.test.ts
-// ⚠️ IMPORTANT: Définir DATABASE_URL AVANT tout import
 process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/test";
 
 import { describe, it, expect, mock } from "bun:test";
