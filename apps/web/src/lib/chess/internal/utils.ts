@@ -1,8 +1,18 @@
+import { parseFEN } from "./handleFEN";
 import type { Piece } from "./types";
 
-/** @internal */
-export function isInBoard([row, col]: [number, number]): boolean {
-  return row >= 0 && row < 8 && col >= 0 && col < 8;
+/**
+ * Starts a new chess game.
+ * @return {GameState} The starting state of the chess game.
+ */
+export function startGame() {
+  const startingFEN =
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+  const state = parseFEN(startingFEN);
+  state.historyFEN.push(startingFEN);
+
+  return state;
 }
 
 /**
@@ -19,6 +29,15 @@ export function printBoard(board: Piece[][]) {
       .map((r, i) => `${`${rows[i]} ${r.map((c) => c ?? ".").join(" ")}`}`)
       .join("\n"),
   );
+}
+
+/**
+ * Prints a chess game history to the console.
+ * @param {string[]} history - an array of strings, where each string represents a move in the chess game.
+ * The strings will be joined with newlines and printed to the console.
+ */
+export function printHistory(history: string[]) {
+  console.log(history.join("\n"));
 }
 
 /**
@@ -42,4 +61,9 @@ export function algebraicToCoords(pos: string): [number, number] {
  */
 export function coordsToAlgebraic([row, col]: [number, number]): string {
   return String.fromCharCode(col + "a".charCodeAt(0)) + (8 - row);
+}
+
+/** @internal */
+export function isInBoard([row, col]: [number, number]): boolean {
+  return row >= 0 && row < 8 && col >= 0 && col < 8;
 }

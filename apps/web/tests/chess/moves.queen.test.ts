@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
-import { queenMoves } from "$lib/chess/internal/moves.queen";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
+import { queenMoves } from "$lib/chess/internal/moves/moves.queen";
 
 describe("queenMoves", () => {
   test("generates rook-like and bishop-like moves from center", () => {

@@ -60,6 +60,7 @@ export function parseFEN(fen: string): GameState {
     enPassant,
     halfMoveCount: parseInt(halfMoveCount, 10),
     fullMoveCount: parseInt(fullMoveCount, 10),
+    historyFEN: [],
   };
 }
 

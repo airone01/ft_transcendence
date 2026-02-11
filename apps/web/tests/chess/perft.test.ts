@@ -1,6 +1,6 @@
 import { afterAll, describe, expect, test } from "bun:test";
 import { boardToFEN, coordsToAlgebraic, parseFEN, playMove } from "$lib/chess";
-import { getAllLegalMoves } from "$lib/chess/internal/gameStatus";
+import { getAllLegalMoves } from "$lib/chess/internal/gameEndChecks";
 import perftPositionsAll from "./perftPositions.json";
 
 const DEBUG = process.env.DEBUG === "1";

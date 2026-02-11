@@ -42,7 +42,7 @@ describe("users.service.ts tests", () => {
     } catch (_err) {}
   });
 
-  test.only("isEmailTaken", async () => {
+  test("isEmailTaken", async () => {
     try {
       const isNotTaken = await dbIsEmailTaken(newUser.email);
       const isTaken = await dbIsEmailTaken("valentin@transcender");

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { boardToFEN, parseFEN } from "$lib/chess/internal/board";
+import { boardToFEN, parseFEN } from "$lib/chess/internal/handleFEN";
 
 describe("parseFEN", () => {
   test("board: parses empty board", () => {
