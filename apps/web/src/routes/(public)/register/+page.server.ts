@@ -7,38 +7,33 @@ import {
 } from "$lib/db-services";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
-
-/* Dev note: The login and register pages could be made much more safe by
- * leveraging formsnap, superforms and zod together, as explained in the Svelte
- * shadcn page for formsnap https://www.shadcn-svelte.com/docs/components/form.
- * This might be worth invisegating. */
+import { message, superValidate } from "sveltekit-superforms";
+import { registerSchema } from "$lib/schemas/auth";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const actions = {
   default: async ({ request, cookies }) => {
-    // NOTE: a forged request WILL crash the app here if those are not strings
-    // need type verification with zod
-    const data = await request.formData();
-    const email = data.get("email") as string;
-    const username = data.get("username") as string;
-    const unsecuredPassword = data.get("password") as string; // long name so as not to export it by accident
+    const form = await superValidate(request, zod(registerSchema));
 
-    if (!email || !unsecuredPassword)
-      return fail(400, { message: "Missing fields." }); // i18n
+    if (!form.valid) {
+      return fail(400, { form });
+    }
 
-    if (await dbIsEmailTaken(email))
-      return fail(400, { message: "Email already registered." }); // i18n
-
-    const passwordHash = await hashPassword(unsecuredPassword);
+    if (await dbIsEmailTaken(form.data.email))
+      return message(form, "Email already registered." /* i18n */, {
+        status: 400,
+      });
 
     try {
+      const passwordHash = await hashPassword(form.data.password);
+
       const userId = await dbCreateUser({
-        email,
+        email: form.data.email,
         password: passwordHash,
-        username,
+        username: form.data.username,
       });
 
       const { token, expiresAt } = await auth.createSession(userId);
-
       setSessionTokenCookie(
         { cookies } as RequestEvent<Record<string, never>, null>,
         token,
@@ -46,11 +41,29 @@ export const actions = {
       );
     } catch (e) {
       if (e instanceof DBCreateUserUsernameAlreadyExistsError)
-        return fail(400, { message: "Username already taken." }); // i18n
+        return fail(400, {
+          form: {
+            ...form,
+            errors: {
+              ...form.errors,
+              username: ["Username already taken." /* i18n */],
+            },
+          },
+        });
       if (e instanceof DBCreateUserEmailAlreadyExistsError)
-        return fail(400, { message: "Email already registered." }); // i18n
+        return fail(400, {
+          form: {
+            ...form,
+            errors: {
+              ...form.errors,
+              email: ["Email already registered." /* i18n */],
+            },
+          },
+        });
       console.error(e);
-      return fail(500, { message: "Unknown database error." }); // i18n
+      return message(form, "Unknown database error." /* i18n */, {
+        status: 500,
+      });
     }
 
     throw redirect(302, "/");

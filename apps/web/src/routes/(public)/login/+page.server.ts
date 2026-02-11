@@ -2,50 +2,43 @@ import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { dbGetUserByEmail } from "$lib/db-services";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
 import type { Actions } from "./$types";
-
-/* Dev note: The login and register pages could be made much more safe by
- * leveraging formsnap, superforms and zod together, as explained in the Svelte
- * shadcn page for formsnap https://www.shadcn-svelte.com/docs/components/form.
- * This might be worth invisegating. */
-
-/**
- * @brief Cryptic and general error message, to avoid malicious actors
- * having access to more info than wanted (enumerating db emails, etc.).
- *
- * The thought process is that we don't want to tell users why exactly they
- * could not connect, otherwise that information could be extracted to find
- * out which emails are in DB, brute-force passwords, or to know when someone
- * uses OAuth or not.
- */
-const crypticFail = () =>
-  fail(400, {
-    message: "Invalid email or password, or the associated account uses OAuth.",
-  });
+import { message, superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import { loginSchema } from "$lib/schemas/auth";
 
 export const actions = {
   default: async ({ request, cookies }) => {
-    // NOTE: a forged request WILL crash the app here if those are not strings
-    // need type verification with zod
-    const data = await request.formData();
-    const email = data.get("email") as string;
-    const password = data.get("password") as string;
+    const form = await superValidate(request, zod(loginSchema));
+
+    if (!form.valid) return fail(400, { form });
 
     try {
-      const user = await dbGetUserByEmail(email);
+      const user = await dbGetUserByEmail(form.data.email);
 
-      // explaination in `crypticFail` JSDoc above
-
-      if (!user)
-        // invalid user
-        return crypticFail();
-
-      if (!user.password)
-        // this is an oauth account
-        return crypticFail();
-
-      if (!(await verifyPassword(user.password, password)))
-        // invalid password for email
-        return crypticFail();
+      /**
+       * @brief Cryptic and general error message, to avoid malicious actors
+       * having access to more info than wanted (enumerating db emails, etc.).
+       *
+       * The thought process is that we don't want to tell users why exactly they
+       * could not connect, otherwise that information could be extracted to find
+       * out which emails are in DB, brute-force passwords, or to know when someone
+       * uses OAuth or not.
+       *
+       * Conditions below are, in order (OR):
+       * - there is no user account with that email
+       * - there is an account, but no password, meaning it's an oauth account
+       * - there is an account, but the password doesn't match
+       */
+      if (
+        !user ||
+        !user.password ||
+        !(await verifyPassword(user.password, form.data.password))
+      )
+        return message(
+          form,
+          "Invalid email or password, or an associated account uses OAuth." /* i18n */,
+          { status: 400 },
+        );
 
       const { token, expiresAt } = await auth.createSession(user.id);
 
@@ -55,7 +48,7 @@ export const actions = {
         expiresAt,
       );
     } catch (_err) {
-      return fail(500, { message: "Internal database error." });
+      return message(form, "Internal server error" /* i18n */, { status: 500 });
     }
 
     throw redirect(302, "/");
