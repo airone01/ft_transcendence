@@ -22,9 +22,7 @@ export const actions: Actions = {
     if (!locals.user) return fail(401);
 
     const form = await superValidate(request, zod(profileFormSchema));
-    if (!form.valid || typeof form.data.username !== "string") {
-      return fail(400, { form });
-    }
+    if (!form.valid) return fail(400, { form });
 
     try {
       const updateData: { username?: string; avatar?: string } = {};

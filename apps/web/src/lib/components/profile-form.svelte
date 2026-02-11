@@ -12,7 +12,8 @@ import { closeSettingsDialog } from '$lib/stores/settings-dialog.svelte';
 
 let { data, userAvatar }: { data: SuperValidated<Infer<ProfileFormSchema>>, userAvatar: string | null } = $props();
 
-const form = superForm(data, {
+// svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
+const form = superForm(data, { // [!code ++]
   validators: zodClient(profileFormSchema),
   invalidateAll: true,
   onUpdated: ({ form }) => {
@@ -25,12 +26,10 @@ const form = superForm(data, {
 const { form: formData, enhance, delayed } = form;
 
 let hiddenFileInput: HTMLInputElement | undefined;
-let localFile = $state<File | null>(null);
-let previewUrl = $derived(localFile ? URL.createObjectURL(localFile) : userAvatar);
+let previewUrl = $derived($formData.avatar instanceof File ? URL.createObjectURL($formData.avatar) : userAvatar);
 
 function handleCroppedImage(file: File) {
   $formData.avatar = file;
-  localFile = file;
 
   if (hiddenFileInput) {
     const dt = new DataTransfer();
