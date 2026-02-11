@@ -1,8 +1,7 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { verifyPassword } from "$lib/server/auth";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
-import type { Actions } from "./$types";
 import { dbGetUserByEmail } from "$lib/db-services";
+import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
+import type { Actions } from "./$types";
 
 /* Dev note: The login and register pages could be made much more safe by
  * leveraging formsnap, superforms and zod together, as explained in the Svelte
@@ -39,7 +38,7 @@ export const actions = {
         token,
         expiresAt,
       );
-    } catch (err) {
+    } catch (_err) {
       return fail(500, { message: "Internal database error." });
     }
 

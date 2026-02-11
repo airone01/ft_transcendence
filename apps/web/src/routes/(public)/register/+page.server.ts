@@ -1,12 +1,11 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { hashPassword } from "$lib/server/auth";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   dbCreateUser,
   dbIsEmailTaken,
 } from "$lib/db-services";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
+import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
 
 /* Dev note: The login and register pages could be made much more safe by

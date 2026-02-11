@@ -1,7 +1,7 @@
 import type { RequestEvent } from "@sveltejs/kit";
-import { dev } from "$app/environment";
 import { db } from "@transc/db";
 import { authSessions, users } from "@transc/db/schema";
+import { dev } from "$app/environment";
 import { Auth } from "./core";
 
 const SESSION_COOKIE_NAME = "session_token";
@@ -47,5 +47,5 @@ export const auth = new Auth({
   schema: { users, authSessions },
 });
 
-export * from "./types";
 export * from "./crypto";
+export * from "./types";
