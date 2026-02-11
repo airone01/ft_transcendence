@@ -62,6 +62,14 @@ function handleCroppedImage(file: File) {
   </div>
 
   <form method="POST" action="/settings?/updateProfile" enctype="multipart/form-data" use:enhance class="space-y-4">
+    <input 
+      type="file" 
+      name="avatar" 
+      class="hidden" 
+      bind:this={hiddenFileInput} 
+      accept="image/*" 
+    />
+
     <FormField {form} name="username">
       <FormControl>
         {#snippet children({ props })}
