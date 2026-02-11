@@ -16,7 +16,6 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "@transc/auth": "workspace:*",
     "@transc/db": "workspace:*",
     "@transc/ui": "workspace:*",
     "drizzle-orm": "^0.45.1",

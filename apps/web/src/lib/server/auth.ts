@@ -1,5 +1,5 @@
 import type { RequestEvent } from "@sveltejs/kit";
-import { createAuth } from "@transc/auth";
+import { createAuth } from "$lib/auth";
 import { db } from "@transc/db";
 import { authSessions, users } from "@transc/db/schema";
 import { dev } from "$app/environment";

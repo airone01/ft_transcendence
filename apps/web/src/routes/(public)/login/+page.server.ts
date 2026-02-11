@@ -1,5 +1,5 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { verifyPassword } from "@transc/auth";
+import { verifyPassword } from "$lib/auth";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
 import { dbGetUserByEmail } from "$lib/db-services";
