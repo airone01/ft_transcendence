@@ -1,11 +1,13 @@
 import type { RequestEvent } from "@sveltejs/kit";
-import { createAuth } from "$lib/auth";
+import { dev } from "$app/environment";
 import { db } from "@transc/db";
 import { authSessions, users } from "@transc/db/schema";
-import { dev } from "$app/environment";
+import { Auth } from "./core";
 
 const SESSION_COOKIE_NAME = "session_token";
 const OAUTH_SESSION_COOKIE_NAME = "oauth_state";
+
+// Cookies helpers
 
 export function setSessionTokenCookie(
   event: RequestEvent,
@@ -38,7 +40,12 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
   });
 }
 
-export const auth = createAuth({
+// Singleton
+
+export const auth = new Auth({
   db,
   schema: { users, authSessions },
 });
+
+export * from "./types";
+export * from "./crypto";

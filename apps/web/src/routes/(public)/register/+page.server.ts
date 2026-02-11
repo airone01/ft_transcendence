@@ -1,5 +1,5 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { hashPassword } from "$lib/auth";
+import { hashPassword } from "$lib/server/auth";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
