@@ -9,9 +9,11 @@ export const profileFormSchema = z.object({
     .regex(
       /^[a-zA-Z0-9_]+$/,
       "Username can only contain letters, numbers, and underscores" /* i18n */,
-    ),
+    )
+    .optional(),
   avatar: z
     .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
+    .refine((f) => f.size < 100_000, "Max 100 kB upload size." /* i18n */)
     .optional(),
 });
 

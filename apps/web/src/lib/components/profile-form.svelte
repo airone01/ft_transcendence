@@ -13,20 +13,28 @@ let { data, userAvatar }: { data: SuperValidated<Infer<ProfileFormSchema>>, user
 
 const form = superForm(data, {
   validators: zodClient(profileFormSchema),
-    onUpdated: ({ form }) => {
-      if (form.valid) {
-        toast.success("Profile updated successfully");
-      }
+  invalidateAll: true,
+  onUpdated: ({ form }) => {
+    if (form.valid) {
+      toast.success("Profile updated successfully");
     }
+  }
 });
 const { form: formData, enhance, delayed } = form;
 
+let hiddenFileInput: HTMLInputElement | undefined;
 let localFile = $state<File | null>(null);
 let previewUrl = $derived(localFile ? URL.createObjectURL(localFile) : userAvatar);
 
 function handleCroppedImage(file: File) {
   $formData.avatar = file;
-  previewUrl = URL.createObjectURL(file);
+  localFile = file;
+
+  if (hiddenFileInput) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    hiddenFileInput.files = dt.files;
+  }
 }
 </script>
 

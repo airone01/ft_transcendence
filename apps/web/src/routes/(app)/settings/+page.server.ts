@@ -1,7 +1,4 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { users } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
 import { superValidate, withFiles } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { dbUpdateUser } from "$lib/db-services";
@@ -57,6 +54,6 @@ export const actions: Actions = {
       return fail(500, { form, message: "Could not update profile." });
     }
 
-    return { form };
+    return withFiles({ form });
   },
 };
