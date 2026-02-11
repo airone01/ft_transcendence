@@ -1,10 +1,10 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { dbGetUserByEmail } from "$lib/db-services";
-import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
-import type { Actions } from "./$types";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import { dbGetUserByEmail } from "$lib/db-services";
 import { loginSchema } from "$lib/schemas/auth";
+import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
+import type { Actions } from "./$types";
 
 export const actions = {
   default: async ({ request, cookies }) => {

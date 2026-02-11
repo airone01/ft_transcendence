@@ -1,15 +1,15 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
+import { message, superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   dbCreateUser,
   dbIsEmailTaken,
 } from "$lib/db-services";
+import { registerSchema } from "$lib/schemas/auth";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
-import { message, superValidate } from "sveltekit-superforms";
-import { registerSchema } from "$lib/schemas/auth";
-import { zod } from "sveltekit-superforms/adapters";
 
 export const actions = {
   default: async ({ request, cookies }) => {

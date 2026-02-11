@@ -1,8 +1,8 @@
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import { loginSchema, registerSchema } from "$lib/schemas/auth";
 import { profileFormSchema } from "$lib/schemas/settings";
 import type { LayoutServerLoad } from "./$types";
-import { loginSchema, registerSchema } from "$lib/schemas/auth";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const sidebarCookie = cookies.get("sidebar:state");
