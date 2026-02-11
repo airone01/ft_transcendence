@@ -26,20 +26,20 @@ let { data } = $props();
     <Card class="w-87.5">
       <CardHeader class="flex flex-row items-center gap-4">
         <Avatar class="w-16 h-16 ring ring-primary">
-          <AvatarImage src={user.avatar} />
+          <AvatarImage src={user?.avatar} />
           <AvatarFallback class="text-lg font-bold">
-            {user.username.slice(0, 2).toUpperCase()}
+            {user?.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         
         <div>
-          <CardTitle>{user.username}</CardTitle>
-          <CardDescription>{user.email}</CardDescription>
+          <CardTitle>{user?.username}</CardTitle>
+          <CardDescription>{user?.email}</CardDescription>
         </div>
       </CardHeader>
       
       <div class="p-6 pt-0 text-sm text-muted-foreground">
-        Member since {new Date(user.createdAt).toLocaleDateString()}
+        Member since {new Date(user?.createdAt ?? 0).toLocaleDateString()}
       </div>
     </Card>
 
