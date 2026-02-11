@@ -42,11 +42,16 @@ export const users = pgTable(
 
 // ############################ OAUTH ACCOUNT ############################
 
+export const oauthProviders = pgEnum("oauth_providers", [
+  "discord",
+  "google",
+  "github",
+]);
+
 export const oauthAccounts = pgTable(
   "oauth_accounts",
   {
-    // "discord", "google", "github"
-    providerId: text("provider_id").notNull(),
+    provider: oauthProviders().notNull(),
     // unique internal user ID (given by the provider, not by us)
     providerUserId: text("provider_user_id").notNull(),
     userId: integer("user_id")
@@ -54,7 +59,7 @@ export const oauthAccounts = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
   },
   (table) => [
-    primaryKey({ columns: [table.providerId, table.providerUserId] }),
+    primaryKey({ columns: [table.provider, table.providerUserId] }),
     index("oauth_account_user_id_idx").on(table.userId),
   ],
 );

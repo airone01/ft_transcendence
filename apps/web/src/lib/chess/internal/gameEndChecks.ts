@@ -1,5 +1,6 @@
 import type { GameState, Move, Piece } from "$lib/chess/internal/types";
 import { getLegalMoves, isKingInCheck } from "$lib/chess/internal/validation";
+import { boardToFEN } from "./handleFEN";
 
 /**
  * Returns true if the current player is in checkmate, false otherwise.
@@ -125,7 +126,13 @@ export function isFiftyMoveRule(state: GameState): boolean {
 
 /** @internal */
 export function isThreefoldRepetition(state: GameState): boolean {
-  state;
-  // TODO ?
+  const currentFEN = boardToFEN(state).split(" ").slice(0, 4).join(" ");
+  let count = 0;
+
+  for (const oldFEN of state.historyFEN) {
+    if (oldFEN.split(" ").slice(0, 4).join(" ") === currentFEN) count++;
+    if (count >= 3) return true;
+  }
+
   return false;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
-import { pawnMoves } from "$lib/chess/internal/moves.pawn";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
+import { pawnMoves } from "$lib/chess/internal/moves/moves.pawn";
 import type { Piece } from "$lib/chess/internal/types";
 
 describe("pawnMoves", () => {

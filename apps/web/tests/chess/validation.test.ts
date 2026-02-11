@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
 import type { Move } from "$lib/chess/internal/types";
 import {
   applyMoveCopy,
@@ -9,7 +9,7 @@ import {
 } from "$lib/chess/internal/validation";
 
 describe("isKingInCheck", () => {
-  test("returns false for an isolated king", () => {
+  test("returns false for an isolated king ", () => {
     const state = parseFEN("8/8/8/3K4/8/8/8/8 w - - 0 1");
     expect(isKingInCheck(state, true)).toBe(false);
   });

@@ -12,6 +12,7 @@ import {
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbGetUserByEmail,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,
@@ -42,7 +43,7 @@ describe("users.service.ts tests", () => {
     } catch (_err) {}
   });
 
-  test.only("isEmailTaken", async () => {
+  test("isEmailTaken", async () => {
     try {
       const isNotTaken = await dbIsEmailTaken(newUser.email);
       const isTaken = await dbIsEmailTaken("valentin@transcender");
@@ -61,6 +62,23 @@ describe("users.service.ts tests", () => {
         styleText("bold", "Created user with id: ") +
           styleText(["bold", "yellow"], `${userId}`),
       );
+    } catch (_err) {}
+  });
+
+  test("getUserByEmail", async () => {
+    try {
+      const user = await dbGetUserByEmail(newUser.email);
+
+      expect(user).toBeDefined();
+      console.table(user);
+    } catch (_err) {}
+  });
+
+  test("getUserByEmail with wrong email", async () => {
+    try {
+      const user = await dbGetUserByEmail("alice@transcender");
+
+      expect(user).not.toBeDefined();
     } catch (_err) {}
   });
 

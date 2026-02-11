@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { parseFEN } from "$lib/chess/internal/board";
-import { bishopMoves } from "$lib/chess/internal/moves.bishop";
+import { parseFEN } from "$lib/chess/internal/handleFEN";
+import { bishopMoves } from "$lib/chess/internal/moves/moves.bishop";
 
 describe("bishopMoves", () => {
   test("generates diagonal moves from center", () => {

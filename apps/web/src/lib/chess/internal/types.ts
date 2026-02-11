@@ -31,6 +31,7 @@ export interface GameState {
   enPassant: [number, number] | null;
   halfMoveCount: number;
   fullMoveCount: number;
+  historyFEN: string[];
 }
 
 export interface Move {
