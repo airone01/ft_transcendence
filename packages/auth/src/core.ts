@@ -12,6 +12,9 @@ export class Auth<
 > {
   constructor(private config: AuthConfig<TUser, TSession>) {}
 
+  /**
+   * @throws Drizzle Exception
+   */
   async createSession(
     userId: string | number,
   ): Promise<{ token: string; expiresAt: Date }> {
@@ -19,7 +22,8 @@ export class Auth<
     const sessionId = hashToken(token); // we store hash
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 
-    // TODO!!!
+    // Code copied from from `db.auth.service.ts` because if we imported it
+    // here we would be getting circular deps.
     await this.config.db.insert(this.config.schema.authSessions).values({
       id: sessionId,
       userId: userId,
@@ -32,7 +36,8 @@ export class Auth<
   async validateSession(token: string) {
     const sessionId = hashToken(token);
 
-    // TODO!!!
+    // Code copied from from `db.auth.service.ts` because if we imported it
+    // here we would be getting circular deps.
     const result = await this.config.db
       .select({
         users: this.config.schema.users,

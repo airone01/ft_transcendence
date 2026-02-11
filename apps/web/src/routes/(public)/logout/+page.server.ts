@@ -1,18 +1,13 @@
 import { type RequestEvent, redirect } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { eq } from "@transc/db/drizzle-orm";
-import { authSessions } from "@transc/db/schema";
 import { deleteSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
+import { dbDeleteAuthSession } from "$lib/db-services";
 
 export const actions = {
   default: async ({ locals, cookies }) => {
     if (locals.session) {
-      // TODO!!!
       try {
-        await db
-          .delete(authSessions)
-          .where(eq(authSessions.id, locals.session.id));
+        await dbDeleteAuthSession(locals.session.id);
       } catch (e) {
         console.error(e);
       }
