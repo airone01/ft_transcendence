@@ -2,10 +2,12 @@
 import { FormField, FormControl, FormLabel, FormFieldErrors } from '@transc/ui/form';
 import { Input } from "@transc/ui/input"
 import { Button } from "@transc/ui/button"
+import { ImageCropper } from "@transc/ui/image-cropper"
 import { profileFormSchema, type ProfileFormSchema } from "$lib/schemas/settings";
 import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
-import { toast } from "svelte-sonner"; // Assuming you have a toast library
+import { toast } from "svelte-sonner";
+import { CameraIcon } from '@lucide/svelte';
 
 let { data, userAvatar }: { data: SuperValidated<Infer<ProfileFormSchema>>, userAvatar: string | null } = $props();
 
@@ -17,30 +19,41 @@ const form = superForm(data, {
       }
     }
 });
-
 const { form: formData, enhance, delayed } = form;
+
+let localFile = $state<File | null>(null);
+let previewUrl = $derived(localFile ? URL.createObjectURL(localFile) : userAvatar);
+
+function handleCroppedImage(file: File) {
+  $formData.avatar = file;
+  previewUrl = URL.createObjectURL(file);
+}
 </script>
 
 <div class="space-y-6 py-4">
   <div class="flex flex-col items-center gap-4">
-    <button 
-      type="button"
-      class="relative h-24 w-24 overflow-hidden rounded-full border-2 border-border hover:opacity-80 transition-opacity"
-      onclick={() => alert("Avatar modal coming soon!")}
-    >
-      {#if userAvatar}
-        <img src={userAvatar} alt="Avatar" class="h-full w-full object-cover" />
-      {:else}
-        <div class="flex h-full w-full items-center justify-center bg-muted text-3xl">?</div>
-      {/if}
-      <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 hover:opacity-100 transition-opacity text-xs font-medium">
-        Edit
-      </div>
-    </button>
-    <span class="text-sm text-muted-foreground">Click avatar to change</span>
+    <ImageCropper onCropped={handleCroppedImage}>
+      <button 
+        type="button"
+        class="relative h-24 w-24 overflow-hidden rounded-full border-2 border-border hover:opacity-80 transition-opacity group"
+      >
+        {#if previewUrl}
+          <img src={previewUrl} alt="Avatar" class="h-full w-full object-cover" />
+        {:else}
+          <div class="flex h-full w-full items-center justify-center bg-muted text-3xl font-bold">
+            {($formData.username ?? "?").slice(0, 2).toUpperCase()}
+          </div>
+        {/if}
+        
+        <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+          <CameraIcon class="h-6 w-6" />
+        </div>
+      </button>
+    </ImageCropper>
+    <span class="text-xs text-muted-foreground">Click avatar to upload</span>
   </div>
 
-  <form method="POST" action="/settings?/updateProfile" use:enhance class="space-y-4">
+  <form method="POST" action="/settings?/updateProfile" enctype="multipart/form-data" use:enhance class="space-y-4">
     <FormField {form} name="username">
       <FormControl>
         {#snippet children({ props })}

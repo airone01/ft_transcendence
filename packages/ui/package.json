@@ -18,6 +18,7 @@
     "./dialog": "./src/components/ui/dialog/index.ts",
     "./dropdown-menu": "./src/components/ui/dropdown-menu/index.ts",
     "./form": "./src/components/ui/form/index.ts",
+    "./image-cropper": "./src/components/ui/image-cropper/index.ts",
     "./input": "./src/components/ui/input/index.ts",
     "./item": "./src/components/ui/item/index.ts",
     "./label": "./src/components/ui/label/index.ts",
@@ -36,7 +37,8 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "svelte": "^5"
+    "svelte": "^5",
+    "svelte-easy-crop": "^5.0.0"
   },
   "devDependencies": {
     "@internationalized/date": "^3.10.0",
