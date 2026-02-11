@@ -1,23 +1,5 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import { page } from "$app/state";
-  import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
   import LandingPage from "$lib/components/landing/landing-page.svelte";
-
-  $effect(() => {
-    /* Refirection handling for unlogged users. Check happens in
-    /layout.server.ts, meaning in the server, which means the JS and pages are
-    never served to the user, they are redirected before that */
-    if (page.url.searchParams.get("login") === "true") {
-      openAuthDialog("login");
-      // clean up url (remove `?login=true` so it doesn't reopen on refresh)
-      const newUrl = new URL(page.url);
-      newUrl.searchParams.delete("login");
-      newUrl.searchParams.delete("redirectTo");
-      // replace current history entry so back button works as expected
-      goto(newUrl.toString(), { replaceState: true, keepFocus: true });
-    }
-  });
 
   let { data } = $props();
 </script>
