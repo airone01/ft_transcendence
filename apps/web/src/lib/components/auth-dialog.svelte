@@ -25,7 +25,7 @@ const submitHandler = () => {
       toast.success(authDialogState.mode === 'login' ? "Welcome back!" : "Welcome!");
       authDialogState.isOpen = false;
     } else if (result.type === 'failure') {
-      toast.error(result.data?.message || "An error occurred.");
+      toast.error(result.data?.message ?? "An error occurred.");
     }
     await update();
   };

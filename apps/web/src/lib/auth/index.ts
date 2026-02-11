@@ -1,13 +1,13 @@
 import { page } from "$app/state";
-import type { User } from "$lib/db-services";
+import type { UserNoPass } from "../../app";
 
 class AuthState {
-  get user(): User | null {
-    return page.data.user || null;
+  get user(): UserNoPass | null {
+    return page.data.user ?? null;
   }
 
   get session() {
-    return page.data.session || null;
+    return page.data.session ?? null;
   }
 
   get isAuthenticated() {

@@ -27,7 +27,7 @@ const logoutFunc = () => {
 };
 
 const user = $derived(page.data.user);
-const initials = $derived(user?.username?.slice(0, 2).toUpperCase() || "??");
+const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
 let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
