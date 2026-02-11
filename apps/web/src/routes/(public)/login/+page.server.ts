@@ -8,6 +8,20 @@ import type { Actions } from "./$types";
  * shadcn page for formsnap https://www.shadcn-svelte.com/docs/components/form.
  * This might be worth invisegating. */
 
+/**
+ * @brief Cryptic and general error message, to avoid malicious actors
+ * having access to more info than wanted (enumerating db emails, etc.).
+ *
+ * The thought process is that we don't want to tell users why exactly they
+ * could not connect, otherwise that information could be extracted to find
+ * out which emails are in DB, brute-force passwords, or to know when someone
+ * uses OAuth or not.
+ */
+const crypticFail = () =>
+  fail(400, {
+    message: "Invalid email or password, or the associated account uses OAuth.",
+  });
+
 export const actions = {
   default: async ({ request, cookies }) => {
     // NOTE: a forged request WILL crash the app here if those are not strings
@@ -18,18 +32,20 @@ export const actions = {
 
     try {
       const user = await dbGetUserByEmail(email);
-      if (!user) return fail(400, { message: "Invalid email or password" });
+
+      // explaination in `crypticFail` JSDoc above
+
+      if (!user)
+        // invalid user
+        return crypticFail();
 
       if (!user.password)
-        return fail(400, {
-          // TODO: specific message depending on the provider, because this is not precise enough for an average user
-          message:
-            "This account uses OAuth login. Please sign in with your OAuth provider.",
-        });
+        // this is an oauth account
+        return crypticFail();
 
-      if (!(await verifyPassword(user.password, password))) {
-        return fail(400, { message: "Invalid email or password" });
-      }
+      if (!(await verifyPassword(user.password, password)))
+        // invalid password for email
+        return crypticFail();
 
       const { token, expiresAt } = await auth.createSession(user.id);
 
