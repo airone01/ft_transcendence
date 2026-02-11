@@ -3,6 +3,9 @@ import { GameRoom } from "../rooms/GameRoom";
 import {
   dbGetGame,
   dbGetPlayers,
+  dbCreateGame,
+  dbStartGame,
+  dbEndGame,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
 } from "$lib/db-services";
@@ -14,8 +17,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
   // Join a game
   socket.on("game:join", async (data: { gameId: string }) => {
-    try {
-      const { gameId } = data;
+      try {
+          const { gameId } = data;
 
       const game = await dbGetGame(parseInt(gameId));
       const players = await dbGetPlayers(parseInt(gameId));
@@ -96,7 +99,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         to,
         promotion,
         fen: result.fen,
-        check: result.check,
         checkmate: result.checkmate,
         stalemate: result.stalemate,
       });
@@ -107,7 +109,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           winner: result.winner,
           reason: result.reason,
         });
-        await gameRoom.saveToDatabase();
         activeGames.delete(gameId);
       }
     } catch (error) {

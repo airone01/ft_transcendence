@@ -1,5 +1,5 @@
 import type { Server, Socket } from "socket.io";
-import { dbCreateGame, type CreateGameInput } from "$lib/db-services";
+import { dbCreateGame, dbStartGame, type CreateGameInput } from "$lib/db-services";
 
 // Matchmaking queues
 const queues = new Map<string, Socket[]>();
@@ -42,6 +42,7 @@ export function registerMatchmakingHandlers(io: Server, socket: Socket) {
         };
 
         const gameId = await dbCreateGame(gameInput);
+        await dbStartGame(gameId);
 
         // Notify the two players
         player1.emit("matchmaking:matched", { gameId: String(gameId), color: "white" });
