@@ -17,7 +17,6 @@ import {
   UnknownError,
 } from "$lib/db-services";
 
-
 /**
  * Adds a friend to a user's friends list.
  * @param {number} userId - The id of the user to add the friend to
@@ -52,6 +51,8 @@ export async function dbAddFriend(
 
     if (!channel) throw new DBCreateChatChannelError();
 
+    // TODO: remove
+    console.table({ channel, userId, friendId });
     const channelMembers = await db
       .insert(chatChannelMembers)
       .values([

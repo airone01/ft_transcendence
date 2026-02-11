@@ -37,7 +37,10 @@ export type {
 } from "./internal/schema/db.schema";
 
 /* Chat Types */
-export type { ChatChannelType } from "./internal/schema/db.chat.schema";
+export type {
+  ChatChannelType,
+  ChatMessageType,
+} from "./internal/schema/db.chat.schema";
 
 /* Users Types */
 export type {
@@ -59,6 +62,9 @@ export {
   dbSendToGame,
   dbSendToGlobal,
   dbSendToFriend,
+  dbGetGlobalMessages,
+  dbGetGameMessages,
+  dbGetFriendMessages,
 } from "./internal/services/db.chat.service";
 
 /* Friends Services */
