@@ -57,8 +57,6 @@ export type {
 
 /* Chat Services */
 export {
-  dbCreateChatChannel,
-  dbDeleteChatChannel,
   dbSendToGame,
   dbSendToGlobal,
   dbSendToFriend,

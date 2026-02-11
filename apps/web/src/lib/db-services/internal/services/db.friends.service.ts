@@ -51,8 +51,6 @@ export async function dbAddFriend(
 
     if (!channel) throw new DBCreateChatChannelError();
 
-    // TODO: remove
-    console.table({ channel, userId, friendId });
     const channelMembers = await db
       .insert(chatChannelMembers)
       .values([

@@ -9,11 +9,8 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import type { DatabaseError } from "pg";
 import {
   DBChatChannelNotFoundError,
-  DBCreateChatChannelError,
-  DBDeleteChatChannelError,
   UnknownError,
   type ChatChannelType,
   type ChatMessageType,
@@ -24,64 +21,6 @@ import {
   chatMessages,
 } from "@transc/db/schema";
 import { alias } from "drizzle-orm/pg-core";
-
-/**
- * Creates a chat channel in the database.
- * @param {ChatChannelType} type - The type of the chat channel.
- * @param {number | null} gameId - The ID of the game that the chat channel belongs to.
- * @throws {DBCreateChatChannelError} - If the type is "game" and the gameId is null.
- * @throws {UnknownError} - If an unexpected error occurs.
- * @returns {Promise<number>} - A promise that resolves with the ID of the created chat channel.
- */
-export async function dbCreateChatChannel(
-  type: ChatChannelType,
-  gameId: number | null,
-): Promise<number> {
-  if (type === "game" && gameId === null) throw new DBCreateChatChannelError();
-
-  try {
-    const [chatChannel] = await db
-      .insert(chatChannels)
-      .values({
-        type: type,
-        gameId: gameId,
-      })
-      .returning();
-
-    return chatChannel.id;
-  } catch (err) {
-    console.error(err);
-    throw new UnknownError();
-  }
-}
-
-/**
- * Deletes a chat channel from the database.
- * @param {number} chatChannelId - The ID of the chat channel to delete.
- * @throws {DBDeleteChatChannelError} - If the chat channel to delete is the default global chat channel.
- * @throws {DBChatChannelNotFoundError} - If the chat channel is not found.
- * @throws {UnknownError} - If an unexpected error occurs.
- * @returns {Promise<void>} - A promise that resolves when the chat channel is deleted, or rejects if the chat channel is not found or an unexpected error occurs.
- */
-export async function dbDeleteChatChannel(
-  chatChannelId: number,
-): Promise<void> {
-  if (chatChannelId === 1) throw new DBDeleteChatChannelError();
-
-  try {
-    const [chatChannel] = await db
-      .delete(chatChannels)
-      .where(eq(chatChannels.id, chatChannelId))
-      .returning();
-
-    if (!chatChannel) throw new DBChatChannelNotFoundError();
-  } catch (err) {
-    if (err instanceof DBChatChannelNotFoundError) throw err;
-
-    console.error(err);
-    throw new UnknownError();
-  }
-}
 
 /**
  * Sends a message to the global chat channel.
@@ -222,7 +161,8 @@ export async function dbGetGlobalMessages(): Promise<ChatMessageType[]> {
         createdAt: chatMessages.createdAt,
       })
       .from(chatMessages)
-      .where(eq(chatMessages.channelId, 1))
+      .innerJoin(chatChannels, eq(chatMessages.channelId, chatChannels.id))
+      .where(eq(chatChannels.type, "global"))
       .orderBy(desc(chatMessages.createdAt));
 
     return messages as ChatMessageType[];

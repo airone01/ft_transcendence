@@ -34,23 +34,14 @@ async function clear() {
 
 await clear();
 
-async function globalChat() {
+async function seed() {
   try {
     await db
       .insert(chatChannels)
       .values({
-        id: 1,
         type: "global",
       })
       .returning();
-  } catch (_err) {}
-}
-
-async function seed() {
-  try {
-    await globalChat();
-
-    console.log("✅ Global chat created");
 
     // seed users
     const valentinId = await dbCreateUser({
@@ -77,12 +68,11 @@ async function seed() {
       password: "password",
     });
 
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     // seed friendships
     await dbAddFriend(valentinId, erwannId);
-    // await dbAddFriend(valentinId, enzoId);
-    // await dbAddFriend(valentinId, simonId);
-    // await dbAddFriend(erwannId, enzoId);
+    await dbAddFriend(valentinId, enzoId);
+    await dbAddFriend(valentinId, simonId);
+    await dbAddFriend(erwannId, enzoId);
 
     // seed games
     const game1 = await dbCreateGame({
