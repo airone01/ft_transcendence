@@ -57,6 +57,10 @@ export function joinGame(gameId: string) {
 
 export function makeMove(from: string, to: string, promotion?: string) {
   const state = getCurrentGameState();
+  if (!state) {
+    console.error("error: Undifened");
+    return;
+  }
   if (!state.gameId) {
     console.error("No active game");
     return;
@@ -72,24 +76,40 @@ export function makeMove(from: string, to: string, promotion?: string) {
 
 export function offerDraw() {
   const state = getCurrentGameState();
+  if (!state) {
+    console.error("error: Undifened");
+    return;
+  }
   if (!state.gameId) return;
   socketManager.emit("game:offer_draw", { gameId: state.gameId });
 }
 
 export function acceptDraw() {
   const state = getCurrentGameState();
+  if (!state) {
+    console.error("error: Undifened");
+    return;
+  }
   if (!state.gameId) return;
   socketManager.emit("game:accept_draw", { gameId: state.gameId });
 }
 
 export function resign() {
   const state = getCurrentGameState();
+  if (!state) {
+    console.error("error: Undifened");
+    return;
+  }
   if (!state.gameId) return;
   socketManager.emit("game:resign", { gameId: state.gameId });
 }
 
 export function leaveGame() {
   const state = getCurrentGameState();
+  if (!state) {
+    console.error("error: Undifened");
+    return;
+  }
   if (!state.gameId) return;
   socketManager.emit("game:leave", { gameId: state.gameId });
 

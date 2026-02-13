@@ -38,16 +38,16 @@ export function clearGameMessages() {
 // ─── Event Listeners ────────────────────────────────────────────────────────
 
 export function setupChatListeners() {
-  socketManager.on("chat:global", (data: ChatMessage) => {
+  socketManager.on("chat:global", ((data: ChatMessage) => {
     globalMessages.update((messages) => [...messages, data]);
-  });
+  }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("chat:game", (data: ChatMessage) => {
+  socketManager.on("chat:game", ((data: ChatMessage) => {
     gameMessages.update((messages) => [...messages, data]);
-  });
+  }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("chat:error", (data: { message: string }) => {
+  socketManager.on("chat:error", ((data: { message: string }) => {
     console.error("Chat error:", data.message);
     alert(`Chat·error:·${data.message}`);
-  });
+  }) as unknown as (...args: unknown[]) => void);
 }

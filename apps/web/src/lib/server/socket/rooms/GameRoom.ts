@@ -65,6 +65,8 @@ export class GameRoom extends EventEmitter {
   private blackSockets: Set<Socket> = new Set();
 
   private startTime: Date;
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: will be used later
+  private lastMoveTime: Date;
   private whiteTimeLeft: number;
   private blackTimeLeft: number;
   private timeControlSeconds: number;
