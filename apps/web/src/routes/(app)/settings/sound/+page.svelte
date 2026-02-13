@@ -1,16 +1,7 @@
 <script lang="ts">
-  import { Separator } from "@transc/ui/separator";
+import SettingsHeader from "$lib/components/settings-header.svelte";
 </script>
 
-<div class="space-y-6">
-  <div>
-    <h3 class="text-lg font-medium">Gameplay</h3>
-    <p class="text-sm text-muted-foreground">
-      Configure your game preferences.
-    </p>
-  </div>
-  <Separator />
-  <div class="py-4 text-muted-foreground">
-    Sound settings coming soon...
-  </div>
-</div>
+<SettingsHeader title="Sounds" description="Hearing capabilities settings.">
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde, tempore illum sed rerum praesentium facere asperiores itaque pariatur nesciunt provident officia necessitatibus quas? Odit animi reiciendis natus perspiciatis sit. Minus?
+</SettingsHeader>

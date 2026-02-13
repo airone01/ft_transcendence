@@ -8,6 +8,7 @@ import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms
 import { zodClient } from "sveltekit-superforms/adapters";
 import { toast } from "svelte-sonner";
 import { CameraIcon } from '@lucide/svelte';
+import { Avatar, AvatarImage, AvatarFallback } from '@transc/ui/avatar';
 
 let { data, userAvatar }: { data: SuperValidated<Infer<ProfileFormSchema>>, userAvatar: string | null } = $props();
 
@@ -44,13 +45,10 @@ function handleCroppedImage(file: File) {
         type="button"
         class="relative h-24 w-24 overflow-hidden rounded-full border-2 border-border hover:opacity-80 transition-opacity group"
       >
-        {#if previewUrl}
-          <img src={previewUrl} alt="Avatar" class="h-full w-full object-cover" />
-        {:else}
-          <div class="flex h-full w-full items-center justify-center bg-muted text-3xl font-bold">
-            {($formData.username ?? "?").slice(0, 2).toUpperCase()}
-          </div>
-        {/if}
+        <Avatar>
+          <AvatarImage src={previewUrl} />
+          <AvatarFallback>{($formData.username ?? "?").slice(0, 2).toUpperCase()}</AvatarFallback>
+        </Avatar>
         
         <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
           <CameraIcon class="h-6 w-6" />

@@ -2,28 +2,31 @@
   import { page } from "$app/state";
   import { cn } from "@transc/ui/utils";
   import { Button } from "@transc/ui/button";
+  import type { Component } from "svelte";
+  import { AudioLinesIcon, ContrastIcon, EarthLockIcon, Gamepad2Icon, KeyRoundIcon, UserIcon, type IconProps } from "@lucide/svelte";
 
   let { children } = $props();
 
-  const sidebarNavItems = [
-    { title: "Profile", href: "/settings/profile" },
-    { title: "Gameplay", href: "/settings/gameplay" },
-    { title: "Sound", href: "/settings/sound" },
-    { title: "Display", href: "/settings/display" },
-    { title: "Privacy", href: "/settings/privacy" },
+  const sidebarNavItems: {icon: Component<IconProps, {}, "">, title: string, href: string}[]  = [
+    { icon: UserIcon, title: "Profile", href: "/settings/profile" },
+    { icon: Gamepad2Icon, title: "Gameplay", href: "/settings/gameplay" },
+    { icon: AudioLinesIcon, title: "Sound", href: "/settings/sound" },
+    { icon: ContrastIcon, title: "Display", href: "/settings/display" },
+    { icon: EarthLockIcon, title: "Privacy", href: "/settings/privacy" },
+    { icon: KeyRoundIcon, title: "Account", href: "/settings/account" },
   ];
 </script>
 
-<main class="hidden space-y-6 pb-16 md:block w-full h-full">
-  <div class="space-y-0.5 grow-0">
+<main class="flex flex-col gap-4 pb-16 w-full h-full">
+  <header>
     <h2 class="text-2xl font-bold tracking-tight">Settings</h2>
     <p class="text-muted-foreground">
       Manage your account settings and preferences.
     </p>
-  </div>
-  <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0 gap-4 m-4 p-4 border rounded-md grow h-full">
-    <aside class="lg:w-1/5 border rounded-md p-2 mr-0">
-      <nav class="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
+  </header>
+  <div id="hello" class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4 p-4 border rounded-xl">
+    <aside class="lg:w-1/5 border rounded-lg p-2 mr-0 overflow-scroll">
+      <nav class="flex lg:flex-col gap-1">
         {#each sidebarNavItems as item}
           <Button
             href={item.href}
@@ -35,12 +38,13 @@
                 : "hover:underline",
             )}
           >
+            <item.icon class="mr-1" />
             {item.title}
           </Button>
         {/each}
       </nav>
     </aside>
-    <div class="flex-1 border rounded-md w-full grow p-4">
+    <div class="flex-1 border rounded-lg w-full p-4">
       {@render children?.()}
     </div>
   </div>
