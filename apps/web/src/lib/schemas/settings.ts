@@ -1,16 +1,9 @@
 // yes, the fact that zod is on v3 is important.
 import { z } from "zod/v3";
+import { zPassword, zUsername } from "./auth";
 
 export const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters" /* i18n */)
-    .max(20, "Username must be at most 20 characters" /* i18n */)
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores" /* i18n */,
-    )
-    .optional(),
+  username: zUsername.optional(),
   avatar: z
     .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
     .refine((f) => f.size < 100_000, "Max 100 kB upload size." /* i18n */)
@@ -47,6 +40,45 @@ export const gameplayFormSchema = z.object({
    * @brief whether the white pices are always rendered at the bottom of the board
    */
   whiteAlwaysBottom: z.boolean(),
+});
+
+export const soundsFormSchema = z.object({
+  /**
+   * @brief whether to play sounds or not
+   */
+  playSounds: z.boolean(),
+});
+
+export const displayFormSchema = z.object({
+  /**
+   * @brief whether to enable dark mode
+   */
+  darkMode: z.boolean(),
+  /**
+   * @brief whether to display player rating in-game
+   */
+  showPlayerRatingInGame: z.boolean(),
+});
+
+export const privacyFormSchema = z.object({
+  /**
+   * @brief whether to allow friend requests from other users
+   */
+  allowFriendRequests: z.boolean(),
+  /**
+   * @brief whether to enable private/incognito mode
+   */
+  privateMode: z.boolean(),
+  /**
+   * @brief whether to enable game history saving
+   */
+  gameHistory: z.boolean(),
+});
+
+export const accountSettingsSchema = z.object({
+  oldPassword: z.string(),
+  newPassword: zPassword,
+  newPasswordConfirm: zPassword,
 });
 
 export type ProfileFormSchema = typeof profileFormSchema;
