@@ -8,18 +8,16 @@ import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms
 import { zodClient } from "sveltekit-superforms/adapters";
 import { toast } from "svelte-sonner";
 import { CameraIcon } from '@lucide/svelte';
-import { closeSettingsDialog } from '$lib/stores/settings-dialog.svelte';
 
 let { data, userAvatar }: { data: SuperValidated<Infer<ProfileFormSchema>>, userAvatar: string | null } = $props();
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
-const form = superForm(data, { // [!code ++]
+const form = superForm(data, {
   validators: zodClient(profileFormSchema),
   invalidateAll: true,
   onUpdated: ({ form }) => {
     if (form.valid) {
       toast.success("Profile updated successfully");
-      closeSettingsDialog();
     }
   }
 });

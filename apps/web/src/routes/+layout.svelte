@@ -8,7 +8,6 @@ import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { Toaster } from "@transc/ui/sonner";
 import { TooltipProvider } from "@transc/ui/tooltip";
 import AppShell from "$lib/components/layout/app-shell.svelte";
-import SettingsDialog from "$lib/components/settings-dialog.svelte";
 
 const { children, data } = $props();
 </script>
@@ -17,7 +16,6 @@ const { children, data } = $props();
 
 <Toaster />
 <AuthDialog />
-<SettingsDialog form={data.settingsForm} />
 
 <TooltipProvider>
   {#if data.user}

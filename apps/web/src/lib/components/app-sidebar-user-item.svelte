@@ -13,7 +13,6 @@ import { enhance } from "$app/forms";
 import { invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
 import { toast } from "svelte-sonner";
-import { openSettingsDialog } from "$lib/stores/settings-dialog.svelte";
 
 const logoutFunc = () => {
   return async ({ result }: any) => {
@@ -65,7 +64,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
         >
           <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>Log out</DropdownMenuItem>
         </form>
-        <DropdownMenuItem onclick={openSettingsDialog}>Settings</DropdownMenuItem>
+        <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

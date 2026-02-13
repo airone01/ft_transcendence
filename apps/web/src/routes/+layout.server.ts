@@ -1,18 +1,13 @@
 import { superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { loginSchema, registerSchema } from "$lib/schemas/auth";
-import { profileFormSchema } from "$lib/schemas/settings";
 import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const sidebarCookie = cookies.get("sidebar:state");
   const sidebarOpen = sidebarCookie !== "false";
 
-  const [settingsForm, loginForm, registerForm] = await Promise.all([
-    superValidate(
-      locals.user ? { username: locals.user.username } : {},
-      zod(profileFormSchema),
-    ),
+  const [loginForm, registerForm] = await Promise.all([
     superValidate(zod(loginSchema)),
     superValidate(zod(registerSchema)),
   ]);
@@ -26,7 +21,6 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
     //
     sidebarOpen,
     //
-    settingsForm,
     loginForm,
     registerForm,
   };
