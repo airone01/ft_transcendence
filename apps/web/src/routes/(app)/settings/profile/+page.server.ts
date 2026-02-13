@@ -29,10 +29,7 @@ export const actions: Actions = {
     try {
       const updateData: { username?: string; avatar?: string } = {};
 
-      if (
-        form.data.username !== locals.user.username &&
-        typeof form.data.username === "string"
-      )
+      if (form.data.username !== locals.user.username)
         updateData.username = form.data.username;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {

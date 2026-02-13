@@ -1,5 +1,5 @@
 <script>
-import Button from "@transc/ui/components/ui/button/button.svelte";
+import { Button } from "@transc/ui/button";
 </script>
 
 <section class="flex gap-4 container">

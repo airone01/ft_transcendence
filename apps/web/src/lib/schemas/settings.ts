@@ -17,4 +17,36 @@ export const profileFormSchema = z.object({
     .optional(),
 });
 
+export const gameplayFormSchema = z.object({
+  /**
+   * @brief make legal moves during the opponent turn to be played automatically.
+   */
+  enablePremoves: z.boolean(),
+  /**
+   * @brief always promote pawns to queen when they reach the other sie of the
+   *        board
+   */
+  alwaysPromoteToQueen: z.boolean(),
+  /*
+   * @brief user will be asked to confirm when resigning/drawing
+   */
+  confirmResignOrDraw: z.boolean(),
+  /**
+   * @brief display legal moves on-screen
+   */
+  showLegalMoves: z.boolean(),
+  /**
+   * @brief warn user when time left to play is low
+   */
+  lowTimeWarning: z.boolean(),
+  /**
+   * @brief enable always-on focus mode
+   */
+  focusModeAlwaysOn: z.boolean(),
+  /**
+   * @brief whether the white pices are always rendered at the bottom of the board
+   */
+  whiteAlwaysBottom: z.boolean(),
+});
+
 export type ProfileFormSchema = typeof profileFormSchema;

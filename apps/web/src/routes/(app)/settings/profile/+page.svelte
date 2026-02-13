@@ -4,8 +4,7 @@ import { zodClient } from "sveltekit-superforms/adapters";
 import { toast } from "svelte-sonner";
 import { profileFormSchema } from "$lib/schemas/settings";
 import { Input } from "@transc/ui/input";
-import { Button } from "@transc/ui/button";
-import * as Form from "@transc/ui/form";
+import { FormField, FormLabel, FormControl, FormFieldErrors } from "@transc/ui/form";
 import { ImageCropper } from "@transc/ui/image-cropper";
 import { CameraIcon } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
@@ -44,12 +43,12 @@ function handleCroppedImage(file: File) {
 }
 </script>
 
-<SettingsHeader title="Profile" description="This is how others will see you on the site.">
-  <div class="flex flex-col items-center gap-4">
+<SettingsHeader title="Profile" description="This is how others will see you on the site." formId="profileSettingsForm" {delayed}>
+  <div class="flex flex-col md:flex-row md:items-end gap-4 items-center">
     <ImageCropper onCropped={handleCroppedImage}>
-      <button 
+      <button
         type="button"
-        class="relative h-24 w-24 overflow-hidden rounded-md ring-2 ring-primary hover:opacity-80 transition-opacity group"
+        class="relative h-24 w-24 overflow-hidden rounded-md border-2 border-primary hover:opacity-80 transition-opacity group"
       >
         <Avatar class="w-full h-full rounded-none">
           <AvatarImage class="rounded-none" src={previewUrl} />
@@ -61,37 +60,32 @@ function handleCroppedImage(file: File) {
         </div>
       </button>
     </ImageCropper>
+
+    <form 
+      id="profileSettingsForm"
+      method="POST" 
+      action="/settings/profile" 
+      enctype="multipart/form-data" 
+      use:enhance 
+      class="flex-1 md:max-w-md self-start w-full"
+    >
+      <input 
+        type="file" 
+        name="avatar" 
+        class="hidden" 
+        bind:this={hiddenFileInput} 
+        accept="image/*" 
+      />
+
+      <FormField {form} name="username">
+        <FormControl>
+          {#snippet children({ props })}
+            <FormLabel>Username<!-- i18n --></FormLabel>
+            <Input {...props} bind:value={$formData.username} />
+          {/snippet}
+        </FormControl>
+        <FormFieldErrors />
+      </FormField>
+    </form>
   </div>
-
-  <form 
-    method="POST" 
-    action="/settings/profile" 
-    enctype="multipart/form-data" 
-    use:enhance 
-    class="flex-1 max-w-md"
-  >
-    <input 
-      type="file" 
-      name="avatar" 
-      class="hidden" 
-      bind:this={hiddenFileInput} 
-      accept="image/*" 
-    />
-
-    <Form.Field {form} name="username">
-      <Form.Control>
-        {#snippet children({ props })}
-          <Form.Label>Username</Form.Label>
-          <Input {...props} bind:value={$formData.username} />
-        {/snippet}
-      </Form.Control>
-      <Form.FieldErrors />
-    </Form.Field>
-
-    <div class="flex justify-end pt-4">
-      <Button type="submit" disabled={$delayed}>
-        {#if $delayed}Saving...{:else}Save Changes{/if}
-      </Button>
-    </div>
-  </form>
 </SettingsHeader>

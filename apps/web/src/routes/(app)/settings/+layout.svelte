@@ -25,7 +25,7 @@
     </p>
   </header>
   <div id="hello" class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4 p-4 border rounded-xl">
-    <aside class="lg:w-1/5 border rounded-lg p-2 mr-0 overflow-scroll">
+    <aside class="lg:max-w-xs border rounded-lg p-2 overflow-x-scroll overflow-y-clip lg:overflow-x-clip">
       <nav class="flex lg:flex-col gap-1">
         {#each sidebarNavItems as item}
           <Button
