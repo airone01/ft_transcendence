@@ -14,7 +14,7 @@ let { data } = $props();
 
 const form = superForm(data.form, {
   validators: zodClient(profileFormSchema),
-  invalidateAll: true, // reloads data.user after update
+  invalidateAll: true, // reloads data after update
   onUpdated: ({ form }) => {
     if (form.valid) {
       toast.success("Profile updated successfully");
@@ -55,7 +55,7 @@ function handleCroppedImage(file: File) {
           <AvatarFallback class="rounded-none">{($formData.username ?? "?").slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         
-        <div class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity">
+        <div class="absolute inset-0 flex items-center justify-center bg-neutral-900/50 text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity">
           <CameraIcon class="h-6 w-6" />
         </div>
       </button>
@@ -67,7 +67,7 @@ function handleCroppedImage(file: File) {
       action="/settings/profile" 
       enctype="multipart/form-data" 
       use:enhance 
-      class="flex-1 md:max-w-md self-start w-full"
+      class="flex-1 md:max-w-md self-start md:self-auto w-full"
     >
       <input 
         type="file" 
