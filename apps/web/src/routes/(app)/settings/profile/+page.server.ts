@@ -1,10 +1,10 @@
 import { fail, redirect } from "@sveltejs/kit";
+import sharp from "sharp";
 import { superValidate, withFiles } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import { dbUpdateUser } from "$lib/db-services";
 import { profileFormSchema } from "$lib/schemas/settings";
 import type { Actions, PageServerLoad } from "./$types";
-import sharp from "sharp";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
