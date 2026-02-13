@@ -1,13 +1,14 @@
 <script lang="ts">
 import SettingsFormCheckboxes from "$lib/components/settings-form-checkboxes.svelte";
 import SettingsHeader from "$lib/components/settings-header.svelte";
-import { superForm, type FormPath } from "sveltekit-superforms";
+import { superForm } from "sveltekit-superforms";
 import { privacyFormSchema } from "$lib/schemas/settings";
 import { zodClient } from "sveltekit-superforms/adapters";
 import { toast } from "svelte-sonner";
 
 let { data } = $props();
 
+// svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 const form = superForm(data.form, {
   validators: zodClient(privacyFormSchema),
   invalidateAll: true, // reloads data after update

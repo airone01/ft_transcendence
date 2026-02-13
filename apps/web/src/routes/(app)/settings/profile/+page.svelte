@@ -12,6 +12,7 @@ import SettingsHeader from "$lib/components/settings-header.svelte";
 
 let { data } = $props();
 
+// svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 const form = superForm(data.form, {
   validators: zodClient(profileFormSchema),
   invalidateAll: true, // reloads data after update

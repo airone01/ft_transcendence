@@ -8,6 +8,7 @@ import { toast } from "svelte-sonner";
 
 let { data } = $props();
 
+// svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 const form = superForm(data.form, {
   validators: zodClient(displayFormSchema),
   invalidateAll: true, // reloads data after update
