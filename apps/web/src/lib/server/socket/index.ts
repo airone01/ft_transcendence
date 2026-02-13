@@ -1,12 +1,15 @@
+import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
-import type { Server as HTTPServer } from "http";
-import { authMiddleware } from "./middleware/auth";
-import { registerGameHandlers } from "./handlers/game";
 import { registerChatHandlers } from "./handlers/chat";
-import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
+import { registerGameHandlers } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
-import { saveSessionOnDisconnect, restoreSessionOnReconnect } from "./utils/reconnection";
+import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
+import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
+import {
+  restoreSessionOnReconnect,
+  saveSessionOnDisconnect,
+} from "./utils/reconnection";
 
 let io: Server;
 

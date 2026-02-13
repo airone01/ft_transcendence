@@ -35,9 +35,9 @@ export function checkRateLimit(socket: Socket): boolean {
 // Wrapper for handlers: uses checkRateLimit before executing
 export function withRateLimit(
   socket: Socket,
-  handler: (...args: any[]) => void
-): (...args: any[]) => void {
-  return (...args: any[]) => {
+  handler: (...args: Record<string, unknown>[]) => void,
+): (...args: Record<string, unknown>[]) => void {
+  return (...args: Record<string, unknown>[]) => {
     if (checkRateLimit(socket)) {
       handler(...args);
     }

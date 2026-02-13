@@ -1,18 +1,15 @@
+import { EventEmitter } from "node:events";
 import type { Socket } from "socket.io";
-import { EventEmitter } from "events";
-import {
-  parseFEN,        // [chess] Parse a FEN string -> GameState
-  boardToFEN,      // [chess] Convert a GameState -> FEN string
-  playMove,        // [chess] Apply a move to the state and return the new state
-  isCheckmate,     // [chess] Check if the position is checkmate
-  isDraw,          // [chess] Check if the position is a draw (stalemate, etc.)
-  startGame,       // [chess] Start a new game
-} from "$lib/chess";
 import type { GameState, Move } from "$lib/chess";
 import {
-  dbEndGame,
-  type EndGameInput,
-} from "$lib/db-services";
+  boardToFEN, // [chess] Convert a GameState -> FEN string
+  isCheckmate, // [chess] Check if the position is checkmate
+  isDraw, // [chess] Check if the position is a draw (stalemate, etc.)
+  parseFEN, // [chess] Parse a FEN string -> GameState
+  playMove, // [chess] Apply a move to the state and return the new state
+  startGame, // [chess] Start a new game
+} from "$lib/chess";
+import { dbEndGame, type EndGameInput } from "$lib/db-services";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Types
@@ -40,11 +37,11 @@ interface MakeMoveResult {
 
 function algebraicToCoords(pos: string): [number, number] {
   const col = pos.charCodeAt(0) - "a".charCodeAt(0);
-  const row = 8 - parseInt(pos[1]);
+  const row = 8 - parseInt(pos[1], 10);
   return [row, col];
 }
 
-function coordsToAlgebraic([row, col]: [number, number]): string {
+function _coordsToAlgebraic([row, col]: [number, number]): string {
   return String.fromCharCode(col + "a".charCodeAt(0)) + (8 - row);
 }
 
@@ -68,7 +65,6 @@ export class GameRoom extends EventEmitter {
   private blackSockets: Set<Socket> = new Set();
 
   private startTime: Date;
-  private lastMoveTime: Date;
   private whiteTimeLeft: number;
   private blackTimeLeft: number;
   private timeControlSeconds: number;
@@ -92,7 +88,7 @@ export class GameRoom extends EventEmitter {
       incrementSeconds?: number;
       whiteTimeLeft?: number;
       blackTimeLeft?: number;
-    }
+    },
   ) {
     super();
 
@@ -114,10 +110,14 @@ export class GameRoom extends EventEmitter {
     this.timeControlSeconds = gameData.timeControlSeconds || 600;
     this.incrementSeconds = gameData.incrementSeconds || 5;
 
-    this.whiteTimeLeft = gameData.whiteTimeLeft ?? (this.timeControlSeconds * 1000);
-    this.blackTimeLeft = gameData.blackTimeLeft ?? (this.timeControlSeconds * 1000);
+    this.whiteTimeLeft =
+      gameData.whiteTimeLeft ?? this.timeControlSeconds * 1000;
+    this.blackTimeLeft =
+      gameData.blackTimeLeft ?? this.timeControlSeconds * 1000;
 
-    console.log(`[GameRoom ${gameId}] Times: white=${this.whiteTimeLeft}ms, black=${this.blackTimeLeft}ms`);
+    console.log(
+      `[GameRoom ${gameId}] Times: white=${this.whiteTimeLeft}ms, black=${this.blackTimeLeft}ms`,
+    );
   }
 
   // Players Management
@@ -180,7 +180,9 @@ export class GameRoom extends EventEmitter {
       });
     }, 100);
 
-    console.log(`[GameRoom ${this.gameId}] Timer started for ${this.state.turn === "w" ? "white" : "black"}`);
+    console.log(
+      `[GameRoom ${this.gameId}] Timer started for ${this.state.turn === "w" ? "white" : "black"}`,
+    );
   }
 
   stopTimer() {
@@ -208,7 +210,9 @@ export class GameRoom extends EventEmitter {
 
     const winner = color === "w" ? this.blackId : this.whiteId;
 
-    console.log(`[GameRoom ${this.gameId}] Timeout: ${color === "w" ? "white" : "black"} ran out of time`);
+    console.log(
+      `[GameRoom ${this.gameId}] Timeout: ${color === "w" ? "white" : "black"} ran out of time`,
+    );
 
     await this.endGame("timeout", winner);
 
@@ -219,7 +223,10 @@ export class GameRoom extends EventEmitter {
   // Move Execution
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  async makeMove(userId: string, input: MakeMoveInput): Promise<MakeMoveResult> {
+  async makeMove(
+    userId: string,
+    input: MakeMoveInput,
+  ): Promise<MakeMoveResult> {
     this.stopTimer();
 
     try {
@@ -245,7 +252,8 @@ export class GameRoom extends EventEmitter {
           b: isWhite ? "B" : "b",
           n: isWhite ? "N" : "n",
         };
-        move.promotion = (promoMap[input.promotion.toLowerCase()] || null) as Move["promotion"];
+        move.promotion = (promoMap[input.promotion.toLowerCase()] ||
+          null) as Move["promotion"];
       }
 
       this.state = playMove(this.state, move);
@@ -263,7 +271,9 @@ export class GameRoom extends EventEmitter {
         this.blackTimeLeft += this.incrementSeconds * 1000;
       }
 
-      console.log(`[GameRoom ${this.gameId}] Move: ${input.from}→${input.to}, times: white=${this.whiteTimeLeft}ms, black=${this.blackTimeLeft}ms`);
+      console.log(
+        `[GameRoom ${this.gameId}] Move: ${input.from}→${input.to}, times: white=${this.whiteTimeLeft}ms, black=${this.blackTimeLeft}ms`,
+      );
 
       const checkmate = isCheckmate(this.state);
       const draw = isDraw(this.state);
@@ -350,9 +360,16 @@ export class GameRoom extends EventEmitter {
   // Database Operations
 
   async endGame(reason: string, winnerId?: string) {
-    if (this.isGameOverFlag && reason !== "timeout" && reason !== "checkmate" && reason !== "draw") {
+    if (
+      this.isGameOverFlag &&
+      reason !== "timeout" &&
+      reason !== "checkmate" &&
+      reason !== "draw"
+    ) {
       // Éviter double-call sauf si vient de timeout/checkmate/draw
-      console.log(`[GameRoom ${this.gameId}] Game already ended, skipping endGame()`);
+      console.log(
+        `[GameRoom ${this.gameId}] Game already ended, skipping endGame()`,
+      );
       return;
     }
 
@@ -362,7 +379,11 @@ export class GameRoom extends EventEmitter {
     try {
       let result: "white_win" | "black_win" | "draw" | "abort";
 
-      if (reason === "checkmate" || reason === "resignation" || reason === "timeout") {
+      if (
+        reason === "checkmate" ||
+        reason === "resignation" ||
+        reason === "timeout"
+      ) {
         result = winnerId === this.whiteId ? "white_win" : "black_win";
       } else if (
         reason === "agreement" ||
@@ -378,15 +399,20 @@ export class GameRoom extends EventEmitter {
       }
 
       const endGameInput: EndGameInput = {
-        gameId: parseInt(this.gameId),
+        gameId: parseInt(this.gameId, 10),
         result,
       };
 
       await dbEndGame(endGameInput);
 
-      console.log(`[GameRoom ${this.gameId}] Game ended and saved to DB: ${reason}, result: ${result}`);
+      console.log(
+        `[GameRoom ${this.gameId}] Game ended and saved to DB: ${reason}, result: ${result}`,
+      );
     } catch (error) {
-      console.error(`[GameRoom ${this.gameId}] Failed to end game in DB:`, error);
+      console.error(
+        `[GameRoom ${this.gameId}] Failed to end game in DB:`,
+        error,
+      );
       throw error;
     }
   }

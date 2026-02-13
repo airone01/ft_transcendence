@@ -3,7 +3,12 @@ import type { Socket } from "socket.io";
 export class ChatRoom {
   private roomId: string;
   private sockets: Set<Socket> = new Set();
-  private messageHistory: { userId: string; username: string; content: string; timestamp: string }[] = [];
+  private messageHistory: {
+    userId: string;
+    username: string;
+    content: string;
+    timestamp: string;
+  }[] = [];
   private maxHistory: number;
 
   constructor(roomId: string, maxHistory = 100) {

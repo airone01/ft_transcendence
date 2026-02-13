@@ -1,14 +1,11 @@
 import type { Server, Socket } from "socket.io";
-import { GameRoom } from "../rooms/GameRoom";
 import {
-  dbGetGame,
-  dbGetPlayers,
-  dbCreateGame,
-  dbStartGame,
-  dbEndGame,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
+  dbGetGame,
+  dbGetPlayers,
 } from "$lib/db-services";
+import { GameRoom } from "../rooms/GameRoom";
 
 const activeGames = new Map<string, GameRoom>();
 
@@ -17,11 +14,11 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
   // Join a game
   socket.on("game:join", async (data: { gameId: string }) => {
-      try {
-          const { gameId } = data;
+    try {
+      const { gameId } = data;
 
-      const game = await dbGetGame(parseInt(gameId));
-      const players = await dbGetPlayers(parseInt(gameId));
+      const game = await dbGetGame(parseInt(gameId, 10));
+      const players = await dbGetPlayers(parseInt(gameId, 10));
 
       // Vérifier que le userId correspond à un des joueurs
       if (
@@ -69,57 +66,62 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   // Make a move
-  socket.on("game:move", async (data: {
-    gameId: string;
-    from: string;
-    to: string;
-    promotion?: string;
-  }) => {
-    try {
-      const { gameId, from, to, promotion } = data;
+  socket.on(
+    "game:move",
+    async (data: {
+      gameId: string;
+      from: string;
+      to: string;
+      promotion?: string;
+    }) => {
+      try {
+        const { gameId, from, to, promotion } = data;
 
-      const gameRoom = activeGames.get(gameId);
-      if (!gameRoom) {
-        return socket.emit("game:error", { message: "Game not found" });
-      }
+        const gameRoom = activeGames.get(gameId);
+        if (!gameRoom) {
+          return socket.emit("game:error", { message: "Game not found" });
+        }
 
-      if (!gameRoom.isPlayerTurn(userId)) {
-        return socket.emit("game:error", { message: "Not your turn" });
-      }
+        if (!gameRoom.isPlayerTurn(userId)) {
+          return socket.emit("game:error", { message: "Not your turn" });
+        }
 
-      const result = await gameRoom.makeMove(userId, { from, to, promotion });
+        const result = await gameRoom.makeMove(userId, { from, to, promotion });
 
-      if (!result.valid) {
-        return socket.emit("game:error", { message: result.error });
-      }
+        if (!result.valid) {
+          return socket.emit("game:error", { message: result.error });
+        }
 
-      // Broadcast the move
-      io.to(`game:${gameId}`).emit("game:move", {
-        from,
-        to,
-        promotion,
-        fen: result.fen,
-        checkmate: result.checkmate,
-        stalemate: result.stalemate,
-      });
-
-      // Game over
-      if (result.gameOver) {
-        io.to(`game:${gameId}`).emit("game:over", {
-          winner: result.winner,
-          reason: result.reason,
+        // Broadcast the move
+        io.to(`game:${gameId}`).emit("game:move", {
+          from,
+          to,
+          promotion,
+          fen: result.fen,
+          checkmate: result.checkmate,
+          stalemate: result.stalemate,
         });
-        activeGames.delete(gameId);
+
+        // Game over
+        if (result.gameOver) {
+          io.to(`game:${gameId}`).emit("game:over", {
+            winner: result.winner,
+            reason: result.reason,
+          });
+          activeGames.delete(gameId);
+        }
+      } catch (error) {
+        console.error("Move error:", error);
+        socket.emit("game:error", { message: "Invalid move" });
       }
-    } catch (error) {
-      console.error("Move error:", error);
-      socket.emit("game:error", { message: "Invalid move" });
-    }
-  });
+    },
+  );
 
   // Offer draw
   socket.on("game:offer_draw", (data: { gameId: string }) => {
-    socket.to(`game:${data.gameId}`).emit("game:draw_offered", { from: userId });
+    socket
+      .to(`game:${data.gameId}`)
+      .emit("game:draw_offered", { from: userId });
   });
 
   // Accept draw

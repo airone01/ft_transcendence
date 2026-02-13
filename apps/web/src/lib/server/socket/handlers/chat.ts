@@ -1,6 +1,6 @@
-import type { Server, Socket } from "socket.io";
 import { db } from "@transc/db";
 import { chatMessage } from "@transc/db/schema"; // ← import manquant
+import type { Server, Socket } from "socket.io";
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -14,7 +14,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     // TODO: Remplacer par dbCreateChatMessage() quand disponible dans db-services
     // Pour l'instant, on garde l'appel direct
     await db.insert(chatMessage).values({
-      senderId: parseInt(userId),
+      senderId: parseInt(userId, 10),
       gameId: null,
       content: data.content.trim(),
     });
@@ -38,8 +38,8 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
     // TODO: Remplacer par dbCreateChatMessage() quand disponible dans db-services
     await db.insert(chatMessage).values({
-      senderId: parseInt(userId),
-      gameId: parseInt(gameId),
+      senderId: parseInt(userId, 10),
+      gameId: parseInt(gameId, 10),
       content: content.trim(),
     });
 

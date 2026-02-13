@@ -1,4 +1,4 @@
-import type { Server, Socket } from "socket.io";
+import type { Socket } from "socket.io";
 
 // Track les sessions des users qui se sont déconnectés
 const disconnectedSessions = new Map<

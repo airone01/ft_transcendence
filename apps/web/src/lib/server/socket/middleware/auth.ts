@@ -1,9 +1,9 @@
-import type { Socket } from 'socket.io';
-import { verifyToken } from '$lib/server/auth';
+import type { Socket } from "socket.io";
+import { verifyToken } from "$lib/server/auth";
 
 export async function authMiddleware(
   socket: Socket,
-  next: (err?: Error) => void
+  next: (err?: Error) => void,
 ) {
   try {
     // Get token from cookie or handshake auth
@@ -12,14 +12,14 @@ export async function authMiddleware(
       socket.handshake.headers.cookie?.match(/session=([^;]+)/)?.[1];
 
     if (!token) {
-      return next(new Error('Authentication required'));
+      return next(new Error("Authentication required"));
     }
 
     // Verify token
     const user = await verifyToken(token);
 
     if (!user) {
-      return next(new Error('Invalid token'));
+      return next(new Error("Invalid token"));
     }
 
     // Attach user data to socket
@@ -28,7 +28,7 @@ export async function authMiddleware(
     socket.data.role = user.role;
 
     next();
-  } catch (error) {
-    next(new Error('Authentication failed'));
+  } catch (_error) {
+    next(new Error("Authentication failed"));
   }
 }
