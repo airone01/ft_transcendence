@@ -16,6 +16,7 @@ let { data } = $props();
 const form = superForm(data.form, {
   validators: zodClient(profileFormSchema),
   invalidateAll: true, // reloads data after update
+  resetForm: false,
   onUpdated: ({ form }) => {
     if (form.valid) {
       toast.success("Profile updated successfully");
