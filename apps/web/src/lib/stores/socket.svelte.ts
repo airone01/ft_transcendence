@@ -22,6 +22,7 @@ class SocketManager {
   connect() {
     if (this.socket?.connected) return;
 
+    // TODO: pass listen addr as env var
     this.socket = io("http://localhost:3000", {
       auth: {
         token: this.getToken(),

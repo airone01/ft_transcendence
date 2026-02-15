@@ -150,6 +150,28 @@ export async function dbGetUserByEmail(
   }
 }
 
+/**
+ * Retrieves a user from the database by their username.
+ * @param {string} username - The username of the user to retrieve
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User | undefined>} - A promise that resolves with the user if found, undefined otherwise
+ */
+export async function dbGetUserByUsername(
+  username: string,
+): Promise<User | undefined> {
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+
+    return user ?? undefined;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
 export async function dbUpdateUser(
   userId: number,
   userInput: UpdateUserInput,

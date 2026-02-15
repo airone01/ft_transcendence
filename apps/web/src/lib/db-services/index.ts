@@ -84,6 +84,7 @@ export {
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
+  dbGetUserByUsername,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,
