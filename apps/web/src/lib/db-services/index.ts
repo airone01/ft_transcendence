@@ -13,6 +13,9 @@ export {
   UnknownError,
 } from "./internal/db.errors";
 
+/* Auth Schema */
+export type { OAuthProvider } from "./internal/schema/db.auth.schema";
+
 /* Games Types */
 export type {
   CreateGameInput,
@@ -26,6 +29,7 @@ export type {
   Game,
   GamePlayer,
   GameSpectator,
+  OauthAccount,
   User,
   UserStats,
 } from "./internal/schema/db.schema";
@@ -42,6 +46,15 @@ export type {
   GameHistory,
   Leaderboard,
 } from "./internal/schema/db.utils.schema";
+
+/* Auth Services */
+export {
+  dbCreateAuthSession,
+  dbCreateOAuthAccount,
+  dbDeleteAuthSession,
+  dbGetUserAndAuthSessionByAuthSessionId,
+  dbGetUserByOauthId,
+} from "./internal/services/db.auth.service";
 
 /* Friends Services */
 export {
@@ -69,6 +82,7 @@ export {
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbGetUserByEmail,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,

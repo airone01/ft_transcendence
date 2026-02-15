@@ -1,7 +1,13 @@
 <script lang="ts">
+import { page } from "$app/state";
 import {
+    BotIcon,
+  ChessPawnIcon,
+  HandshakeIcon,
   HouseIcon,
-  PlayIcon,
+  TrophyIcon,
+  UserIcon,
+  ZapIcon,
 } from "@lucide/svelte";
 import {
   Sidebar,
@@ -10,12 +16,14 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@transc/ui/sidebar";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import type { Component } from "svelte";
+import { Button } from "@transc/ui/button";
 
 type GroupItem = {
   title: string;
@@ -35,16 +43,31 @@ const groups: Group[] = [
         title: "Home",
         url: "/",
         icon: HouseIcon,
+      },
+      {
+        title: "My Profile",
+        url: "/profile/me",
+        icon: UserIcon,
+      },
+      {
+        title: "Friends",
+        url: "/profile/me/friends",
+        icon: HandshakeIcon,
       }
     ],
   },
   {
-    label: "Play Now",
+    label: "Chess",
     items: [
       {
-        title: "Standard",
+        title: "Play Now",
         url: "/play",
-        icon: PlayIcon,
+        icon: ZapIcon,
+      },
+      {
+        title: "Ranking",
+        url: "/ranking",
+        icon: TrophyIcon,
       },
     ],
   },
@@ -52,6 +75,14 @@ const groups: Group[] = [
 </script>
  
 <Sidebar collapsible="icon">
+  <SidebarHeader class="border-b flex flex-row gap-2 select-none p-2 items-center h-11">
+    <div class="h-full w-8 flex justify-center items-center shrink-0">
+      <ChessPawnIcon class="h-full w-full aspect-square" />
+    </div>
+    <p class="font-bold font-sans group-data-[collapsible=icon]:hidden shrink overflow-clip min-w-0 max-w-full">
+      ft_transcendence
+    </p>
+  </SidebarHeader>
   <SidebarContent>
     {#each groups as group}
       <SidebarGroup>
@@ -60,7 +91,7 @@ const groups: Group[] = [
           <SidebarMenu>
             {#each group.items as item (item.title)}
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton isActive={item.url === "/" ? page.url.pathname === "/" : page.url.pathname.startsWith(item.url)}>
                   {#snippet child({ props }: {props: Record<string, unknown>})}
                     <a href={item.url} {...props}>
                       <item.icon />
@@ -75,7 +106,14 @@ const groups: Group[] = [
       </SidebarGroup>
     {/each}
   </SidebarContent>
-  <SidebarFooter>
+  <SidebarFooter class="p-0 flex flex-col *:border-t gap-0 group-data-[collapsible=icon]:border-t">
+    <div class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/50 transition-all">
+      <SidebarGroupLabel>Quick Play</SidebarGroupLabel>
+      <div class="flex flex-col gap-2">
+        <Button href="/play" class="overflow-clip"><ZapIcon/>Matchmaking</Button>
+        <Button href="/play/bot" variant="outline" class="overflow-clip"><BotIcon/>Play vs AI</Button>
+      </div>
+    </div>
     <UserItem />
   </SidebarFooter>
 </Sidebar>
