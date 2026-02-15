@@ -1,5 +1,5 @@
 import { derived, type Writable, writable } from "svelte/store";
-import { socketManager } from "$lib/server/stores/socket.svelte";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

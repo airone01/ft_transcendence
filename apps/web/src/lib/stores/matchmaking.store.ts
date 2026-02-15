@@ -1,6 +1,6 @@
 import { type Writable, writable } from "svelte/store";
 import { goto } from "$app/navigation";
-import { socketManager } from "$lib/server/stores/socket.svelte";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
