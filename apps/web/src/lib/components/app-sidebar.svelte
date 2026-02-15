@@ -29,6 +29,7 @@ type GroupItem = {
   title: string;
   url: string;
   icon: Component;
+  exact?: boolean;
 };
 type Group = {
   label: string;
@@ -48,6 +49,7 @@ const groups: Group[] = [
         title: "My Profile",
         url: "/profile/me",
         icon: UserIcon,
+        exact: true,
       },
       {
         title: "Friends",
@@ -72,6 +74,15 @@ const groups: Group[] = [
     ],
   },
 ];
+
+function getIsActive(item: GroupItem): boolean {
+  const currentPath = page.url.pathname;
+  if (item.exact)
+    return currentPath === item.url;
+  if (item.url === "/")
+    return currentPath === "/";
+  return currentPath === item.url || currentPath.startsWith(item.url + "/");
+}
 </script>
  
 <Sidebar collapsible="icon">
@@ -91,7 +102,7 @@ const groups: Group[] = [
           <SidebarMenu>
             {#each group.items as item (item.title)}
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={item.url === "/" ? page.url.pathname === "/" : page.url.pathname.startsWith(item.url)}>
+                <SidebarMenuButton isActive={getIsActive(item)}>
                   {#snippet child({ props }: {props: Record<string, unknown>})}
                     <a href={item.url} {...props}>
                       <item.icon />
