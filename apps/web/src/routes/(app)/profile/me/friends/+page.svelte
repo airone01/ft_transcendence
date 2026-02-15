@@ -80,7 +80,7 @@ const formEnhance = () => {
 };
 </script>
 
-<div class="flex flex-col gap-6 max-w-3xl mx-auto w-full">
+<main class="flex flex-col gap-6 max-w-3xl mx-auto w-full">
   
   <div class="flex flex-col gap-4 md:flex-row md:items-end justify-between">
     <div class="space-y-1">
@@ -104,7 +104,7 @@ const formEnhance = () => {
           autocomplete="off"
         />
       </div>
-      <Button type="submit" size="icon" variant="secondary">
+      <Button type="submit" size="icon" variant="secondary" class="cursor-pointer">
         <UserPlusIcon class="h-4 w-4" />
         <span class="sr-only">Add</span>
       </Button>
@@ -124,7 +124,7 @@ const formEnhance = () => {
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {#each friends as friend (friend.userId)}
-        <Card class="overflow-hidden">
+        <Card class="overflow-hidden py-0">
           <CardContent class="p-4 flex items-center gap-4">
             
             <div class="relative">
@@ -166,7 +166,7 @@ const formEnhance = () => {
 
               <form method="POST" action="?/remove" use:enhance={formEnhance}>
                 <input type="hidden" name="friendId" value={friend.userId} />
-                <Button type="submit" variant="ghost" size="icon" class="h-8 w-8 text-muted-foreground hover:text-destructive">
+                <Button type="submit" variant="ghost" size="icon" class="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer">
                   <UserMinusIcon class="h-4 w-4" />
                   <span class="sr-only">Remove</span>
                 </Button>
@@ -178,4 +178,4 @@ const formEnhance = () => {
       {/each}
     </div>
   {/if}
-</div>
+</main>
