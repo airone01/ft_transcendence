@@ -16,6 +16,7 @@
     "./checkbox": "./src/components/ui/checkbox/index.ts",
     "./dialog": "./src/components/ui/dialog/index.ts",
     "./dropdown-menu": "./src/components/ui/dropdown-menu/index.ts",
+    "./empty": "./src/components/ui/empty/index.ts",
     "./form": "./src/components/ui/form/index.ts",
     "./image-cropper": "./src/components/ui/image-cropper/index.ts",
     "./input": "./src/components/ui/input/index.ts",

@@ -5,23 +5,28 @@ import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
 import { Card, CardContent } from "@transc/ui/card";
 import { Separator } from "@transc/ui/separator";
-import { UserMinusIcon, UserPlusIcon, SearchIcon, MessageSquareIcon } from "@lucide/svelte";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@transc/ui/empty"
+import { UserMinusIcon, UserPlusIcon, SearchIcon, MessageSquareIcon, FrownIcon } from "@lucide/svelte";
 import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
 import { onDestroy, onMount } from "svelte";
+import { untrack } from "svelte";
 
-let { data, form } = $props();
+let { data } = $props();
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 let friends = $state(data.friends);
 
-// Sync with server data when it changes (e.g. after form action)
 $effect(() => {
-  // We merge the server data with current known statuses to avoid flickering "offline" on reload
+  /* merge server data with current known statuses to avoid flickering "offline" on reload
+  but we need to use untrack to avoid circular deps
+  see https://svelte.dev/docs/svelte/svelte#untrack */
   const serverFriends = data.friends;
-  friends = serverFriends.map(f => {
-    const existing = friends.find(ef => ef.userId === f.userId);
-    return existing ? { ...f, status: existing.status } : f;
+  untrack(() => {
+    friends = serverFriends.map(f => {
+      const existing = friends.find(ef => ef.userId === f.userId);
+      return existing ? { ...f, status: existing.status } : f;
+    });
   });
 });
 
@@ -114,13 +119,15 @@ const formEnhance = () => {
   <Separator />
 
   {#if friends.length === 0}
-    <div class="flex flex-col items-center justify-center py-12 text-center text-muted-foreground border rounded-lg border-dashed">
-      <div class="p-4 bg-muted/50 rounded-full mb-3">
-        <UserPlusIcon class="h-8 w-8 opacity-50" />
-      </div>
-      <p class="text-lg font-medium">No friends yet</p>
-      <p class="text-sm">Search for a username above to start building your list.</p>
-    </div>
+    <Empty class="border-dashed border-2 border-muted">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <FrownIcon />
+        </EmptyMedia>
+        <EmptyTitle>No friends yet</EmptyTitle>
+        <EmptyDescription>Search for a username above to start building your list.</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       {#each friends as friend (friend.userId)}
