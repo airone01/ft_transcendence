@@ -1,7 +1,7 @@
 <script lang="ts">
 import { ChessPawnIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
-import { authState } from "$lib/auth.svelte";
+import { authState } from "$lib/auth";
 import Hero from "$lib/components/hero.svelte";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 </script>

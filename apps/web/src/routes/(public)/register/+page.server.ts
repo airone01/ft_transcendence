@@ -1,60 +1,69 @@
-import { randomInt } from "node:crypto";
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
-import { hashPassword } from "@transc/auth";
-import { db } from "@transc/db";
-import { eq } from "@transc/db/drizzle-orm";
-import { users } from "@transc/db/schema";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
+import { message, superValidate } from "sveltekit-superforms";
+import { zod } from "sveltekit-superforms/adapters";
+import {
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  dbCreateUser,
+  dbIsEmailTaken,
+} from "$lib/db-services";
+import { registerSchema } from "$lib/schemas/auth";
+import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import type { Actions } from "./$types";
-
-/* Dev note: The login and register pages could be made much more safe by
- * leveraging formsnap, superforms and zod together, as explained in the Svelte
- * shadcn page for formsnap https://www.shadcn-svelte.com/docs/components/form.
- * This might be worth invisegating. */
 
 export const actions = {
   default: async ({ request, cookies }) => {
-    // NOTE: a forged request WILL crash the app here if those are not strings
-    // need type verification with zod
-    const data = await request.formData();
-    const email = data.get("email") as string;
-    const username = data.get("email") as string;
-    const unsecuredPassword = data.get("password") as string; // long name so as not to export it by accident
+    const form = await superValidate(request, zod(registerSchema));
 
-    if (!email || !unsecuredPassword) {
-      return fail(400, { message: "Missing fields" });
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
-    const existing = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
-    if (existing.length > 0) {
-      return fail(400, { message: "Email already registered" });
-    }
-
-    const passwordHash = await hashPassword(unsecuredPassword);
-    const userId = randomInt(0, 1e6);
+    if (await dbIsEmailTaken(form.data.email))
+      return message(form, "Email already registered." /* i18n */, {
+        status: 400,
+      });
 
     try {
-      await db.insert(users).values({
-        id: userId,
-        email,
+      const passwordHash = await hashPassword(form.data.password);
+
+      const userId = await dbCreateUser({
+        email: form.data.email,
         password: passwordHash,
-        username,
-        createdAt: new Date(Date.now() + 1e3 * 60 * 60 * 24 * 30),
+        username: form.data.username,
       });
 
       const { token, expiresAt } = await auth.createSession(userId);
-
       setSessionTokenCookie(
         { cookies } as RequestEvent<Record<string, never>, null>,
         token,
         expiresAt,
       );
     } catch (e) {
+      if (e instanceof DBCreateUserUsernameAlreadyExistsError)
+        return fail(400, {
+          form: {
+            ...form,
+            errors: {
+              ...form.errors,
+              username: ["Username already taken." /* i18n */],
+            },
+          },
+        });
+      if (e instanceof DBCreateUserEmailAlreadyExistsError)
+        return fail(400, {
+          form: {
+            ...form,
+            errors: {
+              ...form.errors,
+              email: ["Email already registered." /* i18n */],
+            },
+          },
+        });
       console.error(e);
-      return fail(500, { message: "Database error" });
+      return message(form, "Unknown database error." /* i18n */, {
+        status: 500,
+      });
     }
 
     throw redirect(302, "/");

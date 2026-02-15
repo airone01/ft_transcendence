@@ -1,10 +1,13 @@
 import type { RequestEvent } from "@sveltejs/kit";
-import { createAuth } from "@transc/auth";
 import { db } from "@transc/db";
 import { authSessions, users } from "@transc/db/schema";
 import { dev } from "$app/environment";
+import { Auth } from "./core";
 
 const SESSION_COOKIE_NAME = "session_token";
+const OAUTH_SESSION_COOKIE_NAME = "oauth_state";
+
+// Cookies helpers
 
 export function setSessionTokenCookie(
   event: RequestEvent,
@@ -28,9 +31,21 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
     path: "/",
     maxAge: 0,
   });
+  event.cookies.set(OAUTH_SESSION_COOKIE_NAME, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: !dev,
+    path: "/",
+    maxAge: 0,
+  });
 }
 
-export const auth = createAuth({
+// Singleton
+
+export const auth = new Auth({
   db,
   schema: { users, authSessions },
 });
+
+export * from "./crypto";
+export * from "./types";
