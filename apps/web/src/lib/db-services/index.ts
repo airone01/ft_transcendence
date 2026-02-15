@@ -69,6 +69,7 @@ export {
   dbCreateGame,
   dbEndGame,
   dbGetGame,
+  dbGetPlayers,
   dbGetSpectators,
   dbGetSpectatorsCount,
   dbRemoveSpectator,
