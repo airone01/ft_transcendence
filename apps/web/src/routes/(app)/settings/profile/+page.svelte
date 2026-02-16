@@ -57,7 +57,7 @@ function handleCroppedImage(file: File) {
           <AvatarFallback class="rounded-none">{($formData.username ?? "?").slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
         
-        <div class="absolute inset-0 flex items-center justify-center bg-neutral-900/50 text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div class="absolute inset-0 flex items-center justify-center bg-neutral-900/50 text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
           <CameraIcon class="h-6 w-6" />
         </div>
       </button>

@@ -102,7 +102,7 @@ function getIsActive(item: GroupItem): boolean {
           <SidebarMenu>
             {#each group.items as item (item.title)}
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={getIsActive(item)}>
+                <SidebarMenuButton isActive={getIsActive(item)} class="transition-colors">
                   {#snippet child({ props }: {props: Record<string, unknown>})}
                     <a href={item.url} {...props}>
                       <item.icon />
@@ -118,11 +118,11 @@ function getIsActive(item: GroupItem): boolean {
     {/each}
   </SidebarContent>
   <SidebarFooter class="p-0 flex flex-col *:border-t gap-0 group-data-[collapsible=icon]:border-t">
-    <div class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/50 transition-all">
+    <div class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/10 transition-all">
       <SidebarGroupLabel>Quick Play</SidebarGroupLabel>
       <div class="flex flex-col gap-2">
         <Button href="/play" class="overflow-clip"><ZapIcon/>Matchmaking</Button>
-        <Button href="/play/bot" variant="outline" class="overflow-clip"><BotIcon/>Play vs AI</Button>
+        <Button href="/play/bot" variant="outline" class="overflow-clip group-hover:bg-accent/10 hover:bg-accent/30"><BotIcon/>Play vs AI</Button>
       </div>
     </div>
     <UserItem />

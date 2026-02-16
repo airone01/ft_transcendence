@@ -122,8 +122,8 @@ function triggerFileInput() {
     </div>
 
     <DialogFooter>
-      <Button variant="outline" onclick={() => (open = false)}>Cancel</Button>
-      <Button onclick={saveCrop} disabled={loading}>
+      <Button variant="outline" onclick={() => (open = false)} class="cursor-pointer">Cancel</Button>
+      <Button onclick={saveCrop} disabled={loading} class="cursor-pointer">
         {#if loading}
           <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
         {/if}

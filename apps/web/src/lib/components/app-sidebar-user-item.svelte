@@ -31,7 +31,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
 {#if user}
-  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/50 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
+  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
     <a href="/profile/me" class="shrink-0">
       <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />
@@ -49,11 +49,13 @@ let logoutForm: HTMLFormElement | undefined = $state();
           <p>{user.username}</p>
         </TooltipContent>
       </Tooltip>
-      <div class="text-xs truncate leading-none text-muted-foreground max-w-full w-fit">...more info</div>
+      <span class="font-mono bg-muted px-1 rounded-sm text-[10px] font-bold w-fit">
+        ELO ????
+      </span>
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button variant="outline" size="sm" class="cursor-pointer"><EllipsisIcon /></Button>
+        <Button variant="outline" size="sm" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30"><EllipsisIcon /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
         <form 
@@ -62,7 +64,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
           bind:this={logoutForm}
           use:enhance={logoutFunc}
         >
-          <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>Log out</DropdownMenuItem>
+          <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
         </form>
         <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
       </DropdownMenuContent>

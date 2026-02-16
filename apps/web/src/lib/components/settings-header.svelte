@@ -21,7 +21,7 @@ export let formId: string;
   {@render children?.()}
 
   <div class="flex justify-end">
-    <Button form={formId} type="submit" disabled={$delayed}>
+    <Button form={formId} type="submit" disabled={$delayed} class="cursor-pointer">
       {#if $delayed}Saving...{:else}Save Changes{/if}
     </Button>
   </div>
