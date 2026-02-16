@@ -14,6 +14,7 @@
     "./button": "./src/components/ui/button/index.ts",
     "./card": "./src/components/ui/card/index.ts",
     "./checkbox": "./src/components/ui/checkbox/index.ts",
+    "./command": "./src/components/ui/command/index.ts",
     "./dialog": "./src/components/ui/dialog/index.ts",
     "./dropdown-menu": "./src/components/ui/dropdown-menu/index.ts",
     "./empty": "./src/components/ui/empty/index.ts",
