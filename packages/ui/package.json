@@ -12,6 +12,7 @@
     "./app.css": "./src/app.css",
     "./alert": "./src/components/ui/alert/index.ts",
     "./avatar": "./src/components/ui/avatar/index.ts",
+    "./badge": "./src/components/ui/badge/index.ts",
     "./button": "./src/components/ui/button/index.ts",
     "./card": "./src/components/ui/card/index.ts",
     "./checkbox": "./src/components/ui/checkbox/index.ts",
