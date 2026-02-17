@@ -65,7 +65,7 @@ onDestroy(() => {
   unsubscribe();
 });
 
-// Build board from GameState (flipped if playing black)
+// Build board from GameState
 
 function buildBoard(state: GameState): Square[] {
   const squares: Square[] = [];
@@ -175,12 +175,10 @@ function handleDndFinalize(
       piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
     const promotion = isPromotion ? "q" : undefined;
 
-    // Send move to server
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
     makeMove(fromAlgebraic, toAlgebraic, promotion);
 
-    // Optimistic update: apply move locally
     try {
       const move: Move = {
         from: [fromRow, fromCol],
@@ -190,11 +188,9 @@ function handleDndFinalize(
       localState = playMove(localState, move);
       board = buildBoard(localState);
     } catch {
-      // If local move fails, just rebuild from current state
       board = buildBoard(localState);
     }
   } else {
-    // Invalid drop or cancel — rebuild board
     board = buildBoard(localState);
   }
 

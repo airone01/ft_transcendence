@@ -41,6 +41,18 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           startedAt: game.startedAt || undefined,
         });
         activeGames.set(gameId, gameRoom);
+
+        // Forward timer events to clients
+        gameRoom.on("time_tick", (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+          io.to(`game:${gameId}`).emit("game:time", data);
+        });
+        gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
+          io.to(`game:${data.gameId}`).emit("game:over", {
+            winner: data.winner,
+            reason: "timeout",
+          });
+          activeGames.delete(data.gameId);
+        });
       }
 
       gameRoom.addPlayer(socket);
@@ -101,6 +113,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           fen: result.fen,
           checkmate: result.checkmate,
           stalemate: result.stalemate,
+          whiteTimeLeft: result.whiteTimeLeft,
+          blackTimeLeft: result.blackTimeLeft,
         });
 
         // Game over

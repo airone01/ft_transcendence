@@ -19,6 +19,20 @@ function handleOfferDraw() {
   if ($gameState.gameOver) return;
   offerDraw();
 }
+
+function formatTime(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+const whiteTime = $derived(formatTime($gameState.whiteTimeLeft));
+const blackTime = $derived(formatTime($gameState.blackTimeLeft));
+const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
+const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
+const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
+const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
 </script>
 
 <main class="h-full flex items-center justify-center gap-6 p-6">
@@ -103,7 +117,7 @@ function handleOfferDraw() {
           <HandshakeIcon class="w-4 h-4 mr-2" />
           Proposer nulle
         </Button>
-        <Button variant="destructive" class="w-full justify-start" onclick={handleResign}>
+        <Button variant="outline" class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]" onclick={handleResign}>
           <FlagIcon class="w-4 h-4 mr-2" />
           Abandonner
         </Button>
@@ -132,24 +146,24 @@ function handleOfferDraw() {
 
     <!-- Timers -->
     <div class="grid grid-cols-2 gap-2 mt-4">
-      <div class="flex items-center gap-2 bg-zinc-800 dark:bg-zinc-900 text-white rounded-lg px-3 py-2.5">
+      <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-white"></div>
           <span class="text-xs font-medium">Blancs</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold">10:00</span>
+          <span class="text-sm font-mono font-semibold {whiteIsLow ? 'text-red-400' : ''}">{whiteTime}</span>
         </div>
       </div>
-      <div class="flex items-center gap-2 bg-zinc-800 dark:bg-zinc-900 text-white rounded-lg px-3 py-2.5">
+      <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {blackIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
           <span class="text-xs font-medium">Noirs</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold">10:00</span>
+          <span class="text-sm font-mono font-semibold {blackIsLow ? 'text-red-400' : ''}">{blackTime}</span>
         </div>
       </div>
     </div>
