@@ -6,7 +6,8 @@ import { profileFormSchema } from "$lib/schemas/settings";
 import { Input } from "@transc/ui/input";
 import { FormField, FormLabel, FormControl, FormFieldErrors } from "@transc/ui/form";
 import { ImageCropper } from "@transc/ui/image-cropper";
-import { CameraIcon } from "@lucide/svelte";
+import { Alert, AlertDescription } from "@transc/ui/alert"
+import { CameraIcon, CircleAlertIcon } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import SettingsHeader from "$lib/components/settings-header.svelte";
 
@@ -47,6 +48,7 @@ function handleCroppedImage(file: File) {
 
 <SettingsHeader title="Profile" description="This is how others will see you on the site." formId="profileSettingsForm" {delayed}>
   <div class="flex flex-col md:flex-row md:items-end gap-4 items-center">
+    <!-- avatar upload -->
     <ImageCropper onCropped={handleCroppedImage}>
       <button
         type="button"
@@ -63,6 +65,7 @@ function handleCroppedImage(file: File) {
       </button>
     </ImageCropper>
 
+    <!-- username input -->
     <form 
       id="profileSettingsForm"
       method="POST" 
@@ -91,9 +94,13 @@ function handleCroppedImage(file: File) {
     </form>
   </div>
 
+  <!-- error display -->
   {#if $errors.avatar}
-    <span class="text-sm font-medium text-destructive">
-      {$errors.avatar[0]}
-    </span>
+    <Alert variant="destructive" class="border-destructive">
+      <CircleAlertIcon />
+      <AlertDescription>
+        <p>{$errors.avatar[0]}</p>
+      </AlertDescription>
+    </Alert>
   {/if}
 </SettingsHeader>

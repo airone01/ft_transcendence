@@ -1,6 +1,6 @@
 <script lang="ts" generics="T extends AnyZodObject">
 import type { AnyZodObject } from "zod/v3";
-import type { SuperValidated, Infer, FormPath, SuperForm } from "sveltekit-superforms";
+import type { Infer, FormPath, SuperForm } from "sveltekit-superforms";
 
 import { FormField, FormLabel, FormControl, FormFieldErrors } from "@transc/ui/form";
 import { Checkbox } from "@transc/ui/checkbox";
@@ -18,6 +18,7 @@ let {
   fields: [FormPath<Infer<T>>, string, string?][]; 
 }>();
 
+// svelte-ignore state_referenced_locally: idc
 const { form: formData, enhance } = form;
 </script>
 

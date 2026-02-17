@@ -8,7 +8,7 @@ export const profileFormSchema = z.object({
     .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
     .refine(
       (f) => f.size < 1_000_000,
-      "Avatar upload size can be at most 1 MB" /* i18n */,
+      "Avatar files uploaded can be at most 1 MB in size" /* i18n */,
     )
     .optional(),
 });
