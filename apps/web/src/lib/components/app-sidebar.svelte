@@ -1,12 +1,8 @@
 <script lang="ts">
 import { page } from "$app/state";
 import {
-    BotIcon,
+  BotIcon,
   ChessPawnIcon,
-  HandshakeIcon,
-  HouseIcon,
-  TrophyIcon,
-  UserIcon,
   ZapIcon,
 } from "@lucide/svelte";
 import {
@@ -22,66 +18,18 @@ import {
   SidebarMenuItem,
 } from "@transc/ui/sidebar";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
-import type { Component } from "svelte";
 import { Button } from "@transc/ui/button";
+import { sidebarGroups } from "$lib/navigation";
 
-type GroupItem = {
-  title: string;
-  url: string;
-  icon: Component;
-  exact?: boolean;
-};
-type Group = {
-  label: string;
-  items: GroupItem[];
-};
+const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
-const groups: Group[] = [
-  {
-    label: "My Content",
-    items: [
-      {
-        title: "Home",
-        url: "/",
-        icon: HouseIcon,
-      },
-      {
-        title: "My Profile",
-        url: "/profile/me",
-        icon: UserIcon,
-        exact: true,
-      },
-      {
-        title: "Friends",
-        url: "/profile/me/friends",
-        icon: HandshakeIcon,
-      }
-    ],
-  },
-  {
-    label: "Chess",
-    items: [
-      {
-        title: "Play Now",
-        url: "/play",
-        icon: ZapIcon,
-      },
-      {
-        title: "Ranking",
-        url: "/ranking",
-        icon: TrophyIcon,
-      },
-    ],
-  },
-];
-
-function getIsActive(item: GroupItem): boolean {
+function getIsActive(href: string, exact?: boolean): boolean {
   const currentPath = page.url.pathname;
-  if (item.exact)
-    return currentPath === item.url;
-  if (item.url === "/")
+  if (exact)
+    return currentPath === href;
+  if (href === "/")
     return currentPath === "/";
-  return currentPath === item.url || currentPath.startsWith(item.url + "/");
+  return currentPath === href || currentPath.startsWith(href + "/");
 }
 </script>
  
@@ -95,18 +43,18 @@ function getIsActive(item: GroupItem): boolean {
     </p>
   </SidebarHeader>
   <SidebarContent>
-    {#each groups as group}
+    {#each sidebarGroups as {label: groupLabel, items} (groupLabel)}
       <SidebarGroup>
-        <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+        <SidebarGroupLabel>{groupLabel}</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {#each group.items as item (item.title)}
+            {#each items as {label: itemLabel, href, exact, ...i} (itemLabel)}
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={getIsActive(item)} class="transition-colors">
+                <SidebarMenuButton isActive={getIsActive(href, exact)} class="transition-colors">
                   {#snippet child({ props }: {props: Record<string, unknown>})}
-                    <a href={item.url} {...props}>
-                      <item.icon />
-                      <span>{item.title}</span>
+                    <a {href} {...props}>
+                      <i.icon />
+                      <span>{itemLabel}</span>
                     </a>
                   {/snippet}
                 </SidebarMenuButton>
@@ -125,6 +73,6 @@ function getIsActive(item: GroupItem): boolean {
         <Button href="/play/bot" variant="outline" class="overflow-clip group-hover:bg-accent/10 hover:bg-accent/30"><BotIcon/>Play vs AI</Button>
       </div>
     </div>
-    <UserItem />
+    <UserItem {logoutForm} />
   </SidebarFooter>
 </Sidebar>

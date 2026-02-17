@@ -9,25 +9,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@transc/ui/dropdown-menu"
-import { enhance } from "$app/forms";
-import { invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
-import { toast } from "svelte-sonner";
 
-const logoutFunc = () => {
-  return async ({ result }: any) => {
-    if (result.type === 'redirect' || result.type === 'success') {
-      toast.success("You logged out. See you soon!");
-      await invalidateAll(); // invalidates data to redraw interface
-    } else {
-      toast.error("Failed to log out");
-    }
-  };
-};
+const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
 const user = $derived(page.data.user);
 const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
-let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
 {#if user}
@@ -58,14 +45,7 @@ let logoutForm: HTMLFormElement | undefined = $state();
         <Button variant="outline" size="sm" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30"><EllipsisIcon /></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
-        <form 
-          action="/logout" 
-          method="POST" 
-          bind:this={logoutForm}
-          use:enhance={logoutFunc}
-        >
-          <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
-        </form>
+        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
         <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
