@@ -129,7 +129,7 @@ export async function dbGetGame(gameId: number): Promise<Game> {
 
     if (!game) throw new DBGameNotFoundError();
 
-    return game as Game;
+    return game;
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;
 
@@ -161,7 +161,7 @@ export async function dbUpdateGame(
 
     if (!game) throw new DBGameNotFoundError();
 
-    return game as Game;
+    return game;
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;
 
