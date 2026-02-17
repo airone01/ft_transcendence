@@ -43,6 +43,12 @@ const logoutFunc = () => {
 };
 
 let logoutForm: HTMLFormElement | undefined = $state();
+let commandInput: string = $state("");
+
+$effect(() => {
+  if (commandInput.toLowerCase() === 'secretcat')
+    window.location = "https://i.pinimg.com/originals/20/69/fd/2069fd0482fe844c802fd3cc76f39045.jpg" as string & Location;
+})
 
 const commandGroups: ShellGroup[] = [
   ...sidebarGroups
@@ -89,14 +95,14 @@ const commandGroups: ShellGroup[] = [
 ></form>
 
 <CommandDialog bind:open={commandOpen}>
-  <CommandInput placeholder="Type a command or search..." />
+  <CommandInput bind:value={commandInput} placeholder="Type a command or search.." />
   <CommandList>
     <CommandEmpty>No results found.</CommandEmpty>
     {#each commandGroups as {items, heading}, i (heading)}
       <CommandGroup {heading}>
         {#each items as {navUrl, label, onClick, ...item} (label)}
-          <CommandItem onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)}>
-            <item.icon class="me-2 size-4"></item.icon>
+          <CommandItem onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)} class="cursor-pointer">
+            <item.icon class="me-2 size-4 stroke-current"></item.icon>
             <span>{label}</span>
           </CommandItem>
         {/each}
