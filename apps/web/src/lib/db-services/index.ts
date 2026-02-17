@@ -54,6 +54,8 @@ export {
   dbDeleteAuthSession,
   dbGetUserAndAuthSessionByAuthSessionId,
   dbGetUserByOauthId,
+  dbGetConnectedProviders,
+  dbUnlinkOAuthAccount,
 } from "./internal/services/db.auth.service";
 
 /* Friends Services */

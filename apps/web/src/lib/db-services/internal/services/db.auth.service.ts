@@ -110,3 +110,44 @@ export async function dbDeleteAuthSession(authSessionId: string) {
     throw new UnknownError();
   }
 }
+
+/**
+ * Retrieves the list of OAuth providers linked to a user.
+ */
+export async function dbGetConnectedProviders(
+  userId: number,
+): Promise<OAuthProvider[]> {
+  try {
+    const accounts = await db
+      .select({ provider: oauthAccounts.provider })
+      .from(oauthAccounts)
+      .where(eq(oauthAccounts.userId, userId));
+
+    return accounts.map((a) => a.provider);
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Unlinks an OAuth provider from a user.
+ */
+export async function dbUnlinkOAuthAccount(
+  userId: number,
+  provider: OAuthProvider,
+) {
+  try {
+    await db
+      .delete(oauthAccounts)
+      .where(
+        and(
+          eq(oauthAccounts.userId, userId),
+          eq(oauthAccounts.provider, provider),
+        ),
+      );
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}

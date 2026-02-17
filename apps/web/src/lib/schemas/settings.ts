@@ -78,10 +78,15 @@ export const privacyFormSchema = z.object({
   gameHistory: z.boolean(),
 });
 
-export const accountSettingsSchema = z.object({
-  oldPassword: z.string(),
-  newPassword: zPassword,
-  newPasswordConfirm: zPassword,
-});
+export const accountSettingsSchema = z
+  .object({
+    oldPassword: z.string().optional(),
+    newPassword: zPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match" /* i18n */,
+    path: ["confirmPassword"],
+  });
 
 export type ProfileFormSchema = typeof profileFormSchema;
