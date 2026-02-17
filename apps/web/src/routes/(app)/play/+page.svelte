@@ -1,104 +1,86 @@
 <script lang="ts">
-import { RotateCcwIcon, ClockIcon } from "@lucide/svelte";
+import { ZapIcon, ClockIcon, TargetIcon, LoaderCircleIcon, XIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
 import { Separator } from "@transc/ui/separator";
-import Board from "./board.svelte";
+import { matchmakingState, joinQueue, leaveQueue } from "$lib/stores/matchmaking.store";
+import { socketConnected } from "$lib/stores/socket.svelte";
+
+function handleCancelQueue() {
+  const state = $matchmakingState;
+  if (state.mode) {
+    leaveQueue(state.mode);
+  }
+}
 </script>
 
-<main class="h-full flex items-center justify-center gap-6 p-6">
-  <!-- Left Panel: Partie en cours -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Partie en cours</h2>
-      <button class="p-1.5 rounded-md hover:bg-muted transition-colors text-muted-foreground">
-        <RotateCcwIcon class="w-4 h-4" />
-      </button>
+<main class="h-full flex items-center justify-center p-6">
+  {#if !$socketConnected}
+    <div class="text-center space-y-3">
+      <LoaderCircleIcon class="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
+      <p class="text-muted-foreground">Connexion au serveur...</p>
     </div>
-
-    <Separator class="my-4" />
-
-    <!-- Tour actuel -->
-    <div class="space-y-1">
-      <span class="text-sm text-muted-foreground">Tour actuel</span>
-      <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full bg-white border border-zinc-300"></div>
-        <span class="font-medium text-sm">Blancs</span>
+  {:else if $matchmakingState.inQueue}
+    <!-- In queue -->
+    <div class="text-center space-y-6 max-w-md">
+      <LoaderCircleIcon class="w-12 h-12 animate-spin mx-auto text-primary" />
+      <div class="space-y-2">
+        <h2 class="text-xl font-semibold">Recherche d'un adversaire...</h2>
+        <p class="text-muted-foreground">
+          Mode : <span class="font-medium text-foreground">{$matchmakingState.mode}</span>
+        </p>
+        {#if $matchmakingState.position}
+          <p class="text-sm text-muted-foreground">
+            Position dans la file : {$matchmakingState.position}
+          </p>
+        {/if}
       </div>
+      <Button variant="outline" onclick={handleCancelQueue}>
+        <XIcon class="w-4 h-4 mr-2" />
+        Annuler
+      </Button>
     </div>
-
-    <Separator class="my-4" />
-
-    <!-- Captured pieces -->
-    <div class="space-y-3">
-      <!-- Noirs -->
-      <div class="space-y-1.5">
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 dark:bg-zinc-300"></div>
-          <span class="text-sm font-medium">Noirs</span>
-        </div>
-        <div class="bg-primary/15 text-primary text-xs font-medium px-3 py-1.5 rounded-md">
-          Aucune prise
-        </div>
+  {:else}
+    <!-- Mode selection -->
+    <div class="space-y-8 max-w-2xl w-full">
+      <div class="text-center space-y-2">
+        <h1 class="text-3xl font-bold">Jouer une partie</h1>
+        <p class="text-muted-foreground">Choisissez votre mode de jeu</p>
       </div>
 
-      <!-- Blancs -->
-      <div class="space-y-1.5">
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-full bg-white border border-zinc-300"></div>
-          <span class="text-sm font-medium">Blancs</span>
-        </div>
-        <div class="bg-primary/15 text-primary text-xs font-medium px-3 py-1.5 rounded-md">
-          Aucune prise
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <button
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          onclick={() => joinQueue('blitz')}
+        >
+          <ZapIcon class="w-10 h-10 text-amber-500" />
+          <div class="text-center">
+            <h3 class="font-semibold text-lg">Blitz</h3>
+            <p class="text-sm text-muted-foreground">5 min + 2s/coup</p>
+          </div>
+        </button>
+
+        <button
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          onclick={() => joinQueue('rapid')}
+        >
+          <ClockIcon class="w-10 h-10 text-blue-500" />
+          <div class="text-center">
+            <h3 class="font-semibold text-lg">Rapide</h3>
+            <p class="text-sm text-muted-foreground">15 min + 10s/coup</p>
+          </div>
+        </button>
+
+        <button
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          onclick={() => joinQueue('casual')}
+        >
+          <TargetIcon class="w-10 h-10 text-green-500" />
+          <div class="text-center">
+            <h3 class="font-semibold text-lg">Casual</h3>
+            <p class="text-sm text-muted-foreground">10 min + 5s/coup</p>
+          </div>
+        </button>
       </div>
     </div>
-
-    <Separator class="my-4" />
-
-    <!-- Instructions -->
-    <div class="text-xs text-muted-foreground space-y-1 mt-auto">
-      <p>&bull; Cliquez sur une pi&egrave;ce pour voir ses mouvements</p>
-      <p>&bull; S&eacute;lectionnez une case pour d&eacute;placer</p>
-    </div>
-  </div>
-
-  <!-- Center: Board -->
-  <div class="flex-1 max-w-[800px] min-w-[400px]">
-    <Board />
-  </div>
-
-  <!-- Right Panel: Historique -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
-    <!-- Header -->
-    <h2 class="text-lg font-semibold">Historique</h2>
-
-    <!-- Move history -->
-    <div class="flex-1 mt-4 rounded-lg bg-muted/50 flex items-center justify-center min-h-0">
-      <span class="text-sm text-muted-foreground">Aucun coup pour le moment</span>
-    </div>
-
-    <!-- Timers -->
-    <div class="grid grid-cols-2 gap-2 mt-4">
-      <div class="flex items-center gap-2 bg-zinc-800 dark:bg-zinc-900 text-white rounded-lg px-3 py-2.5">
-        <div class="flex items-center gap-1.5">
-          <div class="w-2 h-2 rounded-full bg-white"></div>
-          <span class="text-xs font-medium">Blancs</span>
-        </div>
-        <div class="flex items-center gap-1 ml-auto">
-          <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold">10:00</span>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 bg-zinc-800 dark:bg-zinc-900 text-white rounded-lg px-3 py-2.5">
-        <div class="flex items-center gap-1.5">
-          <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
-          <span class="text-xs font-medium">Noirs</span>
-        </div>
-        <div class="flex items-center gap-1 ml-auto">
-          <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold">10:00</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  {/if}
 </main>

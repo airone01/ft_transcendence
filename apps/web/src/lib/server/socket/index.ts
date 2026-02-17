@@ -1,7 +1,7 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 //import { registerChatHandlers } from "./handlers/chat";
-//import { authMiddleware } from "./middleware/auth";
+import { authMiddleware } from "./middleware/auth";
 import { registerGameHandlers } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
@@ -21,7 +21,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     },
     pingTimeout: 60000,
     pingInterval: 25000,
-    transports: ["websocket", "polling"],
+    transports: ["websocket"],
     connectionStateRecovery: {
       maxDisconnectionDuration: 120000,
       skipMiddlewares: true,
@@ -29,7 +29,7 @@ export function initSocketServer(httpServer: HTTPServer) {
   });
 
   // Auth middleware
-  //  io.use(authMiddleware);
+  io.use(authMiddleware);
 
   // Run heartbeat
   startHeartbeat(io);

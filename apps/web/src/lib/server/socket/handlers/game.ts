@@ -45,8 +45,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
       gameRoom.addPlayer(socket);
 
-      // Send state
-      socket.emit("game:state", gameRoom.getState());
+      // Send state with player's color
+      const myColor = String(players.whitePlayerId) === userId ? "white" : "black";
+      socket.emit("game:state", { ...gameRoom.getState(), myColor });
 
       // Notify opponent
       socket.to(`game:${gameId}`).emit("player:joined", {

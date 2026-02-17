@@ -1,12 +1,18 @@
 <script lang="ts">
 import { ChessBishopIcon, ChessKingIcon, ChessKnightIcon, ChessPawnIcon, ChessQueenIcon, ChessRookIcon } from "@lucide/svelte";
 import type { Component } from "svelte";
+import { onMount, onDestroy } from "svelte";
 import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
-import { startGame, getLegalMoves, playMove, InvalidMove, EndGame, isCheckmate, isDraw } from "$lib/chess";
-import type { GameState, Move, Piece as ChessPiece } from "$lib/chess";
+import { startGame, getLegalMoves, parseFEN, playMove } from "$lib/chess";
+import type { GameState, Piece as ChessPiece, Move } from "$lib/chess";
+import { gameState as gameStore, joinGame, makeMove, leaveGame } from "$lib/stores/game.store";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// Props
+
+let { gameId }: { gameId: string } = $props();
+
+// Types
 
 type DndPiece = {
   id: string;
@@ -20,7 +26,7 @@ type Square = {
   pieces: DndPiece[];
 };
 
-// ─── Piece → Icon mapping ────────────────────────────────────────────────────
+// Piece → Icon mapping
 
 const pieceIconMap: Record<string, Component> = {
   p: ChessPawnIcon,
@@ -34,30 +40,49 @@ const pieceIconMap: Record<string, Component> = {
 const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
-// ─── State (Svelte 5 runes) ─────────────────────────────────────────────────
+// State — driven by websocket store
 
+let myColor: "white" | "black" | null = $state(null);
 const initialState = startGame();
-let gameState: GameState = $state(initialState);
+let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
 let legalTargets: Set<number> = $state(new Set());
 let dragFromIndex: number | null = $state(null);
-let gameOverMessage: string | null = $state(null);
 
-// ─── Build board from GameState ──────────────────────────────────────────────
+// Subscribe to game store — rebuild board when FEN changes
+
+const unsubscribe = gameStore.subscribe((store) => {
+  myColor = store.myColor;
+  if (store.fen) {
+    localState = parseFEN(store.fen);
+    board = buildBoard(localState);
+  }
+});
+
+onMount(() => joinGame(gameId));
+onDestroy(() => {
+  leaveGame();
+  unsubscribe();
+});
+
+// Build board from GameState (flipped if playing black)
 
 function buildBoard(state: GameState): Square[] {
   const squares: Square[] = [];
   for (let row = 0; row < 8; row++) {
     for (let col = 0; col < 8; col++) {
+      // Flip perspective for black
+      const displayRow = myColor === "black" ? 7 - row : row;
+      const displayCol = myColor === "black" ? 7 - col : col;
       const index = row * 8 + col;
-      const piece = state.board[row][col];
+      const piece = state.board[displayRow][displayCol];
       const pieces: DndPiece[] = [];
 
       if (piece) {
         const isWhite = piece === piece.toUpperCase();
         const icon = pieceIconMap[piece.toLowerCase()];
         pieces.push({
-          id: `${piece}-${row}-${col}`,
+          id: `${piece}-${displayRow}-${displayCol}`,
           piece,
           icon,
           isWhite,
@@ -70,17 +95,22 @@ function buildBoard(state: GameState): Square[] {
   return squares;
 }
 
-// ─── Coordinate helpers ──────────────────────────────────────────────────────
+// Coordinate helpers (account for board flip)
 
-function indexToCoords(index: number): [number, number] {
-  return [Math.floor(index / 8), index % 8];
+function indexToBoard(index: number): [number, number] {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
+  if (myColor === "black") {
+    return [7 - row, 7 - col];
+  }
+  return [row, col];
 }
 
 function coordsToIndex(row: number, col: number): number {
   return row * 8 + col;
 }
 
-// ─── Drag and Drop ───────────────────────────────────────────────────────────
+// Drag and Drop
 
 const flipDurationMs = 50;
 
@@ -91,19 +121,25 @@ function handleDndConsider(
   if (e.detail.info.trigger === TRIGGERS.DRAG_STARTED) {
     const piece = board[squareIndex].pieces[0];
     if (piece) {
-      const [row, col] = indexToCoords(squareIndex);
-      const chessPiece = gameState.board[row][col];
+      const [row, col] = indexToBoard(squareIndex);
+      const chessPiece = localState.board[row][col];
 
       if (chessPiece) {
         const isWhite = chessPiece === chessPiece.toUpperCase();
+        const isMyPiece =
+          (myColor === "white" && isWhite) || (myColor === "black" && !isWhite);
         const isCorrectTurn =
-          (isWhite && gameState.turn === "w") ||
-          (!isWhite && gameState.turn === "b");
+          (isWhite && localState.turn === "w") ||
+          (!isWhite && localState.turn === "b");
 
-        if (isCorrectTurn) {
-          const moves = getLegalMoves(gameState, [row, col]);
+        if (isMyPiece && isCorrectTurn) {
+          const moves = getLegalMoves(localState, [row, col]);
           legalTargets = new Set(
-            moves.map((m) => coordsToIndex(m.to[0], m.to[1])),
+            moves.map((m) => {
+              const r = myColor === "black" ? 7 - m.to[0] : m.to[0];
+              const c = myColor === "black" ? 7 - m.to[1] : m.to[1];
+              return coordsToIndex(r, c);
+            }),
           );
           dragFromIndex = squareIndex;
         } else {
@@ -124,54 +160,49 @@ function handleDndFinalize(
 ) {
   const { info } = e.detail;
 
-  // Only process valid moves: correct turn, legal target, dropped into a different zone
+  // Only process valid moves
   if (
     info.trigger === TRIGGERS.DROPPED_INTO_ZONE &&
     dragFromIndex !== null &&
     dragFromIndex !== squareIndex &&
     legalTargets.has(squareIndex)
   ) {
-    const [fromRow, fromCol] = indexToCoords(dragFromIndex);
-    const [toRow, toCol] = indexToCoords(squareIndex);
+    const [fromRow, fromCol] = indexToBoard(dragFromIndex);
+    const [toRow, toCol] = indexToBoard(squareIndex);
 
-    const moves = getLegalMoves(gameState, [fromRow, fromCol]);
-    const legalMove = moves.find(
-      (m) => m.to[0] === toRow && m.to[1] === toCol,
-    );
+    const piece = localState.board[fromRow][fromCol];
+    const isPromotion =
+      piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
+    const promotion = isPromotion ? "q" : undefined;
 
-    if (legalMove) {
-      const piece = gameState.board[fromRow][fromCol];
-      const isPromotion =
-        piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
+    // Send move to server
+    const fromAlgebraic = files[fromCol] + ranks[fromRow];
+    const toAlgebraic = files[toCol] + ranks[toRow];
+    makeMove(fromAlgebraic, toAlgebraic, promotion);
 
-      if (isPromotion) {
-        const promoPiece: ChessPiece =
-          gameState.turn === "w" ? "Q" : "q";
-        legalMove.promotion = promoPiece;
-      }
-
-      try {
-        gameState = playMove(gameState, legalMove);
-
-        if (isCheckmate(gameState)) {
-          const winner = gameState.turn === "w" ? "Black" : "White";
-          gameOverMessage = `Checkmate! ${winner} wins!`;
-        } else if (isDraw(gameState)) {
-          gameOverMessage = "Draw!";
-        }
-      } catch {
-        // Move rejected by engine — board will be rebuilt below
-      }
+    // Optimistic update: apply move locally
+    try {
+      const move: Move = {
+        from: [fromRow, fromCol],
+        to: [toRow, toCol],
+        promotion: isPromotion ? ("Q" as ChessPiece) : undefined,
+      };
+      localState = playMove(localState, move);
+      board = buildBoard(localState);
+    } catch {
+      // If local move fails, just rebuild from current state
+      board = buildBoard(localState);
     }
+  } else {
+    // Invalid drop or cancel — rebuild board
+    board = buildBoard(localState);
   }
 
-  // Always rebuild board from gameState to stay in sync
-  board = buildBoard(gameState);
   legalTargets = new Set();
   dragFromIndex = null;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+//  Helpers
 
 function isLightSquare(index: number): boolean {
   const row = Math.floor(index / 8);
@@ -180,28 +211,25 @@ function isLightSquare(index: number): boolean {
 }
 
 function isDragDisabled(index: number): boolean {
-  const [row, col] = indexToCoords(index);
-  const piece = gameState.board[row][col];
+  const [row, col] = indexToBoard(index);
+  const piece = localState.board[row][col];
   if (!piece) return true;
   const isWhite = piece === piece.toUpperCase();
-  return (isWhite && gameState.turn !== "w") || (!isWhite && gameState.turn !== "b");
+  if (myColor === "white" && !isWhite) return true;
+  if (myColor === "black" && isWhite) return true;
+  return (isWhite && localState.turn !== "w") || (!isWhite && localState.turn !== "b");
 }
 
-function resetGame() {
-  gameState = startGame();
-  board = buildBoard(gameState);
-  legalTargets = new Set();
-  dragFromIndex = null;
-  gameOverMessage = null;
-}
+// Labels (flipped if black)
+const displayFiles = $derived(myColor === "black" ? [...files].reverse() : files);
+const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks);
 </script>
 
-<!-- Board with coordinates -->
+<!-- Board -->
 <div class="flex flex-col">
   <div class="flex">
-    <!-- Rank labels (left side) -->
     <div class="flex flex-col w-6 shrink-0">
-      {#each ranks as rank}
+      {#each displayRanks as rank}
         <div class="flex-1 flex items-center justify-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70">
           {rank}
         </div>
@@ -269,7 +297,7 @@ function resetGame() {
 
   <!-- File labels (bottom) -->
   <div class="flex pl-6">
-    {#each files as file}
+    {#each displayFiles as file}
       <div class="flex-1 text-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70 pt-1">
         {file}
       </div>

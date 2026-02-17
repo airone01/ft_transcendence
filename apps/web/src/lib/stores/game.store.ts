@@ -1,5 +1,5 @@
 import { derived, type Writable, writable } from "svelte/store";
-import { socketManager } from "$lib/server/stores/socket.svelte";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -130,12 +130,13 @@ export function leaveGame() {
 // ─── Event Listeners ────────────────────────────────────────────────────────
 
 export function setupGameListeners() {
-  socketManager.on("game:state", ((data: GameState) => {
+  socketManager.on("game:state", ((data: GameState & { myColor?: "white" | "black" }) => {
     gameState.update((state) => ({
       ...state,
       gameId: data.gameId,
       fen: data.fen,
       turn: data.turn,
+      myColor: data.myColor ?? state.myColor,
       isCheckmate: data.isCheckmate,
       isDraw: data.isDraw,
     }));
