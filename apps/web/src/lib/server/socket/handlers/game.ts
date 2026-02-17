@@ -39,6 +39,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           blackId: String(players.blackPlayerId),
           fen: game.fen,
           startedAt: game.startedAt || undefined,
+          timeControlSeconds: game.timeControlSeconds,
+          incrementSeconds: game.incrementSeconds,
         });
         activeGames.set(gameId, gameRoom);
 
