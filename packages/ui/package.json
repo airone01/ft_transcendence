@@ -10,6 +10,7 @@
     "./utils": "./src/utils.ts",
     "./hooks/*": "./src/hooks/*",
     "./app.css": "./src/app.css",
+    "./alert": "./src/components/ui/alert/index.ts",
     "./avatar": "./src/components/ui/avatar/index.ts",
     "./button": "./src/components/ui/button/index.ts",
     "./card": "./src/components/ui/card/index.ts",
