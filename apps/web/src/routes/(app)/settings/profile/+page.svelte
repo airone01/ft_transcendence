@@ -50,7 +50,7 @@ function handleCroppedImage(file: File) {
     <ImageCropper onCropped={handleCroppedImage}>
       <button
         type="button"
-        class="relative h-24 w-24 overflow-hidden rounded-md border-2 border-primary hover:opacity-80 transition-opacity group"
+        class="relative h-24 w-24 overflow-hidden rounded-md border-2 border-accent hover:opacity-80 transition-opacity group"
       >
         <Avatar class="w-full h-full rounded-none">
           <AvatarImage class="rounded-none" src={previewUrl} />

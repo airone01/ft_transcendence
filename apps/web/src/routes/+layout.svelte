@@ -12,7 +12,10 @@ import AppShell from "$lib/components/layout/app-shell.svelte";
 const { children, data } = $props();
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+  <link rel="icon" href={favicon} />
+  <title>transc</title>
+</svelte:head>
 
 <Toaster />
 <AuthDialog />
@@ -29,9 +32,7 @@ const { children, data } = $props();
 
 <div style="display:none">
 	{#each locales as locale}
-		<a
-			href={localizeHref(page.url.pathname, { locale })}
-		>
+		<a href={localizeHref(page.url.pathname, { locale })}>
 			{locale}
 		</a>
 	{/each}

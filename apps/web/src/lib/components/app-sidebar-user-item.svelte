@@ -42,7 +42,9 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button variant="outline" size="sm" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30"><EllipsisIcon /></Button>
+        <Button variant="outline" size="icon" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30 p-0">
+          <EllipsisIcon class="aspect-square" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
         <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>

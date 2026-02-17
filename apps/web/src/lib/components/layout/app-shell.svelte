@@ -101,8 +101,8 @@ const commandGroups: ShellGroup[] = [
     {#each commandGroups as {items, heading}, i (heading)}
       <CommandGroup {heading}>
         {#each items as {navUrl, label, onClick, ...item} (label)}
-          <CommandItem onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)} class="cursor-pointer">
-            <item.icon class="me-2 size-4 stroke-current"></item.icon>
+          <CommandItem onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)} class="cursor-pointer aria-selected:bg-accent/60">
+            <item.icon class="me-2 size-4 text-accent-foreground"></item.icon>
             <span>{label}</span>
           </CommandItem>
         {/each}
