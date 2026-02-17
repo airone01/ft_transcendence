@@ -24,7 +24,7 @@ const form = superForm(data.form, {
   }
 });
 
-const { form: formData, enhance, delayed } = form;
+const { form: formData, enhance, delayed, errors } = form;
 
 let hiddenFileInput: HTMLInputElement | undefined;
 
@@ -90,4 +90,10 @@ function handleCroppedImage(file: File) {
       </FormField>
     </form>
   </div>
+
+  {#if $errors.avatar}
+    <span class="text-sm font-medium text-destructive">
+      {$errors.avatar[0]}
+    </span>
+  {/if}
 </SettingsHeader>
