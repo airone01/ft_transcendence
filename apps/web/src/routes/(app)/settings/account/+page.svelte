@@ -3,8 +3,6 @@ import { enhance } from "$app/forms";
 import SettingsHeader from "$lib/components/settings-header.svelte";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
-import { Separator } from "@transc/ui/separator";
-import { Badge } from "@transc/ui/badge";
 import { FormField, FormControl, FormLabel, FormFieldErrors } from "@transc/ui/form";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
@@ -44,11 +42,11 @@ const unlinkEnhance = () => {
 
 <SettingsHeader title="Account" description="Manage your credentials and connected services." formId="pwd-form" {delayed}>
   
-  <div class="space-y-4 mb-6">
+  <div class="space-y-4 mb-2">
     <div class="flex items-center justify-between">
       <div>
-        <h3 class="text-base font-medium">Connected Accounts</h3>
-        <p class="text-sm text-muted-foreground">Log in faster with these services.</p>
+        <h4 class="text-sm font-medium">Connected Accounts</h4>
+        <p class="text-xs text-muted-foreground">Log in faster with these services.</p>
       </div>
     </div>
     
@@ -84,12 +82,10 @@ const unlinkEnhance = () => {
     </div>
   </div>
 
-  <Separator class="my-6" />
-
   <div class="space-y-4">
     <div>
-      <h3 class="text-base font-medium">Password</h3>
-      <p class="text-sm text-muted-foreground">
+      <h4 class="text-sm font-medium">Password</h4>
+      <p class="text-xs text-muted-foreground">
         {data.hasPassword 
           ? "Change your password to keep your account secure." 
           : "You haven't set a password yet. Set one to log in with email/password."}
