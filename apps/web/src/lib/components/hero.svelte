@@ -2,7 +2,7 @@
 import { Button } from "@transc/ui/button";
 import { ArrowRightIcon, ChessBishopIcon, ChessKingIcon, ChessKnightIcon, ChessPawnIcon, ChessQueenIcon, ChessRookIcon } from "@lucide/svelte";
 import type { Component } from "svelte";
-import { openAuthDialog } from "$lib/stores/auth-dialog.svelte";
+import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 
 function getPiece(row: number, col: number): Component {
   if (row == 0 || row == 7) {
@@ -66,7 +66,7 @@ function getPiece(row: number, col: number): Component {
         class="relative mx-auto w-full aspect-square max-w-125 transform transition-transform duration-700 ease-out group-hover:rotate-x-12 group-hover:rotate-y-12 rotate-x-6 rotate-z-[-10deg] shadow-2xl rounded-xl border-8 border-neutral-800 bg-neutral-900"
         style="transform-style: preserve-3d;"
       >
-        <div class="grid grid-cols-8 grid-rows-8 hero.svelteh-full w-full rounded-sm overflow-hidden">
+        <div class="grid grid-cols-8 grid-rows-8 h-full w-full rounded-sm overflow-hidden">
           {#each {length: 8}, row}
             {#each {length: 8}, col}
               <div 
