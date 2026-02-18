@@ -6,6 +6,7 @@ import {
   dbGetUser, // We need this to fetch the real password hash
   dbUnlinkOAuthAccount,
   dbUpdateUser,
+  type OAuthProvider,
 } from "$lib/db-services";
 import { accountSettingsSchema } from "$lib/schemas/settings";
 import { hashPassword, verifyPassword } from "$lib/server/auth";
@@ -71,7 +72,7 @@ export const actions: Actions = {
     if (!locals.user) return fail(401);
 
     const formData = await request.formData();
-    const provider = formData.get("provider") as string;
+    const provider = formData.get("provider") as OAuthProvider;
 
     if (!provider)
       return fail(400, { message: "Provider required" /* i18n */ });
@@ -90,7 +91,7 @@ export const actions: Actions = {
         });
       }
 
-      await dbUnlinkOAuthAccount(locals.user.id, provider as unknown);
+      await dbUnlinkOAuthAccount(locals.user.id, provider);
       return { success: true };
     } catch (e) {
       console.error(e);
