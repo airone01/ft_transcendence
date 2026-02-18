@@ -52,9 +52,9 @@ export {
   dbCreateAuthSession,
   dbCreateOAuthAccount,
   dbDeleteAuthSession,
+  dbGetConnectedProviders,
   dbGetUserAndAuthSessionByAuthSessionId,
   dbGetUserByOauthId,
-  dbGetConnectedProviders,
   dbUnlinkOAuthAccount,
 } from "./internal/services/db.auth.service";
 

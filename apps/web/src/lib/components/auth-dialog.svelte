@@ -124,7 +124,17 @@ function toggleMode() {
           <FormFieldErrors />
         </FormField>
 
-        <Button type="submit" class="w-full">Create Account</Button>
+        <FormField form={registerForm} name="confirm-password">
+          <FormControl>
+            {#snippet children({ props })}
+              <FormLabel>Confirm password<!-- i18n --></FormLabel>
+              <Input {...props} type="password" bind:value={$registerData.confirmPassword} placeholder="••••••••" />
+            {/snippet}
+          </FormControl>
+          <FormFieldErrors />
+        </FormField>
+
+        <Button type="submit" class="w-full cursor-pointer">Create Account</Button>
       </form>
     {/if}
 

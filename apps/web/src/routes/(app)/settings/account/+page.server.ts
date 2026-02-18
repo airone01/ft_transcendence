@@ -1,15 +1,15 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { superValidate, message } from "sveltekit-superforms";
+import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import {
   dbGetConnectedProviders,
+  dbGetUser, // We need this to fetch the real password hash
   dbUnlinkOAuthAccount,
   dbUpdateUser,
-  dbGetUser, // We need this to fetch the real password hash
 } from "$lib/db-services";
 import { accountSettingsSchema } from "$lib/schemas/settings";
-import { verifyPassword, hashPassword } from "$lib/server/auth";
-import type { PageServerLoad, Actions } from "./$types";
+import { hashPassword, verifyPassword } from "$lib/server/auth";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
@@ -90,7 +90,7 @@ export const actions: Actions = {
         });
       }
 
-      await dbUnlinkOAuthAccount(locals.user.id, provider as any);
+      await dbUnlinkOAuthAccount(locals.user.id, provider as unknown);
       return { success: true };
     } catch (e) {
       console.error(e);
