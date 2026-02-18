@@ -6,6 +6,7 @@ import {
   ZapIcon,
 } from "@lucide/svelte";
 import type { Component } from "svelte";
+import { m } from "./paraglide/messages";
 
 export type SidebarItem = {
   label: string;
@@ -29,36 +30,36 @@ export type ShellGroup = {
 
 export const sidebarGroups: SidebarGroup[] = [
   {
-    label: "My Content",
+    label: m.nav_head_mycontent(),
     items: [
       {
-        label: "Home",
+        label: m.nav_item_home(),
         href: "/",
         icon: HouseIcon,
       },
       {
-        label: "Profile",
+        label: m.nav_item_profile(),
         href: "/profile/me",
         icon: UserIcon,
         exact: true,
       },
       {
-        label: "Social",
+        label: m.nav_item_social(),
         href: "/profile/me/social",
         icon: HandshakeIcon,
       },
     ],
   },
   {
-    label: "Chess",
+    label: m.nav_head_chess(),
     items: [
       {
-        label: "Play Now",
+        label: m.nav_item_playnow(),
         href: "/play",
         icon: ZapIcon,
       },
       {
-        label: "Ranking",
+        label: m.nav_item_ranking(),
         href: "/ranking",
         icon: TrophyIcon,
       },

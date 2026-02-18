@@ -16,12 +16,13 @@ import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
 import { toast } from "svelte-sonner";
 import { page } from "$app/state";
+import { m } from "$lib/paraglide/messages";
 
 const loginForm = superForm(page.data.loginForm, {
   validators: zodClient(loginSchema),
   onResult: ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
-      toast.success("Welcome back!" /* i18n */);
+      toast.success(m.toast_greet());
       authDialogState.isOpen = false;
     }
   }
@@ -31,13 +32,12 @@ const registerForm = superForm(page.data.registerForm, {
   validators: zodClient(registerSchema),
   onResult: ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
-      toast.success("Account created successfully. Welcome!" /* i18n */);
+      toast.success(m.toast_greet_newuser());
       authDialogState.isOpen = false;
     }
   }
 });
 
-// extract form data :-)
 const { form: loginData, enhance: loginEnhance, message: loginMsg } = loginForm;
 const { form: registerData, enhance: registerEnhance, message: registerMsg } = registerForm;
 
@@ -51,12 +51,12 @@ function toggleMode() {
   <DialogContent class="sm:max-w-100">
     <DialogHeader>
       <DialogTitle>
-        {authDialogState.mode === "login" ? "Welcome Back" : "Create an Account" /* i18n */}
+        {authDialogState.mode === "login" ? m.toast_greet() : m.auth_prompt_newaccount()}
       </DialogTitle>
       <DialogDescription>
         {authDialogState.mode === "login"
-          ? "Enter your credentials to sign in."
-          : "Enter your details to create a new account."}
+          ? m.auth_prompt_credslogin()
+          : m.auth_prompt_credsregister()}
       </DialogDescription>
     </DialogHeader>
 
@@ -69,8 +69,8 @@ function toggleMode() {
         <FormField form={loginForm} name="email">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Email<!-- i18n --></FormLabel>
-              <Input {...props} type="email" bind:value={$loginData.email} placeholder="name@example.com" />
+              <FormLabel>{m.auth_prompt_email()}</FormLabel>
+              <Input {...props} type="email" bind:value={$loginData.email} placeholder={m.auth_prompt_email_placeholder()} />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
@@ -79,14 +79,14 @@ function toggleMode() {
         <FormField form={loginForm} name="password">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Password<!-- i18n --></FormLabel>
+              <FormLabel>{m.auth_prompt_password()}</FormLabel>
               <Input {...props} type="password" bind:value={$loginData.password} placeholder="••••••••" />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
         </FormField>
 
-        <Button type="submit" class="w-full">Login</Button>
+        <Button type="submit" class="w-full">{m.auth_login()}</Button>
       </form>
     {:else}
       <form action="/register" method="POST" use:registerEnhance class="space-y-4 py-2">
@@ -97,8 +97,8 @@ function toggleMode() {
         <FormField form={registerForm} name="username">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Username<!-- i18n --></FormLabel>
-              <Input {...props} bind:value={$registerData.username} placeholder="johndoe" /><!-- i18n (johndoe) -->
+              <FormLabel>{m.auth_prompt_user()}</FormLabel>
+              <Input {...props} bind:value={$registerData.username} placeholder={m.auth_prompt_user_placeholder()} />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
@@ -107,8 +107,8 @@ function toggleMode() {
         <FormField form={registerForm} name="email">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Email<!-- i18n --></FormLabel>
-              <Input {...props} type="email" bind:value={$registerData.email} placeholder="name@example.com" />
+              <FormLabel>{m.auth_prompt_email()}</FormLabel>
+              <Input {...props} type="email" bind:value={$registerData.email} placeholder={m.auth_prompt_email_placeholder()} />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
@@ -117,7 +117,7 @@ function toggleMode() {
         <FormField form={registerForm} name="password">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Password<!-- i18n --></FormLabel>
+              <FormLabel>{m.auth_prompt_password()}</FormLabel>
               <Input {...props} type="password" bind:value={$registerData.password} placeholder="••••••••" />
             {/snippet}
           </FormControl>
@@ -127,14 +127,14 @@ function toggleMode() {
         <FormField form={registerForm} name="confirmPassword">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>Confirm password<!-- i18n --></FormLabel>
+              <FormLabel>{m.auth_prompt_password_confirm()}</FormLabel>
               <Input {...props} type="password" bind:value={$registerData.confirmPassword} placeholder="••••••••" />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
         </FormField>
 
-        <Button type="submit" class="w-full cursor-pointer">Create Account</Button>
+        <Button type="submit" class="w-full cursor-pointer">{m.auth_createaccount()}</Button>
       </form>
     {/if}
 
@@ -142,19 +142,18 @@ function toggleMode() {
       <div class="relative">
         <div class="absolute inset-0 flex items-center"><span class="w-full border-t"></span></div>
         <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-background px-2 text-muted-foreground">Or continue with<!-- i18n --></span>
+          <span class="bg-background px-2 text-muted-foreground">{m.oauth_continuewith()}</span>
         </div>
       </div>
 
       <Button href="/login/discord" variant="outline" class="w-full gap-2">
-        <KeyRoundIcon class="h-4 w-4" />
-        Discord<!-- i18n -->
+        <KeyRoundIcon class="h-4 w-4" />{m.oauth_discord()}
       </Button>
 
       <div class="text-center text-sm text-muted-foreground mt-2">
-        {authDialogState.mode === "login" ? "Don't have an account?" : "Already have an account?" /* i18n */}
+        {authDialogState.mode === "login" ? m.auth_prompt_noaccount() : m.auth_prompt_yesaccount()}
         <button onclick={toggleMode} class="underline underline-offset-4 hover:text-primary ml-1 font-medium cursor-pointer">
-          {authDialogState.mode === "login" ? "Sign up" : "Login" /* i18n */}
+          {authDialogState.mode === "login" ? m.auth_register() : m.auth_login()}
         </button>
       </div>
     </div>

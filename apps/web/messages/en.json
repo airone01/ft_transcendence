@@ -1,4 +1,54 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "hello_world": "Hello, {name} from en!"
+
+  "app_name": "ft_transcendence",
+
+  "auth_logout": "Log out",
+  "auth_login": "Log in",
+  "auth_register": "Register",
+  "auth_createaccount": "Create Account",
+
+  "auth_prompt_newaccount": "Create an Account",
+  "auth_prompt_credslogin": "Enter your credentials to sign in.",
+  "auth_prompt_credsregister": "Enter your details to create a new account.",
+  "auth_prompt_email": "Email",
+  "auth_prompt_email_placeholder": "name@example.com",
+  "auth_prompt_password": "Password",
+  "auth_prompt_password_confirm": "Confirm Password",
+  "auth_prompt_user": "User",
+  "auth_prompt_user_placeholder": "johndoe",
+  "auth_prompt_noaccount": "Don't have an account?",
+  "auth_prompt_yesaccount": "Already have an account?",
+
+  "oauth_continuewith": "or continue with",
+  "oauth_discord": "Discord",
+
+  "toast_logged_out": "You logged out. See you soon!",
+  "toast_logged_out_failed": "Failed to log out",
+  "toast_greet": "Welcome back!",
+  "toast_greet_newuser": "Account created successfully. Welcome!",
+
+  "nav_head_mycontent": "My Content",
+  "nav_head_quicknav": "Quick navigation",
+  "nav_head_chess": "Chess",
+  "nav_head_account": "Account",
+  "nav_head_startgame": "Start a game",
+
+  "nav_item_dashboard": "Dashboard",
+  "nav_item_startmm": "Start ranked matchmaking",
+  "nav_item_startbot": "Start a game against AI",
+  "nav_item_settings": "Settings",
+  "nav_item_home": "Home",
+  "nav_item_profile": "Profile",
+  "nav_item_social": "Social",
+  "nav_item_playnow": "Play Now",
+  "nav_item_ranking": "Ranking",
+  "nav_item_quickplay": "Quick Play",
+  "nav_item_mm": "Matchmaking",
+  "nav_item_playbot": "Play vs AI",
+
+  "nav_cmd_query": "Type a command or search..",
+  "nav_cmd_nores": "No results found.",
+
+  "chess_elo": "ELO"
 }

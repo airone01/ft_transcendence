@@ -9,6 +9,7 @@ import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { invalidateAll } from "$app/navigation";
 import { BotIcon, LogOutIcon, SettingsIcon, ZapIcon } from "@lucide/svelte";
+import { m } from "$lib/paraglide/messages";
 
 const { children } = $props();
 
@@ -34,10 +35,10 @@ function runCommand(url: string) {
 const logoutFunc = () => {
   return async ({ result }: any) => {
     if (result.type === 'redirect' || result.type === 'success') {
-      toast.success("You logged out. See you soon!");
+      toast.success(m.toast_logged_out());
       await invalidateAll(); // invalidates data to redraw interface
     } else {
-      toast.error("Failed to log out");
+      toast.error(m.toast_logged_out_failed());
     }
   };
 };
@@ -53,7 +54,7 @@ $effect(() => {
 const commandGroups: ShellGroup[] = [
   ...sidebarGroups
     .map(({ label, items }) => ({
-      heading: label === "My Content" ? "Quick navigation" : naturalCap(label),
+      heading: label === m.nav_head_mycontent() ? m.nav_head_quicknav() : naturalCap(label),
       items: items.map((e) => {
         const { href, label, ...el } = e;
         return {
@@ -63,23 +64,23 @@ const commandGroups: ShellGroup[] = [
         };
       }),
     }))
-    .filter((e) => e.heading !== "Chess"),
+    .filter((e) => e.heading !== m.nav_head_chess()),
   {
-    heading: "Start a game",
+    heading: m.nav_head_startgame(),
     items: [
-      { label: "Start ranked match making", navUrl: "/play", icon: ZapIcon },
-      { label: "Start a game against AI", navUrl: "/play/bot", icon: BotIcon },
+      { label: m.nav_item_startmm(), navUrl: "/play", icon: ZapIcon },
+      { label: m.nav_item_startbot(), navUrl: "/play/bot", icon: BotIcon },
     ],
   },
   {
-    heading: "Account",
+    heading: m.nav_head_account(),
     items: [
       {
-        label: "Settings",
+        label: m.nav_item_settings(),
         navUrl: "/settings",
         icon: SettingsIcon,
       },
-      { label: "Log out", icon: LogOutIcon, onClick: () => logoutForm?.requestSubmit() },
+      { label: m.auth_logout(), icon: LogOutIcon, onClick: () => logoutForm?.requestSubmit() },
     ],
   },
 ];
@@ -95,9 +96,9 @@ const commandGroups: ShellGroup[] = [
 ></form>
 
 <CommandDialog bind:open={commandOpen}>
-  <CommandInput bind:value={commandInput} placeholder="Type a command or search.." />
+  <CommandInput bind:value={commandInput} placeholder={m.nav_cmd_query()} />
   <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandEmpty>{m.nav_cmd_nores()}</CommandEmpty>
     {#each commandGroups as {items, heading}, i (heading)}
       <CommandGroup {heading}>
         {#each items as {navUrl, label, onClick, ...item} (label)}

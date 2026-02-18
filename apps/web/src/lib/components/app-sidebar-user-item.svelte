@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
 } from "@transc/ui/dropdown-menu"
 import { page } from "$app/state";
+import { m } from "$lib/paraglide/messages";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
@@ -37,7 +38,7 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
         </TooltipContent>
       </Tooltip>
       <span class="font-mono bg-muted px-1 rounded-sm text-[10px] font-bold w-fit">
-        ELO ????
+        {m.chess_elo()} ????
       </span>
     </div>
     <DropdownMenu>
@@ -47,8 +48,8 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
-        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
-        <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
+        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">{m.auth_logout()}</DropdownMenuItem>
+        <DropdownMenuItem><a href="/settings/profile">{m.nav_item_settings()}</a></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>
