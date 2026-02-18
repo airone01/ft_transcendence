@@ -1,15 +1,13 @@
 // yes, the fact that zod is on v3 is important.
 import { z } from "zod/v3";
 import { zPassword, zUsername } from "./auth";
+import { m } from "$lib/paraglide/messages";
 
 export const profileFormSchema = z.object({
   username: zUsername.optional(),
   avatar: z
-    .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
-    .refine(
-      (f) => f.size < 1_000_000,
-      "Avatar files uploaded can be at most 1 MB in size" /* i18n */,
-    )
+    .instanceof(File, { message: m.sform_avatar_file() })
+    .refine((f) => f.size < 1_000_000, m.sform_avatar_size())
     .optional(),
 });
 
@@ -85,7 +83,7 @@ export const accountSettingsSchema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match" /* i18n */,
+    message: m.sform_pass_match(),
     path: ["confirmPassword"],
   });
 

@@ -5,7 +5,7 @@ import { Button } from "@transc/ui/button";
 <section class="flex gap-4 container">
   <!-- Main title -->
   <div class="flex flex-col justify-center items-center w-full">
-    <h1 class="text-7xl uppercase font-semibold text-center">Play Chess Now</h1>
+    <h1 class="text-7xl uppercase font-semibold text-center">Play Chess Now<!-- i18n ---></h1>
   </div>
   <!-- Chess board -->
   <div class="flex flex-col justify-center items-center w-full relative">
@@ -23,7 +23,7 @@ import { Button } from "@transc/ui/button";
       class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
       aria-label="Start new game"
     >
-      New game
+      New game<!-- i18n --->
     </Button>
   </div>
 </section>

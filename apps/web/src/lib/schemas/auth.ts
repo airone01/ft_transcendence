@@ -1,39 +1,26 @@
 // yes, the fact that zod is on v3 is important.
 import { z } from "zod/v3";
+import { m } from "$lib/paraglide/messages";
 
 export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address." /* i18n */),
-  password: z.string().min(1, "Password is required." /* i18n */),
+  email: z.string().email(m.sform_email_needed()),
+  password: z.string().min(1, m.sform_pass_needed()),
 });
 
 export const zUsername = z
   .string()
-  .min(3, "Username must be at least 3 characters." /* i18n */)
-  .max(20, "Username must be at most 20 characters." /* i18n */)
-  .regex(
-    /^[a-zA-Z0-9_]+$/,
-    "Only letters, numbers, and underscores allowed." /* i18n */,
-  );
-export const zEmail = z
-  .string()
-  .email("Please enter a valid email address." /* i18n */);
+  .min(3, m.sform_user_len())
+  .max(20, m.sform_user_len2())
+  .regex(/^[a-zA-Z0-9_]+$/, m.sform_user_chars());
+export const zEmail = z.string().email(m.sform_email_needed());
 export const zPassword = z
   .string()
-  .min(8, "Password must be at least 8 characters." /* i18n */)
-  .max(64, "Password must be less than 64 characters." /* i18n */)
-  .regex(
-    /[A-Z]/,
-    "Password must contain at least one uppercase letter." /* i18n */,
-  )
-  .regex(
-    /[a-z]/,
-    "Password must contain at least one lowercase letter." /* i18n */,
-  )
-  .regex(/[0-9]/, "Password must contain at least one number." /* i18n */)
-  .regex(
-    /[^A-Za-z0-9]/,
-    "Password must contain at least one special character." /* i18n */,
-  );
+  .min(8, m.sform_pass_len())
+  .max(64, m.sform_user_len2())
+  .regex(/[A-Z]/, m.sorm_pass_upper())
+  .regex(/[a-z]/, m.sform_pass_lower())
+  .regex(/[0-9]/, m.sform_pass_number())
+  .regex(/[^A-Za-z0-9]/, m.sform_pass_special());
 
 export const registerSchema = z
   .object({
@@ -43,7 +30,7 @@ export const registerSchema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match" /* i18n */,
+    message: m.sform_pass_match(),
     path: ["confirmPassword"],
   });
 

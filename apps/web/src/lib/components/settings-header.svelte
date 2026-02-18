@@ -2,6 +2,7 @@
 import { Button } from "@transc/ui/button";
 import type { Snippet } from "svelte";
 import { type Readable } from "svelte/store";
+import { m } from "$lib/paraglide/messages";
 
 export let title: string;
 export let description: string;
@@ -22,7 +23,7 @@ export let formId: string;
 
   <div class="flex justify-end">
     <Button form={formId} type="submit" disabled={$delayed} class="cursor-pointer">
-      {#if $delayed}Saving...{:else}Save Changes{/if}
+      {#if $delayed}{m.settings_saving()}{:else}{m.settings_save()}{/if}
     </Button>
   </div>
 </div>

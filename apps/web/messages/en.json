@@ -50,5 +50,23 @@
   "nav_cmd_query": "Type a command or search..",
   "nav_cmd_nores": "No results found.",
 
+  "sform_avatar_file": "Avatar must be a file",
+  "sform_avatar_size": "Avatar files uploaded can be at most 1 MB in size",
+  "sform_email_needed": "Please enter a valid email address.",
+  "sform_user_len": "Username must be at least 3 characters.",
+  "sform_user_len2": "Username must be at most 20 characters.",
+  "sform_user_chars": "Only letters, numbers, and underscores allowed.",
+  "sform_pass_match": "Passwords don't match",
+  "sform_pass_needed": "Password is required.",
+  "sform_pass_len": "Password must be at least 8 characters.",
+  "sform_pass_len2": "Password must be less than 64 characters.",
+  "sform_pass_upper": "Password must contain at least one uppercase letter.",
+  "sform_pass_lower": "Password must contain at least one lowercase letter.",
+  "sform_pass_number": "Password must contain at least one number.",
+  "sform_pass_special": "Password must contain at least one special character.",
+
+  "settings_saving": "Saving...",
+  "settings_save": "Save Changes",
+
   "chess_elo": "ELO"
 }
