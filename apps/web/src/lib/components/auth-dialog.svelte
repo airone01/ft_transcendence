@@ -124,7 +124,7 @@ function toggleMode() {
           <FormFieldErrors />
         </FormField>
 
-        <FormField form={registerForm} name="confirm-password">
+        <FormField form={registerForm} name="confirmPassword">
           <FormControl>
             {#snippet children({ props })}
               <FormLabel>Confirm password<!-- i18n --></FormLabel>

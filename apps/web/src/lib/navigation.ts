@@ -43,8 +43,8 @@ export const sidebarGroups: SidebarGroup[] = [
         exact: true,
       },
       {
-        label: "Friends",
-        href: "/profile/me/friends",
+        label: "Social",
+        href: "/profile/me/social",
         icon: HandshakeIcon,
       },
     ],
