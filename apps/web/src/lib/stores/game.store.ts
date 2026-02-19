@@ -14,6 +14,8 @@ export interface GameState {
   gameOver: boolean;
   winner: string | null;
   reason: string | null;
+  whiteTimeLeft: number;
+  blackTimeLeft: number;
 }
 
 export interface GameMove {
@@ -28,6 +30,8 @@ export interface GameMove {
 
 // ─── Stores ─────────────────────────────────────────────────────────────────
 
+const DEFAULT_TIME = 600_000; // 10 minutes in ms
+
 export const gameState: Writable<GameState> = writable({
   gameId: null,
   fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -39,6 +43,8 @@ export const gameState: Writable<GameState> = writable({
   gameOver: false,
   winner: null,
   reason: null,
+  whiteTimeLeft: DEFAULT_TIME,
+  blackTimeLeft: DEFAULT_TIME,
 });
 
 export const isMyTurn = derived(gameState, ($state) => {
@@ -124,24 +130,37 @@ export function leaveGame() {
     gameOver: false,
     winner: null,
     reason: null,
+    whiteTimeLeft: DEFAULT_TIME,
+    blackTimeLeft: DEFAULT_TIME,
   });
 }
 
 // ─── Event Listeners ────────────────────────────────────────────────────────
 
 export function setupGameListeners() {
-  socketManager.on("game:state", ((data: GameState) => {
+  socketManager.on("game:state", ((
+    data: GameState & {
+      myColor?: "white" | "black";
+      whiteTimeLeft?: number;
+      blackTimeLeft?: number;
+    },
+  ) => {
     gameState.update((state) => ({
       ...state,
       gameId: data.gameId,
       fen: data.fen,
       turn: data.turn,
+      myColor: data.myColor ?? state.myColor,
       isCheckmate: data.isCheckmate,
       isDraw: data.isDraw,
+      whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
+      blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
     }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:move", ((data: GameMove) => {
+  socketManager.on("game:move", ((
+    data: GameMove & { whiteTimeLeft?: number; blackTimeLeft?: number },
+  ) => {
     gameState.update((state) => ({
       ...state,
       fen: data.fen || state.fen,
@@ -149,6 +168,19 @@ export function setupGameListeners() {
       check: data.check || false,
       isCheckmate: data.checkmate || false,
       isDraw: data.stalemate || false,
+      whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
+      blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
+    }));
+  }) as unknown as (...args: unknown[]) => void);
+
+  socketManager.on("game:time", ((data: {
+    whiteTimeLeft: number;
+    blackTimeLeft: number;
+  }) => {
+    gameState.update((state) => ({
+      ...state,
+      whiteTimeLeft: data.whiteTimeLeft,
+      blackTimeLeft: data.blackTimeLeft,
     }));
   }) as unknown as (...args: unknown[]) => void);
 

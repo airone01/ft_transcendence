@@ -1,8 +1,14 @@
 import { db } from "@transc/db";
-import { users, usersStats } from "@transc/db/schema";
+import {
+  chatChannelMembers,
+  chatChannels,
+  users,
+  usersStats,
+} from "@transc/db/schema";
 import { DrizzleQueryError, eq } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
+  type ChatChannelType,
   type CreateUserInput,
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
@@ -77,6 +83,20 @@ export async function dbCreateUser(
           userId: newUser.id,
         })
         .returning({ id: usersStats.userId });
+
+      const [globalChannelId] = await tx
+        .select({ id: chatChannels.id })
+        .from(chatChannels)
+        .where(eq(chatChannels.type, "global" as ChatChannelType))
+        .limit(1);
+
+      const [_chat] = await tx
+        .insert(chatChannelMembers)
+        .values({
+          userId: stats.id,
+          channelId: globalChannelId.id,
+        })
+        .returning();
 
       return stats.id;
     });

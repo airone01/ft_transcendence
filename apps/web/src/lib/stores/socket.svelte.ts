@@ -1,6 +1,5 @@
 import { io, type Socket } from "socket.io-client";
 import { type Writable, writable } from "svelte/store";
-import { browser } from "$app/environment";
 
 // ─── Reactive stores (accessible from any component) ───────────
 
@@ -13,21 +12,14 @@ export const socketError: Writable<string | null> = writable(null);
 class SocketManager {
   private socket: Socket | null = null;
 
-  constructor() {
-    if (browser) {
-      this.connect();
-    }
-  }
-
-  connect() {
+  connect(userId: string, username: string) {
     if (this.socket?.connected) return;
 
-    // TODO: pass listen addr as env var
-    this.socket = io("http://localhost:3000", {
-      auth: {
-        token: this.getToken(),
-      },
-      transports: ["websocket", "polling"],
+    this.socket?.disconnect();
+
+    this.socket = io("http://localhost:3001", {
+      auth: { userId, username },
+      transports: ["websocket"],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
@@ -63,7 +55,7 @@ class SocketManager {
     });
 
     this.socket.io.on("reconnect_attempt", (attempt) => {
-      console.log(`🔄 Reconnection attempt ${attempt}`);
+      console.log(`Reconnection attempt ${attempt}`);
       socketReconnecting.set(true);
     });
 
@@ -76,16 +68,6 @@ class SocketManager {
       console.error("Reconnection failed");
       socketError.set("Failed to reconnect");
     });
-  }
-
-  private getToken(): string | null {
-    if (!browser) return null;
-    return (
-      document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("session="))
-        ?.split("=")[1] || null
-    );
   }
 
   emit(event: string, data?: unknown) {

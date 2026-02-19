@@ -8,8 +8,18 @@ import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { Toaster } from "@transc/ui/sonner";
 import { TooltipProvider } from "@transc/ui/tooltip";
 import AppShell from "$lib/components/layout/app-shell.svelte";
+import { onMount } from "svelte";
+import { initializeSocketListeners } from "$lib/socket-init";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 const { children, data } = $props();
+
+onMount(() => {
+  if (data.user) {
+    socketManager.connect(String(data.user.id), data.user.username);
+  }
+  initializeSocketListeners();
+});
 </script>
 
 <svelte:head>
