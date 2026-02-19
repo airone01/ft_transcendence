@@ -1,10 +1,10 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
-//import { registerChatHandlers } from "./handlers/chat";
-import { authMiddleware } from "./middleware/auth";
 import { registerGameHandlers } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
+//import { registerChatHandlers } from "./handlers/chat";
+import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import {
   restoreSessionOnReconnect,

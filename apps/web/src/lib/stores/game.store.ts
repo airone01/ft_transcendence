@@ -138,7 +138,13 @@ export function leaveGame() {
 // ─── Event Listeners ────────────────────────────────────────────────────────
 
 export function setupGameListeners() {
-  socketManager.on("game:state", ((data: GameState & { myColor?: "white" | "black"; whiteTimeLeft?: number; blackTimeLeft?: number }) => {
+  socketManager.on("game:state", ((
+    data: GameState & {
+      myColor?: "white" | "black";
+      whiteTimeLeft?: number;
+      blackTimeLeft?: number;
+    },
+  ) => {
     gameState.update((state) => ({
       ...state,
       gameId: data.gameId,
@@ -152,7 +158,9 @@ export function setupGameListeners() {
     }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:move", ((data: GameMove & { whiteTimeLeft?: number; blackTimeLeft?: number }) => {
+  socketManager.on("game:move", ((
+    data: GameMove & { whiteTimeLeft?: number; blackTimeLeft?: number },
+  ) => {
     gameState.update((state) => ({
       ...state,
       fen: data.fen || state.fen,
@@ -165,7 +173,10 @@ export function setupGameListeners() {
     }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:time", ((data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+  socketManager.on("game:time", ((data: {
+    whiteTimeLeft: number;
+    blackTimeLeft: number;
+  }) => {
     gameState.update((state) => ({
       ...state,
       whiteTimeLeft: data.whiteTimeLeft,

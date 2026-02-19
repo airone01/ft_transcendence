@@ -45,9 +45,12 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         activeGames.set(gameId, gameRoom);
 
         // Forward timer events to clients
-        gameRoom.on("time_tick", (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
-          io.to(`game:${gameId}`).emit("game:time", data);
-        });
+        gameRoom.on(
+          "time_tick",
+          (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+            io.to(`game:${gameId}`).emit("game:time", data);
+          },
+        );
         gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
           io.to(`game:${data.gameId}`).emit("game:over", {
             winner: data.winner,
@@ -60,7 +63,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       gameRoom.addPlayer(socket);
 
       // Send state with player's color
-      const myColor = String(players.whitePlayerId) === userId ? "white" : "black";
+      const myColor =
+        String(players.whitePlayerId) === userId ? "white" : "black";
       socket.emit("game:state", { ...gameRoom.getState(), myColor });
 
       // Notify opponent

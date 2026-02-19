@@ -1,7 +1,7 @@
 import { type Writable, writable } from "svelte/store";
 import { goto } from "$app/navigation";
-import { socketManager } from "$lib/stores/socket.svelte";
 import { gameState } from "$lib/stores/game.store";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

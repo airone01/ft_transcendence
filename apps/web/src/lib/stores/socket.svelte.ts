@@ -1,6 +1,5 @@
 import { io, type Socket } from "socket.io-client";
 import { type Writable, writable } from "svelte/store";
-import { browser } from "$app/environment";
 
 // ─── Reactive stores (accessible from any component) ───────────
 
