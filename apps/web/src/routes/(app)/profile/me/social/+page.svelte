@@ -3,7 +3,7 @@ import { enhance } from "$app/forms";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardTitle } from "@transc/ui/card";
+import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from "@transc/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@transc/ui/empty"
 import { UserMinusIcon, UserPlusIcon, SearchIcon, MessageSquareIcon, FrownIcon, SwordsIcon } from "@lucide/svelte";
 import { Badge } from "@transc/ui/badge";
@@ -11,7 +11,6 @@ import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
 import { onDestroy, onMount } from "svelte";
 import { untrack } from "svelte";
-    import CardHeader from "../../../../../../../../packages/ui/src/components/ui/card/card-header.svelte";
 
 let { data } = $props();
 
