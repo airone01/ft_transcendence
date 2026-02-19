@@ -1,14 +1,13 @@
 import { page } from "$app/state";
+import type { UserNoPass } from "../../app";
 
-// 'page' is a reactive state object
-// use getter to access current page data dynamically
 class AuthState {
-  get user() {
-    return page.data.user;
+  get user(): UserNoPass | null {
+    return page.data.user ?? null;
   }
 
   get session() {
-    return page.data.session;
+    return page.data.session ?? null;
   }
 
   get isAuthenticated() {

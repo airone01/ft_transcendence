@@ -1,8 +1,11 @@
 import { error, redirect } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { and, eq } from "@transc/db/drizzle-orm";
-import { oauthAccounts, users } from "@transc/db/schema";
 import { env } from "$env/dynamic/private";
+import {
+  dbCreateOAuthAccount,
+  dbCreateUser,
+  dbGetUserByEmail,
+  dbGetUserByOauthId,
+} from "$lib/db-services";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import type { RequestEvent } from "./$types";
 
@@ -54,56 +57,40 @@ export const GET = async (event: RequestEvent) => {
 
     // we got internal discord user info
     // rest of func is DB logic
+    // TODO!!!
 
     // check if this discord ID is already linked
-    const existingAccount = await db
-      .select()
-      .from(oauthAccounts)
-      .where(
-        and(
-          eq(oauthAccounts.providerId, "discord"),
-          eq(oauthAccounts.providerUserId, discordUser.id),
-        ),
-      )
-      .limit(1);
-
+    const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
     let userId: number;
 
     // depending on whether the account exists already, or it doesn't at all, or it doesn't but there is a user with the same email, we do different things
-    if (existingAccount.length > 0) {
+    if (existingAccount) {
       // account exists: login
-      userId = existingAccount[0].userId;
+      userId = existingAccount.id;
     } else {
       // account doesn't exists:
       // first check if user already has an account that is not linked to discord by searching for email in DB
-      const existingEmailUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, discordUser.email))
-        .limit(1);
+      const existingEmailUser = await dbGetUserByEmail(discordUser.email);
 
-      if (existingEmailUser.length > 0) {
+      if (existingEmailUser) {
         // user does exist (via password acc): link discord
-        userId = existingEmailUser[0].id;
+        userId = existingEmailUser.id;
       } else {
         // brand new user: create fresh acc
-        const newUser = await db
-          .insert(users)
-          .values({
-            email: discordUser.email,
-            username: discordUser.username,
-            // no password because oauth
-          })
-          .returning({ id: users.id });
-
-        userId = newUser[0].id;
+        userId = await dbCreateUser({
+          email: discordUser.email,
+          username: discordUser.username, // NOTE: This could go very wrong if two users have the same username
+          avatar: discordUser.avatar,
+          password: null,
+          // no password bc oauth
+        });
       }
 
       // link
-      await db.insert(oauthAccounts).values({
-        providerId: "discord",
+      await dbCreateOAuthAccount({
+        userId,
+        provider: "discord",
         providerUserId: discordUser.id,
-        userId: userId,
       });
     }
 

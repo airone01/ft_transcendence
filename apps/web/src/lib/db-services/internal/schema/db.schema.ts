@@ -4,7 +4,7 @@ const userSchema = z.object({
   id: z.number().int(),
   username: z.string().min(3).max(20),
   email: z.string(),
-  password: z.string().min(8),
+  password: z.string().min(8).nullable(),
   avatar: z.string().nullable(),
   status: z.enum(["online", "offline", "ingame"]),
   createdAt: z.date(),
@@ -29,9 +29,14 @@ const friendshipSchema = z.object({
 const authSessionsSchema = z.object({
   id: z.string(),
   userId: z.number().int(),
-  token: z.string(),
   createdAt: z.date(),
   expiresAt: z.date(),
+});
+
+const oauthAccountSchema = z.object({
+  provider: z.enum(["discord", "google", "github"]),
+  providerUserId: z.string(),
+  userId: z.number().int(),
 });
 
 const gamesSchema = z.object({
@@ -85,6 +90,7 @@ export type User = z.infer<typeof userSchema>;
 export type UserStats = z.infer<typeof userStatsSchema>;
 export type Friendship = z.infer<typeof friendshipSchema>;
 export type AuthSession = z.infer<typeof authSessionsSchema>;
+export type OauthAccount = z.infer<typeof oauthAccountSchema>;
 export type Game = z.infer<typeof gamesSchema>;
 export type GamePlayer = z.infer<typeof gamesPlayersSchema>;
 export type GameSpectator = z.infer<typeof gamesSpectatorsSchema>;

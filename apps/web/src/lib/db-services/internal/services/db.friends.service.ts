@@ -182,7 +182,7 @@ export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
         ),
       );
 
-    return friends as FriendInfo[];
+    return friends;
   } catch (err) {
     console.error(err);
     throw new UnknownError();

@@ -22,6 +22,9 @@ export type {
   ChatMessageType,
 } from "./internal/schema/db.chat.schema";
 
+/* Auth Schema */
+export type { OAuthProvider } from "./internal/schema/db.auth.schema";
+
 /* Games Types */
 export type {
   CreateGameInput,
@@ -38,6 +41,7 @@ export type {
   Game,
   GamePlayer,
   GameSpectator,
+  OauthAccount,
   User,
   UserStats,
 } from "./internal/schema/db.schema";
@@ -65,6 +69,15 @@ export {
   dbSendToGlobal,
 } from "./internal/services/db.chat.service";
 
+/* Auth Services */
+export {
+  dbCreateAuthSession,
+  dbCreateOAuthAccount,
+  dbDeleteAuthSession,
+  dbGetUserAndAuthSessionByAuthSessionId,
+  dbGetUserByOauthId,
+} from "./internal/services/db.auth.service";
+
 /* Friends Services */
 export {
   dbAddFriend,
@@ -78,6 +91,7 @@ export {
   dbCreateGame,
   dbEndGame,
   dbGetGame,
+  dbGetPlayers,
   dbGetSpectators,
   dbGetSpectatorsCount,
   dbRemoveSpectator,
@@ -91,6 +105,7 @@ export {
   dbDeleteUser,
   dbGetStats,
   dbGetUser,
+  dbGetUserByEmail,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,

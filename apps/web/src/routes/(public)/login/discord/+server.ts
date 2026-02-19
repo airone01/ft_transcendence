@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { redirect } from "@sveltejs/kit";
+import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import type { RequestEvent } from "./$types";
 
@@ -10,7 +11,7 @@ export const GET = async ({ cookies }: RequestEvent) => {
     path: "/",
     httpOnly: true,
     maxAge: 60 * 10, // 10 minutes
-    secure: import.meta.env.PROD,
+    secure: !dev,
     sameSite: "lax",
   });
 

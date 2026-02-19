@@ -7,17 +7,17 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./components/*": "./src/components/*",
     "./utils": "./src/utils.ts",
     "./hooks/*": "./src/hooks/*",
     "./app.css": "./src/app.css",
     "./avatar": "./src/components/ui/avatar/index.ts",
     "./button": "./src/components/ui/button/index.ts",
     "./card": "./src/components/ui/card/index.ts",
+    "./checkbox": "./src/components/ui/checkbox/index.ts",
     "./dialog": "./src/components/ui/dialog/index.ts",
     "./dropdown-menu": "./src/components/ui/dropdown-menu/index.ts",
     "./form": "./src/components/ui/form/index.ts",
+    "./image-cropper": "./src/components/ui/image-cropper/index.ts",
     "./input": "./src/components/ui/input/index.ts",
     "./item": "./src/components/ui/item/index.ts",
     "./label": "./src/components/ui/label/index.ts",
@@ -26,6 +26,7 @@
     "./sidebar": "./src/components/ui/sidebar/index.ts",
     "./skeleton": "./src/components/ui/skeleton/index.ts",
     "./sonner": "./src/components/ui/sonner/index.ts",
+    "./tabs": "./src/components/ui/tabs/index.ts",
     "./tooltip": "./src/components/ui/tooltip/index.ts"
   },
   "scripts": {
@@ -35,7 +36,8 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
-    "svelte": "^5"
+    "svelte": "^5",
+    "svelte-easy-crop": "^5.0.0"
   },
   "devDependencies": {
     "@internationalized/date": "^3.10.0",

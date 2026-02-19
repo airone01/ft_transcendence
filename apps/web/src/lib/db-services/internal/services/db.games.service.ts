@@ -160,7 +160,7 @@ export async function dbGetGame(gameId: number): Promise<Game> {
 
     if (!game) throw new DBGameNotFoundError();
 
-    return game as Game;
+    return game;
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;
 
@@ -192,7 +192,7 @@ export async function dbUpdateGame(
 
     if (!game) throw new DBGameNotFoundError();
 
-    return game as Game;
+    return game;
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;
 
@@ -331,6 +331,39 @@ export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
     if (err instanceof DBGameNotFoundError) throw err;
     if (err instanceof DBPlayersNotFoundError) throw err;
     if (err instanceof DBDeleteChatChannelError) throw err;
+
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves the IDs of the players in a game.
+ * @param {number} gameId - The id of the game to retrieve the players for
+ * @throws {DBPlayersNotFoundError} - If the players are not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<{ whitePlayerId: number; blackPlayerId: number }>} - A promise that resolves with the IDs of the players if found, or rejects if the players are not found or an unexpected error occurs
+ */
+export async function dbGetPlayers(
+  gameId: number,
+): Promise<{ whitePlayerId: number; blackPlayerId: number }> {
+  try {
+    const players = await db
+      .select({ user_id: gamesPlayers.userId, color: gamesPlayers.color })
+      .from(gamesPlayers)
+      .where(eq(gamesPlayers.gameId, gameId))
+      .limit(2);
+
+    if (players.length !== 2) throw new DBPlayersNotFoundError();
+
+    return {
+      whitePlayerId:
+        players[0].color === "white" ? players[0].user_id : players[1].user_id,
+      blackPlayerId:
+        players[0].color === "black" ? players[0].user_id : players[1].user_id,
+    };
+  } catch (err) {
+    if (err instanceof DBPlayersNotFoundError) throw err;
 
     console.error(err);
     throw new UnknownError();
