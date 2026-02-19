@@ -3,17 +3,22 @@ import {
   DBAddFriendFriendshipAlreadyExistsError,
   dbAddFriend,
   dbGetFriendsInfo,
+  dbGetRandomUsers,
   dbGetUserByUsername,
   dbRemoveFriend,
+  type User,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) return { friends: [] };
 
+  // TODO: handle error here
   const friends = await dbGetFriendsInfo(locals.user.id);
+  const users = dbGetRandomUsers(locals.user.id);
 
   return {
+    users,
     friends,
   };
 };

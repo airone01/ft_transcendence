@@ -109,6 +109,7 @@ export {
   dbGetUser,
   dbGetUserByEmail,
   dbGetUserByUsername,
+  dbGetRandomUsers,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,

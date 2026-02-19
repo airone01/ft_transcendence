@@ -5,7 +5,7 @@ import {
   users,
   usersStats,
 } from "@transc/db/schema";
-import { DrizzleQueryError, eq } from "drizzle-orm";
+import { DrizzleQueryError, eq, sql, not } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   type ChatChannelType,
@@ -124,6 +124,26 @@ export async function dbCreateUser(
       }
     }
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves five random users
+ * @param {number} userId - The id of the user requesting
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User[]>} - A promise that resolves with the users array
+ */
+export async function dbGetRandomUsers(userId: number): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(users)
+      .where(not(eq(users.id, userId)))
+      .orderBy(sql`RANDOM()`)
+      .limit(5);
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }

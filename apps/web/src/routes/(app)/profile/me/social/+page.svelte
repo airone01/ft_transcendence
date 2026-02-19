@@ -75,11 +75,10 @@ onDestroy(() => {
 
 const formEnhance = () => {
   return async ({ result, update }: any) => {
-    if (result.type === 'failure') {
-      toast.error(result.data?.error || "An error occurred");
-    } else if (result.type === 'success') {
-      toast.success(result.data?.message || "Success");
-    }
+    if (result.type === 'failure')
+      toast.error(result.data?.error ?? "An error occurred");
+    else if (result.type === 'success')
+      toast.success(result.data?.message ?? "Success");
     await update();
   };
 };
@@ -205,67 +204,77 @@ const formEnhance = () => {
         <CardDescription>See what the community is up to.</CardDescription>
       </CardHeader>
       <CardContent>
-        <!-- FOR EACH HERE -->
-        <Card class="overflow-hidden py-0">
-          <CardContent class="p-2 flex items-center gap-4">
-            <div class="relative">
-              <a href="##">
-                <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
-                  <AvatarImage src="avatar url" alt="alt" />
-                  <AvatarFallback>FB</AvatarFallback>
-                </Avatar>
-              </a>
-            </div>
-            <div class="grid grid-rows-2 grid-cols-1 h-full w-full flex-1 min-h-0 min-w-0">
-              <p class="text-sm truncate"><span class="font-bold">Anna Cramling</span> won against <span class="font-bold">Levy Rozman</span>.</p>
-              <p class="text-xs text-muted-foreground">Just now</p>
-            </div>
-          </CardContent>
-        </Card>
+        <!-- {#each  as } -->
+          <Card class="overflow-hidden py-0">
+            <CardContent class="p-2 flex items-center gap-4">
+              <div class="relative">
+                <a href="##">
+                  <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
+                    <AvatarImage src="avatar url" alt="alt" />
+                    <AvatarFallback>FB</AvatarFallback>
+                  </Avatar>
+                </a>
+              </div>
+              <div class="grid grid-rows-2 grid-cols-1 h-full w-full flex-1 min-h-0 min-w-0">
+                <p class="text-sm truncate"><span class="font-bold">Anna Cramling</span> won against <span class="font-bold">Levy Rozman</span>.</p>
+                <p class="text-xs text-muted-foreground">Just now</p>
+              </div>
+            </CardContent>
+          </Card>
+        <!-- {/each} -->
       </CardContent>
     </Card>
 
     <!-- suggestions -->
-    <Card class="col-span-2">
-      <CardHeader>
-        <CardTitle>Suggested Players</CardTitle>
-        <CardDescription>Make some friends and some ennemies</CardDescription>
-      </CardHeader>
-      <CardContent class="flex justify-start h-full">
-        <!-- FOR EACH HERE -->
-        <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
-          <CardContent class="px-4 flex gap-4 justify-start h-full">
-            <div class="flex gap-4 items-center h-fit">
-              <div class="relative">
-                <a href="##">
-                  <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
-                    <AvatarImage src="avatar url" alt="username" />
-                    <AvatarFallback>FB</AvatarFallback>
-                  </Avatar>
-                </a>
-                <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"></span>
-                </span>
-              </div>
+    {#await data.users}
+      <!-- animation -->
 
-              <div class="flex-1 min-w-0">
-                <a href="##" class="font-medium hover:underline truncate block">username</a>
-                <div class="text-xs text-muted-foreground flex items-center gap-2">
-                  <Badge variant="secondary" class="h-4 min-w-4 text-xs">
-                    ELO 10K+
-                  </Badge>
-                  <span class="capitalize">Online</span>
+    {:then users}
+      <Card class="col-span-2">
+        <CardHeader>
+          <CardTitle>Suggested Players</CardTitle>
+          <CardDescription>Make some friends and some ennemies</CardDescription>
+        </CardHeader>
+        <CardContent class="flex justify-start h-full">
+          {#each users as {id, avatar, status, username}}
+            <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
+              <CardContent class="px-4 flex gap-4 justify-start h-full">
+                <div class="flex gap-4 items-center h-fit">
+                  <div class="relative">
+                    <a href="/profile/{id}">
+                      <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
+                        <AvatarImage src={avatar} alt={username} />
+                        <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                    </a>
+                    <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"></span>
+                    </span>
+                  </div>
+
+                  <div class="flex-1 min-w-0">
+                    <a href="/profile/{id}" class="font-medium hover:underline truncate block">{username}</a>
+                    <div class="text-xs text-muted-foreground flex items-center gap-2">
+                      <Badge variant="secondary" class="h-4 min-w-4 text-xs">
+                        ELO 10K+
+                      </Badge>
+                      <span class="capitalize">Online</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-          </CardContent>
-          <CardFooter>
-            <Button class="w-full"><UserPlusIcon /> Add me!</Button>
-          </CardFooter>
-        </Card>
-      </CardContent>
-    </Card>
+              </CardContent>
+              <CardFooter>
+                <Button class="w-full"><UserPlusIcon /> Add me!</Button>
+              </CardFooter>
+            </Card>
+          {/each}
+        </CardContent>
+      </Card>
+    {:catch e}
+      <!-- TODO: better error -->
+      {e}
+    {/await}
   </section>
 </main>
