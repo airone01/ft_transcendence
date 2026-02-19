@@ -37,6 +37,21 @@
 </div>
 
 
+## Table of Contents
+
+- [Description](#description)
+- [Instructions](#instructions)
+- [Feature List](#features-list)
+- [Team Information](#team-information)
+- [Project Management](#project-management)
+- [Technical Stack](#technical-stack)
+- [Database Schema](#database-schema)
+- [Modules](#modules)
+- [Individual Contributions](#individual-contributions)
+- [Resources](#resources)
+- [Others???](#others) MAY NEED AN UPDATE
+
+
 ## Description
 
 ```
@@ -53,6 +68,16 @@ The “Instructions” section should mention all the needed prerequisites (soft
 tools, versions, configuration like .env setup, etc.), and step-by-step instructions to
 run the project.
 ```
+
+## Features List
+
+```
+Subject:
+◦ Complete list of implemented features.
+◦ Which team member(s) worked on each feature.
+◦ Brief description of each feature’s functionality.
+```
+
 
 ## Team Information
 
@@ -181,19 +206,9 @@ Subject:
 
 **-------------------------------------- UPDATE THIS BEFORE EVALUATION --------------------------------------**
 
-[Take a snapshot here]("https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9")
+Take a snapshot [here]("https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9")
 
 ![DB](./assets/ft_transcendence_db.jpg)
-
-
-## Features List
-
-```
-Subject:
-◦ Complete list of implemented features.
-◦ Which team member(s) worked on each feature.
-◦ Brief description of each feature’s functionality.
-```
 
 ## Modules
 
@@ -303,7 +318,7 @@ choice".
 
 ---
 
-### Modules Points
+### Points
 
 | Category | Modules | Points |
 |----------|:-------:|:------:|
@@ -327,7 +342,28 @@ Subject:
 
 ## Resources
 
-##
+```
+Subject:
+A “Resources” section listing classic references related to the topic (documentation, articles, tutorials, etc.), as well as a description of how AI was used —
+specifying for which tasks and which parts of the project.
+```
+
+### Documentations
+- [Bun Documentation](https://bun.com/docs)
+- [Tuborepo Documentation](https://turborepo.dev/docs)
+- [Svelte Documentation](https://svelte.dev/docs) and [Svelte Tutorial](https://svelte.dev/tutorial/)
+- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
+- [Docker Documentation](https://docs.docker.com)
+- [Socket.io Documentation](https://socket.io/docs/v4)
+
+### Usefull websites
+- [Figma](https://www.figma.com) — For site design
+- [dbdiagram.io](https://dbdiagram.io/home) — For DB visual
+
+### AIs
+- ...
+
+## Others???
 
 ```
 Subject:
