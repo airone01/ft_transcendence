@@ -5,7 +5,7 @@ import {
   dbGetFriendsInfo,
   dbGetUserByUsername,
   dbRemoveFriend,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {

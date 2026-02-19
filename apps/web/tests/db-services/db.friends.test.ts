@@ -9,7 +9,7 @@ import {
   dbAddFriend,
   dbGetFriendsInfo,
   dbRemoveFriend,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 async function getUserId(username: string) {
   const [user] = await db

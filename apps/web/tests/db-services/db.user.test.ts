@@ -17,7 +17,7 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 describe("users.service.ts tests", () => {
   let userId: number;

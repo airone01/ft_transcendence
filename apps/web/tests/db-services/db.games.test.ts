@@ -19,7 +19,7 @@ import {
   dbStartGame,
   dbUpdateGame,
   type Game,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 async function getUserId(username: string): Promise<number> {
   const [user] = await db

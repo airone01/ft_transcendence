@@ -17,7 +17,7 @@ import {
   type UpdateUserInput,
   type User,
   type UserStats,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Checks if a given username is taken in the database.

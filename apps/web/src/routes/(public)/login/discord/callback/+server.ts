@@ -1,12 +1,12 @@
 import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
+import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import {
   dbCreateOAuthAccount,
   dbCreateUser,
   dbGetUserByEmail,
   dbGetUserByOauthId,
-} from "$lib/db-services";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
+} from "$lib/server/db-services";
 import type { RequestEvent } from "./$types";
 
 // helper interface for discord response typing

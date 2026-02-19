@@ -6,7 +6,7 @@ import {
   type GameHistory,
   type Leaderboard,
   UnknownError,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Retrieves the leaderboard of users sorted by their elo in descending order.

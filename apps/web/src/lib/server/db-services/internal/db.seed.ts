@@ -13,7 +13,7 @@ import {
   dbSendToGame,
   dbSendToGlobal,
   dbStartGame,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 async function clear() {
   try {

@@ -2,8 +2,8 @@ import { fail, redirect } from "@sveltejs/kit";
 import sharp from "sharp";
 import { superValidate, withFiles } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
-import { dbUpdateUser } from "$lib/db-services";
 import { profileFormSchema } from "$lib/schemas/settings";
+import { dbUpdateUser } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {

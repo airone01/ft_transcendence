@@ -1,13 +1,13 @@
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
+import { db } from "@transc/db";
+import { chatChannels } from "@transc/db/schema";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 import {
   auth,
   deleteSessionTokenCookie,
   setSessionTokenCookie,
 } from "$lib/server/auth";
-import { db } from "@transc/db";
-import { chatChannels } from "@transc/db/schema";
 
 await db
   .insert(chatChannels)
