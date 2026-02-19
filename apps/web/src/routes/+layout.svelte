@@ -22,7 +22,10 @@ onMount(() => {
 });
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+  <link rel="icon" href={favicon} />
+  <title>transc</title>
+</svelte:head>
 
 <Toaster />
 <AuthDialog />
@@ -39,9 +42,7 @@ onMount(() => {
 
 <div style="display:none">
 	{#each locales as locale}
-		<a
-			href={localizeHref(page.url.pathname, { locale })}
-		>
+		<a href={localizeHref(page.url.pathname, { locale })}>
 			{locale}
 		</a>
 	{/each}

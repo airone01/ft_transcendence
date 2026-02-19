@@ -64,8 +64,10 @@ export {
   dbCreateAuthSession,
   dbCreateOAuthAccount,
   dbDeleteAuthSession,
+  dbGetConnectedProviders,
   dbGetUserAndAuthSessionByAuthSessionId,
   dbGetUserByOauthId,
+  dbUnlinkOAuthAccount,
 } from "./internal/services/db.auth.service";
 
 /* Chat Services */
@@ -106,6 +108,7 @@ export {
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
+  dbGetUserByUsername,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,

@@ -19,23 +19,20 @@ interface DiscordUser {
 }
 
 export const GET = async (event: RequestEvent) => {
-  const { url, cookies } = event;
+  const { url, cookies, locals } = event;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const storedState = cookies.get("oauth_state");
 
   // validate state
   if (!code || !state || !storedState || state !== storedState) {
-    throw error(400, "Invalid state or code");
+    throw error(400, "Invalid state or code" /* i18n */);
   }
 
   try {
     const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
       method: "POST",
-      headers: {
-        // this is important, discord is strict
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         client_id: env.DISCORD_CLIENT_ID ?? "",
         client_secret: env.DISCORD_CLIENT_SECRET ?? "",
@@ -45,48 +42,70 @@ export const GET = async (event: RequestEvent) => {
       }),
     });
 
-    if (!tokenResponse.ok) throw error(400, "Failed to get access token");
+    if (!tokenResponse.ok)
+      throw error(400, "Failed to get access token" /* i18n */);
     const tokens = await tokenResponse.json();
 
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokens.access_token}` },
     });
 
-    if (!userResponse.ok) throw error(400, "Failed to fetch user data");
+    if (!userResponse.ok)
+      throw error(400, "Failed to fetch user data" /* i18n */);
     const discordUser: DiscordUser = await userResponse.json();
-
-    // we got internal discord user info
-    // rest of func is DB logic
-    // TODO!!!
 
     // check if this discord ID is already linked
     const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
-    let userId: number;
 
-    // depending on whether the account exists already, or it doesn't at all, or it doesn't but there is a user with the same email, we do different things
+    // user is already logged in (link)
+    if (locals.user) {
+      if (existingAccount) {
+        if (existingAccount.id === locals.user.id) {
+          // already linked to this user, just redirect back
+          throw redirect(302, "/settings/account");
+        } else {
+          // linked to a different user
+          // TODO: maybe show an error on the settings page
+          throw error(
+            400,
+            "This Discord account is already connected to another user." /* i18n */,
+          );
+        }
+      }
+
+      // link new discord account to current user
+      await dbCreateOAuthAccount({
+        userId: locals.user.id,
+        provider: "discord",
+        providerUserId: discordUser.id,
+      });
+
+      throw redirect(302, "/settings/account");
+    }
+
+    // user is not logged in (login/register)
+    let userId: number;
     if (existingAccount) {
       // account exists: login
       userId = existingAccount.id;
     } else {
-      // account doesn't exists:
-      // first check if user already has an account that is not linked to discord by searching for email in DB
+      // check email collision
       const existingEmailUser = await dbGetUserByEmail(discordUser.email);
 
       if (existingEmailUser) {
-        // user does exist (via password acc): link discord
+        // email match: link accs automatically
         userId = existingEmailUser.id;
       } else {
-        // brand new user: create fresh acc
+        // brand new user
         userId = await dbCreateUser({
           email: discordUser.email,
-          username: discordUser.username, // NOTE: This could go very wrong if two users have the same username
-          avatar: discordUser.avatar,
+          username: discordUser.username,
+          avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
           password: null,
-          // no password bc oauth
         });
       }
 
-      // link
+      // create link
       await dbCreateOAuthAccount({
         userId,
         provider: "discord",
@@ -98,8 +117,8 @@ export const GET = async (event: RequestEvent) => {
     const { token, expiresAt } = await auth.createSession(userId);
     setSessionTokenCookie(event, token, expiresAt);
   } catch (e) {
-    console.error("OAuth Error:", e);
-    return error(500, "Authentication failed");
+    console.error("OAuth Error:" /* i18n */, e);
+    return error(500, "Authentication failed" /* i18n */);
   }
 
   throw redirect(302, "/");
