@@ -16,14 +16,14 @@ export {
   UnknownError,
 } from "./internal/db.errors";
 
+/* Auth Schema */
+export type { OAuthProvider } from "./internal/schema/db.auth.schema";
+
 /* Chat Types */
 export type {
   ChatChannelType,
   ChatMessageType,
 } from "./internal/schema/db.chat.schema";
-
-/* Auth Schema */
-export type { OAuthProvider } from "./internal/schema/db.auth.schema";
 
 /* Games Types */
 export type {
@@ -59,6 +59,15 @@ export type {
   Leaderboard,
 } from "./internal/schema/db.utils.schema";
 
+/* Auth Services */
+export {
+  dbCreateAuthSession,
+  dbCreateOAuthAccount,
+  dbDeleteAuthSession,
+  dbGetUserAndAuthSessionByAuthSessionId,
+  dbGetUserByOauthId,
+} from "./internal/services/db.auth.service";
+
 /* Chat Services */
 export {
   dbGetFriendMessages,
@@ -68,15 +77,6 @@ export {
   dbSendToGame,
   dbSendToGlobal,
 } from "./internal/services/db.chat.service";
-
-/* Auth Services */
-export {
-  dbCreateAuthSession,
-  dbCreateOAuthAccount,
-  dbDeleteAuthSession,
-  dbGetUserAndAuthSessionByAuthSessionId,
-  dbGetUserByOauthId,
-} from "./internal/services/db.auth.service";
 
 /* Friends Services */
 export {
