@@ -1,6 +1,7 @@
 import { type Writable, writable } from "svelte/store";
 import { goto } from "$app/navigation";
-import { socketManager } from "$lib/server/stores/socket.svelte";
+import { gameState } from "$lib/stores/game.store";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -49,6 +50,13 @@ export function setupMatchmakingListeners() {
   }) => {
     console.log("Match found!", data);
     matchmakingState.set({ inQueue: false, mode: null, position: null });
+
+    // Pre-set color in game store before navigating
+    gameState.update((state) => ({
+      ...state,
+      gameId: data.gameId,
+      myColor: data.color,
+    }));
 
     goto(`/game/${data.gameId}`);
   }) as unknown as (...args: unknown[]) => void);
