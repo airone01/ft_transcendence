@@ -65,6 +65,27 @@ const gamesSpectatorsSchema = z.object({
   createdAt: z.date(),
 });
 
+const chatChannelsSchema = z.object({
+  id: z.number().int(),
+  type: z.enum(["global", "game", "private"]),
+  gameId: z.number().int().nullable(),
+  createdAt: z.date(),
+});
+
+const chatChannelMembersSchema = z.object({
+  channelId: z.number().int(),
+  userId: z.number().int(),
+  joinedAt: z.date(),
+});
+
+const chatMessagesSchema = z.object({
+  id: z.number().int(),
+  channelId: z.number().int(),
+  userId: z.number().int(),
+  content: z.string(),
+  createdAt: z.date(),
+});
+
 export type User = z.infer<typeof userSchema>;
 export type UserStats = z.infer<typeof userStatsSchema>;
 export type Friendship = z.infer<typeof friendshipSchema>;
@@ -73,3 +94,6 @@ export type OauthAccount = z.infer<typeof oauthAccountSchema>;
 export type Game = z.infer<typeof gamesSchema>;
 export type GamePlayer = z.infer<typeof gamesPlayersSchema>;
 export type GameSpectator = z.infer<typeof gamesSpectatorsSchema>;
+export type ChatChannel = z.infer<typeof chatChannelsSchema>;
+export type ChatChannelMember = z.infer<typeof chatChannelMembersSchema>;
+export type ChatMessage = z.infer<typeof chatMessagesSchema>;

@@ -1,5 +1,7 @@
 import { db } from "@transc/db";
 import {
+  chatChannelMembers,
+  chatChannels,
   games,
   gamesPlayers,
   gamesSpectators,
@@ -9,6 +11,8 @@ import { and, count, DrizzleQueryError, eq, inArray, sql } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   type CreateGameInput,
+  DBCreateChatChannelError,
+  DBDeleteChatChannelError,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
   DBRemoveSpectatorError,
@@ -77,12 +81,39 @@ export async function dbCreateGame(
 
       if (players.length !== 2) throw new DBPlayersNotFoundError();
 
+      const [channel] = await tx
+        .insert(chatChannels)
+        .values({
+          type: "game",
+          gameId: game.id,
+        })
+        .returning();
+
+      if (!channel) throw new DBCreateChatChannelError();
+
+      const members = await tx
+        .insert(chatChannelMembers)
+        .values([
+          {
+            channelId: channel.id,
+            userId: gameInput.whiteUserId,
+          },
+          {
+            channelId: channel.id,
+            userId: gameInput.blackUserId,
+          },
+        ])
+        .returning();
+
+      if (members.length !== 2) throw new DBCreateChatChannelError();
+
       return game.id;
     });
 
     return gameId;
   } catch (err) {
     if (err instanceof DBPlayersNotFoundError) throw err;
+    if (err instanceof DBCreateChatChannelError) throw err;
 
     console.error(err);
     throw new UnknownError();
@@ -247,6 +278,28 @@ export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
       const updatedUsers = await tx
         .update(usersStats)
         .set({
+          gamesPlayed: sql`${usersStats.gamesPlayed} + 1`,
+          wins: sql`
+          CASE
+            WHEN ${usersStats.userId} = ${p1.userId}
+              THEN ${usersStats.wins} + CASE WHEN ${result} = 'A' THEN 1 ELSE 0 END
+            ELSE ${usersStats.wins} + CASE WHEN ${result} = 'B' THEN 1 ELSE 0 END
+          END
+        `,
+          losses: sql`
+          CASE
+            WHEN ${usersStats.userId} = ${p1.userId}
+              THEN ${usersStats.losses} + CASE WHEN ${result} = 'B' THEN 1 ELSE 0 END
+            ELSE ${usersStats.losses} + CASE WHEN ${result} = 'A' THEN 1 ELSE 0 END
+          END
+        `,
+          draws: sql`
+          CASE
+            WHEN ${usersStats.userId} = ${p1.userId}
+              THEN ${usersStats.draws} + CASE WHEN ${result} = 'draw' THEN 1 ELSE 0 END
+            ELSE ${usersStats.draws} + CASE WHEN ${result} = 'draw' THEN 1 ELSE 0 END
+          END
+        `,
           currentElo: sql`
           CASE
             WHEN ${usersStats.userId} = ${p1.userId}
@@ -267,10 +320,17 @@ export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
         .returning();
 
       if (!removedSpectators) throw new DBGameNotFoundError();
+
+      const removedChannel = await tx
+        .delete(chatChannels)
+        .where(eq(chatChannels.gameId, game.id));
+
+      if (!removedChannel) throw new DBDeleteChatChannelError();
     });
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;
     if (err instanceof DBPlayersNotFoundError) throw err;
+    if (err instanceof DBDeleteChatChannelError) throw err;
 
     console.error(err);
     throw new UnknownError();

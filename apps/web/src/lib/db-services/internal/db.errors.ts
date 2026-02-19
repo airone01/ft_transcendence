@@ -60,3 +60,24 @@ export class DBRemoveSpectatorError extends Error {
     this.name = new.target.name;
   }
 }
+
+export class DBCreateChatChannelError extends Error {
+  constructor() {
+    super("Failed to create chat channel");
+    this.name = new.target.name;
+  }
+}
+
+export class DBDeleteChatChannelError extends Error {
+  constructor() {
+    super("Trying to delete the default `global` chat channel");
+    this.name = new.target.name;
+  }
+}
+
+export class DBChatChannelNotFoundError extends Error {
+  constructor() {
+    super("Chat channel not found");
+    this.name = new.target.name;
+  }
+}

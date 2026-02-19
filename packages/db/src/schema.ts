@@ -224,3 +224,73 @@ export const games = pgTable(
     check("games_increment_seconds_check", sql`${table.incrementSeconds} >= 0`),
   ],
 );
+
+// ################################ CHAT #################################
+
+export const chatChannelType = pgEnum("chat_channel_type", [
+  "global",
+  "game",
+  "private",
+]);
+
+export const chatChannels = pgTable(
+  "chat_channels",
+  {
+    id: serial("id").primaryKey(),
+    type: chatChannelType().notNull(),
+    gameId: integer("game_id").references(() => games.id, {
+      onDelete: "cascade",
+    }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("chat_channels_type_idx").on(table.type),
+    index("chat_channels_game_id_idx").on(table.gameId),
+  ],
+);
+
+export const chatChannelMembers = pgTable(
+  "chat_channel_members",
+  {
+    channelId: integer("channel_id")
+      .references(() => chatChannels.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.channelId, table.userId] }),
+    index("chat_channel_members_channel_id_idx").on(table.channelId),
+    index("chat_channel_members_user_id_idx").on(table.userId),
+  ],
+);
+
+export const chatMessages = pgTable(
+  "chat_messages",
+  {
+    id: serial("id").primaryKey(),
+    channelId: integer("channel_id")
+      .references(() => chatChannels.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("chat_messages_channel_id_idx").on(table.channelId),
+    index("chat_messages_user_id_idx").on(table.userId),
+    index("chat_messages_created_at_idx").on(table.createdAt),
+  ],
+);
