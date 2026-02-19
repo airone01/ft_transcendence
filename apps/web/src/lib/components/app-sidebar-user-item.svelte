@@ -48,7 +48,7 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
         <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
-        <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
+        <a href="/settings/profile"><DropdownMenuItem class="cursor-pointer">Settings</DropdownMenuItem></a>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

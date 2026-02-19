@@ -6,6 +6,15 @@ import {
   deleteSessionTokenCookie,
   setSessionTokenCookie,
 } from "$lib/server/auth";
+import { db } from "@transc/db";
+import { chatChannels } from "@transc/db/schema";
+
+await db
+  .insert(chatChannels)
+  .values({
+    type: "global",
+  })
+  .returning();
 
 const handleParaglide: Handle = ({ event, resolve }) =>
   paraglideMiddleware(event.request, ({ request, locale }) => {
