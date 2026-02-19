@@ -1,23 +1,23 @@
 import { db } from "@transc/db";
-import { chatChannels, games, users } from "@transc/db/schema";
+import { chatChannels, chatMessages, games, users } from "@transc/db/schema";
 import {
-  dbCreateUser,
   dbAddFriend,
   // dbAddSpectator,
   dbCreateGame,
+  dbCreateUser,
   dbEndGame,
-  dbStartGame,
+  // dbGetFriendMessages,
+  // dbGetGameMessages,
+  // dbGetGlobalMessages,
+  dbSendToFriend,
   dbSendToGame,
   dbSendToGlobal,
-  dbSendToFriend,
-  dbGetGlobalMessages,
-  dbGetGameMessages,
-  dbGetFriendMessages,
+  dbStartGame,
 } from "$lib/db-services";
 
 async function clear() {
   try {
-    const tablesMap = [users, games, chatChannels];
+    const tablesMap = [chatMessages, chatChannels, games, users];
 
     await Promise.all(
       tablesMap.map(async (el) => {
@@ -46,25 +46,25 @@ async function seed() {
     // seed users
     const valentinId = await dbCreateUser({
       username: "Valentin",
-      email: "valentin@transcender",
+      email: "valentin@transcender.com",
       password: "password",
     });
 
     const erwannId = await dbCreateUser({
       username: "Erwann",
-      email: "erwann@transcender",
+      email: "erwann@transcender.com",
       password: "password",
     });
 
     const enzoId = await dbCreateUser({
       username: "Enzo",
-      email: "enzo@transcender",
+      email: "enzo@transcender.com",
       password: "password",
     });
 
     const simonId = await dbCreateUser({
       username: "Simon",
-      email: "simon@transcender",
+      email: "simon@transcender.com",
       password: "password",
     });
 
@@ -195,9 +195,9 @@ async function seed() {
     await dbSendToFriend(enzoId, erwannId, "Hello my friend Erwann!");
     await dbSendToFriend(erwannId, enzoId, "Hello my friend Enzo!");
 
-    console.table(await dbGetGlobalMessages());
-    console.table(await dbGetGameMessages(game8));
-    console.table(await dbGetFriendMessages(valentinId, erwannId));
+    // console.table(await dbGetGlobalMessages());
+    // console.table(await dbGetGameMessages(game8));
+    // console.table(await dbGetFriendMessages(valentinId, erwannId));
 
     console.log("✅ Database seeded");
   } catch (e) {

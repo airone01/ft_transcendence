@@ -16,6 +16,12 @@ export {
   UnknownError,
 } from "./internal/db.errors";
 
+/* Chat Types */
+export type {
+  ChatChannelType,
+  ChatMessageType,
+} from "./internal/schema/db.chat.schema";
+
 /* Games Types */
 export type {
   CreateGameInput,
@@ -36,12 +42,6 @@ export type {
   UserStats,
 } from "./internal/schema/db.schema";
 
-/* Chat Types */
-export type {
-  ChatChannelType,
-  ChatMessageType,
-} from "./internal/schema/db.chat.schema";
-
 /* Users Types */
 export type {
   CreateUserInput,
@@ -57,12 +57,12 @@ export type {
 
 /* Chat Services */
 export {
+  dbGetFriendMessages,
+  dbGetGameMessages,
+  dbGetGlobalMessages,
+  dbSendToFriend,
   dbSendToGame,
   dbSendToGlobal,
-  dbSendToFriend,
-  dbGetGlobalMessages,
-  dbGetGameMessages,
-  dbGetFriendMessages,
 } from "./internal/services/db.chat.service";
 
 /* Friends Services */

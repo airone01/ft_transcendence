@@ -1,26 +1,17 @@
 import { db } from "@transc/db";
 import {
-  and,
-  desc,
-  DrizzleQueryError,
-  eq,
-  inArray,
-  ne,
-  or,
-  sql,
-} from "drizzle-orm";
-import {
-  DBChatChannelNotFoundError,
-  UnknownError,
-  type ChatChannelType,
-  type ChatMessageType,
-} from "$lib/db-services";
-import {
   chatChannelMembers,
   chatChannels,
   chatMessages,
 } from "@transc/db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
+import {
+  type ChatChannelType,
+  type ChatMessageType,
+  DBChatChannelNotFoundError,
+  UnknownError,
+} from "$lib/db-services";
 
 /**
  * Sends a message to the global chat channel.
@@ -34,16 +25,26 @@ export async function dbSendToGlobal(
   content: string,
 ): Promise<number> {
   try {
-    const [chatMessage] = await db
-      .insert(chatMessages)
-      .values({
-        channelId: 1,
-        userId: userId,
-        content: content,
-      })
-      .returning();
+    const channelId = await db.transaction(async (tx) => {
+      const [globalChannelId] = await tx
+        .select({ id: chatChannels.id })
+        .from(chatChannels)
+        .where(eq(chatChannels.type, "global" as ChatChannelType))
+        .limit(1);
 
-    return chatMessage.channelId;
+      const [chatMessage] = await tx
+        .insert(chatMessages)
+        .values({
+          channelId: globalChannelId.id,
+          userId: userId,
+          content: content,
+        })
+        .returning();
+
+      return chatMessage.channelId;
+    });
+
+    return channelId;
   } catch (err) {
     console.error(err);
     throw new UnknownError();
@@ -150,6 +151,11 @@ export async function dbSendToGame(
   }
 }
 
+/**
+ * Retrieves all messages from the global chat channel.
+ * @returns {Promise<ChatMessageType[]>} - A promise that resolves with an array of messages from the global chat channel
+ * @throws {UnknownError} - If an unexpected error occurs
+ */
 export async function dbGetGlobalMessages(): Promise<ChatMessageType[]> {
   try {
     const messages = await db
@@ -165,13 +171,19 @@ export async function dbGetGlobalMessages(): Promise<ChatMessageType[]> {
       .where(eq(chatChannels.type, "global"))
       .orderBy(desc(chatMessages.createdAt));
 
-    return messages as ChatMessageType[];
+    return messages;
   } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
 }
 
+/**
+ * Retrieves all messages from a game chat channel.
+ * @param {number} gameId - The id of the game to retrieve messages from
+ * @returns {Promise<ChatMessageType[]>} - A promise that resolves with an array of messages from the game chat channel
+ * @throws {UnknownError} - If an unexpected error occurs
+ */
 export async function dbGetGameMessages(
   gameId: number,
 ): Promise<ChatMessageType[]> {
@@ -189,13 +201,20 @@ export async function dbGetGameMessages(
       .where(eq(chatChannels.gameId, gameId))
       .orderBy(desc(chatMessages.createdAt));
 
-    return messages as ChatMessageType[];
+    return messages;
   } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
 }
 
+/**
+ * Retrieves all messages from a private chat channel between two users.
+ * @param {number} userId - The id of the first user
+ * @param {number} friendId - The id of the second user
+ * @returns {Promise<ChatMessageType[]>} - A promise that resolves with an array of messages from the private chat channel
+ * @throws {UnknownError} - If an unexpected error occurs
+ */
 export async function dbGetFriendMessages(
   userId: number,
   friendId: number,
@@ -231,7 +250,7 @@ export async function dbGetFriendMessages(
       )
       .orderBy(desc(chatMessages.createdAt));
 
-    return messages as ChatMessageType[];
+    return messages;
   } catch (err) {
     console.error(err);
     throw new UnknownError();
