@@ -1,21 +1,38 @@
-import { error } from "@sveltejs/kit";
-import { dbGetUser } from "$lib/server/db-services";
+import { error, redirect } from "@sveltejs/kit";
+import {
+  dbGetStats,
+  dbGetUser,
+  dbGetUserGameHistory,
+} from "$lib/server/db-services";
 import type { PageServerLoad } from "./$types";
+import type { UserNoPass } from "../../../../app";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-  const userId = params.id;
-
   const fetchUser = async () => {
-    if (!userId || userId === "me") return locals.user;
-    const id = parseInt(userId, 10);
-    if (Number.isNaN(id)) throw error(400, "Invalid user ID");
-    const user = await dbGetUser(id);
+    let userId: number | undefined;
+    let user: UserNoPass | undefined;
+
+    if (locals.user == null) throw redirect(301, "/");
+
+    if (params.id == "me") {
+      userId = locals.user.id;
+      user = locals.user ?? undefined;
+    } else if (userId != null) {
+      userId = parseInt(params.id);
+
+      const { password, ...dbUser } = await dbGetUser(userId);
+      user = { ...dbUser, password: null };
+    }
+    if (Number.isNaN(userId) || userId == null)
+      throw error(400, "Invalid user ID");
     if (!user) throw error(404, "User not found");
-    return user;
+
+    const stats = await dbGetStats(userId);
+    const games = await dbGetUserGameHistory(userId);
+    return { user, stats, games };
   };
 
   return {
-    // pass promise so ui can show loading state
     userPromise: fetchUser(),
   };
 };

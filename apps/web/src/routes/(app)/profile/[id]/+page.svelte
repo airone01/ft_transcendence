@@ -19,30 +19,42 @@ import {
 
 let { data } = $props();
 
-const mockStats = {
-  bullet: 1200,
-  blitz: 1450,
-  rapid: 1680,
-  puzzle: 2100,
-  totalGames: 432,
-  wins: 210,
-  losses: 180,
-  draws: 42,
-  winRate: 48.6
-};
-
-const mockHistory = [
-  { id: 1, opponent: "MagnusC", result: "win", eloChange: "+12", mode: "Blitz", date: "2h ago", opening: "Sicilian Defense" },
-  { id: 2, opponent: "HikaruN", result: "loss", eloChange: "-8", mode: "Blitz", date: "5h ago", opening: "King's Indian" },
-  { id: 3, opponent: "GothamChess", result: "draw", eloChange: "+1", mode: "Rapid", date: "1d ago", opening: "London System" },
-  { id: 4, opponent: "BotezLive", result: "win", eloChange: "+15", mode: "Bullet", date: "2d ago", opening: "French Defense" },
-];
-
 const mockAchievements = [
   { name: "Speed Demon", icon: Target, desc: "Won in under 30s" },
   { name: "Tactician", icon: Swords, desc: "Win streak of 5" },
   { name: "Veteran", icon: Medal, desc: "Played 100+ games" },
 ];
+
+function getDurationMs(start: Date, end: Date): number {
+  return Math.max(0, end.getTime() - start.getTime());
+}
+
+function formatCompactDuration(start: Date, end: Date, locale?: string) {
+  const diffMs = getDurationMs(start, end);
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  const nfMinute = new Intl.NumberFormat(locale, {
+    style: "unit",
+    unit: "minute",
+    unitDisplay: "narrow",
+  });
+
+  const nfSecond = new Intl.NumberFormat(locale, {
+    style: "unit",
+    unit: "second",
+    unitDisplay: "narrow",
+  });
+
+  if (minutes === 0)
+    return nfSecond.format(seconds);
+  if (seconds === 0)
+    return nfMinute.format(minutes);
+
+  return `${nfMinute.format(minutes)} ${nfSecond.format(seconds)}`;
+}
 
 const isMe = (userId: number) => page.data.user?.id === userId;
 </script>
@@ -58,12 +70,12 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       </div>
     </div>
 
-  {:then user} 
+  {:then {user, stats, games}} 
     <div class="relative w-full">
       <div class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"></div>
       
       <div class="container mx-auto px-6">
-        <div class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-6">
+        <div class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-4">
           
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
@@ -104,9 +116,9 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       </div>
     </div>
 
-    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 h-full flex-1">
+    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-full flex-1">
       
-      <div class="lg:col-span-4 space-y-6 max-h-full">
+      <div class="lg:col-span-4 gap-4 max-h-full flex flex-col">
         
         <!-- performance -->
         <Card>
@@ -115,22 +127,10 @@ const isMe = (userId: number) => page.data.user?.id === userId;
               <TrendingUp class="w-5 h-5 text-primary" /> Performance
             </CardTitle>
           </CardHeader>
-          <CardContent class="grid grid-cols-2 gap-4">
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Rapid</span>
-              <span class="text-2xl font-bold">{mockStats.rapid}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Blitz</span>
-              <span class="text-2xl font-bold">{mockStats.blitz}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Bullet</span>
-              <span class="text-2xl font-bold">{mockStats.bullet}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Puzzles</span>
-              <span class="text-2xl font-bold text-yellow-500">{mockStats.puzzle}</span>
+          <CardContent class="flex justify-center items-center">
+            <div class="p-3 border rounded-lg flex flex-col items-center justify-center h-full w-full">
+              <span class="text-xs text-muted-foreground uppercase font-bold">ELO</span>
+              <span class="text-2xl font-bold">{stats.currentElo}</span>
             </div>
           </CardContent>
         </Card>
@@ -139,24 +139,34 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <Card>
           <CardHeader>
             <CardTitle class="text-base">Win Ratio</CardTitle>
-            <CardDescription>{mockStats.totalGames} Total games played</CardDescription>
+            <CardDescription>
+              {#if stats.gamesPlayed === 0}
+                Play more to see yout stats!
+              {:else}
+                {stats.gamesPlayed} Total games played
+              {/if}
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-             <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
-                <div style="width: 48%" class="bg-green-500 h-full"></div> <div style="width: 12%" class="bg-gray-400 h-full"></div> <div style="width: 40%" class="bg-red-500 h-full"></div> </div>
-             <div class="flex justify-between text-xs text-muted-foreground">
-                <span class="text-green-600 font-bold">{mockStats.wins} W</span>
-                <span>{mockStats.draws} D</span>
-                <span class="text-red-600 font-bold">{mockStats.losses} L</span>
-             </div>
-          </CardContent>
+          {#if stats.gamesPlayed !== 0}
+            <CardContent>
+              <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
+                <div style="flex: {stats.wins}%" class="bg-green-500 h-full"></div>
+                <div style="flex: {stats.draws}%" class="bg-gray-400 h-full"></div>
+                <div style="flex: {stats.losses}%" class="bg-red-500 h-full"></div> </div>
+              <div class="flex justify-between text-xs text-muted-foreground">
+                <span class="text-green-600 font-bold">{stats.wins} W</span>
+                <span>{stats.draws} D</span>
+                <span class="text-red-600 font-bold">{stats.losses} L</span>
+              </div>
+            </CardContent>
+          {/if}
         </Card>
 
         <!-- recent badges -->
         <Card class="flex-1">
           <CardHeader>
             <CardTitle class="flex items-center gap-2 text-base">
-              <Trophy class="w-4 h-4 text-yellow-500" /> Recent Badges
+              <Trophy class="w-4 h-4 text-yellow-500" /> Achievements
             </CardTitle>
           </CardHeader>
           <CardContent class="space-y-4">
@@ -186,24 +196,27 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           </CardHeader>
           <CardContent class="p-0">
             <div class="flex flex-col divide-y">
-              {#each mockHistory as game}
+              {#each games.filter(g => g.result !== 'abort') as game (game.gameId)}
+                {@const eloDiff = game.userEloAfter - game.userEloBefore}
                 <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
                   <div class="flex items-center gap-4">
-                    <div class={`w-1 h-12 rounded-full ${game.result === 'win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
+                    <!-- TODO: currently the thing marks as green if white wins, regardless of the user's side -->
+                    <!-- meaning we aren't actually marking if the user won or not. -->
+                    <div class={`w-1 h-12 rounded-full ${game.result === 'white_win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
                     <div>
                       <div class="flex items-center gap-2">
-                         <span class="font-bold">{game.result === 'win' ? 'Won' : game.result === 'loss' ? 'Lost' : 'Draw'}</span>
-                         <span class="text-xs text-muted-foreground">vs {game.opponent}</span>
+                         <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
+                         <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
                       </div>
-                      <p class="text-sm text-muted-foreground">{game.mode} • {game.opening}</p>
+                      <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
                     </div>
                   </div>
 
                   <div class="text-right">
-                    <span class={`text-sm font-bold ${game.result === 'win' ? 'text-green-600' : game.result === 'loss' ? 'text-red-600' : 'text-gray-500'}`}>
-                      {game.eloChange}
+                    <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                      {#if eloDiff < 0}-{/if}{eloDiff}
                     </span>
-                    <p class="text-xs text-muted-foreground">{game.date}</p>
+                    <p class="text-xs text-muted-foreground">{game.endedAt}</p>
                   </div>
                 </div>
               {/each}

@@ -6,7 +6,7 @@ import type { User, AuthSession } from "$lib/server/db-services";
 a malicious actor might utilize an XSS exploit to fetch users'
 (hashed) passwords. */
 /* leveraging TS's awesome type safety for this job */
-export type UserNoPass = Omit<User, "password">;
+export type UserNoPass = Omit<User, "password"> & { password: null };
 
 // for information about these interfaces
 declare global {
