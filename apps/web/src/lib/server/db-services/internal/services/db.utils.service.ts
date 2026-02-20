@@ -50,16 +50,21 @@ export async function dbGetUserGameHistory(
 
     const history = await db
       .select({
+        // Game info
         gameId: games.id,
         timeControlSeconds: games.timeControlSeconds,
         incrementSeconds: games.incrementSeconds,
         result: games.result,
         startedAt: games.startedAt,
         endedAt: games.endedAt,
-        oppenentUserId: gp2.userId,
-        oppenentUsername: users.username,
-        oppenentPastElo: gp2.eloBefore,
-        oppenentAvatar: users.avatar,
+        // User info
+        userEloBefore: gp1.eloBefore,
+        userEloAfter: gp1.eloAfter,
+        // Opponent info
+        opponentUserId: gp2.userId,
+        opponentUsername: users.username,
+        opponentPastElo: gp2.eloBefore,
+        opponentAvatar: users.avatar,
       })
       .from(gp1)
       .innerJoin(
