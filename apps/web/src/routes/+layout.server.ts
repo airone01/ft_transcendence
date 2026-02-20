@@ -17,6 +17,7 @@ export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   // user is logged in.
   return {
     user: locals.user,
+    stats: locals.stats,
     session: locals.session,
     //
     sidebarOpen,

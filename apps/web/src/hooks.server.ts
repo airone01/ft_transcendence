@@ -8,6 +8,7 @@ import {
   deleteSessionTokenCookie,
   setSessionTokenCookie,
 } from "$lib/server/auth";
+import { dbGetStats } from "$lib/server/db-services";
 
 await db
   .insert(chatChannels)
@@ -43,6 +44,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
     deleteSessionTokenCookie(event);
   }
 
+  event.locals.stats = await dbGetStats(user.id);
   event.locals.session = session;
   event.locals.user = user;
 

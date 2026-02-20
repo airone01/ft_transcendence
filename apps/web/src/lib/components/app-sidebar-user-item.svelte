@@ -9,11 +9,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@transc/ui/dropdown-menu"
+import { Badge } from "@transc/ui/badge";
 import { page } from "$app/state";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
 const user = $derived(page.data.user);
+const stats = $derived(page.data.stats);
 const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
 </script>
 
@@ -36,9 +38,7 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
           <p>{user.username}</p>
         </TooltipContent>
       </Tooltip>
-      <span class="font-mono bg-muted px-1 rounded-sm text-[10px] font-bold w-fit">
-        ELO ????
-      </span>
+      <Badge variant="outline" class="text-xs text-[0.6rem] py-px px-0.75 text-muted-foreground border-muted">ELO {stats?.currentElo ?? '???'}</Badge>
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
