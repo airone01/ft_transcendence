@@ -134,7 +134,7 @@ const formEnhance = () => {
           <CardTitle>Friends ({friends.length})</CardTitle>
           <CardDescription>All your friends are here!</CardDescription>
         </CardHeader>
-        <CardContent class="overflow-y-scroll">
+        <CardContent class="overflow-y-scroll flex flex-col gap-2">
           {#each friends as friend (friend.userId)}
             <Card class="overflow-hidden py-0">
               <CardContent class="p-2 flex items-center gap-4">
@@ -235,8 +235,8 @@ const formEnhance = () => {
           <CardTitle>Suggested Players</CardTitle>
           <CardDescription>Make some friends and some ennemies</CardDescription>
         </CardHeader>
-        <CardContent class="flex justify-start h-full">
-          {#each users as {id, avatar, status, username}}
+        <CardContent class="flex justify-start h-full gap-2">
+          {#each users as {id, avatar, username}}
             <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
               <CardContent class="px-4 flex gap-4 justify-start h-full">
                 <div class="flex gap-4 items-center h-fit">
