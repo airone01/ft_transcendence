@@ -87,8 +87,8 @@ export {
 export {
   dbAddFriend,
   dbGetFriendsInfo,
-  dbRemoveFriend,
   dbRejectFriendship,
+  dbRemoveFriend,
   dbRequestFriendship,
 } from "./internal/services/db.friends.service";
 

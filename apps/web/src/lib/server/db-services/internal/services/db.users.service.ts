@@ -7,7 +7,7 @@ import {
   users,
   usersStats,
 } from "@transc/db/schema";
-import { desc, DrizzleQueryError, eq, not, sql } from "drizzle-orm";
+import { DrizzleQueryError, desc, eq, not, sql } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   type Achievements,
@@ -323,7 +323,6 @@ export async function dbGetEloHistory(userId: number): Promise<
     throw new UnknownError();
   }
 }
-
 
 /**
  * Retrieves the achievements of a user.

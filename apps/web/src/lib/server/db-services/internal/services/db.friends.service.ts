@@ -18,7 +18,6 @@ import {
   UnknownError,
 } from "$lib/server/db-services";
 
-
 /**
  * Requests a friendship from a user to another user.
  * If the friendship already exists, an error is thrown.

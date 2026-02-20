@@ -10,6 +10,8 @@ import {
   DBUserNotFoundError,
   dbCreateUser,
   dbDeleteUser,
+  dbGetAchievements,
+  dbGetEloHistory,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
@@ -17,8 +19,6 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
-  dbGetEloHistory,
-  dbGetAchievements,
 } from "$lib/server/db-services";
 
 describe("users.service.ts tests", () => {

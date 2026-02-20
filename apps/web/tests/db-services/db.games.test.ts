@@ -17,7 +17,6 @@ import {
   dbGetSpectatorsCount,
   dbRemoveSpectator,
   dbStartGame,
-  type Game,
 } from "$lib/server/db-services";
 
 async function getUserId(username: string): Promise<number> {
