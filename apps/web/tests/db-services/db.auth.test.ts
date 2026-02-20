@@ -11,7 +11,7 @@ import {
   dbGetUserAndAuthSessionByAuthSessionId,
   dbGetUserByOauthId,
   type OauthAccount,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 describe("auth.service.ts tests", () => {
   let userId: number | undefined;

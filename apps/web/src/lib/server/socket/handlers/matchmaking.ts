@@ -3,7 +3,7 @@ import {
   type CreateGameInput,
   dbCreateGame,
   dbStartGame,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 // Matchmaking queues
 const queues = new Map<string, Socket[]>();

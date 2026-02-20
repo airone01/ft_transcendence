@@ -105,6 +105,7 @@ export {
 export {
   dbCreateUser,
   dbDeleteUser,
+  dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,

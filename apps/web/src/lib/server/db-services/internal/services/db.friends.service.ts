@@ -15,7 +15,7 @@ import {
   DBUserNotFoundError,
   type FriendInfo,
   UnknownError,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Adds a friend to a user's friends list.

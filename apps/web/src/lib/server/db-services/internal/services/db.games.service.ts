@@ -20,7 +20,7 @@ import {
   type EndGameInput,
   type Game,
   UnknownError,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Creates a new game in the database.

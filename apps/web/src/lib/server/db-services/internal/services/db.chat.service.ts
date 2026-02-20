@@ -11,7 +11,7 @@ import {
   type ChatMessageType,
   DBChatChannelNotFoundError,
   UnknownError,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Sends a message to the global chat channel.

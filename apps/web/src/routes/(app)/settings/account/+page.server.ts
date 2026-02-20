@@ -1,15 +1,15 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import { accountSettingsSchema } from "$lib/schemas/settings";
+import { hashPassword, verifyPassword } from "$lib/server/auth";
 import {
   dbGetConnectedProviders,
   dbGetUser, // We need this to fetch the real password hash
   dbUnlinkOAuthAccount,
   dbUpdateUser,
   type OAuthProvider,
-} from "$lib/db-services";
-import { accountSettingsSchema } from "$lib/schemas/settings";
-import { hashPassword, verifyPassword } from "$lib/server/auth";
+} from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {

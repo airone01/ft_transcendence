@@ -7,7 +7,7 @@ import {
   type OauthAccount,
   UnknownError,
   type User,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Creates a new authentication session in the database.

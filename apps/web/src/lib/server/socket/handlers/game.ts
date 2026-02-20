@@ -4,7 +4,7 @@ import {
   DBPlayersNotFoundError,
   dbGetGame,
   dbGetPlayers,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 import { GameRoom } from "../rooms/GameRoom";
 
 const activeGames = new Map<string, GameRoom>();
