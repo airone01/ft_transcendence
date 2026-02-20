@@ -1,6 +1,6 @@
 import { db } from "@transc/db";
 import { games, gamesPlayers, users, usersStats } from "@transc/db/schema";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, ne, not } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import {
   type GameHistory,
@@ -60,6 +60,7 @@ export async function dbGetUserGameHistory(
         // User info
         userEloBefore: gp1.eloBefore,
         userEloAfter: gp1.eloAfter,
+        userColor: gp1.color,
         // Opponent info
         opponentUserId: gp2.userId,
         opponentUsername: users.username,
@@ -73,7 +74,13 @@ export async function dbGetUserGameHistory(
       )
       .innerJoin(games, eq(games.id, gp1.gameId))
       .innerJoin(users, eq(gp2.userId, users.id))
-      .where(and(eq(gp1.userId, userId), eq(games.status, "finished")))
+      .where(
+        and(
+          eq(gp1.userId, userId),
+          eq(games.status, "finished"),
+          not(eq(games.result, "abort")),
+        ),
+      )
       .orderBy(desc(games.endedAt))
       .limit(10);
 

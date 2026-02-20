@@ -20,6 +20,7 @@ const gameHistorySchema = z.array(
     // User info
     userEloBefore: z.number().int().min(0),
     userEloAfter: z.number().int().min(0),
+    userColor: z.enum(["white", "black"]),
     // Opponent info
     opponentUserId: z.number().int(),
     opponentUsername: z.string().min(3).max(20),

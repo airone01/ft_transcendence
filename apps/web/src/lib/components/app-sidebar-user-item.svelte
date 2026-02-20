@@ -22,7 +22,7 @@ const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
     <a href="/profile/me" class="shrink-0">
       <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />
-        <AvatarFallback class="bg-linear-to-r from-blue-600 to-fuchsia-500 text-background">{initials}</AvatarFallback>
+        <AvatarFallback class=" select-none bg-linear-to-r from-blue-600 to-fuchsia-500 text-background">{initials}</AvatarFallback>
       </Avatar>
     </a>
     <div class="flex flex-col justify-center shrink w-full min-w-0 h-full group-data-[state=collapsed]:hidden">

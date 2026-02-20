@@ -143,7 +143,7 @@ const formEnhance = () => {
                   <a href="/profile/{friend.userId}">
                     <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                       <AvatarImage src={friend.avatar} alt={friend.username} />
-                      <AvatarFallback>{friend.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback class="select-none">{friend.username.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </a>
                   <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
@@ -211,7 +211,7 @@ const formEnhance = () => {
                 <a href="##">
                   <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                     <AvatarImage src="avatar url" alt="alt" />
-                    <AvatarFallback>FB</AvatarFallback>
+                    <AvatarFallback class="select-none">FB</AvatarFallback>
                   </Avatar>
                 </a>
               </div>
@@ -244,7 +244,7 @@ const formEnhance = () => {
                     <a href="/profile/{id}">
                       <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                         <AvatarImage src={avatar} alt={username} />
-                        <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback class="select-none">{username.slice(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
                     </a>
                     <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">

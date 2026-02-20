@@ -84,7 +84,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
-            <AvatarFallback class="bg-linear-to-br from-neutral-800 to-neutral-900 text-white">
+            <AvatarFallback class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white">
               {user?.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
@@ -121,7 +121,8 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       </div>
     </div>
 
-    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 h-full flex-1">
+    <!-- main content -->
+    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-h-full flex-1 min-h-0">
       
       <div class="lg:col-span-4 gap-4 max-h-full flex flex-col">
         
@@ -155,9 +156,9 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           {#if stats.gamesPlayed !== 0}
             <CardContent>
               <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
-                <div style="flex: {stats.wins}%" class="bg-green-500 h-full"></div>
-                <div style="flex: {stats.draws}%" class="bg-gray-400 h-full"></div>
-                <div style="flex: {stats.losses}%" class="bg-red-500 h-full"></div> </div>
+                <div style="flex: {stats.wins}" class="bg-green-500 h-full"></div>
+                <div style="flex: {stats.draws}" class="bg-gray-400 h-full"></div>
+                <div style="flex: {stats.losses}" class="bg-red-500 h-full"></div> </div>
               <div class="flex justify-between text-xs text-muted-foreground">
                 <span class="text-green-600 font-bold">{stats.wins} W</span>
                 <span>{stats.draws} D</span>
@@ -190,60 +191,57 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         </Card>
       </div>
 
-      <div class="lg:col-span-8 space-y-6">
-        
-        <Card class="h-full">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <History class="w-5 h-5" /> Match History
-            </CardTitle>
-            <CardDescription>Recent games played across all modes.</CardDescription>
-          </CardHeader>
-          <CardContent class="p-0">
-            {#if recentGames.length > 0}
-              <div class="flex flex-col divide-y">
-                {#each recentGames as game (game.gameId)}
-                  {@const eloDiff = game.userEloAfter - game.userEloBefore}
-                  <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
-                    <div class="flex items-center gap-4">
-                      <!-- TODO: currently the thing marks as green if white wins, regardless of the user's side -->
-                      <!-- meaning we aren't actually marking if the user won or not. -->
-                      <div class={`w-1 h-12 rounded-full ${game.result === 'white_win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
-                      <div>
-                        <div class="flex items-center gap-2">
-                           <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
-                           <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
-                        </div>
-                        <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
+      <Card class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden">
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
+            <History class="w-5 h-5" /> Match History
+          </CardTitle>
+          <CardDescription>Recent games played across all modes.</CardDescription>
+        </CardHeader>
+        <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
+          {#if recentGames.length > 0}
+            <div class="flex flex-col divide-y">
+              <!-- {#each recentGames as game (game.gameId)} -->
+              {#each recentGames as game}
+                {@const eloDiff = game.userEloAfter - game.userEloBefore}
+                {@const hasWon = (game.result === 'white_win' && game.userColor == 'white') || (game.result == 'black_win' && game.userColor == 'black')}
+                <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
+                  <div class="flex items-center gap-4">
+                    <div class={`w-1 h-12 rounded-full ${hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
+                    <div>
+                      <div class="flex items-center gap-2">
+                         <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
+                         <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
                       </div>
-                    </div>
-
-                    <div class="text-right">
-                      <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
-                        {#if eloDiff < 0}-{/if}{eloDiff}
-                      </span>
-                      <p class="text-xs text-muted-foreground">{game.endedAt}</p>
+                      <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
                     </div>
                   </div>
-                {/each}
-              </div>
-            {:else}
-              <Empty>
-                <EmptyMedia variant="icon">
-                  <SwordsIcon />
-                </EmptyMedia>
-                <EmptyHeader>
-                  <EmptyTitle>No Recent Matches</EmptyTitle>
-                  <EmptyDescription>
-                    Play a few matches to see your statistics with details here.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            {/if}
-          </CardContent>
-        </Card>
 
-      </div>
+                  <div class="text-right">
+                    <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                      {#if eloDiff > 0}+{/if}{eloDiff}
+                    </span>
+                    <p class="text-xs text-muted-foreground">{new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}</p>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <Empty>
+              <EmptyMedia variant="icon">
+                <SwordsIcon />
+              </EmptyMedia>
+              <EmptyHeader>
+                <EmptyTitle>No Recent Matches</EmptyTitle>
+                <EmptyDescription>
+                  Play a few matches to see your statistics with details here.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          {/if}
+        </CardContent>
+      </Card>
+
     </div>
 
   {:catch error}
