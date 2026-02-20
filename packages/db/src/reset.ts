@@ -1,7 +1,10 @@
 import { db } from "./index";
 import {
+  achievements,
   authSessions,
+  eloHistory,
   friendships,
+  friendshipsInvitations,
   games,
   gamesPlayers,
   gamesSpectators,
@@ -23,6 +26,9 @@ async function main() {
       gamesPlayers,
       oauthAccounts,
       gamesSpectators,
+      eloHistory,
+      achievements,
+      friendshipsInvitations,
     ];
 
     await Promise.all(

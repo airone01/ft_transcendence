@@ -1,9 +1,73 @@
 {
-  "id": "555fc71c-774d-4a37-8e35-79faddd6642f",
+  "id": "614f2108-cf62-44e3-b4bd-3d8c78a6c3be",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.achievements": {
+      "name": "achievements",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "first_game": {
+          "name": "first_game",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "first_win": {
+          "name": "first_win",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "five_wins": {
+          "name": "five_wins",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "reach_high_elo": {
+          "name": "reach_high_elo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "update_profile": {
+          "name": "update_profile",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "achievements_user_id_users_id_fk": {
+          "name": "achievements_user_id_users_id_fk",
+          "tableFrom": "achievements",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.auth_sessions": {
       "name": "auth_sessions",
       "schema": "",
@@ -359,6 +423,65 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.elo_history": {
+      "name": "elo_history",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "elo": {
+          "name": "elo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1000
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "elo_history_created_at_idx": {
+          "name": "elo_history_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "elo_history_user_id_users_id_fk": {
+          "name": "elo_history_user_id_users_id_fk",
+          "tableFrom": "elo_history",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.friendships": {
       "name": "friendships",
       "schema": "",
@@ -449,6 +572,103 @@
           "value": "\"friendships\".\"first_friend_id\" < \"friendships\".\"second_friend_id\""
         }
       },
+      "isRLSEnabled": false
+    },
+    "public.friendships_invitations": {
+      "name": "friendships_invitations",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friend_id": {
+          "name": "friend_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "friendships_invitations_user_id_idx": {
+          "name": "friendships_invitations_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "friendships_invitations_friend_id_idx": {
+          "name": "friendships_invitations_friend_id_idx",
+          "columns": [
+            {
+              "expression": "friend_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "friendships_invitations_created_at_idx": {
+          "name": "friendships_invitations_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "friendships_invitations_user_id_users_id_fk": {
+          "name": "friendships_invitations_user_id_users_id_fk",
+          "tableFrom": "friendships_invitations",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "friendships_invitations_friend_id_users_id_fk": {
+          "name": "friendships_invitations_friend_id_users_id_fk",
+          "tableFrom": "friendships_invitations",
+          "tableTo": "users",
+          "columnsFrom": ["friend_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.games": {
@@ -761,9 +981,10 @@
       "name": "oauth_accounts",
       "schema": "",
       "columns": {
-        "provider_id": {
-          "name": "provider_id",
-          "type": "text",
+        "provider": {
+          "name": "provider",
+          "type": "oauth_providers",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -809,9 +1030,9 @@
         }
       },
       "compositePrimaryKeys": {
-        "oauth_accounts_provider_id_provider_user_id_pk": {
-          "name": "oauth_accounts_provider_id_provider_user_id_pk",
-          "columns": ["provider_id", "provider_user_id"]
+        "oauth_accounts_provider_provider_user_id_pk": {
+          "name": "oauth_accounts_provider_provider_user_id_pk",
+          "columns": ["provider", "provider_user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -849,7 +1070,7 @@
         },
         "avatar": {
           "name": "avatar",
-          "type": "varchar(4096)",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -1001,6 +1222,11 @@
       "name": "game_status",
       "schema": "public",
       "values": ["waiting", "ongoing", "finished"]
+    },
+    "public.oauth_providers": {
+      "name": "oauth_providers",
+      "schema": "public",
+      "values": ["discord", "google", "github"]
     },
     "public.result": {
       "name": "result",

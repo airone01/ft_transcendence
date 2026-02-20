@@ -1,7 +1,9 @@
 import { db } from "@transc/db";
 import {
+  achievements,
   chatChannelMembers,
   chatChannels,
+  eloHistory,
   games,
   gamesPlayers,
   gamesSpectators,
@@ -169,38 +171,6 @@ export async function dbGetGame(gameId: number): Promise<Game> {
   }
 }
 
-/**
- * Updates a game in the database with a new FEN string.
- * @param {number} gameId - The ID of the game to update
- * @param {string} newFen - The new FEN string to update the game with
- * @throws {DBGameNotFoundError} - If the game is not found
- * @throws {UnknownError} - If an unexpected error occurs
- * @returns {Promise<Game>} - A promise that resolves with the updated game info if found, or rejects if the game is not found or an unexpected error occurs
- */
-export async function dbUpdateGame(
-  gameId: number,
-  newFen: string,
-): Promise<Game> {
-  try {
-    const [game] = await db
-      .update(games)
-      .set({
-        fen: newFen,
-      })
-      .where(eq(games.id, gameId))
-      .returning();
-
-    if (!game) throw new DBGameNotFoundError();
-
-    return game;
-  } catch (err) {
-    if (err instanceof DBGameNotFoundError) throw err;
-
-    console.error(err);
-    throw new UnknownError();
-  }
-}
-
 function EloRating(
   rA: number,
   rB: number,
@@ -313,6 +283,59 @@ export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
         .returning();
 
       if (updatedUsers.length !== 2) throw new DBPlayersNotFoundError();
+
+      const updatedEloHistory = await tx
+        .insert(eloHistory)
+        .values([
+          {
+            userId: p1.userId,
+            elo: elo1,
+          },
+          {
+            userId: p2.userId,
+            elo: elo2,
+          },
+        ])
+        .returning();
+
+      if (updatedEloHistory.length !== 2) throw new DBPlayersNotFoundError();
+
+      const achievementsPlayers = await tx
+        .update(achievements)
+        .set({
+          first_game: sql`
+            CASE
+              WHEN ${achievements.userId} = ${updatedUsers[0].userId}              
+                THEN ${achievements.first_game} OR ${updatedUsers[0].gamesPlayed} >= 1 
+              ELSE ${achievements.first_game} OR ${updatedUsers[1].gamesPlayed} >= 1
+            END
+          `,
+          first_win: sql`
+            CASE
+              WHEN ${achievements.userId} = ${updatedUsers[0].userId}
+                THEN ${achievements.first_win} OR ${updatedUsers[0].wins} >= 1
+              ELSE ${achievements.first_win} OR ${updatedUsers[1].wins} >= 1
+            END
+          `,
+          five_wins: sql`
+            CASE
+              WHEN ${achievements.userId} = ${updatedUsers[0].userId}
+                THEN ${achievements.five_wins} OR ${updatedUsers[0].wins} >= 5
+              ELSE ${achievements.five_wins} OR ${updatedUsers[1].wins} >= 5
+            END
+          `,
+          reach_high_elo: sql`
+            CASE
+              WHEN ${achievements.userId} = ${updatedUsers[0].userId}
+                THEN ${achievements.reach_high_elo} OR ${updatedUsers[0].currentElo} >= 2000
+              ELSE ${achievements.reach_high_elo} OR ${updatedUsers[1].currentElo} >= 2000
+            END
+          `,
+        })
+        .where(inArray(achievements.userId, [p1.userId, p2.userId]))
+        .returning();
+
+      if (achievementsPlayers.length !== 2) throw new DBPlayersNotFoundError();
 
       const removedSpectators = await tx
         .delete(gamesSpectators)

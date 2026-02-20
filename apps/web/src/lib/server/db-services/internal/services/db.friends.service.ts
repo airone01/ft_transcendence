@@ -3,6 +3,7 @@ import {
   chatChannelMembers,
   chatChannels,
   friendships,
+  friendshipsInvitations,
   users,
   usersStats,
 } from "@transc/db/schema";
@@ -16,6 +17,71 @@ import {
   type FriendInfo,
   UnknownError,
 } from "$lib/server/db-services";
+
+/**
+ * Requests a friendship from a user to another user.
+ * If the friendship already exists, an error is thrown.
+ * If not, a friendship invitation is created.
+ * @param {number} userId - The id of the user who sent the request
+ * @param {number} friendId - The id of the user who received the request
+ * @throws {DBAddFriendFriendshipAlreadyExistsError} - If the friendship already exists
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - A promise that resolves when the friendship invitation has been created
+ */
+export async function dbRequestFriendship(
+  userId: number,
+  friendId: number,
+): Promise<void> {
+  try {
+    const [friendship] = await db
+      .select()
+      .from(friendships)
+      .where(
+        and(
+          eq(friendships.firstFriendId, Math.min(userId, friendId)),
+          eq(friendships.secondFriendId, Math.max(userId, friendId)),
+        ),
+      );
+
+    if (friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
+
+    await db.insert(friendshipsInvitations).values({
+      userId: userId,
+      friendId: friendId,
+    });
+  } catch (err) {
+    if (err instanceof DBAddFriendFriendshipAlreadyExistsError) throw err;
+
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Rejects a friendship request from a user to another user.
+ * @param {number} userId - The id of the user who sent the request
+ * @param {number} friendId - The id of the user who received the request
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - A promise that resolves when the friend request has been refused
+ */
+export async function dbRejectFriendship(
+  userId: number,
+  friendId: number,
+): Promise<void> {
+  try {
+    await db
+      .delete(friendshipsInvitations)
+      .where(
+        and(
+          eq(friendshipsInvitations.userId, userId),
+          eq(friendshipsInvitations.friendId, friendId),
+        ),
+      );
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
 
 /**
  * Adds a friend to a user's friends list.
