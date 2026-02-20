@@ -6,7 +6,6 @@ import {
   dbGetRandomUsers,
   dbGetUserByUsername,
   dbRemoveFriend,
-  type User,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 

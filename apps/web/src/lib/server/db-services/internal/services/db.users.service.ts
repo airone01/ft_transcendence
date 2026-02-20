@@ -5,7 +5,7 @@ import {
   users,
   usersStats,
 } from "@transc/db/schema";
-import { DrizzleQueryError, eq, sql, not } from "drizzle-orm";
+import { DrizzleQueryError, eq, not, sql } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   type ChatChannelType,
