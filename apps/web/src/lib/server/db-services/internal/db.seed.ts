@@ -35,6 +35,10 @@ async function clear() {
 await clear();
 
 async function seed() {
+  // P@ssw0rd
+  const dumbPass =
+    "$argon2id$v=19$m=65536,t=2,p=1$hvTUZSfGd5ANiAKuXIJR6CrXk0HeKRQqeOAQkqHoSSM$mt5RlGqdvbh+w61sSW5ZQPMJ2rPANV+NcT1Dk4I/wUE";
+
   try {
     await db
       .insert(chatChannels)
@@ -47,25 +51,25 @@ async function seed() {
     const valentinId = await dbCreateUser({
       username: "Valentin",
       email: "valentin@transcender.com",
-      password: "password",
+      password: dumbPass,
     });
 
     const erwannId = await dbCreateUser({
       username: "Erwann",
       email: "erwann@transcender.com",
-      password: "password",
+      password: dumbPass,
     });
 
     const enzoId = await dbCreateUser({
       username: "Enzo",
       email: "enzo@transcender.com",
-      password: "password",
+      password: dumbPass,
     });
 
     const simonId = await dbCreateUser({
       username: "Simon",
       email: "simon@transcender.com",
-      password: "password",
+      password: dumbPass,
     });
 
     // seed friendships

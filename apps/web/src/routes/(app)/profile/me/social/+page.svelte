@@ -134,7 +134,7 @@ const formEnhance = () => {
           <CardTitle>Friends ({friends.length})</CardTitle>
           <CardDescription>All your friends are here!</CardDescription>
         </CardHeader>
-        <CardContent class="overflow-y-scroll">
+        <CardContent class="overflow-y-scroll flex flex-col gap-2">
           {#each friends as friend (friend.userId)}
             <Card class="overflow-hidden py-0">
               <CardContent class="p-2 flex items-center gap-4">
@@ -143,7 +143,7 @@ const formEnhance = () => {
                   <a href="/profile/{friend.userId}">
                     <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                       <AvatarImage src={friend.avatar} alt={friend.username} />
-                      <AvatarFallback>{friend.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback class="select-none">{friend.username.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   </a>
                   <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
@@ -211,7 +211,7 @@ const formEnhance = () => {
                 <a href="##">
                   <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                     <AvatarImage src="avatar url" alt="alt" />
-                    <AvatarFallback>FB</AvatarFallback>
+                    <AvatarFallback class="select-none">FB</AvatarFallback>
                   </Avatar>
                 </a>
               </div>
@@ -235,8 +235,8 @@ const formEnhance = () => {
           <CardTitle>Suggested Players</CardTitle>
           <CardDescription>Make some friends and some ennemies</CardDescription>
         </CardHeader>
-        <CardContent class="flex justify-start h-full">
-          {#each users as {id, avatar, status, username}}
+        <CardContent class="flex justify-start h-full gap-2">
+          {#each users as {id, avatar, username}}
             <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
               <CardContent class="px-4 flex gap-4 justify-start h-full">
                 <div class="flex gap-4 items-center h-fit">
@@ -244,7 +244,7 @@ const formEnhance = () => {
                     <a href="/profile/{id}">
                       <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
                         <AvatarImage src={avatar} alt={username} />
-                        <AvatarFallback>{username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback class="select-none">{username.slice(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
                     </a>
                     <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">

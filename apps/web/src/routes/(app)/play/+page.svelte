@@ -1,7 +1,6 @@
 <script lang="ts">
 import { ZapIcon, ClockIcon, TargetIcon, LoaderCircleIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
-import { Separator } from "@transc/ui/separator";
 import { matchmakingState, joinQueue, leaveQueue } from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 
