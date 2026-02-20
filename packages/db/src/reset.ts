@@ -1,6 +1,8 @@
 import { db } from "./index";
 import {
+  achievements,
   authSessions,
+  eloHistory,
   friendships,
   games,
   gamesPlayers,
@@ -23,6 +25,8 @@ async function main() {
       gamesPlayers,
       oauthAccounts,
       gamesSpectators,
+      eloHistory,
+      achievements,
     ];
 
     await Promise.all(

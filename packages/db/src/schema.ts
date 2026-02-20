@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   check,
   index,
+  boolean,
   integer,
   pgEnum,
   pgTable,
@@ -102,6 +103,33 @@ export const usersStats = pgTable(
     check("users_stats_current_elo_check", sql`${table.currentElo} > 0`),
   ],
 );
+
+// ############################# ELO_HISTORY #############################
+
+export const eloHistory = pgTable(
+  "elo_history",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    elo: integer("elo").notNull().default(1000),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("elo_history_created_at_idx").on(table.createdAt)],
+);
+
+// ############################ ACHIEVEMENTS #############################
+
+export const achievements = pgTable("achievements", {
+  userId: integer("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .primaryKey(),
+  first_game: boolean("first_game").default(false).notNull(),
+  first_win: boolean("first_win").default(false).notNull(),
+  five_wins: boolean("five_wins").default(false).notNull(),
+  reach_high_elo: boolean("reach_high_elo").default(false).notNull(),
+  update_profile: boolean("update_profile").default(false).notNull(),
+});
 
 // ############################# FRIENDSHIPS #############################
 

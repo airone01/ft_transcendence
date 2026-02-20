@@ -17,7 +17,6 @@ import {
   dbGetSpectatorsCount,
   dbRemoveSpectator,
   dbStartGame,
-  dbUpdateGame,
   type Game,
 } from "$lib/server/db-services";
 
@@ -92,29 +91,6 @@ describe("games.service.ts tests", () => {
   test("startGame with invalid game id", async () => {
     try {
       await dbStartGame(100000000);
-    } catch (err) {
-      expect(err).toBeInstanceOf(DBGameNotFoundError);
-    }
-  });
-
-  test("updateGame", async () => {
-    try {
-      const gameInfo: Game = await dbUpdateGame(
-        gameId,
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
-      );
-
-      expect(gameInfo).toBeDefined();
-      console.table(gameInfo);
-    } catch (_err) {}
-  });
-
-  test("updateGame with invalid game id", async () => {
-    try {
-      const _gameInfo: Game = await dbUpdateGame(
-        100000000,
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1",
-      );
     } catch (err) {
       expect(err).toBeInstanceOf(DBGameNotFoundError);
     }
