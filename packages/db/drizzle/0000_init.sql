@@ -1,8 +1,18 @@
 CREATE TYPE "public"."chat_channel_type" AS ENUM('global', 'game', 'private');--> statement-breakpoint
 CREATE TYPE "public"."colors" AS ENUM('white', 'black');--> statement-breakpoint
 CREATE TYPE "public"."game_status" AS ENUM('waiting', 'ongoing', 'finished');--> statement-breakpoint
+CREATE TYPE "public"."oauth_providers" AS ENUM('discord', 'google', 'github');--> statement-breakpoint
 CREATE TYPE "public"."result" AS ENUM('white_win', 'black_win', 'draw', 'abort');--> statement-breakpoint
 CREATE TYPE "public"."user_status" AS ENUM('online', 'offline', 'ingame');--> statement-breakpoint
+CREATE TABLE "achievements" (
+	"user_id" integer PRIMARY KEY NOT NULL,
+	"first_game" boolean DEFAULT false NOT NULL,
+	"first_win" boolean DEFAULT false NOT NULL,
+	"five_wins" boolean DEFAULT false NOT NULL,
+	"reach_high_elo" boolean DEFAULT false NOT NULL,
+	"update_profile" boolean DEFAULT false NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "auth_sessions" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
@@ -32,12 +42,24 @@ CREATE TABLE "chat_messages" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "elo_history" (
+	"user_id" integer NOT NULL,
+	"elo" integer DEFAULT 1000 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "friendships" (
 	"first_friend_id" integer NOT NULL,
 	"second_friend_id" integer NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "friendships_first_friend_id_second_friend_id_pk" PRIMARY KEY("first_friend_id","second_friend_id"),
 	CONSTRAINT "friendships_duplicates_check" CHECK ("friendships"."first_friend_id" < "friendships"."second_friend_id")
+);
+--> statement-breakpoint
+CREATE TABLE "friendships_invitations" (
+	"user_id" integer NOT NULL,
+	"friend_id" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "games" (
@@ -73,10 +95,10 @@ CREATE TABLE "games_spectators" (
 );
 --> statement-breakpoint
 CREATE TABLE "oauth_accounts" (
-	"provider_id" text NOT NULL,
+	"provider" "oauth_providers" NOT NULL,
 	"provider_user_id" text NOT NULL,
 	"user_id" integer NOT NULL,
-	CONSTRAINT "oauth_accounts_provider_id_provider_user_id_pk" PRIMARY KEY("provider_id","provider_user_id")
+	CONSTRAINT "oauth_accounts_provider_provider_user_id_pk" PRIMARY KEY("provider","provider_user_id")
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -84,7 +106,7 @@ CREATE TABLE "users" (
 	"username" varchar(20) NOT NULL,
 	"email" varchar NOT NULL,
 	"password" varchar,
-	"avatar" varchar(4096),
+	"avatar" text,
 	"status" "user_status" DEFAULT 'offline' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_username_unique" UNIQUE("username"),
@@ -103,14 +125,18 @@ CREATE TABLE "users_stats" (
 	CONSTRAINT "users_stats_current_elo_check" CHECK ("users_stats"."current_elo" > 0)
 );
 --> statement-breakpoint
+ALTER TABLE "achievements" ADD CONSTRAINT "achievements_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "auth_sessions" ADD CONSTRAINT "auth_sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat_channel_members" ADD CONSTRAINT "chat_channel_members_channel_id_chat_channels_id_fk" FOREIGN KEY ("channel_id") REFERENCES "public"."chat_channels"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat_channel_members" ADD CONSTRAINT "chat_channel_members_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat_channels" ADD CONSTRAINT "chat_channels_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_channel_id_chat_channels_id_fk" FOREIGN KEY ("channel_id") REFERENCES "public"."chat_channels"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "elo_history" ADD CONSTRAINT "elo_history_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_first_friend_id_users_id_fk" FOREIGN KEY ("first_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_second_friend_id_users_id_fk" FOREIGN KEY ("second_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "friendships_invitations" ADD CONSTRAINT "friendships_invitations_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "friendships_invitations" ADD CONSTRAINT "friendships_invitations_friend_id_users_id_fk" FOREIGN KEY ("friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_players" ADD CONSTRAINT "games_players_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_players" ADD CONSTRAINT "games_players_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_spectators" ADD CONSTRAINT "games_spectators_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -126,8 +152,12 @@ CREATE INDEX "chat_channels_game_id_idx" ON "chat_channels" USING btree ("game_i
 CREATE INDEX "chat_messages_channel_id_idx" ON "chat_messages" USING btree ("channel_id");--> statement-breakpoint
 CREATE INDEX "chat_messages_user_id_idx" ON "chat_messages" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "chat_messages_created_at_idx" ON "chat_messages" USING btree ("created_at");--> statement-breakpoint
+CREATE INDEX "elo_history_created_at_idx" ON "elo_history" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "friendships_first_friend_id_idx" ON "friendships" USING btree ("first_friend_id");--> statement-breakpoint
 CREATE INDEX "friendships_second_friend_id_idx" ON "friendships" USING btree ("second_friend_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_user_id_idx" ON "friendships_invitations" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_friend_id_idx" ON "friendships_invitations" USING btree ("friend_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_created_at_idx" ON "friendships_invitations" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "games_status_idx" ON "games" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "games_ended_at_idx" ON "games" USING btree ("ended_at");--> statement-breakpoint
 CREATE INDEX "games_players_game_id_idx" ON "games_players" USING btree ("game_id");--> statement-breakpoint

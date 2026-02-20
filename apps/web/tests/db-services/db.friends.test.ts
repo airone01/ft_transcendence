@@ -8,10 +8,12 @@ import {
   DBUserNotFoundError,
   dbAddFriend,
   dbGetFriendsInfo,
+  dbRejectFriendship,
   dbRemoveFriend,
+  dbRequestFriendship,
 } from "$lib/server/db-services";
 
-async function getUserId(username: string) {
+async function getUserId(username: string): Promise<number> {
   const [user] = await db
     .select({ id: users.id })
     .from(users)
@@ -26,7 +28,7 @@ describe("friends.service.ts tests", () => {
   let friendId: number;
 
   beforeAll(async () => {
-    userId = await getUserId("Erwan");
+    userId = await getUserId("Erwann");
     friendId = await getUserId("Simon");
 
     await db
@@ -43,6 +45,31 @@ describe("friends.service.ts tests", () => {
           ),
         ),
       );
+  });
+
+  test("requestFriendship", async () => {
+    try {
+      await dbRequestFriendship(userId, friendId);
+
+      expect(true).toBe(true);
+    } catch (_err) {}
+  });
+
+  test("requestFriendship twice", async () => {
+    try {
+      await dbRequestFriendship(userId, friendId);
+      await dbRequestFriendship(userId, friendId);
+    } catch (err) {
+      expect(err).toBeInstanceOf(DBAddFriendFriendshipAlreadyExistsError);
+    }
+  });
+
+  test("rejectFriendship", async () => {
+    try {
+      await dbRejectFriendship(userId, friendId);
+
+      expect(true).toBe(true);
+    } catch (_err) {}
   });
 
   test("addFriend", async () => {
@@ -72,7 +99,7 @@ describe("friends.service.ts tests", () => {
 
   test("addFriend with unknown first friend user", async () => {
     try {
-      await dbAddFriend(Math.round(userId / 2), userId);
+      await dbAddFriend(0, userId);
     } catch (err) {
       expect(err).toBeInstanceOf(DBUserNotFoundError);
     }

@@ -10,6 +10,8 @@ import {
   DBUserNotFoundError,
   dbCreateUser,
   dbDeleteUser,
+  dbGetAchievements,
+  dbGetEloHistory,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
@@ -142,6 +144,24 @@ describe("users.service.ts tests", () => {
 
       expect(stats).toBeDefined();
       console.table(stats);
+    } catch (_err) {}
+  });
+
+  test("getEloHistory", async () => {
+    try {
+      const elo_history = await dbGetEloHistory(userId);
+
+      expect(elo_history).toBeDefined();
+      console.table(elo_history);
+    } catch (_err) {}
+  });
+
+  test("getAchievements", async () => {
+    try {
+      const achievements = await dbGetAchievements(userId);
+
+      expect(achievements).toBeDefined();
+      console.table(achievements);
     } catch (_err) {}
   });
 

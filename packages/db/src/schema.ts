@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
   integer,
@@ -100,6 +101,57 @@ export const usersStats = pgTable(
   (table) => [
     index("users_stats_current_elo").on(table.currentElo),
     check("users_stats_current_elo_check", sql`${table.currentElo} > 0`),
+  ],
+);
+
+// ############################# ELO_HISTORY #############################
+
+export const eloHistory = pgTable(
+  "elo_history",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    elo: integer("elo").notNull().default(1000),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("elo_history_created_at_idx").on(table.createdAt)],
+);
+
+// ############################ ACHIEVEMENTS #############################
+
+export const achievements = pgTable("achievements", {
+  userId: integer("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .primaryKey(),
+  first_game: boolean("first_game").default(false).notNull(),
+  first_win: boolean("first_win").default(false).notNull(),
+  five_wins: boolean("five_wins").default(false).notNull(),
+  reach_high_elo: boolean("reach_high_elo").default(false).notNull(),
+  update_profile: boolean("update_profile").default(false).notNull(),
+});
+
+// ####################### FRIENDSHIPS_INVITATIONS #######################
+
+export const friendshipsInvitations = pgTable(
+  "friendships_invitations",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    friendId: integer("friend_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("friendships_invitations_user_id_idx").on(table.userId),
+    index("friendships_invitations_friend_id_idx").on(table.friendId),
+    index("friendships_invitations_created_at_idx").on(table.createdAt),
   ],
 );
 

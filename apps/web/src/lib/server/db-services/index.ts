@@ -33,11 +33,14 @@ export type {
 
 /* DB Schema */
 export type {
+  Achievements,
   AuthSession,
   ChatChannel,
   ChatChannelMember,
   ChatMessage,
+  EloHistory,
   Friendship,
+  FriendshipInvitations,
   Game,
   GamePlayer,
   GameSpectator,
@@ -84,7 +87,9 @@ export {
 export {
   dbAddFriend,
   dbGetFriendsInfo,
+  dbRejectFriendship,
   dbRemoveFriend,
+  dbRequestFriendship,
 } from "./internal/services/db.friends.service";
 
 /* Games Services */
@@ -98,13 +103,14 @@ export {
   dbGetSpectatorsCount,
   dbRemoveSpectator,
   dbStartGame,
-  dbUpdateGame,
 } from "./internal/services/db.games.service";
 
 /* Users Services */
 export {
   dbCreateUser,
   dbDeleteUser,
+  dbGetAchievements,
+  dbGetEloHistory,
   dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
