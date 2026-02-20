@@ -4,8 +4,8 @@ import {
   dbGetUser,
   dbGetUserGameHistory,
 } from "$lib/server/db-services";
-import type { PageServerLoad } from "./$types";
 import type { UserNoPass } from "../../../../app";
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   const fetchUser = async () => {
@@ -14,11 +14,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
     if (locals.user == null) throw redirect(301, "/");
 
-    if (params.id == "me") {
+    if (params.id === "me") {
       userId = locals.user.id;
       user = locals.user ?? undefined;
     } else if (userId != null) {
-      userId = parseInt(params.id);
+      userId = parseInt(params.id, 10);
 
       const { password, ...dbUser } = await dbGetUser(userId);
       user = { ...dbUser, password: null };
