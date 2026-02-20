@@ -14,8 +14,12 @@ import {
   History, 
   Calendar, 
   Medal,
-  Target
+  Target,
+
+  SwordsIcon
+
 } from '@lucide/svelte';
+    import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@transc/ui/empty";
 
 let { data } = $props();
 
@@ -71,6 +75,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
     </div>
 
   {:then {user, stats, games}} 
+    {@const recentGames = games.filter(g => g.result !== 'abort')}
     <div class="relative w-full">
       <div class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"></div>
       
@@ -195,32 +200,46 @@ const isMe = (userId: number) => page.data.user?.id === userId;
             <CardDescription>Recent games played across all modes.</CardDescription>
           </CardHeader>
           <CardContent class="p-0">
-            <div class="flex flex-col divide-y">
-              {#each games.filter(g => g.result !== 'abort') as game (game.gameId)}
-                {@const eloDiff = game.userEloAfter - game.userEloBefore}
-                <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
-                  <div class="flex items-center gap-4">
-                    <!-- TODO: currently the thing marks as green if white wins, regardless of the user's side -->
-                    <!-- meaning we aren't actually marking if the user won or not. -->
-                    <div class={`w-1 h-12 rounded-full ${game.result === 'white_win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
-                    <div>
-                      <div class="flex items-center gap-2">
-                         <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
-                         <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
+            {#if recentGames.length > 0}
+              <div class="flex flex-col divide-y">
+                {#each recentGames as game (game.gameId)}
+                  {@const eloDiff = game.userEloAfter - game.userEloBefore}
+                  <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
+                    <div class="flex items-center gap-4">
+                      <!-- TODO: currently the thing marks as green if white wins, regardless of the user's side -->
+                      <!-- meaning we aren't actually marking if the user won or not. -->
+                      <div class={`w-1 h-12 rounded-full ${game.result === 'white_win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
+                      <div>
+                        <div class="flex items-center gap-2">
+                           <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
+                           <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
+                        </div>
+                        <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
                       </div>
-                      <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
+                    </div>
+
+                    <div class="text-right">
+                      <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                        {#if eloDiff < 0}-{/if}{eloDiff}
+                      </span>
+                      <p class="text-xs text-muted-foreground">{game.endedAt}</p>
                     </div>
                   </div>
-
-                  <div class="text-right">
-                    <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
-                      {#if eloDiff < 0}-{/if}{eloDiff}
-                    </span>
-                    <p class="text-xs text-muted-foreground">{game.endedAt}</p>
-                  </div>
-                </div>
-              {/each}
-            </div>
+                {/each}
+              </div>
+            {:else}
+              <Empty>
+                <EmptyMedia variant="icon">
+                  <SwordsIcon />
+                </EmptyMedia>
+                <EmptyHeader>
+                  <EmptyTitle>No Recent Matches</EmptyTitle>
+                  <EmptyDescription>
+                    Play a few matches to see your statistics with details here.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            {/if}
           </CardContent>
         </Card>
 
