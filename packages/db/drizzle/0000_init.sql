@@ -56,6 +56,12 @@ CREATE TABLE "friendships" (
 	CONSTRAINT "friendships_duplicates_check" CHECK ("friendships"."first_friend_id" < "friendships"."second_friend_id")
 );
 --> statement-breakpoint
+CREATE TABLE "friendships_invitations" (
+	"user_id" integer NOT NULL,
+	"friend_id" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "games" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"status" "game_status" DEFAULT 'waiting' NOT NULL,
@@ -129,6 +135,8 @@ ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_user_id_users_id_fk" F
 ALTER TABLE "elo_history" ADD CONSTRAINT "elo_history_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_first_friend_id_users_id_fk" FOREIGN KEY ("first_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "friendships" ADD CONSTRAINT "friendships_second_friend_id_users_id_fk" FOREIGN KEY ("second_friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "friendships_invitations" ADD CONSTRAINT "friendships_invitations_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "friendships_invitations" ADD CONSTRAINT "friendships_invitations_friend_id_users_id_fk" FOREIGN KEY ("friend_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_players" ADD CONSTRAINT "games_players_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_players" ADD CONSTRAINT "games_players_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "games_spectators" ADD CONSTRAINT "games_spectators_game_id_games_id_fk" FOREIGN KEY ("game_id") REFERENCES "public"."games"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -147,6 +155,9 @@ CREATE INDEX "chat_messages_created_at_idx" ON "chat_messages" USING btree ("cre
 CREATE INDEX "elo_history_created_at_idx" ON "elo_history" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "friendships_first_friend_id_idx" ON "friendships" USING btree ("first_friend_id");--> statement-breakpoint
 CREATE INDEX "friendships_second_friend_id_idx" ON "friendships" USING btree ("second_friend_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_user_id_idx" ON "friendships_invitations" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_friend_id_idx" ON "friendships_invitations" USING btree ("friend_id");--> statement-breakpoint
+CREATE INDEX "friendships_invitations_created_at_idx" ON "friendships_invitations" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "games_status_idx" ON "games" USING btree ("status");--> statement-breakpoint
 CREATE INDEX "games_ended_at_idx" ON "games" USING btree ("ended_at");--> statement-breakpoint
 CREATE INDEX "games_players_game_id_idx" ON "games_players" USING btree ("game_id");--> statement-breakpoint

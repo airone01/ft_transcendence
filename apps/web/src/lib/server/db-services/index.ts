@@ -40,6 +40,7 @@ export type {
   ChatMessage,
   EloHistory,
   Friendship,
+  FriendshipInvitations,
   Game,
   GamePlayer,
   GameSpectator,
@@ -87,6 +88,8 @@ export {
   dbAddFriend,
   dbGetFriendsInfo,
   dbRemoveFriend,
+  dbRejectFriendship,
+  dbRequestFriendship,
 } from "./internal/services/db.friends.service";
 
 /* Games Services */

@@ -131,6 +131,30 @@ export const achievements = pgTable("achievements", {
   update_profile: boolean("update_profile").default(false).notNull(),
 });
 
+// ####################### FRIENDSHIPS_INVITATIONS #######################
+
+export const friendshipsInvitations = pgTable(
+  "friendships_invitations",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    friendId: integer("friend_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("friendships_invitations_user_id_idx").on(table.userId),
+    index("friendships_invitations_friend_id_idx").on(table.friendId),
+    index("friendships_invitations_created_at_idx").on(table.createdAt),
+  ],
+);
+
 // ############################# FRIENDSHIPS #############################
 
 export const friendships = pgTable(

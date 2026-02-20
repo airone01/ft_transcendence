@@ -4,6 +4,7 @@ import {
   authSessions,
   eloHistory,
   friendships,
+  friendshipsInvitations,
   games,
   gamesPlayers,
   gamesSpectators,
@@ -27,6 +28,7 @@ async function main() {
       gamesSpectators,
       eloHistory,
       achievements,
+      friendshipsInvitations,
     ];
 
     await Promise.all(

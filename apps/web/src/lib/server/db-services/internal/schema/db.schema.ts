@@ -35,6 +35,12 @@ const achievementsSchema = z.object({
   update_profile: z.boolean(),
 });
 
+const friendshipInvitationsSchema = z.object({
+  userId: z.number().int(),
+  friendId: z.number().int(),
+  createdAt: z.date(),
+});
+
 const friendshipSchema = z.object({
   firstFriendId: z.number().int(),
   secondFriendId: z.number().int(),
@@ -105,6 +111,7 @@ export type User = z.infer<typeof userSchema>;
 export type UserStats = z.infer<typeof userStatsSchema>;
 export type EloHistory = z.infer<typeof eloHistorySchema>;
 export type Achievements = z.infer<typeof achievementsSchema>;
+export type FriendshipInvitations = z.infer<typeof friendshipInvitationsSchema>;
 export type Friendship = z.infer<typeof friendshipSchema>;
 export type AuthSession = z.infer<typeof authSessionsSchema>;
 export type OauthAccount = z.infer<typeof oauthAccountSchema>;
