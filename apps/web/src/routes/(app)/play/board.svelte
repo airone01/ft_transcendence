@@ -154,7 +154,9 @@ function handleDndConsider(
     }
   }
 
-  board[squareIndex].pieces = e.detail.items;
+  if (!isDragging || squareIndex === dragFromIndex) {
+    board[squareIndex].pieces = e.detail.items;
+  }
 }
 
 function scheduleRebuild() {
