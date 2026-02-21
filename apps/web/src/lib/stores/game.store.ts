@@ -155,6 +155,11 @@ export function setupGameListeners() {
       isDraw: data.isDraw,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
+      // Reset end-of-game fields when joining a new game
+      gameOver: false,
+      winner: null,
+      reason: null,
+      check: false,
     }));
   }) as unknown as (...args: unknown[]) => void);
 

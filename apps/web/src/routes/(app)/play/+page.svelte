@@ -4,6 +4,17 @@ import { Button } from "@transc/ui/button";
 import { Separator } from "@transc/ui/separator";
 import { matchmakingState, joinQueue, leaveQueue } from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
+import { gameState } from "$lib/stores/game.store";
+import { goto } from "$app/navigation";
+import { onMount } from "svelte";
+
+onMount(() => {
+  return gameState.subscribe((state) => {
+    if (state.gameId && !state.gameOver) {
+      goto(`/game/${state.gameId}`);
+    }
+  });
+});
 
 function handleCancelQueue() {
   const state = $matchmakingState;
