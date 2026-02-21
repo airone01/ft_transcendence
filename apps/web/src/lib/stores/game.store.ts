@@ -3,6 +3,15 @@ import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
+export interface MoveRecord {
+  from: string;
+  to: string;
+  promotion?: string;
+  color: "w" | "b";
+  check: boolean;
+  checkmate: boolean;
+}
+
 export interface GameState {
   gameId: string | null;
   fen: string;
@@ -16,6 +25,7 @@ export interface GameState {
   reason: string | null;
   whiteTimeLeft: number;
   blackTimeLeft: number;
+  moves: MoveRecord[];
 }
 
 export interface GameMove {
@@ -45,6 +55,7 @@ export const gameState: Writable<GameState> = writable({
   reason: null,
   whiteTimeLeft: DEFAULT_TIME,
   blackTimeLeft: DEFAULT_TIME,
+  moves: [],
 });
 
 export const isMyTurn = derived(gameState, ($state) => {
@@ -132,6 +143,7 @@ export function leaveGame() {
     reason: null,
     whiteTimeLeft: DEFAULT_TIME,
     blackTimeLeft: DEFAULT_TIME,
+    moves: [],
   });
 }
 
@@ -155,11 +167,12 @@ export function setupGameListeners() {
       isDraw: data.isDraw,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
-      // Reset end-of-game fields when joining a new game
+      // Reset end-of-game fields and history when joining a new game
       gameOver: false,
       winner: null,
       reason: null,
       check: false,
+      moves: [],
     }));
   }) as unknown as (...args: unknown[]) => void);
 
@@ -175,6 +188,17 @@ export function setupGameListeners() {
       isDraw: data.stalemate || false,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
+      moves: [
+        ...state.moves,
+        {
+          from: data.from,
+          to: data.to,
+          promotion: data.promotion,
+          color: state.turn,
+          check: data.check || false,
+          checkmate: data.checkmate || false,
+        },
+      ],
     }));
   }) as unknown as (...args: unknown[]) => void);
 

@@ -3,7 +3,7 @@ import { page } from "$app/state";
 import { RotateCcwIcon, ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Separator } from "@transc/ui/separator";
-import { gameState, isMyTurn, resign, offerDraw } from "$lib/stores/game.store";
+import { gameState, isMyTurn, resign, offerDraw, type MoveRecord } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
 
@@ -33,12 +33,22 @@ const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
 const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
 const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
 const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
+
+// Group moves by pairs: [[white, black?], ...]
+const movePairs = $derived(() => {
+  const pairs: [MoveRecord, MoveRecord | null][] = [];
+  const moves = $gameState.moves;
+  for (let i = 0; i < moves.length; i += 2) {
+    pairs.push([moves[i], moves[i + 1] ?? null]);
+  }
+  return pairs;
+});
 </script>
 
 <main class="h-full flex items-center justify-center p-6">
   <div class="w-full max-w-[1424px] flex items-stretch gap-6">
   <!-- Left Panel: Game Info -->
-  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5 overflow-hidden">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold">Current game</h2>
@@ -136,13 +146,31 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
   </div>
 
   <!-- Right Panel: History -->
-  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5 overflow-hidden">
     <!-- Header -->
     <h2 class="text-lg font-semibold">Move history</h2>
 
     <!-- Move history -->
-    <div class="flex-1 mt-4 rounded-lg bg-muted/50 flex items-center justify-center min-h-0">
-      <span class="text-sm text-muted-foreground">No moves yet</span>
+    <div class="flex-1 mt-4 rounded-lg bg-muted/50 overflow-y-auto min-h-0">
+      {#if movePairs().length === 0}
+        <div class="h-full flex items-center justify-center">
+          <span class="text-sm text-muted-foreground">No moves yet</span>
+        </div>
+      {:else}
+        <div class="p-2 space-y-0.5">
+          {#each movePairs() as [white, black], i}
+            <div class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted">
+              <span class="text-muted-foreground text-xs font-mono">{i + 1}.</span>
+              <span class="font-mono">{white.from}-{white.to}{white.promotion ?? ''}{white.checkmate ? '#' : white.check ? '+' : ''}</span>
+              {#if black}
+                <span class="font-mono">{black.from}-{black.to}{black.promotion ?? ''}{black.checkmate ? '#' : black.check ? '+' : ''}</span>
+              {:else}
+                <span></span>
+              {/if}
+            </div>
+          {/each}
+        </div>
+      {/if}
     </div>
 
     <!-- Timers -->
