@@ -35,9 +35,10 @@ const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
 const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
 </script>
 
-<main class="h-full flex items-center justify-center gap-6 p-6">
+<main class="h-full flex items-center justify-center p-6">
+  <div class="w-full max-w-[1424px] flex items-stretch gap-6">
   <!-- Left Panel: Partie en cours -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold">Partie en cours</h2>
@@ -135,7 +136,7 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
   </div>
 
   <!-- Right Panel: Historique -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
     <!-- Header -->
     <h2 class="text-lg font-semibold">Historique</h2>
 
@@ -167,5 +168,6 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
         </div>
       </div>
     </div>
+  </div>
   </div>
 </main>
