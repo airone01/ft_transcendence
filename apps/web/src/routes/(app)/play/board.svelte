@@ -44,6 +44,7 @@ const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 // State — driven by websocket store
 
 let myColor: "white" | "black" | null = $state(null);
+let gameOver = $state(false);
 const initialState = startGame();
 let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
@@ -55,6 +56,7 @@ let rebuildScheduled = false;
 
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
+  gameOver = store.gameOver;
   if (store.fen) {
     localState = parseFEN(store.fen);
     if (!isDragging) {
@@ -228,6 +230,7 @@ function isLightSquare(index: number): boolean {
 }
 
 function isDragDisabled(index: number): boolean {
+  if (gameOver) return true;
   const [row, col] = indexToBoard(index);
   const piece = localState.board[row][col];
   if (!piece) return true;
