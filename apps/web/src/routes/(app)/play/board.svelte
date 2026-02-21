@@ -6,7 +6,8 @@ import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import { startGame, getLegalMoves, parseFEN, playMove } from "$lib/chess";
 import type { GameState, Piece as ChessPiece, Move } from "$lib/chess";
-import { gameState as gameStore, joinGame, makeMove, leaveGame } from "$lib/stores/game.store";
+import { gameState as gameStore, joinGame, makeMove } from "$lib/stores/game.store";
+import { socketConnected } from "$lib/stores/socket.svelte";
 
 // Props
 
@@ -62,9 +63,16 @@ const unsubscribe = gameStore.subscribe((store) => {
   }
 });
 
-onMount(() => joinGame(gameId));
+let unsubSocket: () => void;
+
+onMount(() => {
+  unsubSocket = socketConnected.subscribe((connected) => {
+    if (connected) joinGame(gameId);
+  });
+});
+
 onDestroy(() => {
-  leaveGame();
+  unsubSocket?.();
   unsubscribe();
 });
 
