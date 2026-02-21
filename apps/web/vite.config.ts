@@ -32,4 +32,14 @@ export default defineConfig({
     }),
     socketIOPlugin(),
   ],
+  server: {
+    fs: {
+      // allows serving files from monorepo root
+      allow: ["../.."],
+    },
+  },
+  optimizeDeps: {
+    // tells vite to process as source code, not dep
+    exclude: ["@transc/ui"],
+  },
 });

@@ -32,7 +32,7 @@
             href={item.href}
             variant="ghost"
             class={cn(
-              "justify-start hover:bg-muted text-left",
+              "justify-start hover:bg-muted hover:text-current text-left",
               page.url.pathname === item.href
                 ? "bg-muted hover:bg-muted"
                 : "hover:underline",

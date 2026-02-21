@@ -9,7 +9,7 @@ import {
   playMove, // [chess] Apply a move to the state and return the new state
   startGame, // [chess] Start a new game
 } from "$lib/chess";
-import { dbEndGame, type EndGameInput } from "$lib/db-services";
+import { dbEndGame, type EndGameInput } from "$lib/server/db-services";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Types

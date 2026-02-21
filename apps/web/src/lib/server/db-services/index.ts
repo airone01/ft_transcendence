@@ -4,8 +4,11 @@
 export {
   DBAddFriendFriendshipAlreadyExistsError,
   DBAddFriendWrongFriendshipError,
+  DBChatChannelNotFoundError,
+  DBCreateChatChannelError,
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
+  DBDeleteChatChannelError,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
   DBRemoveSpectatorError,
@@ -16,6 +19,12 @@ export {
 /* Auth Schema */
 export type { OAuthProvider } from "./internal/schema/db.auth.schema";
 
+/* Chat Types */
+export type {
+  ChatChannelType,
+  ChatMessageType,
+} from "./internal/schema/db.chat.schema";
+
 /* Games Types */
 export type {
   CreateGameInput,
@@ -24,8 +33,14 @@ export type {
 
 /* DB Schema */
 export type {
+  Achievements,
   AuthSession,
+  ChatChannel,
+  ChatChannelMember,
+  ChatMessage,
+  EloHistory,
   Friendship,
+  FriendshipInvitations,
   Game,
   GamePlayer,
   GameSpectator,
@@ -52,15 +67,29 @@ export {
   dbCreateAuthSession,
   dbCreateOAuthAccount,
   dbDeleteAuthSession,
+  dbGetConnectedProviders,
   dbGetUserAndAuthSessionByAuthSessionId,
   dbGetUserByOauthId,
+  dbUnlinkOAuthAccount,
 } from "./internal/services/db.auth.service";
+
+/* Chat Services */
+export {
+  dbGetFriendMessages,
+  dbGetGameMessages,
+  dbGetGlobalMessages,
+  dbSendToFriend,
+  dbSendToGame,
+  dbSendToGlobal,
+} from "./internal/services/db.chat.service";
 
 /* Friends Services */
 export {
   dbAddFriend,
   dbGetFriendsInfo,
+  dbRejectFriendship,
   dbRemoveFriend,
+  dbRequestFriendship,
 } from "./internal/services/db.friends.service";
 
 /* Games Services */
@@ -74,16 +103,19 @@ export {
   dbGetSpectatorsCount,
   dbRemoveSpectator,
   dbStartGame,
-  dbUpdateGame,
 } from "./internal/services/db.games.service";
 
 /* Users Services */
 export {
   dbCreateUser,
   dbDeleteUser,
+  dbGetAchievements,
+  dbGetEloHistory,
+  dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
+  dbGetUserByUsername,
   dbIsEmailTaken,
   dbIsUsernameTaken,
   dbUpdateUser,

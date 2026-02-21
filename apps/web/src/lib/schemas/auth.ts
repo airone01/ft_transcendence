@@ -35,11 +35,17 @@ export const zPassword = z
     "Password must contain at least one special character." /* i18n */,
   );
 
-export const registerSchema = z.object({
-  username: zUsername,
-  email: zEmail,
-  password: zPassword,
-});
+export const registerSchema = z
+  .object({
+    username: zUsername,
+    email: zEmail,
+    password: zPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match" /* i18n */,
+    path: ["confirmPassword"],
+  });
 
 export type LoginSchema = typeof loginSchema;
 export type RegisterSchema = typeof registerSchema;

@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import { dbGetUser } from "$lib/db-services";
+import { dbGetUser } from "$lib/server/db-services";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
