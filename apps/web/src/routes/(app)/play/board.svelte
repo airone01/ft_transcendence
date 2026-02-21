@@ -167,9 +167,6 @@ function handleDndConsider(
   if (!isDragging || squareIndex === dragFromIndex) {
     board[squareIndex].pieces = e.detail.items;
   }
-
-  board[squareIndex].pieces = e.detail.items;
-  board = [...board];
 }
 
 function scheduleRebuild() {

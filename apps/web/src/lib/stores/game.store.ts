@@ -25,10 +25,7 @@ export interface GameState {
   reason: string | null;
   whiteTimeLeft: number;
   blackTimeLeft: number;
-<<<<<<< HEAD
   moves: MoveRecord[];
-=======
->>>>>>> 3da4d5d235990b0a37c387e5cd1c7de02e84e08d
 }
 
 export interface GameMove {
@@ -58,10 +55,7 @@ export const gameState: Writable<GameState> = writable({
   reason: null,
   whiteTimeLeft: DEFAULT_TIME,
   blackTimeLeft: DEFAULT_TIME,
-<<<<<<< HEAD
   moves: [],
-=======
->>>>>>> 3da4d5d235990b0a37c387e5cd1c7de02e84e08d
 });
 
 export const isMyTurn = derived(gameState, ($state) => {
@@ -149,10 +143,7 @@ export function leaveGame() {
     reason: null,
     whiteTimeLeft: DEFAULT_TIME,
     blackTimeLeft: DEFAULT_TIME,
-<<<<<<< HEAD
     moves: [],
-=======
->>>>>>> 3da4d5d235990b0a37c387e5cd1c7de02e84e08d
   });
 }
 
@@ -176,15 +167,11 @@ export function setupGameListeners() {
       isDraw: data.isDraw,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
-<<<<<<< HEAD
-      // Reset end-of-game fields and history when joining a new game
       gameOver: false,
       winner: null,
       reason: null,
       check: false,
       moves: [],
-=======
->>>>>>> 3da4d5d235990b0a37c387e5cd1c7de02e84e08d
     }));
   }) as unknown as (...args: unknown[]) => void);
 
@@ -200,7 +187,6 @@ export function setupGameListeners() {
       isDraw: data.stalemate || false,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
-<<<<<<< HEAD
       moves: [
         ...state.moves,
         {
@@ -212,8 +198,6 @@ export function setupGameListeners() {
           checkmate: data.checkmate || false,
         },
       ],
-=======
->>>>>>> 3da4d5d235990b0a37c387e5cd1c7de02e84e08d
     }));
   }) as unknown as (...args: unknown[]) => void);
 
