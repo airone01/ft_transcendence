@@ -10,7 +10,7 @@ import Board from "../../play/board.svelte";
 const gameId = page.params.id!;
 
 function handleResign() {
-  if (confirm("Abandonner la partie ?")) {
+  if (confirm("Resign the game?")) {
     resign();
   }
 }
@@ -37,34 +37,34 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
 
 <main class="h-full flex items-center justify-center p-6">
   <div class="w-full max-w-[1424px] flex items-stretch gap-6">
-  <!-- Left Panel: Partie en cours -->
+  <!-- Left Panel: Game Info -->
   <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
     <!-- Header -->
     <div class="flex items-center justify-between">
-      <h2 class="text-lg font-semibold">Partie en cours</h2>
+      <h2 class="text-lg font-semibold">Current game</h2>
       {#if !$socketConnected}
-        <span class="text-xs text-destructive">Deconnecte</span>
+        <span class="text-xs text-destructive">Disconnected</span>
       {/if}
     </div>
 
     <Separator class="my-4" />
 
-    <!-- Tour actuel -->
+    <!-- Current turn -->
     <div class="space-y-1">
-      <span class="text-sm text-muted-foreground">Tour actuel</span>
+      <span class="text-sm text-muted-foreground">Current turn</span>
       <div class="flex items-center gap-2">
         {#if $gameState.turn === "w"}
           <div class="w-3 h-3 rounded-full bg-white border border-zinc-300"></div>
-          <span class="font-medium text-sm">Blancs</span>
+          <span class="font-medium text-sm">White</span>
         {:else}
           <div class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"></div>
-          <span class="font-medium text-sm">Noirs</span>
+          <span class="font-medium text-sm">Black</span>
         {/if}
       </div>
       {#if $isMyTurn}
-        <span class="text-xs text-primary font-medium">C'est votre tour</span>
+        <span class="text-xs text-primary font-medium">Your turn</span>
       {:else if !$gameState.gameOver}
-        <span class="text-xs text-muted-foreground">Tour de l'adversaire</span>
+        <span class="text-xs text-muted-foreground">Opponent's turn</span>
       {/if}
     </div>
 
@@ -74,17 +74,17 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
     <div class="space-y-2">
       {#if $gameState.check && !$gameState.isCheckmate}
         <div class="bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs font-medium px-3 py-1.5 rounded-md">
-          Echec !
+          Check!
         </div>
       {/if}
 
       {#if $gameState.gameOver}
         <div class="bg-primary/15 text-primary text-sm font-medium px-3 py-2 rounded-md space-y-1">
-          <p class="font-semibold">Partie terminee</p>
+          <p class="font-semibold">Game over</p>
           {#if $gameState.winner}
-            <p>Gagnant : {$gameState.winner}</p>
+            <p>Winner: {$gameState.winner}</p>
           {:else}
-            <p>Nulle</p>
+            <p>Draw</p>
           {/if}
           {#if $gameState.reason}
             <p class="text-xs opacity-75">{$gameState.reason}</p>
@@ -93,17 +93,17 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
       {/if}
     </div>
 
-    <!-- Ma couleur -->
+    <!-- My color -->
     {#if $gameState.myColor}
       <div class="mt-4 space-y-1">
-        <span class="text-sm text-muted-foreground">Vous jouez</span>
+        <span class="text-sm text-muted-foreground">You play</span>
         <div class="flex items-center gap-2">
           {#if $gameState.myColor === "white"}
             <div class="w-3 h-3 rounded-full bg-white border border-zinc-300"></div>
-            <span class="font-medium text-sm">Blancs</span>
+            <span class="font-medium text-sm">White</span>
           {:else}
             <div class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"></div>
-            <span class="font-medium text-sm">Noirs</span>
+            <span class="font-medium text-sm">Black</span>
           {/if}
         </div>
       </div>
@@ -116,15 +116,15 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
       {#if !$gameState.gameOver}
         <Button variant="outline" class="w-full justify-start" onclick={handleOfferDraw}>
           <HandshakeIcon class="w-4 h-4 mr-2" />
-          Proposer nulle
+          Offer draw
         </Button>
         <Button variant="outline" class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]" onclick={handleResign}>
           <FlagIcon class="w-4 h-4 mr-2" />
-          Abandonner
+          Resign
         </Button>
       {:else}
         <Button variant="outline" class="w-full" onclick={() => window.history.back()}>
-          Retour au lobby
+          Back to lobby
         </Button>
       {/if}
     </div>
@@ -135,14 +135,14 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
     <Board {gameId} />
   </div>
 
-  <!-- Right Panel: Historique -->
+  <!-- Right Panel: History -->
   <div class="w-72 shrink-0 flex flex-col border rounded-lg p-5">
     <!-- Header -->
-    <h2 class="text-lg font-semibold">Historique</h2>
+    <h2 class="text-lg font-semibold">Move history</h2>
 
     <!-- Move history -->
     <div class="flex-1 mt-4 rounded-lg bg-muted/50 flex items-center justify-center min-h-0">
-      <span class="text-sm text-muted-foreground">Aucun coup pour le moment</span>
+      <span class="text-sm text-muted-foreground">No moves yet</span>
     </div>
 
     <!-- Timers -->
@@ -150,7 +150,7 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
       <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-white"></div>
-          <span class="text-xs font-medium">Blancs</span>
+          <span class="text-xs font-medium">White</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
@@ -160,7 +160,7 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
       <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {blackIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
-          <span class="text-xs font-medium">Noirs</span>
+          <span class="text-xs font-medium">Black</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
