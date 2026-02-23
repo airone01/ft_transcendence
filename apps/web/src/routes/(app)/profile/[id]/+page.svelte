@@ -241,19 +241,19 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       <div
         class="flex flex-col max-h-full w-full flex-1 min-w-0 gap-6 lg:col-span-8 pb-0 overflow-hidden"
       >
-        <Card
-          class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden"
-        >
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <HistoryIcon class="w-5 h-5" /> Match History
-            </CardTitle>
-            <CardDescription>
-              Recent games played across all modes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
-            {#if recentGames.length > 0}
+        {#if recentGames.length > 0}
+          <Card
+            class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0"
+          >
+            <CardHeader>
+              <CardTitle class="flex items-center gap-2">
+                <HistoryIcon class="w-5 h-5" /> Match History
+              </CardTitle>
+              <CardDescription>
+                Recent games played across all modes.
+              </CardDescription>
+            </CardHeader>
+            <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
               <div class="flex flex-col divide-y">
                 {#each recentGames as game (game.gameId)}
                   {@const eloDiff = game.userEloAfter - game.userEloBefore}
@@ -297,21 +297,21 @@ const isMe = (userId: number) => page.data.user?.id === userId;
                   </div>
                 {/each}
               </div>
-            {:else}
-              <Empty>
-                <EmptyMedia variant="icon">
-                  <SwordsIcon />
-                </EmptyMedia>
-                <EmptyHeader>
-                  <EmptyTitle>No Recent Matches</EmptyTitle>
-                  <EmptyDescription>
-                    Play a few matches to see your statistics with details here.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            {/if}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        {:else}
+          <Empty class="border-2 border-dashed border-muted-foreground">
+            <EmptyMedia variant="icon">
+              <SwordsIcon />
+            </EmptyMedia>
+            <EmptyHeader>
+              <EmptyTitle>No Recent Matches</EmptyTitle>
+              <EmptyDescription>
+                Play a few matches to see your statistics with details here.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
+        {/if}
 
         {#if eloHistory.length > 1}
           {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
