@@ -12,6 +12,7 @@ import {
   dbDeleteUser,
   dbGetAchievements,
   dbGetEloHistory,
+  dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
@@ -19,7 +20,6 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
-  dbGetRandomUsers,
 } from "$lib/server/db-services";
 
 describe("users.service.ts tests", () => {
