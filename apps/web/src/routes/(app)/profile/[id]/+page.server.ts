@@ -30,10 +30,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
     if (!user) throw error(404, "User not found");
 
-    const stats = await dbGetStats(userId);
-    const games = await dbGetUserGameHistory(userId);
-    const rawEloHistory = await dbGetEloHistory(userId);
-    const achievements = await dbGetAchievements(userId);
+    const [stats, games, rawEloHistory, achievements] = await Promise.all([
+      dbGetStats(userId),
+      dbGetUserGameHistory(userId),
+      dbGetEloHistory(userId),
+      dbGetAchievements(userId),
+    ]);
 
     const eloHistory = rawEloHistory
       // DB returns descending order; we need ascending for chronological
