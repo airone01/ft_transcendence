@@ -2,7 +2,7 @@
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   children,
@@ -11,15 +11,15 @@ let {
 </script>
 
 <ul
-	bind:this={ref}
-	data-slot="sidebar-menu-sub"
-	data-sidebar="menu-sub"
-	class={cn(
+  bind:this={ref}
+  data-slot="sidebar-menu-sub"
+  data-sidebar="menu-sub"
+  class={cn(
 		"border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-s px-2.5 py-0.5",
 		"group-data-[collapsible=icon]:hidden",
 		className
 	)}
-	{...restProps}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </ul>

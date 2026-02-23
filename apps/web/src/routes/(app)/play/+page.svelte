@@ -1,7 +1,17 @@
 <script lang="ts">
-import { ZapIcon, ClockIcon, TargetIcon, LoaderCircleIcon, XIcon } from "@lucide/svelte";
+import {
+  ClockIcon,
+  LoaderCircleIcon,
+  TargetIcon,
+  XIcon,
+  ZapIcon,
+} from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
-import { matchmakingState, joinQueue, leaveQueue } from "$lib/stores/matchmaking.store";
+import {
+  joinQueue,
+  leaveQueue,
+  matchmakingState,
+} from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 
 function handleCancelQueue() {
@@ -15,7 +25,9 @@ function handleCancelQueue() {
 <main class="h-full flex items-center justify-center p-6">
   {#if !$socketConnected}
     <div class="text-center space-y-3">
-      <LoaderCircleIcon class="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
+      <LoaderCircleIcon
+        class="w-8 h-8 animate-spin mx-auto text-muted-foreground"
+      />
       <p class="text-muted-foreground">Connexion au serveur...</p>
     </div>
   {:else if $matchmakingState.inQueue}
@@ -25,7 +37,10 @@ function handleCancelQueue() {
       <div class="space-y-2">
         <h2 class="text-xl font-semibold">Recherche d'un adversaire...</h2>
         <p class="text-muted-foreground">
-          Mode : <span class="font-medium text-foreground">{$matchmakingState.mode}</span>
+          Mode :
+          <span class="font-medium text-foreground"
+            >{$matchmakingState.mode}</span
+          >
         </p>
         {#if $matchmakingState.position}
           <p class="text-sm text-muted-foreground">

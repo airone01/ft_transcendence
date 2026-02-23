@@ -2,7 +2,7 @@
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   children,
@@ -11,10 +11,10 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="dialog-footer"
-	class={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="dialog-footer"
+  class={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

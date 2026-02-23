@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import { Dialog as SheetPrimitive } from "bits-ui";
+import type { Dialog as SheetPrimitive } from "bits-ui";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   ...restProps
@@ -10,8 +10,8 @@ let {
 </script>
 
 <SheetPrimitive.Description
-	bind:ref
-	data-slot="sheet-description"
-	class={cn("text-muted-foreground text-sm", className)}
-	{...restProps}
+  bind:ref
+  data-slot="sheet-description"
+  class={cn("text-muted-foreground text-sm", className)}
+  {...restProps}
 />

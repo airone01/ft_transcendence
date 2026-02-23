@@ -1,16 +1,22 @@
 <script lang="ts">
-import { enhance } from "$app/forms";
-import SettingsHeader from "$lib/components/settings-header.svelte";
+import { CircleCheck, Plug, Unplug } from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
 import { Button } from "@transc/ui/button";
+import {
+  FormControl,
+  FormField,
+  FormFieldErrors,
+  FormLabel,
+} from "@transc/ui/form";
 import { Input } from "@transc/ui/input";
-import { FormField, FormControl, FormLabel, FormFieldErrors } from "@transc/ui/form";
+import { toast } from "svelte-sonner";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
+import { enhance } from "$app/forms";
+import SettingsHeader from "$lib/components/settings-header.svelte";
 import { accountSettingsSchema } from "$lib/schemas/settings";
-import { toast } from "svelte-sonner";
-import { Unplug, Plug, CircleCheck } from "@lucide/svelte";
 
-let { data } = $props();
+const { data } = $props();
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 const form = superForm(data.form, {
@@ -18,21 +24,21 @@ const form = superForm(data.form, {
   invalidateAll: true,
   resetForm: true,
   onUpdated: ({ form }) => {
-  if (form.valid) {
-    toast.success("Security settings updated");
-  } else if (form.message) {
-    toast.error(form.message);
-  }
-  }
+    if (form.valid) {
+      toast.success("Security settings updated");
+    } else if (form.message) {
+      toast.error(form.message);
+    }
+  },
 });
 
 const { form: formData, enhance: formEnhance, delayed } = form;
 
-const unlinkEnhance = () => {
-  return async ({ result, update }: any) => {
-    if (result.type === 'failure') {
+const unlinkEnhance: SubmitFunction = () => {
+  return async ({ result, update }) => {
+    if (result.type === "failure") {
       toast.error(result.data?.message || "Error unlinking account");
-    } else if (result.type === 'success') {
+    } else if (result.type === "success") {
       toast.success("Account disconnected");
     }
     await update();
@@ -40,16 +46,22 @@ const unlinkEnhance = () => {
 };
 </script>
 
-<SettingsHeader title="Account" description="Manage your credentials and connected services." formId="pwd-form" {delayed}>
-  
+<SettingsHeader
+  title="Account"
+  description="Manage your credentials and connected services."
+  formId="pwd-form"
+  {delayed}
+>
   <div class="space-y-4 mb-2">
     <div class="flex items-center justify-between">
       <div>
         <h4 class="text-sm font-medium">Connected Accounts</h4>
-        <p class="text-xs text-muted-foreground">Log in faster with these services.</p>
+        <p class="text-xs text-muted-foreground">
+          Log in faster with these services.
+        </p>
       </div>
     </div>
-    
+
     <div class="border rounded-lg p-4 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="bg-[#5865F2] p-2 rounded-md text-white">
@@ -69,8 +81,13 @@ const unlinkEnhance = () => {
 
       {#if data.connectedProviders.includes('discord')}
         <form action="?/unlink" method="POST" use:enhance={unlinkEnhance}>
-          <input type="hidden" name="provider" value="discord" />
-          <Button variant="outline" size="sm" type="submit" class="text-destructive hover:text-destructive">
+          <input type="hidden" name="provider" value="discord">
+          <Button
+            variant="outline"
+            size="sm"
+            type="submit"
+            class="text-destructive hover:text-destructive"
+          >
             <Unplug class="mr-2 h-4 w-4" /> Disconnect
           </Button>
         </form>
@@ -92,13 +109,23 @@ const unlinkEnhance = () => {
       </p>
     </div>
 
-    <form method="POST" action="?/updatePassword" id="pwd-form" use:formEnhance class="space-y-4 max-w-md">
+    <form
+      method="POST"
+      action="?/updatePassword"
+      id="pwd-form"
+      use:formEnhance
+      class="space-y-4 max-w-md"
+    >
       {#if data.hasPassword}
         <FormField {form} name="oldPassword">
           <FormControl>
             {#snippet children({ props })}
               <FormLabel>Current Password</FormLabel>
-              <Input {...props} type="password" bind:value={$formData.oldPassword} />
+              <Input
+                {...props}
+                type="password"
+                bind:value={$formData.oldPassword}
+              />
             {/snippet}
           </FormControl>
           <FormFieldErrors />
@@ -109,7 +136,11 @@ const unlinkEnhance = () => {
         <FormControl>
           {#snippet children({ props })}
             <FormLabel>New Password</FormLabel>
-            <Input {...props} type="password" bind:value={$formData.newPassword} />
+            <Input
+              {...props}
+              type="password"
+              bind:value={$formData.newPassword}
+            />
           {/snippet}
         </FormControl>
         <FormFieldErrors />
@@ -119,7 +150,11 @@ const unlinkEnhance = () => {
         <FormControl>
           {#snippet children({ props })}
             <FormLabel>Confirm Password</FormLabel>
-            <Input {...props} type="password" bind:value={$formData.confirmPassword} />
+            <Input
+              {...props}
+              type="password"
+              bind:value={$formData.confirmPassword}
+            />
           {/snippet}
         </FormControl>
         <FormFieldErrors />

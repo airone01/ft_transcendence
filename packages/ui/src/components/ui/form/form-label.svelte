@@ -1,9 +1,9 @@
 <script lang="ts">
 import { Label } from "@transc/ui/label";
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import * as FormPrimitive from "formsnap";
+import type * as FormPrimitive from "formsnap";
 
-let {
+const {
   ref = $bindable(null),
   children,
   class: className,
@@ -12,13 +12,13 @@ let {
 </script>
 
 <FormPrimitive.Label {...restProps} bind:ref>
-	{#snippet child({ props })}
-		<Label
-			{...props}
-			data-slot="form-label"
-			class={cn("data-fs-error:text-destructive", className)}
-		>
-			{@render children?.()}
-		</Label>
-	{/snippet}
+  {#snippet child({ props })}
+    <Label
+      {...props}
+      data-slot="form-label"
+      class={cn("data-fs-error:text-destructive", className)}
+    >
+      {@render children?.()}
+    </Label>
+  {/snippet}
 </FormPrimitive.Label>

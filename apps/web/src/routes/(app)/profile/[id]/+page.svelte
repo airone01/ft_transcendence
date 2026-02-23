@@ -1,27 +1,37 @@
 <script lang="ts">
-import { page } from "$app/state";
-import { Avatar, AvatarFallback, AvatarImage } from '@transc/ui/avatar';
-import { Button } from '@transc/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@transc/ui/card';
-import { Badge } from "@transc/ui/badge";
-import { Skeleton } from "@transc/ui/skeleton";
-import { 
-  TriangleAlert, 
-  Swords, 
-  UserPlus, 
-  Trophy, 
-  TrendingUp, 
-  History, 
-  Calendar, 
+import {
+  Calendar,
+  History,
   Medal,
+  Swords,
+  SwordsIcon,
   Target,
+  TrendingUp,
+  TriangleAlert,
+  Trophy,
+  UserPlus,
+} from "@lucide/svelte";
+import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
+import { Badge } from "@transc/ui/badge";
+import { Button } from "@transc/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
+import { Skeleton } from "@transc/ui/skeleton";
+import { page } from "$app/state";
 
-  SwordsIcon
-
-} from '@lucide/svelte';
-    import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@transc/ui/empty";
-
-let { data } = $props();
+const { data } = $props();
 
 const mockAchievements = [
   { name: "Speed Demon", icon: Target, desc: "Won in under 30s" },
@@ -52,10 +62,8 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
     unitDisplay: "narrow",
   });
 
-  if (minutes === 0)
-    return nfSecond.format(seconds);
-  if (seconds === 0)
-    return nfMinute.format(minutes);
+  if (minutes === 0) return nfSecond.format(seconds);
+  if (seconds === 0) return nfMinute.format(minutes);
 
   return `${nfMinute.format(minutes)} ${nfSecond.format(seconds)}`;
 }
@@ -64,7 +72,6 @@ const isMe = (userId: number) => page.data.user?.id === userId;
 </script>
 
 <main class="flex flex-col flex-1 min-h-0 min-w-0 w-full gap-6">
-
   {#await data.userPromise}
     <div class="container mx-auto p-6 space-y-6">
       <div class="h-48 w-full rounded-xl bg-muted animate-pulse"></div>
@@ -73,59 +80,77 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <Skeleton class="h-64 w-full md:col-span-2" />
       </div>
     </div>
-
-  {:then {user, stats, games}} 
+  {:then {user, stats, games}}
     {@const recentGames = games.filter(g => g.result !== 'abort')}
     <div class="relative w-full">
-      <div class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"></div>
-      
+      <div
+        class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"
+      ></div>
+
       <div class="container mx-auto px-6">
-        <div class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-4">
-          
+        <div
+          class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-4"
+        >
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
-            <AvatarFallback class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white">
+            <AvatarFallback
+              class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white"
+            >
               {user?.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
           <div class="flex-1 space-y-1 mt-2 md:mt-0">
             <div class="flex items-center gap-3">
-              <h1 class="text-3xl font-bold tracking-tight">{user?.username}</h1>
-              <Badge variant={user?.status === 'online' ? 'default' : 'secondary'} class="uppercase text-[10px]">
+              <h1 class="text-3xl font-bold tracking-tight">
+                {user?.username}
+              </h1>
+              <Badge
+                variant={user?.status === 'online' ? 'default' : 'secondary'}
+                class="uppercase text-[10px]"
+              >
                 {user?.status}
               </Badge>
             </div>
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
-              <Calendar class="w-3 h-3" /> 
-              Member since {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+              <Calendar class="w-3 h-3" /> Member since
+              {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
             </p>
           </div>
 
           {#if !isMe(user?.id ?? 0)}
             <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-              <Button href={`/play/challenge/${user?.id}`} class="flex-1 md:flex-none gap-2">
+              <Button
+                href={`/play/challenge/${user?.id}`}
+                class="flex-1 md:flex-none gap-2"
+              >
                 <Swords class="w-4 h-4" /> Challenge
               </Button>
               <form method="POST" action="/profile/me/social?/add">
-                 <input type="hidden" name="username" value={user?.username} />
-                 <Button type="submit" variant="outline" class="flex-1 md:flex-none gap-2">
-                   <UserPlus class="w-4 h-4" /> Add Friend
-                 </Button>
+                <input type="hidden" name="username" value={user?.username}>
+                <Button
+                  type="submit"
+                  variant="outline"
+                  class="flex-1 md:flex-none gap-2"
+                >
+                  <UserPlus class="w-4 h-4" /> Add Friend
+                </Button>
               </form>
             </div>
           {:else}
-             <Button href="/settings/profile" variant="secondary">Edit Profile</Button>
+            <Button href="/settings/profile" variant="secondary">
+              Edit Profile
+            </Button>
           {/if}
         </div>
       </div>
     </div>
 
     <!-- main content -->
-    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-h-full flex-1 min-h-0">
-      
+    <div
+      class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-h-full flex-1 min-h-0"
+    >
       <div class="lg:col-span-4 gap-4 max-h-full flex flex-col">
-        
         <!-- performance -->
         <Card>
           <CardHeader>
@@ -134,8 +159,12 @@ const isMe = (userId: number) => page.data.user?.id === userId;
             </CardTitle>
           </CardHeader>
           <CardContent class="flex justify-center items-center">
-            <div class="p-3 border rounded-lg flex flex-col items-center justify-center h-full w-full">
-              <span class="text-xs text-muted-foreground uppercase font-bold">ELO</span>
+            <div
+              class="p-3 border rounded-lg flex flex-col items-center justify-center h-full w-full"
+            >
+              <span class="text-xs text-muted-foreground uppercase font-bold"
+                >ELO</span
+              >
               <span class="text-2xl font-bold">{stats.currentElo}</span>
             </div>
           </CardContent>
@@ -156,9 +185,19 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           {#if stats.gamesPlayed !== 0}
             <CardContent>
               <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
-                <div style="flex: {stats.wins}" class="bg-green-500 h-full"></div>
-                <div style="flex: {stats.draws}" class="bg-gray-400 h-full"></div>
-                <div style="flex: {stats.losses}" class="bg-red-500 h-full"></div> </div>
+                <div
+                  style="flex: {stats.wins}"
+                  class="bg-green-500 h-full"
+                ></div>
+                <div
+                  style="flex: {stats.draws}"
+                  class="bg-gray-400 h-full"
+                ></div>
+                <div
+                  style="flex: {stats.losses}"
+                  class="bg-red-500 h-full"
+                ></div>
+              </div>
               <div class="flex justify-between text-xs text-muted-foreground">
                 <span class="text-green-600 font-bold">{stats.wins} W</span>
                 <span>{stats.draws} D</span>
@@ -191,12 +230,16 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         </Card>
       </div>
 
-      <Card class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden">
+      <Card
+        class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden"
+      >
         <CardHeader>
           <CardTitle class="flex items-center gap-2">
             <History class="w-5 h-5" /> Match History
           </CardTitle>
-          <CardDescription>Recent games played across all modes.</CardDescription>
+          <CardDescription>
+            Recent games played across all modes.
+          </CardDescription>
         </CardHeader>
         <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
           {#if recentGames.length > 0}
@@ -205,23 +248,41 @@ const isMe = (userId: number) => page.data.user?.id === userId;
               {#each recentGames as game}
                 {@const eloDiff = game.userEloAfter - game.userEloBefore}
                 {@const hasWon = (game.result === 'white_win' && game.userColor == 'white') || (game.result == 'black_win' && game.userColor == 'black')}
-                <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
+                <div
+                  class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors"
+                >
                   <div class="flex items-center gap-4">
-                    <div class={`w-1 h-12 rounded-full ${hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
+                    <div
+                      class={`w-1 h-12 rounded-full ${hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}
+                    ></div>
                     <div>
                       <div class="flex items-center gap-2">
-                         <span class="font-bold">{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span>
-                         <span class="text-xs text-muted-foreground">vs {game.opponentUsername}</span>
+                        <span class="font-bold"
+                          >{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span
+                        >
+                        <span class="text-xs text-muted-foreground"
+                          >vs {game.opponentUsername}</span
+                        >
                       </div>
-                      <p class="text-sm text-muted-foreground">Normal • {formatCompactDuration(game.startedAt, game.endedAt)}</p>
+                      <p class="text-sm text-muted-foreground">
+                        Normal •
+                        {formatCompactDuration(game.startedAt, game.endedAt)}
+                      </p>
                     </div>
                   </div>
 
                   <div class="text-right">
-                    <span class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}>
-                      {#if eloDiff > 0}+{/if}{eloDiff}
+                    <span
+                      class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}
+                    >
+                      {#if eloDiff > 0}
+                        +
+                      {/if}
+                      {eloDiff}
                     </span>
-                    <p class="text-xs text-muted-foreground">{new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}</p>
+                    <p class="text-xs text-muted-foreground">
+                      {new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}
+                    </p>
                   </div>
                 </div>
               {/each}
@@ -241,9 +302,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           {/if}
         </CardContent>
       </Card>
-
     </div>
-
   {:catch error}
     <div class="container mx-auto p-4 flex justify-center">
       <Card class="w-full max-w-md border-destructive/50 bg-destructive/5">

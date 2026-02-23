@@ -3,7 +3,7 @@ import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 
-let {
+const {
   ref = $bindable(null),
   children,
   child,
@@ -26,9 +26,7 @@ const mergedProps = $derived({
 </script>
 
 {#if child}
-	{@render child({ props: mergedProps })}
+  {@render child({ props: mergedProps })}
 {:else}
-	<div bind:this={ref} {...mergedProps}>
-		{@render children?.()}
-	</div>
+  <div bind:this={ref} {...mergedProps}>{@render children?.()}</div>
 {/if}

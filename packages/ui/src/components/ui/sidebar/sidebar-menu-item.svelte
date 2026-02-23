@@ -2,7 +2,7 @@
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   children,
@@ -11,11 +11,11 @@ let {
 </script>
 
 <li
-	bind:this={ref}
-	data-slot="sidebar-menu-item"
-	data-sidebar="menu-item"
-	class={cn("group/menu-item relative", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="sidebar-menu-item"
+  data-sidebar="menu-item"
+  class={cn("group/menu-item relative", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </li>

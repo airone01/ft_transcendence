@@ -1,26 +1,32 @@
 <script lang="ts">
+import { LoaderCircle, Upload, ZoomIn } from "@lucide/svelte";
+import type { Snippet } from "svelte";
 import Cropper, { type OnCropCompleteEvent } from "svelte-easy-crop";
+import { toast } from "svelte-sonner";
 import { getCroppedImg } from "../../../canvas";
 import { Button } from "../button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../dialog";
-import { LoaderCircle, Upload, ZoomIn } from "@lucide/svelte";
-import { toast } from "svelte-sonner";
-import type { Snippet } from "svelte";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../dialog";
 
-let { 
-  open = $bindable(false), 
+let {
+  open = $bindable(false),
   onCropped,
   children,
-}: { 
-  open?: boolean; 
-  onCropped: (file: File) => void 
-  children: Snippet<[]>
+}: {
+  open?: boolean;
+  onCropped: (file: File) => void;
+  children: Snippet<[]>;
 } = $props();
 
 let imageSrc: string | null = $state(null);
-let crop = $state({ x: 0, y: 0 });
+const crop = $state({ x: 0, y: 0 });
 let zoom = $state(1);
-let pixelCrop = $state({ x: 0, y: 0, width: 0, height: 0 });
+const pixelCrop = $state({ x: 0, y: 0, width: 0, height: 0 });
 let loading = $state(false);
 let fileInput: HTMLInputElement;
 
@@ -76,9 +82,14 @@ function triggerFileInput() {
   class="hidden"
   bind:this={fileInput}
   onchange={onFileSelected}
-/>
+>
 
-<div onclick={triggerFileInput} role="button" tabindex="0" onkeydown={(e) => e.key === 'Enter' && triggerFileInput()}>
+<div
+  onclick={triggerFileInput}
+  role="button"
+  tabindex="0"
+  onkeydown={(e) => e.key === 'Enter' && triggerFileInput()}
+>
   {#if children}
     {@render children()}
   {:else}
@@ -91,9 +102,12 @@ function triggerFileInput() {
 <Dialog bind:open>
   <DialogContent class="sm:max-w-125">
     <DialogHeader>
-      <DialogTitle>Edit Avatar<!-- i18n --></DialogTitle>
+      <DialogTitle>
+        Edit Avatar<!-- i18n --><!-- i18n -->
+        <!-- i18n --><!-- i18n -->
+      </DialogTitle>
     </DialogHeader>
-    
+
     <div class="relative w-full h-100 bg-black/5 rounded-md overflow-hidden">
       {#if imageSrc}
         <Cropper
@@ -111,18 +125,24 @@ function triggerFileInput() {
 
     <div class="flex items-center gap-4 py-2">
       <ZoomIn class="h-4 w-4 text-muted-foreground" />
-      <input 
-        type="range" 
-        min="1" 
-        max="3" 
-        step="0.1" 
-        bind:value={zoom} 
+      <input
+        type="range"
+        min="1"
+        max="3"
+        step="0.1"
+        bind:value={zoom}
         class="w-full accent-primary h-2 bg-secondary rounded-lg appearance-none cursor-pointer"
-      />
+      >
     </div>
 
     <DialogFooter>
-      <Button variant="outline" onclick={() => (open = false)} class="cursor-pointer">Cancel</Button>
+      <Button
+        variant="outline"
+        onclick={() => (open = false)}
+        class="cursor-pointer"
+      >
+        Cancel
+      </Button>
       <Button onclick={saveCrop} disabled={loading} class="cursor-pointer">
         {#if loading}
           <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
@@ -131,4 +151,4 @@ function triggerFileInput() {
       </Button>
     </DialogFooter>
   </DialogContent>
-</Dialog> 
+</Dialog>

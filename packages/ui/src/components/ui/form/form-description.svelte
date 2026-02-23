@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import * as FormPrimitive from "formsnap";
+import type * as FormPrimitive from "formsnap";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   ...restProps
@@ -10,8 +10,8 @@ let {
 </script>
 
 <FormPrimitive.Description
-	bind:ref
-	data-slot="form-description"
-	class={cn("text-muted-foreground text-sm", className)}
-	{...restProps}
+  bind:ref
+  data-slot="form-description"
+  class={cn("text-muted-foreground text-sm", className)}
+  {...restProps}
 />

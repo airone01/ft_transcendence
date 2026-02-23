@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import { Dialog as DialogPrimitive } from "bits-ui";
+import type { Dialog as DialogPrimitive } from "bits-ui";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   ...restProps
@@ -10,8 +10,8 @@ let {
 </script>
 
 <DialogPrimitive.Title
-	bind:ref
-	data-slot="dialog-title"
-	class={cn("text-lg leading-none font-semibold", className)}
-	{...restProps}
+  bind:ref
+  data-slot="dialog-title"
+  class={cn("text-lg leading-none font-semibold", className)}
+  {...restProps}
 />

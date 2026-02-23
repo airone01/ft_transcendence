@@ -6,7 +6,7 @@ import {
 } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   ...restProps
@@ -14,8 +14,8 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="skeleton"
-	class={cn("bg-accent animate-pulse rounded-md", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="skeleton"
+  class={cn("bg-accent animate-pulse rounded-md", className)}
+  {...restProps}
 ></div>

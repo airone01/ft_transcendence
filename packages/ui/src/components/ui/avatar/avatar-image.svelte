@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import { Avatar as AvatarPrimitive } from "bits-ui";
+import type { Avatar as AvatarPrimitive } from "bits-ui";
 
-let {
+const {
   ref = $bindable(null),
   class: className,
   ...restProps
@@ -10,8 +10,8 @@ let {
 </script>
 
 <AvatarPrimitive.Image
-	bind:ref
-	data-slot="avatar-image"
-	class={cn("aspect-square size-full", className)}
-	{...restProps}
+  bind:ref
+  data-slot="avatar-image"
+  class={cn("aspect-square size-full", className)}
+  {...restProps}
 />
