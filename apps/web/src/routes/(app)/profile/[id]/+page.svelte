@@ -73,13 +73,13 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 }
 
 const chartConfig: ChartConfig = {
-  elo: { label: "ELO", color: "oklch(0.81 0.1 252)" },
+  elo: { label: "ELO", color: "var(--chart-1)" },
 };
 
 const isMe = (userId: number) => page.data.user?.id === userId;
 </script>
 
-<main class="flex flex-col flex-1 min-h-0 min-w-0 w-full gap-6">
+<main class="w-full">
   {#await data.userPromise}
     <div class="container mx-auto p-6 space-y-6">
       <div class="h-48 w-full rounded-xl bg-muted animate-pulse"></div>
@@ -154,35 +154,35 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       </div>
     </div>
 
-    <!-- main content -->
-    <div
-      class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-h-full flex-1 min-h-0"
-    >
-      <div class="lg:col-span-4 gap-4 max-h-full flex flex-col">
-        <!-- performance -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
+        <Card
+          class="flex flex-col h-full col-span-1 lg:col-span-3 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <CardHeader class="pb-2">
+            <CardTitle class="flex items-center gap-2 text-base">
               <TrendingUpIcon class="w-5 h-5 text-primary" /> Performance
             </CardTitle>
           </CardHeader>
-          <CardContent class="flex justify-center items-center">
-            <div
-              class="p-3 border rounded-lg flex flex-col items-center justify-center h-full w-full"
-            >
-              <span class="text-xs text-muted-foreground uppercase font-bold"
+          <CardContent class="flex-1 flex justify-center items-center">
+            <div class="flex flex-col items-center justify-center py-4">
+              <span
+                class="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1"
                 >ELO</span
               >
-              <span class="text-2xl font-bold">{stats.currentElo}</span>
+              <span class="text-4xl font-black text-primary"
+                >{stats.currentElo}</span
+              >
             </div>
           </CardContent>
         </Card>
 
-        <!-- win ratio -->
-        <Card>
-          <CardHeader>
+        <Card
+          class="flex flex-col h-full col-span-1 lg:col-span-4 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <CardHeader class="pb-2">
             <CardTitle class="text-base">Win Ratio</CardTitle>
-            <CardDescription>
+            <CardDescription class="text-xs">
               {#if stats.gamesPlayed === 0}
                 Play more to see your stats!
               {:else}
@@ -190,152 +190,78 @@ const isMe = (userId: number) => page.data.user?.id === userId;
               {/if}
             </CardDescription>
           </CardHeader>
-          {#if stats.gamesPlayed !== 0}
-            <CardContent>
-              <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
+          <CardContent class="flex-1 flex flex-col justify-center">
+            {#if stats.gamesPlayed !== 0}
+              <div
+                class="flex h-5 w-full rounded-full overflow-hidden mb-3 shadow-inner"
+              >
                 <div
                   style="flex: {stats.wins}"
-                  class="bg-green-500 h-full"
+                  class="bg-emerald-500 h-full"
                 ></div>
                 <div
                   style="flex: {stats.draws}"
-                  class="bg-gray-400 h-full"
+                  class="bg-slate-400 h-full"
                 ></div>
                 <div
                   style="flex: {stats.losses}"
-                  class="bg-red-500 h-full"
+                  class="bg-rose-500 h-full"
                 ></div>
               </div>
-              <div class="flex justify-between text-xs text-muted-foreground">
-                <span class="text-green-600 font-bold">{stats.wins} W</span>
-                <span>{stats.draws} D</span>
-                <span class="text-red-600 font-bold">{stats.losses} L</span>
+              <div class="flex justify-between text-sm font-medium">
+                <span class="text-emerald-600">{stats.wins} W</span>
+                <span class="text-slate-500">{stats.draws} D</span>
+                <span class="text-rose-600">{stats.losses} L</span>
               </div>
-            </CardContent>
-          {/if}
+            {/if}
+          </CardContent>
         </Card>
 
-        <!-- recent badges -->
-        <Card class="flex-1">
-          <CardHeader>
+        <Card
+          class="flex flex-col h-full col-span-1 md:col-span-2 lg:col-span-5 shadow-sm hover:shadow-md transition-shadow"
+        >
+          <CardHeader class="pb-2">
             <CardTitle class="flex items-center gap-2 text-base">
               <TrophyIcon class="w-4 h-4 text-yellow-500" /> Achievements
             </CardTitle>
           </CardHeader>
-          <CardContent class="space-y-4">
+          <CardContent class="flex-1 flex flex-col justify-center gap-3">
             {#each mockAchievements as ach}
               <div class="flex items-center gap-3">
                 <div class="p-2 bg-primary/10 rounded-full text-primary">
                   <ach.icon class="w-4 h-4" />
                 </div>
                 <div>
-                  <p class="text-sm font-medium leading-none">{ach.name}</p>
-                  <p class="text-xs text-muted-foreground">{ach.desc}</p>
+                  <p class="text-sm font-semibold leading-none">{ach.name}</p>
+                  <p class="text-xs text-muted-foreground mt-1">{ach.desc}</p>
                 </div>
               </div>
             {/each}
           </CardContent>
         </Card>
-      </div>
-
-      <div
-        class="flex flex-col max-h-full w-full flex-1 min-w-0 gap-4 lg:col-span-8 pb-0 overflow-visible"
-      >
-        {#if recentGames.length > 0}
-          <Card
-            class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden shrink"
-          >
-            <CardHeader>
-              <CardTitle class="flex items-center gap-2">
-                <HistoryIcon class="w-5 h-5" /> Match History
-              </CardTitle>
-              <CardDescription>
-                Recent games played across all modes
-              </CardDescription>
-            </CardHeader>
-            <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
-              <div class="flex flex-col divide-y">
-                {#each recentGames as game (game.gameId)}
-                  {@const eloDiff = game.userEloAfter - game.userEloBefore}
-                  {@const hasWon = (game.result === 'white_win' && game.userColor == 'white')
-                    || (game.result == 'black_win' && game.userColor == 'black')}
-                  <div
-                    class="flex items-center justify-between p-4 hover:bg-accent/20 transition-colors"
-                  >
-                    <div class="flex items-center gap-4">
-                      <div
-                        class={`w-1 h-12 rounded-full ${
-                          hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'
-                        }`}
-                      ></div>
-                      <div>
-                        <div class="flex items-center gap-2">
-                          <span class="font-bold"
-                            >{game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}</span
-                          >
-                          <span class="text-xs text-muted-foreground"
-                            >vs {game.opponentUsername}</span
-                          >
-                        </div>
-                        <p class="text-sm text-muted-foreground">
-                          Normal •
-                          {formatCompactDuration(game.startedAt, game.endedAt)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div class="text-right">
-                      <span
-                        class={`text-sm font-bold ${eloDiff > 0 ? 'text-green-600' : eloDiff < 0 ? 'text-red-600' : 'text-gray-500'}`}
-                      >
-                        {#if eloDiff > 0}
-                          +
-                        {/if}
-                        {eloDiff}
-                      </span>
-                      <p class="text-xs text-muted-foreground">
-                        {new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}
-                      </p>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </CardContent>
-          </Card>
-        {:else}
-          <Empty class="border-2 border-dashed border-muted-foreground">
-            <EmptyMedia variant="icon">
-              <SwordsIcon />
-            </EmptyMedia>
-            <EmptyHeader>
-              <EmptyTitle>No Recent Matches</EmptyTitle>
-              <EmptyDescription>
-                Play a few matches to see your statistics with details here.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        {/if}
 
         {#if eloHistory && eloHistory.length > 1}
           {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
           {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
-
           {@const now = new Date()}
           {@const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
-
           {@const minDate = eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo 
             ? eloHistory[0].date 
             : sevenDaysAgo}
 
-          <Card class="shrink-0 w-full flex-1 min-h-0">
-            <CardHeader>
+          <Card
+            class="flex flex-col col-span-1 md:col-span-2 lg:col-span-7 h-100 shadow-sm"
+          >
+            <CardHeader class="shrink-0">
               <CardTitle class="flex items-center gap-2">
                 <ChartLineIcon class="w-5 h-5 text-primary" /> ELO Progression
               </CardTitle>
-              <CardDescription>Your rating evolution over the last 7 days</CardDescription>
+              <CardDescription>
+                Your rating evolution over the last 7 days
+              </CardDescription>
             </CardHeader>
-            <CardContent class="h-64 px-4 sm:px-6">
-              <ChartContainer config={chartConfig}>
+            <CardContent class="flex-1 min-h-0 px-4 sm:px-6 pb-6 relative">
+              <ChartContainer config={chartConfig} class="h-full w-full">
                 <AreaChart
                   data={eloHistory}
                   x="date"
@@ -352,7 +278,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
                       motion: "tween"
                     },
                     xAxis: {
-                      format: (v: Date) => v.toLocaleDateString(undefined /* i18n */, {month: "short",  day: "2-digit"}),
+                      format: (v: Date) => v.toLocaleDateString(undefined, {month: "short",  day: "2-digit"}),
                     }
                   }}
                 />
@@ -361,7 +287,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           </Card>
         {:else}
           <Empty
-            class="w-full h-full flex flex-col items-center justify-center border-2 border-dashed border-muted-foreground rounded-lg"
+            class="col-span-1 md:col-span-2 lg:col-span-7 h-100 border-2 border-dashed border-muted-foreground rounded-lg"
           >
             <EmptyMedia variant="icon">
               <ChartLineIcon />
@@ -372,6 +298,88 @@ const isMe = (userId: number) => page.data.user?.id === userId;
                 Play more ranked matches to display ELO progression.
               </EmptyDescription>
             </EmptyContent>
+          </Empty>
+        {/if}
+
+        {#if recentGames.length > 0}
+          <Card
+            class="flex flex-col col-span-1 md:col-span-2 lg:col-span-5 h-100 shadow-sm pb-0 overflow-hidden"
+          >
+            <CardHeader class="shrink-0">
+              <CardTitle class="flex items-center gap-2">
+                <HistoryIcon class="w-5 h-5" /> Match History
+              </CardTitle>
+              <CardDescription>
+                Recent games played across all modes
+              </CardDescription>
+            </CardHeader>
+            <CardContent class="p-0 overflow-y-auto flex-1">
+              <div class="flex flex-col divide-y">
+                {#each recentGames as game (game.gameId)}
+                  {@const eloDiff = game.userEloAfter - game.userEloBefore}
+                  {@const hasWon = (game.result === 'white_win' && game.userColor == 'white')
+                    || (game.result == 'black_win' && game.userColor == 'black')}
+                  <div
+                    class="flex items-center justify-between p-4 hover:bg-accent/20 transition-colors"
+                  >
+                    <div class="flex items-center gap-4">
+                      <div
+                        class={`w-1.5 h-10 rounded-full ${
+                          hasWon ? 'bg-emerald-500' : game.result === 'draw' ? 'bg-slate-400' : 'bg-rose-500'
+                        }`}
+                      ></div>
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold">
+                            {game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}
+                          </span>
+                          <span class="text-xs text-muted-foreground"
+                            >vs
+                            <a
+                              href="/profile/{game.opponentUserId}"
+                              class="hover:underline"
+                              >{game.opponentUsername}</a
+                            >
+                          </span>
+                        </div>
+                        <p class="text-sm text-muted-foreground">
+                          Normal •
+                          {formatCompactDuration(game.startedAt, game.endedAt)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="text-right">
+                      <span
+                        class={`text-sm font-bold ${eloDiff > 0 ? 'text-emerald-600' : eloDiff < 0 ? 'text-rose-600' : 'text-slate-500'}`}
+                      >
+                        {#if eloDiff > 0}
+                          +
+                        {/if}
+                        {eloDiff}
+                      </span>
+                      <p class="text-xs text-muted-foreground">
+                        {new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}
+                      </p>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </CardContent>
+          </Card>
+        {:else}
+          <Empty
+            class="col-span-1 md:col-span-2 lg:col-span-5 h-100 border-2 border-dashed border-muted-foreground rounded-lg"
+          >
+            <EmptyMedia variant="icon">
+              <SwordsIcon />
+            </EmptyMedia>
+            <EmptyHeader>
+              <EmptyTitle>No Recent Matches</EmptyTitle>
+              <EmptyDescription>
+                Play a few matches to see your statistics with details here.
+              </EmptyDescription>
+            </EmptyHeader>
           </Empty>
         {/if}
       </div>
