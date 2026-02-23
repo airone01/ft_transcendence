@@ -1,5 +1,6 @@
 import { error, redirect } from "@sveltejs/kit";
 import {
+  dbGetEloHistory,
   dbGetStats,
   dbGetUser,
   dbGetUserGameHistory,
@@ -17,19 +18,33 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     if (params.id === "me") {
       userId = locals.user.id;
       user = locals.user ?? undefined;
-    } else if (userId != null) {
+    } else if (params.id != null) {
       userId = parseInt(params.id, 10);
-
       const { password, ...dbUser } = await dbGetUser(userId);
       user = { ...dbUser, password: null };
     }
+
     if (Number.isNaN(userId) || userId == null)
       throw error(400, "Invalid user ID");
+
     if (!user) throw error(404, "User not found");
 
     const stats = await dbGetStats(userId);
     const games = await dbGetUserGameHistory(userId);
-    return { user, stats, games };
+    const rawEloHistory = await dbGetEloHistory(userId);
+
+    const eloHistory = rawEloHistory
+      // DB returns descending order; we need ascending for chronological
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .map((entry) => ({
+        date: new Intl.DateTimeFormat("en-US", {
+          month: "short",
+          day: "numeric",
+        }).format(entry.createdAt),
+        elo: entry.elo,
+      }));
+
+    return { user, stats, games, eloHistory };
   };
 
   return {
