@@ -27,13 +27,14 @@ import {
   EmptyTitle,
 } from "@transc/ui/empty";
 import { Input } from "@transc/ui/input";
-import { Skeleton } from "@transc/ui/skeleton";
 import { onDestroy, onMount, untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { socketManager } from "$lib/stores/socket.svelte";
 
 const { data } = $props();
+// svelte-ignore state_referenced_locally: idc
+const { users } = data;
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 let friends = $state(data.friends);
