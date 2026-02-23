@@ -118,12 +118,14 @@ const commandGroups: ShellGroup[] = [
     <CommandEmpty>No results found.</CommandEmpty>
     {#each commandGroups as {items, heading}, i (heading)}
       <CommandGroup {heading}>
-        {#each items as {navUrl, label, onClick, ...item} (label)}
+        {#each items as {navUrl, label, onClick, icon: Icon} (label)}
           <CommandItem
             onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)}
-            class="cursor-pointer aria-selected:bg-accent/60"
+            class="cursor-pointer aria-selected:bg-accent group"
           >
-            <item.icon class="me-2 size-4 text-accent-foreground"></item.icon>
+            <Icon
+              class="me-2 size-4 group-data-selected:text-accent-foreground text-foreground"
+            />
             <span>{label}</span>
           </CommandItem>
         {/each}
