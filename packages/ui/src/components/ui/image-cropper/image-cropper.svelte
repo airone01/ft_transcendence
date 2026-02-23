@@ -1,5 +1,5 @@
 <script lang="ts">
-import { LoaderCircle, Upload, ZoomIn } from "@lucide/svelte";
+import { Upload, ZoomIn } from "@lucide/svelte";
 import type { Snippet } from "svelte";
 import Cropper, { type OnCropCompleteEvent } from "svelte-easy-crop";
 import { toast } from "svelte-sonner";
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../dialog";
+import { Spinner } from "../spinner";
 
 let {
   open = $bindable(false),
@@ -145,7 +146,7 @@ function triggerFileInput() {
       </Button>
       <Button onclick={saveCrop} disabled={loading} class="cursor-pointer">
         {#if loading}
-          <LoaderCircle class="mr-2 h-4 w-4 animate-spin" />
+          <Spinner class="mr-2 h-4 w-4" />
         {/if}
         Save Changes<!-- i18n -->
       </Button>
