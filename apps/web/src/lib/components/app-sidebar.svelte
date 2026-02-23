@@ -28,18 +28,20 @@ function getIsActive(href: string, exact?: boolean): boolean {
 </script>
 
 <Sidebar collapsible="icon">
-  <SidebarHeader
-    class="border-b flex flex-row gap-2 select-none p-2 items-center h-11"
-  >
-    <div class="h-full w-8 flex justify-center items-center shrink-0">
-      <ChessPawnIcon class="h-full w-full aspect-square" />
-    </div>
-    <p
-      class="font-bold font-sans group-data-[collapsible=icon]:hidden shrink overflow-clip min-w-0 max-w-full"
+  <a href="/">
+    <SidebarHeader
+      class="border-b flex flex-row gap-2 select-none p-2 items-center h-11"
     >
-      ft_transcendence
-    </p>
-  </SidebarHeader>
+      <div class="h-full w-8 flex justify-center items-center shrink-0">
+        <ChessPawnIcon class="h-full w-full aspect-square" />
+      </div>
+      <p
+        class="font-bold font-sans group-data-[collapsible=icon]:hidden shrink overflow-clip min-w-0 max-w-full"
+      >
+        ft_transcendence
+      </p>
+    </SidebarHeader>
+  </a>
   <SidebarContent>
     {#each sidebarGroups as {label: groupLabel, items} (groupLabel)}
       <SidebarGroup>
