@@ -1,5 +1,6 @@
 import { error, redirect } from "@sveltejs/kit";
 import {
+  dbGetAchievements,
   dbGetEloHistory,
   dbGetStats,
   dbGetUser,
@@ -32,6 +33,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     const stats = await dbGetStats(userId);
     const games = await dbGetUserGameHistory(userId);
     const rawEloHistory = await dbGetEloHistory(userId);
+    const achievements = await dbGetAchievements(userId);
 
     const eloHistory = rawEloHistory
       // DB returns descending order; we need ascending for chronological
@@ -41,7 +43,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         elo: entry.elo,
       }));
 
-    return { user, stats, games, eloHistory };
+    return { user, stats, games, eloHistory, achievements };
   };
 
   return {

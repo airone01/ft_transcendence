@@ -5,11 +5,15 @@ import {
   HistoryIcon,
   MedalIcon,
   SwordsIcon,
-  TargetIcon,
+  MirrorRoundIcon,
   TrendingUpIcon,
   TriangleAlertIcon,
   TrophyIcon,
   UserPlusIcon,
+  BabyIcon,
+  CookingPotIcon,
+  MountainSnowIcon,
+  ChartPieIcon,
 } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Badge } from "@transc/ui/badge";
@@ -36,12 +40,6 @@ import { AreaChart } from "layerchart";
 import { page } from "$app/state";
 
 const { data } = $props();
-
-const mockAchievements = [
-  { name: "Speed Demon", icon: TargetIcon, desc: "Won in under 30s" },
-  { name: "Tactician", icon: SwordsIcon, desc: "Win streak of 5" },
-  { name: "Veteran", icon: MedalIcon, desc: "Played 100+ games" },
-];
 
 function getDurationMs(start: Date, end: Date): number {
   return Math.max(0, end.getTime() - start.getTime());
@@ -88,7 +86,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <Skeleton class="h-64 w-full md:col-span-2" />
       </div>
     </div>
-  {:then {user, stats, games, eloHistory}}
+  {:then {user, stats, games, eloHistory, achievements }}
     {@const recentGames = games.filter(g => g.result !== 'abort')}
     <div class="relative w-full">
       <div
@@ -181,12 +179,14 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           class="flex flex-col h-full col-span-1 lg:col-span-4 shadow-sm hover:shadow-md transition-shadow"
         >
           <CardHeader class="pb-2">
-            <CardTitle class="text-base">Win Ratio</CardTitle>
-            <CardDescription class="text-xs">
+            <CardTitle class="flex items-center gap-2 text-base">
+              <ChartPieIcon class="w-5 h-5 text-primary" /> Win Ratio
+            </CardTitle>
+            <CardDescription>
               {#if stats.gamesPlayed === 0}
                 Play more to see your stats!
               {:else}
-                {stats.gamesPlayed} Total games played
+                Total games played: {stats.gamesPlayed}
               {/if}
             </CardDescription>
           </CardHeader>
@@ -222,21 +222,65 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         >
           <CardHeader class="pb-2">
             <CardTitle class="flex items-center gap-2 text-base">
-              <TrophyIcon class="w-4 h-4 text-yellow-500" /> Achievements
+              <TrophyIcon class="w-5 h-5" /> Badges
             </CardTitle>
           </CardHeader>
           <CardContent class="flex-1 flex flex-col justify-center gap-3">
-            {#each mockAchievements as ach}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <ach.icon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">{ach.name}</p>
-                  <p class="text-xs text-muted-foreground mt-1">{ach.desc}</p>
-                </div>
+          {#if achievements.update_profile}
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-primary/10 rounded-full text-primary">
+                <MirrorRoundIcon class="w-4 h-4" />
               </div>
-            {/each}
+              <div>
+                <p class="text-sm font-semibold leading-none">True Beauty</p>
+                <p class="text-xs text-muted-foreground mt-1">Edit your player profile</p>
+              </div>
+            </div>
+          {/if}
+          {#if achievements.first_game}
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-primary/10 rounded-full text-primary">
+                <BabyIcon class="w-4 h-4" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold leading-none">Baby Steps</p>
+                <p class="text-xs text-muted-foreground mt-1">Play your first game</p>
+              </div>
+            </div>
+          {/if}
+          {#if achievements.first_win}
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-primary/10 rounded-full text-primary">
+                <MedalIcon class="w-4 h-4" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold leading-none">For The Win!</p>
+                <p class="text-xs text-muted-foreground mt-1">Win your first match</p>
+              </div>
+            </div>
+          {/if}
+          {#if achievements.five_wins}
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-primary/10 rounded-full text-primary">
+                <CookingPotIcon class="w-4 h-4" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold leading-none">Hold Up, They're Cooking</p>
+                <p class="text-xs text-muted-foreground mt-1">Win five matches</p>
+              </div>
+            </div>
+          {/if}
+          {#if achievements.reach_high_elo}
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-primary/10 rounded-full text-primary">
+                <MountainSnowIcon class="w-4 h-4" />
+              </div>
+              <div>
+                <p class="text-sm font-semibold leading-none">Peak Performance</p>
+                <p class="text-xs text-muted-foreground mt-1">Reach 2k ELO</p>
+              </div>
+            </div>
+          {/if}
           </CardContent>
         </Card>
 
