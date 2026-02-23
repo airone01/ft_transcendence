@@ -7,7 +7,7 @@ import { gameState, isMyTurn, offerDraw, resign } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
 
-let gameId: string = page.params.id ?? '0';
+let gameId: string = page.params.id ?? "0";
 
 function handleResign() {
   if (confirm("Abandonner la partie ?")) {

@@ -1,10 +1,4 @@
-import {
-  HandshakeIcon,
-  HouseIcon,
-  TrophyIcon,
-  UserIcon,
-  ZapIcon,
-} from "@lucide/svelte";
+import { HandshakeIcon, TrophyIcon, UserIcon, ZapIcon } from "@lucide/svelte";
 import type { Component } from "svelte";
 
 export type SidebarItem = {
