@@ -27,7 +27,7 @@ export type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAnchorAttributes } from "svelte/elements";
 
-const {
+let {
   ref = $bindable(null),
   href,
   class: className,

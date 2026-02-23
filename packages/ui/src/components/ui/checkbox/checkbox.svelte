@@ -2,9 +2,9 @@
 import CheckIcon from "@lucide/svelte/icons/check";
 import MinusIcon from "@lucide/svelte/icons/minus";
 import { cn, type WithoutChildrenOrChild } from "@transc/ui/utils";
-import type { Checkbox as CheckboxPrimitive } from "bits-ui";
+import { Checkbox as CheckboxPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   checked = $bindable(false),
   indeterminate = $bindable(false),

@@ -23,12 +23,12 @@ export type Side = VariantProps<typeof sheetVariants>["side"];
 <script lang="ts">
 import XIcon from "@lucide/svelte/icons/x";
 import { cn, type WithoutChildrenOrChild } from "@transc/ui/utils";
-import type { Dialog as SheetPrimitive } from "bits-ui";
+import { Dialog as SheetPrimitive } from "bits-ui";
 import type { ComponentProps, Snippet } from "svelte";
 import SheetOverlay from "./sheet-overlay.svelte";
-import type SheetPortal from "./sheet-portal.svelte";
+import SheetPortal from "./sheet-portal.svelte";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   side = "right",

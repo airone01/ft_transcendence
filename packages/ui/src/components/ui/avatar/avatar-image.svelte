@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Avatar as AvatarPrimitive } from "bits-ui";
+import { Avatar as AvatarPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   ...restProps

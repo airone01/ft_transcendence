@@ -15,7 +15,7 @@ type Props = WithElementRef<
     )
 >;
 
-const {
+let {
   ref = $bindable(null),
   value = $bindable(),
   type,

@@ -24,9 +24,9 @@ let {
 } = $props();
 
 let imageSrc: string | null = $state(null);
-const crop = $state({ x: 0, y: 0 });
+let crop = $state({ x: 0, y: 0 });
 let zoom = $state(1);
-const pixelCrop = $state({ x: 0, y: 0, width: 0, height: 0 });
+let pixelCrop = $state({ x: 0, y: 0, width: 0, height: 0 });
 let loading = $state(false);
 let fileInput: HTMLInputElement;
 

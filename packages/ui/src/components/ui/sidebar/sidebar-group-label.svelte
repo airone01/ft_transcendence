@@ -3,7 +3,7 @@ import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 
-const {
+let {
   ref = $bindable(null),
   children,
   child,

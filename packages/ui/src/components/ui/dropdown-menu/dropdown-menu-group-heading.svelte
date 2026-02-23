@@ -1,9 +1,9 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 import type { ComponentProps } from "svelte";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   inset,
@@ -17,6 +17,6 @@ const {
   bind:ref
   data-slot="dropdown-menu-group-heading"
   data-inset={inset}
-  class={cn("px-2 py-1.5 text-sm font-semibold data-[inset]:ps-8", className)}
+  class={cn("px-2 py-1.5 text-sm font-semibold data-inset:ps-8", className)}
   {...restProps}
 />

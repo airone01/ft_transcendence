@@ -7,11 +7,11 @@ import {
   type WithElementRef,
   type WithoutChildren,
 } from "@transc/ui/utils";
-import type * as FormPrimitive from "formsnap";
+import * as FormPrimitive from "formsnap";
 import type { HTMLAttributes } from "svelte/elements";
 import type { FormPathLeaves } from "sveltekit-superforms";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   form,

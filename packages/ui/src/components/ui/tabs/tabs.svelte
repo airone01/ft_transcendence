@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Tabs as TabsPrimitive } from "bits-ui";
+import { Tabs as TabsPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   value = $bindable(""),
   class: className,

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Separator as SeparatorPrimitive } from "bits-ui";
+import { Separator as SeparatorPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   "data-slot": dataSlot = "separator",

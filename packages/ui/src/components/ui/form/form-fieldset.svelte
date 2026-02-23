@@ -3,10 +3,10 @@
   generics="T extends Record<string, unknown>, U extends FormPath<T>"
 >
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import type * as FormPrimitive from "formsnap";
+import * as FormPrimitive from "formsnap";
 import type { FormPath } from "sveltekit-superforms";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   form,

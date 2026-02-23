@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { Separator } from "@transc/ui/separator";
+import { Separator } from "@transc/ui/separator";
 import { cn } from "@transc/ui/utils";
 import type { ComponentProps } from "svelte";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   ...restProps

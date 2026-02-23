@@ -30,7 +30,7 @@ export type SidebarMenuButtonSize = VariantProps<
 </script>
 
 <script lang="ts">
-import type * as Tooltip from "@transc/ui/tooltip";
+import * as Tooltip from "@transc/ui/tooltip";
 import {
   cn,
   type WithElementRef,
@@ -41,7 +41,7 @@ import type { ComponentProps, Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 import { useSidebar } from "./context.svelte.js";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   children,

@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { Command as CommandPrimitive } from "bits-ui";
+import { Command as CommandPrimitive } from "bits-ui";
 
-const { ref = $bindable(null), ...restProps }: CommandPrimitive.LoadingProps =
+let { ref = $bindable(null), ...restProps }: CommandPrimitive.LoadingProps =
   $props();
 </script>
 

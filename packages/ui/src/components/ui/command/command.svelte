@@ -1,10 +1,10 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Command as CommandPrimitive } from "bits-ui";
+import { Command as CommandPrimitive } from "bits-ui";
 
 export type CommandRootApi = CommandPrimitive.Root;
 
-const {
+let {
   api = $bindable(null),
   ref = $bindable(null),
   value = $bindable(""),

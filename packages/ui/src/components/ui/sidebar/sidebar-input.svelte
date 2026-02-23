@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { Input } from "@transc/ui/input";
+import { Input } from "@transc/ui/input";
 import { cn } from "@transc/ui/utils";
 import type { ComponentProps } from "svelte";
 
-const {
+let {
   ref = $bindable(null),
   value = $bindable(""),
   class: className,

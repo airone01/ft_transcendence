@@ -1,11 +1,11 @@
 <script lang="ts">
 import type { WithoutChildrenOrChild } from "@transc/ui/utils";
 import { cn } from "@transc/ui/utils";
-import type { Tooltip as TooltipPrimitive } from "bits-ui";
+import { Tooltip as TooltipPrimitive } from "bits-ui";
 import type { ComponentProps } from "svelte";
-import type TooltipPortal from "./tooltip-portal.svelte";
+import TooltipPortal from "./tooltip-portal.svelte";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   sideOffset = 0,

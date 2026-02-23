@@ -6,7 +6,7 @@ import {
 } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   ...restProps

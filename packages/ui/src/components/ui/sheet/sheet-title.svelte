@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Dialog as SheetPrimitive } from "bits-ui";
+import { Dialog as SheetPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   ...restProps

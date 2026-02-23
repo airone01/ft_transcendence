@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { Dialog as DialogPrimitive } from "bits-ui";
+import { Dialog as DialogPrimitive } from "bits-ui";
 
-const { ref = $bindable(null), ...restProps }: DialogPrimitive.CloseProps =
+let { ref = $bindable(null), ...restProps }: DialogPrimitive.CloseProps =
   $props();
 </script>
 

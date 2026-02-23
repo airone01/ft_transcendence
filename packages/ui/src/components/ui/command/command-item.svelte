@@ -1,8 +1,8 @@
 <script lang="ts">
 import { cn } from "@transc/ui/utils";
-import type { Command as CommandPrimitive } from "bits-ui";
+import { Command as CommandPrimitive } from "bits-ui";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   ...restProps

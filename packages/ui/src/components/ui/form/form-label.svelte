@@ -1,9 +1,9 @@
 <script lang="ts">
 import { Label } from "@transc/ui/label";
 import { cn, type WithoutChild } from "@transc/ui/utils";
-import type * as FormPrimitive from "formsnap";
+import * as FormPrimitive from "formsnap";
 
-const {
+let {
   ref = $bindable(null),
   children,
   class: className,

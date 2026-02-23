@@ -1,14 +1,14 @@
 <script lang="ts">
 import * as Dialog from "@transc/ui/dialog";
 import type { WithoutChildrenOrChild } from "@transc/ui/utils";
-import type {
+import {
   Command as CommandPrimitive,
   Dialog as DialogPrimitive,
 } from "bits-ui";
 import type { Snippet } from "svelte";
 import Command from "./command.svelte";
 
-const {
+let {
   open = $bindable(false),
   ref = $bindable(null),
   value = $bindable(""),

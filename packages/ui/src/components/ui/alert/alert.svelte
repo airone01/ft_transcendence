@@ -22,7 +22,7 @@ export type AlertVariant = VariantProps<typeof alertVariants>["variant"];
 import { cn, type WithElementRef } from "@transc/ui/utils";
 import type { HTMLAttributes } from "svelte/elements";
 
-const {
+let {
   ref = $bindable(null),
   class: className,
   variant = "default",

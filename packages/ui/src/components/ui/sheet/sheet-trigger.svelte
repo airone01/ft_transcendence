@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { Dialog as SheetPrimitive } from "bits-ui";
+import { Dialog as SheetPrimitive } from "bits-ui";
 
-const { ref = $bindable(null), ...restProps }: SheetPrimitive.TriggerProps =
+let { ref = $bindable(null), ...restProps }: SheetPrimitive.TriggerProps =
   $props();
 </script>
 

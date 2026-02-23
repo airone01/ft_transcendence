@@ -1,10 +1,8 @@
 <script lang="ts">
-import type { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 
-const {
-  open = $bindable(false),
-  ...restProps
-}: DropdownMenuPrimitive.SubProps = $props();
+let { open = $bindable(false), ...restProps }: DropdownMenuPrimitive.SubProps =
+  $props();
 </script>
 
 <DropdownMenuPrimitive.Sub bind:open {...restProps} />
