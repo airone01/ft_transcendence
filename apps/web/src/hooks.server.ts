@@ -1,7 +1,5 @@
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
-import { db } from "@transc/db";
-import { chatChannels } from "@transc/db/schema";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 import {
   auth,
@@ -9,13 +7,6 @@ import {
   setSessionTokenCookie,
 } from "$lib/server/auth";
 import { dbGetStats } from "$lib/server/db-services";
-
-await db
-  .insert(chatChannels)
-  .values({
-    type: "global",
-  })
-  .returning();
 
 const handleParaglide: Handle = ({ event, resolve }) =>
   paraglideMiddleware(event.request, ({ request, locale }) => {
