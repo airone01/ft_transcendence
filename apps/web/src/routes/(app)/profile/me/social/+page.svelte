@@ -27,6 +27,7 @@ import {
   EmptyTitle,
 } from "@transc/ui/empty";
 import { Input } from "@transc/ui/input";
+import { Skeleton } from "@transc/ui/skeleton";
 import { onDestroy, onMount, untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
@@ -296,120 +297,145 @@ const formEnhance: SubmitFunction = () => {
       </Card>
     {/if}
 
-    <!-- activity -->
-    <Card>
-      <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
-        <CardDescription>See what the community is up to.</CardDescription>
+    <Card class="flex flex-col min-h-0 border-primary/20">
+      <CardHeader class="shrink-0 pb-3">
+        <CardTitle>Friend Requests</CardTitle>
+        <CardDescription>People who want to connect with you.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <!-- {#each  as } -->
-        <Card class="overflow-hidden py-0">
-          <CardContent class="p-2 flex items-center gap-4">
-            <div class="relative"><a href="##">
-              <Avatar class="h-12 w-12 border-2 border-background shadow-sm">
-                <AvatarImage src="avatar url" alt="alt" />
-                <AvatarFallback class="select-none">FB</AvatarFallback>
-              </Avatar>
-            </a></div>
-            <div
-              class="grid grid-rows-2 grid-cols-1 h-full w-full flex-1 min-h-0 min-w-0"
-            >
-              <p class="text-sm truncate">
-                <span class="font-bold">Anna Cramling</span> won against
-                <span class="font-bold">Levy Rozman</span>.
-              </p>
-              <p class="text-xs text-muted-foreground">Just now</p>
-            </div>
-          </CardContent>
-        </Card>
-        <!-- {/each} -->
+      <CardContent class="overflow-y-auto flex-1 flex flex-col gap-2">
+        {#if data.invitations && data.invitations.length > 0}
+          {#each data.invitations as invite (invite.userId)}
+            <Card class="overflow-hidden py-0 shrink-0">
+              <CardContent class="p-2 flex items-center gap-4">
+                <Avatar class="h-10 w-10 border shadow-sm">
+                  <AvatarImage src={invite.avatar} alt={invite.username} />
+                  <AvatarFallback class="select-none">
+                    {invite.username.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div class="flex-1 min-w-0">
+                  <a
+                    href="/profile/{invite.userId}"
+                    class="font-medium hover:underline truncate block text-sm"
+                  >
+                    {invite.username}
+                  </a>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <form
+                    method="POST"
+                    action="?/accept"
+                    use:enhance={formEnhance}
+                  >
+                    <input type="hidden" name="userId" value={invite.userId}>
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="sm"
+                      class="h-8 cursor-pointer"
+                    >
+                      Accept
+                    </Button>
+                  </form>
+                  <form
+                    method="POST"
+                    action="?/reject"
+                    use:enhance={formEnhance}
+                  >
+                    <input type="hidden" name="userId" value={invite.userId}>
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      size="sm"
+                      class="h-8 text-muted-foreground hover:text-destructive cursor-pointer px-2"
+                    >
+                      Reject
+                    </Button>
+                  </form>
+                </div>
+              </CardContent>
+            </Card>
+          {/each}
+        {:else}
+          <div
+            class="flex flex-col items-center justify-center py-8 h-full text-muted-foreground text-sm text-center"
+          >
+            <UserPlusIcon class="h-8 w-8 mb-3 opacity-50" />
+            <p>No pending requests.</p>
+          </div>
+        {/if}
       </CardContent>
     </Card>
 
-    <!-- suggestions -->
-    {#await data.users}
-    <!-- animation -->
-
-    {:then users}
-      {#if (users?.length ?? 0 > 0) && false}
-        <Card class="col-span-2">
-          <CardHeader>
-            <CardTitle>Suggested Players</CardTitle>
-            <CardDescription>
-              Make some friends and some ennemies
-            </CardDescription>
-          </CardHeader>
-          <CardContent class="flex justify-start h-full gap-2">
-            {#each users as {id, avatar, username}}
-              <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
-                <CardContent class="px-4 flex gap-4 justify-start h-full">
-                  <div class="flex gap-4 items-center h-fit">
-                    <div class="relative">
-                      <a href="/profile/{id}">
-                        <Avatar
-                          class="h-12 w-12 border-2 border-background shadow-sm"
-                        >
-                          <AvatarImage src={avatar} alt={username} />
-                          <AvatarFallback class="select-none">
-                            {username.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      </a>
-                      <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                        <span
-                          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-                        ></span>
-                        <span
-                          class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"
-                        ></span>
-                      </span>
-                    </div>
-
-                    <div class="flex-1 min-w-0">
-                      <a
-                        href="/profile/{id}"
-                        class="font-medium hover:underline truncate block"
-                        >{username}</a
-                      >
-                      <div
-                        class="text-xs text-muted-foreground flex items-center gap-2"
-                      >
-                        <Badge variant="secondary" class="h-4 min-w-4 text-xs">
-                          ELO 10K+
-                        </Badge>
-                        <span class="capitalize">Online</span>
-                      </div>
+    {#if (users?.length ?? 0 > 0)}
+      <Card class="col-span-2">
+        <CardHeader>
+          <CardTitle>Suggested Players</CardTitle>
+          <CardDescription>Make some friends and some enemies</CardDescription>
+        </CardHeader>
+        <CardContent class="flex justify-start h-full gap-2 pb-6">
+          {#each users as {id, avatar, username}}
+            <Card class="overflow-hidden flex flex-col flex-1 min-h-0 max-w-sm">
+              <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
+                <div class="flex gap-4 items-center h-fit w-full">
+                  <a href="/profile/{id}">
+                    <Avatar class="h-12 w-12 border-2 shadow-sm">
+                      <AvatarImage src={avatar} alt={username} />
+                      <AvatarFallback class="select-none">
+                        {username.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </a>
+                  <div class="flex-1 min-w-0">
+                    <a
+                      href="/profile/{id}"
+                      class="font-medium hover:underline truncate block"
+                    >
+                      {username}
+                    </a>
+                    <div class="text-xs text-muted-foreground mt-0.5">
+                      <Badge variant="secondary" class="h-4 px-1.5 text-[10px]">
+                        ELO ???
+                      </Badge>
                     </div>
                   </div>
-                </CardContent>
-                <CardFooter>
-                  <Button class="w-full cursor-pointer">
-                    <UserPlusIcon /> Add me!
+                </div>
+              </CardContent>
+              <CardFooter class="pt-0 pb-3 px-3">
+                <form
+                  method="POST"
+                  action="?/add"
+                  use:enhance={formEnhance}
+                  class="w-full"
+                >
+                  <input type="hidden" name="username" value={username}>
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
+                  >
+                    <UserPlusIcon class="w-4 h-4 mr-2" /> Request
                   </Button>
-                </CardFooter>
-              </Card>
-            {/each}
-          </CardContent>
-        </Card>
-      {:else}
-        <Empty
-          class="border-dashed border-2 border-muted-foreground col-span-2"
-        >
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <FrownIcon />
-            </EmptyMedia>
-            <EmptyTitle>No recommendations</EmptyTitle>
-            <EmptyDescription>
-              We will soon recommend users here!
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      {/if}
-    {:catch e}
-      <!-- TODO: better error -->
-      {e}
-    {/await}
+                </form>
+              </CardFooter>
+            </Card>
+          {/each}
+        </CardContent>
+      </Card>
+    {:else}
+      <Empty class="border-dashed border-2 border-muted-foreground col-span-2">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <FrownIcon />
+          </EmptyMedia>
+          <EmptyTitle>No recommendations</EmptyTitle>
+          <EmptyDescription>
+            We will soon recommend users here!
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    {/if}
   </section>
 </main>
