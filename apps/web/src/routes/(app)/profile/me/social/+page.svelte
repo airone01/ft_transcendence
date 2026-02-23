@@ -180,7 +180,7 @@ const formEnhance: SubmitFunction = () => {
     </form>
   </div>
 
-  <section class="gap-4 grid grid-rows-2 grid-cols-2 h-full">
+  <section class="gap-4 lg:grid flex flex-col grid-rows-2 grid-cols-2 h-full">
     <!-- friend list -->
     {#if friends.length === 0}
       <Empty class="border-dashed border-2 border-muted-foreground">
@@ -332,63 +332,81 @@ const formEnhance: SubmitFunction = () => {
     <!-- animation -->
 
     {:then users}
-      <Card class="col-span-2">
-        <CardHeader>
-          <CardTitle>Suggested Players</CardTitle>
-          <CardDescription>Make some friends and some ennemies</CardDescription>
-        </CardHeader>
-        <CardContent class="flex justify-start h-full gap-2">
-          {#each users as {id, avatar, username}}
-            <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
-              <CardContent class="px-4 flex gap-4 justify-start h-full">
-                <div class="flex gap-4 items-center h-fit">
-                  <div class="relative">
-                    <a href="/profile/{id}">
-                      <Avatar
-                        class="h-12 w-12 border-2 border-background shadow-sm"
-                      >
-                        <AvatarImage src={avatar} alt={username} />
-                        <AvatarFallback class="select-none">
-                          {username.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </a>
-                    <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                      <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-                      ></span>
-                      <span
-                        class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"
-                      ></span>
-                    </span>
-                  </div>
+      {#if (users?.length ?? 0 > 0) && false}
+        <Card class="col-span-2">
+          <CardHeader>
+            <CardTitle>Suggested Players</CardTitle>
+            <CardDescription>
+              Make some friends and some ennemies
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="flex justify-start h-full gap-2">
+            {#each users as {id, avatar, username}}
+              <Card class="overflow-hidden h-full flex-1 min-h-0 max-w-sm">
+                <CardContent class="px-4 flex gap-4 justify-start h-full">
+                  <div class="flex gap-4 items-center h-fit">
+                    <div class="relative">
+                      <a href="/profile/{id}">
+                        <Avatar
+                          class="h-12 w-12 border-2 border-background shadow-sm"
+                        >
+                          <AvatarImage src={avatar} alt={username} />
+                          <AvatarFallback class="select-none">
+                            {username.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </a>
+                      <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
+                        <span
+                          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+                        ></span>
+                        <span
+                          class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"
+                        ></span>
+                      </span>
+                    </div>
 
-                  <div class="flex-1 min-w-0">
-                    <a
-                      href="/profile/{id}"
-                      class="font-medium hover:underline truncate block"
-                      >{username}</a
-                    >
-                    <div
-                      class="text-xs text-muted-foreground flex items-center gap-2"
-                    >
-                      <Badge variant="secondary" class="h-4 min-w-4 text-xs">
-                        ELO 10K+
-                      </Badge>
-                      <span class="capitalize">Online</span>
+                    <div class="flex-1 min-w-0">
+                      <a
+                        href="/profile/{id}"
+                        class="font-medium hover:underline truncate block"
+                        >{username}</a
+                      >
+                      <div
+                        class="text-xs text-muted-foreground flex items-center gap-2"
+                      >
+                        <Badge variant="secondary" class="h-4 min-w-4 text-xs">
+                          ELO 10K+
+                        </Badge>
+                        <span class="capitalize">Online</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button class="w-full cursor-pointer">
-                  <UserPlusIcon /> Add me!
-                </Button>
-              </CardFooter>
-            </Card>
-          {/each}
-        </CardContent>
-      </Card>
+                </CardContent>
+                <CardFooter>
+                  <Button class="w-full cursor-pointer">
+                    <UserPlusIcon /> Add me!
+                  </Button>
+                </CardFooter>
+              </Card>
+            {/each}
+          </CardContent>
+        </Card>
+      {:else}
+        <Empty
+          class="border-dashed border-2 border-muted-foreground col-span-2"
+        >
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FrownIcon />
+            </EmptyMedia>
+            <EmptyTitle>No recommendations</EmptyTitle>
+            <EmptyDescription>
+              We will soon recommend users here!
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      {/if}
     {:catch e}
       <!-- TODO: better error -->
       {e}
