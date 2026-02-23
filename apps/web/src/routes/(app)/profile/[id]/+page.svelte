@@ -1,18 +1,12 @@
 <script lang="ts">
 import {
-  BabyIcon,
   CalendarIcon,
   ChartLineIcon,
   ChartPieIcon,
-  CookingPotIcon,
   HistoryIcon,
-  MedalIcon,
-  MirrorRoundIcon,
-  MountainSnowIcon,
   SwordsIcon,
   TrendingUpIcon,
   TriangleAlertIcon,
-  TrophyIcon,
   UserPlusIcon,
 } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
@@ -38,6 +32,7 @@ import { Skeleton } from "@transc/ui/skeleton";
 import { scaleUtc } from "d3-scale";
 import { AreaChart } from "layerchart";
 import { page } from "$app/state";
+import BadgesCard from "./badges-card.svelte";
 
 const { data } = $props();
 
@@ -217,84 +212,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           </CardContent>
         </Card>
 
-        <Card
-          class="flex flex-col h-full col-span-1 md:col-span-2 lg:col-span-5 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <CardHeader class="pb-2">
-            <CardTitle class="flex items-center gap-2 text-base">
-              <TrophyIcon class="w-5 h-5" /> Badges
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="flex-1 flex flex-col justify-center gap-3">
-            {#if achievements.update_profile}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <MirrorRoundIcon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">True Beauty</p>
-                  <p class="text-xs text-muted-foreground mt-1">
-                    Edit your player profile
-                  </p>
-                </div>
-              </div>
-            {/if}
-            {#if achievements.first_game}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <BabyIcon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">Baby Steps</p>
-                  <p class="text-xs text-muted-foreground mt-1">
-                    Play your first game
-                  </p>
-                </div>
-              </div>
-            {/if}
-            {#if achievements.first_win}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <MedalIcon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">For The Win!</p>
-                  <p class="text-xs text-muted-foreground mt-1">
-                    Win your first match
-                  </p>
-                </div>
-              </div>
-            {/if}
-            {#if achievements.five_wins}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <CookingPotIcon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">
-                    Hold Up, They're Cooking
-                  </p>
-                  <p class="text-xs text-muted-foreground mt-1">
-                    Win five matches
-                  </p>
-                </div>
-              </div>
-            {/if}
-            {#if achievements.reach_high_elo}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <MountainSnowIcon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-semibold leading-none">
-                    Peak Performance
-                  </p>
-                  <p class="text-xs text-muted-foreground mt-1">Reach 2k ELO</p>
-                </div>
-              </div>
-            {/if}
-          </CardContent>
-        </Card>
+        <BadgesCard {achievements} />
 
         {#if eloHistory && eloHistory.length > 1}
           {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
