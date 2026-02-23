@@ -111,6 +111,7 @@ export {
   dbDeleteUser,
   dbGetAchievements,
   dbGetEloHistory,
+  dbGetPeakElo,
   dbGetRandomUsers,
   dbGetStats,
   dbGetUser,

@@ -19,6 +19,7 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
+  dbGetRandomUsers,
 } from "$lib/server/db-services";
 
 describe("users.service.ts tests", () => {
@@ -115,6 +116,15 @@ describe("users.service.ts tests", () => {
     } catch (err) {
       expect(err).toBeInstanceOf(DBUserNotFoundError);
     }
+  });
+
+  test.only("getRandomUsers", async () => {
+    try {
+      const random = await dbGetRandomUsers(2);
+
+      expect(random).toBeDefined();
+      console.log(random);
+    } catch (_err) {}
   });
 
   const updatedUser: UpdateUserInput = {
