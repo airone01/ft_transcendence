@@ -3,7 +3,7 @@ import { TrendingUpIcon } from "@lucide/svelte";
 import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
 import type { UserStats } from "$lib/server/db-services";
 
-const { stats }: { stats: UserStats } = $props();
+const { stats, peakElo }: { stats: UserStats; peakElo: number } = $props();
 </script>
 
 <Card
@@ -14,11 +14,20 @@ const { stats }: { stats: UserStats } = $props();
       <TrendingUpIcon class="w-5 h-5 text-primary" /> Performance
     </CardTitle>
   </CardHeader>
-  <CardContent class="flex-1 flex justify-center items-center">
+  <CardContent
+    class="flex-1 flex flex-col md:flex-row justify-evenly items-center px-1"
+  >
     <div class="flex flex-col items-center justify-center py-4">
       <span
         class="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1"
-        >ELO</span
+        >Peak ELO</span
+      >
+      <span class="text-4xl font-black text-primary">{peakElo}</span>
+    </div>
+    <div class="flex flex-col items-center justify-center py-4">
+      <span
+        class="text-xs text-muted-foreground uppercase font-bold tracking-wider mb-1"
+        >Current ELO</span
       >
       <span class="text-4xl font-black text-primary">{stats.currentElo}</span>
     </div>

@@ -31,7 +31,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <Skeleton class="h-64 w-full md:col-span-2" />
       </div>
     </div>
-  {:then {user, stats, games: matches, eloHistory, achievements }}
+  {:then {user, stats, games: matches, eloHistory, achievements, peakElo }}
     <div class="relative w-full">
       <div
         class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"
@@ -39,7 +39,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
 
       <div class="container mx-auto px-6">
         <div
-          class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-4"
+          class="relative -mt-16 flex flex-col md:flex-row md:items-center gap-4"
         >
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
@@ -98,7 +98,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
 
     <div class="container mx-auto px-4 py-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
-        <CurrentEloCard {stats} />
+        <CurrentEloCard {stats} {peakElo} />
 
         <WinRatioCard {stats} />
 
@@ -109,7 +109,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <RecentMatchesCard {matches} />
       </div>
     </div>
-  {:catch error}
+  {:catch _}
     <div class="container mx-auto p-4 flex justify-center">
       <Card class="w-full max-w-md border-destructive/50 bg-destructive/5">
         <CardHeader>
@@ -117,9 +117,7 @@ const isMe = (userId: number) => page.data.user?.id === userId;
             <TriangleAlertIcon class="h-5 w-5" />
             <CardTitle>Profile Error</CardTitle>
           </div>
-          <CardDescription>
-            {error.body?.message || "Could not load user profile."}
-          </CardDescription>
+          <CardDescription>Could not load user profile.</CardDescription>
         </CardHeader>
       </Card>
     </div>

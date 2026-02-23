@@ -2,6 +2,7 @@ import { error, redirect } from "@sveltejs/kit";
 import {
   dbGetAchievements,
   dbGetEloHistory,
+  dbGetPeakElo,
   dbGetStats,
   dbGetUser,
   dbGetUserGameHistory,
@@ -30,12 +31,14 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
     if (!user) throw error(404, "User not found");
 
-    const [stats, games, rawEloHistory, achievements] = await Promise.all([
-      dbGetStats(userId),
-      dbGetUserGameHistory(userId),
-      dbGetEloHistory(userId),
-      dbGetAchievements(userId),
-    ]);
+    const [stats, games, rawEloHistory, achievements, peakElo] =
+      await Promise.all([
+        dbGetStats(userId),
+        dbGetUserGameHistory(userId),
+        dbGetEloHistory(userId),
+        dbGetAchievements(userId),
+        dbGetPeakElo(userId),
+      ]);
 
     const eloHistory = rawEloHistory
       // DB returns descending order; we need ascending for chronological
@@ -45,7 +48,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         elo: entry.elo,
       }));
 
-    return { user, stats, games, eloHistory, achievements };
+    return { user, stats, games, eloHistory, achievements, peakElo };
   };
 
   return {
