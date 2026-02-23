@@ -44,7 +44,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
     deleteSessionTokenCookie(event);
   }
 
-  event.locals.stats = await dbGetStats(user.id);
+  event.locals.stats = user != null ? await dbGetStats(user.id) : null;
   event.locals.session = session;
   event.locals.user = user;
 
