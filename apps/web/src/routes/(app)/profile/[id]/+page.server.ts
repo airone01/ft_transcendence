@@ -37,10 +37,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       // DB returns descending order; we need ascending for chronological
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
       .map((entry) => ({
-        date: new Intl.DateTimeFormat("en-US", {
-          month: "short",
-          day: "numeric",
-        }).format(entry.createdAt),
+        date: entry.createdAt,
         elo: entry.elo,
       }));
 

@@ -1,11 +1,5 @@
 import { db } from "@transc/db";
-import {
-  chatChannels,
-  chatMessages,
-  eloHistory,
-  games,
-  users,
-} from "@transc/db/schema";
+import { chatChannels, chatMessages, games, users } from "@transc/db/schema";
 import {
   dbAddFriend,
   dbCreateGame,
@@ -73,95 +67,6 @@ async function seed() {
       email: "simon@transcender.com",
       password: dumbPass,
     });
-
-    const now = new Date();
-    const day = 24 * 60 * 60 * 1000;
-
-    await db.insert(eloHistory).values([
-      {
-        userId: valentinId,
-        elo: 1000,
-        createdAt: new Date(now.getTime() - 7 * day),
-      },
-      {
-        userId: valentinId,
-        elo: 1015,
-        createdAt: new Date(now.getTime() - 6 * day),
-      },
-      {
-        userId: valentinId,
-        elo: 1040,
-        createdAt: new Date(now.getTime() - 4 * day),
-      },
-      {
-        userId: valentinId,
-        elo: 1025,
-        createdAt: new Date(now.getTime() - 2 * day),
-      },
-      {
-        userId: valentinId,
-        elo: 1055,
-        createdAt: new Date(now.getTime() - 1 * day),
-      },
-
-      {
-        userId: erwannId,
-        elo: 1000,
-        createdAt: new Date(now.getTime() - 7 * day),
-      },
-      {
-        userId: erwannId,
-        elo: 980,
-        createdAt: new Date(now.getTime() - 5 * day),
-      },
-      {
-        userId: erwannId,
-        elo: 965,
-        createdAt: new Date(now.getTime() - 4 * day),
-      },
-      {
-        userId: erwannId,
-        elo: 990,
-        createdAt: new Date(now.getTime() - 2 * day),
-      },
-
-      {
-        userId: enzoId,
-        elo: 1000,
-        createdAt: new Date(now.getTime() - 6 * day),
-      },
-      {
-        userId: enzoId,
-        elo: 1015,
-        createdAt: new Date(now.getTime() - 3 * day),
-      },
-      {
-        userId: enzoId,
-        elo: 1005,
-        createdAt: new Date(now.getTime() - 1 * day),
-      },
-
-      {
-        userId: simonId,
-        elo: 1000,
-        createdAt: new Date(now.getTime() - 7 * day),
-      },
-      {
-        userId: simonId,
-        elo: 970,
-        createdAt: new Date(now.getTime() - 6 * day),
-      },
-      {
-        userId: simonId,
-        elo: 940,
-        createdAt: new Date(now.getTime() - 3 * day),
-      },
-      {
-        userId: simonId,
-        elo: 955,
-        createdAt: new Date(now.getTime() - 1 * day),
-      },
-    ]);
 
     // seed friendships
     await dbAddFriend(valentinId, erwannId);

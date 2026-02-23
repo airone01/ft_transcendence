@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@transc/ui/card";
+import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
 import {
   Empty,
   EmptyContent,
@@ -30,6 +31,8 @@ import {
   EmptyTitle,
 } from "@transc/ui/empty";
 import { Skeleton } from "@transc/ui/skeleton";
+import { scaleUtc } from "d3-scale";
+import { AreaChart } from "layerchart";
 import { page } from "$app/state";
 
 const { data } = $props();
@@ -69,12 +72,9 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
   return `${nfMinute.format(minutes)} ${nfSecond.format(seconds)}`;
 }
 
-function getX(i: number, eloHistory: { date: string; elo: number }[]) {
-  return (i / (eloHistory.length - 1)) * 100;
-}
-function getY(elo: number, minElo: number, range: number) {
-  return 100 - ((elo - minElo) / range) * 100;
-}
+const chartConfig: ChartConfig = {
+  elo: { label: "ELO", color: "oklch(0.81 0.1 252)" },
+};
 
 const isMe = (userId: number) => page.data.user?.id === userId;
 </script>
@@ -239,31 +239,34 @@ const isMe = (userId: number) => page.data.user?.id === userId;
       </div>
 
       <div
-        class="flex flex-col max-h-full w-full flex-1 min-w-0 gap-6 lg:col-span-8 pb-0 overflow-hidden"
+        class="flex flex-col max-h-full w-full flex-1 min-w-0 gap-4 lg:col-span-8 pb-0 overflow-visible"
       >
         {#if recentGames.length > 0}
           <Card
-            class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0"
+            class="flex flex-col max-h-full w-full flex-1 min-w-0 min-h-0 lg:col-span-8 pb-0 overflow-hidden shrink"
           >
             <CardHeader>
               <CardTitle class="flex items-center gap-2">
                 <HistoryIcon class="w-5 h-5" /> Match History
               </CardTitle>
               <CardDescription>
-                Recent games played across all modes.
+                Recent games played across all modes
               </CardDescription>
             </CardHeader>
             <CardContent class="p-0 overflow-y-scroll h-full min-h-0 flex-1">
               <div class="flex flex-col divide-y">
                 {#each recentGames as game (game.gameId)}
                   {@const eloDiff = game.userEloAfter - game.userEloBefore}
-                  {@const hasWon = (game.result === 'white_win' && game.userColor == 'white') || (game.result == 'black_win' && game.userColor == 'black')}
+                  {@const hasWon = (game.result === 'white_win' && game.userColor == 'white')
+                    || (game.result == 'black_win' && game.userColor == 'black')}
                   <div
-                    class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors"
+                    class="flex items-center justify-between p-4 hover:bg-accent/20 transition-colors"
                   >
                     <div class="flex items-center gap-4">
                       <div
-                        class={`w-1 h-12 rounded-full ${hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}
+                        class={`w-1 h-12 rounded-full ${
+                          hasWon ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'
+                        }`}
                       ></div>
                       <div>
                         <div class="flex items-center gap-2">
@@ -313,123 +316,47 @@ const isMe = (userId: number) => page.data.user?.id === userId;
           </Empty>
         {/if}
 
-        {#if eloHistory.length > 1}
+        {#if eloHistory && eloHistory.length > 1}
           {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
           {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
-          {@const range = maxElo - minElo || 100}
-          <Card class="shrink-0 w-full">
+
+          {@const now = new Date()}
+          {@const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
+
+          {@const minDate = eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo 
+            ? eloHistory[0].date 
+            : sevenDaysAgo}
+
+          <Card class="shrink-0 w-full flex-1 min-h-0">
             <CardHeader>
               <CardTitle class="flex items-center gap-2">
                 <ChartLineIcon class="w-5 h-5 text-primary" /> ELO Progression
               </CardTitle>
-              <CardDescription>Your rating over time.</CardDescription>
+              <CardDescription>Your rating evolution over the last 7 days</CardDescription>
             </CardHeader>
             <CardContent class="h-64 px-4 sm:px-6">
-              <div class="relative w-full h-full flex flex-col">
-                <div class="relative flex-1 flex">
-                  <div
-                    class="flex flex-col justify-between text-[10px] text-muted-foreground py-1 pr-3 font-mono"
-                  >
-                    <span>{maxElo}</span>
-                    <span>{Math.round((maxElo + minElo)/2)}</span>
-                    <span>{minElo}</span>
-                  </div>
-
-                  <div class="flex-1 relative">
-                    <svg
-                      class="w-full h-full overflow-visible"
-                      preserveAspectRatio="none"
-                      viewBox="0 0 100 100"
-                    >
-                      <defs>
-                        <linearGradient
-                          id="elo-gradient"
-                          x1="0"
-                          x2="0"
-                          y1="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="0%"
-                            stop-color="currentColor"
-                            class="text-primary"
-                            stop-opacity="0.3"
-                          />
-                          <stop
-                            offset="100%"
-                            stop-color="currentColor"
-                            class="text-primary"
-                            stop-opacity="0"
-                          />
-                        </linearGradient>
-                      </defs>
-
-                      <line
-                        x1="0"
-                        y1="0"
-                        x2="100"
-                        y2="0"
-                        class="stroke-muted"
-                        stroke-width="0.5"
-                        stroke-dasharray="2"
-                      />
-                      <line
-                        x1="0"
-                        y1="50"
-                        x2="100"
-                        y2="50"
-                        class="stroke-muted"
-                        stroke-width="0.5"
-                        stroke-dasharray="2"
-                      />
-                      <line
-                        x1="0"
-                        y1="100"
-                        x2="100"
-                        y2="100"
-                        class="stroke-muted"
-                        stroke-width="0.5"
-                        stroke-dasharray="2"
-                      />
-
-                      <polygon
-                        points={`0,100 ${eloHistory.map((h, i) => `${getX(i, eloHistory)},${getY(h.elo, minElo, range)}`).join(' ')} 100,100`}
-                        fill="url(#elo-gradient)"
-                      />
-
-                      <polyline
-                        points={eloHistory.map((h, i) => `${getX(i, eloHistory)},${getY(h.elo, minElo, range)}`).join(' ')}
-                        fill="none"
-                        class="stroke-primary"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-
-                      {#each eloHistory as h, i}
-                        <circle
-                          cx={getX(i, eloHistory)}
-                          cy={getY(h.elo, minElo, range)}
-                          r="2"
-                          class="fill-background stroke-primary"
-                          stroke-width="1"
-                        />
-                      {/each}
-                    </svg>
-                  </div>
-                </div>
-                <div
-                  class="flex justify-between pl-8 mt-2 text-[10px] text-muted-foreground font-mono"
-                >
-                  <span>{eloHistory[0].date}</span>
-                  {#if eloHistory.length > 2}
-                    <span
-                      >{eloHistory[Math.floor(eloHistory.length / 2)].date}</span
-                    >
-                  {/if}
-                  <span>{eloHistory[eloHistory.length - 1].date}</span>
-                </div>
-              </div>
+              <ChartContainer config={chartConfig}>
+                <AreaChart
+                  data={eloHistory}
+                  x="date"
+                  xScale={scaleUtc()}
+                  xDomain={[minDate, now]}
+                  yDomain={[minElo, maxElo]}
+                  series={[{key: "elo", label: "ELO", color: chartConfig.elo.color}]}
+                  axis="x"
+                  padding={{ top: 16, right: 16, bottom: 32, left: 16 }}
+                  props={{
+                    area: {
+                      fillOpacity: 0.4,
+                      line: { class: "stroke-2" },
+                      motion: "tween"
+                    },
+                    xAxis: {
+                      format: (v: Date) => v.toLocaleDateString(undefined /* i18n */, {month: "short",  day: "2-digit"}),
+                    }
+                  }}
+                />
+              </ChartContainer>
             </CardContent>
           </Card>
         {:else}
