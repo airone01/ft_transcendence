@@ -381,7 +381,7 @@ const formEnhance: SubmitFunction = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button class="w-full">
+                <Button class="w-full cursor-pointer">
                   <UserPlusIcon /> Add me!
                 </Button>
               </CardFooter>

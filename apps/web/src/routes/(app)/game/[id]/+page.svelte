@@ -7,7 +7,7 @@ import { gameState, isMyTurn, offerDraw, resign } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
 
-const gameId = page.params.id ?? 0;
+let gameId: string = page.params.id ?? '0';
 
 function handleResign() {
   if (confirm("Abandonner la partie ?")) {
@@ -37,7 +37,7 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
 
 <main class="h-full flex items-center justify-center gap-6 p-6">
   <!-- Left Panel: Partie en cours -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 h-200 flex flex-col border rounded-lg p-5">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h2 class="text-lg font-semibold">Partie en cours</h2>
@@ -152,12 +152,12 @@ const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
   </div>
 
   <!-- Center: Board -->
-  <div class="flex-1 max-w-[800px] min-w-[400px]">
+  <div class="flex-1 max-w-200 min-w-100">
     <Board {gameId} />
   </div>
 
   <!-- Right Panel: Historique -->
-  <div class="w-72 shrink-0 h-[800px] flex flex-col border rounded-lg p-5">
+  <div class="w-72 shrink-0 h-200 flex flex-col border rounded-lg p-5">
     <!-- Header -->
     <h2 class="text-lg font-semibold">Historique</h2>
 

@@ -3,6 +3,9 @@ import { zod } from "sveltekit-superforms/adapters";
 import { loginSchema, registerSchema } from "$lib/schemas/auth";
 import type { LayoutServerLoad } from "./$types";
 
+/* this +layout.server.ts fetches data for the whole app, whereas
++page.server.ts does for the main page (leaderboard) only */
+
 export const load: LayoutServerLoad = async ({ locals, cookies }) => {
   const sidebarCookie = cookies.get("sidebar:state");
   const sidebarOpen = sidebarCookie !== "false";

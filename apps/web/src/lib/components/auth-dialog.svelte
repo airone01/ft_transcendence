@@ -217,22 +217,8 @@ function toggleMode() {
         </div>
         <div class="relative flex justify-center text-xs uppercase">
           <span class="bg-background px-2 text-muted-foreground"
-            >Or continue with<!-- i18n --></span
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-            <!-- i18n -->
-          <!-- i18n -->>
+            >Or continue with</span
+          ><!-- i18n -->
         </div>
       </div>
 

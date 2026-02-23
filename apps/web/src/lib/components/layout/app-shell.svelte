@@ -20,14 +20,17 @@ import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
 
 const { children } = $props();
 
-const sidebarOpen = $state(page.data.sidebarOpen);
+let logoutForm: HTMLFormElement | undefined = $state();
+let commandInput: string = $state("");
+let sidebarOpen: boolean = $state(page.data.sidebarOpen);
+let commandOpen: boolean = $state(false);
+
 $effect(() => {
   // set cookie when bar state changes
   // biome-ignore lint/suspicious/noDocumentCookie: can't use CookieStore because $effect can't be async
   document.cookie = `sidebar:state=${sidebarOpen}; path=/; max-age=31536000; SameSite=Lax`;
 });
 
-let commandOpen = $state(false);
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
     e.preventDefault();
@@ -50,9 +53,6 @@ const logoutFunc: SubmitFunction = () => {
     }
   };
 };
-
-const logoutForm: HTMLFormElement | undefined = $state();
-const commandInput: string = $state("");
 
 $effect(() => {
   if (commandInput.toLowerCase() === "secretcat")

@@ -32,11 +32,6 @@ export const sidebarGroups: SidebarGroup[] = [
     label: "My Content",
     items: [
       {
-        label: "Home",
-        href: "/",
-        icon: HouseIcon,
-      },
-      {
         label: "Profile",
         href: "/profile/me",
         icon: UserIcon,
@@ -58,8 +53,8 @@ export const sidebarGroups: SidebarGroup[] = [
         icon: ZapIcon,
       },
       {
-        label: "Ranking",
-        href: "/ranking",
+        label: "Leaderboard",
+        href: "/",
         icon: TrophyIcon,
       },
     ],
