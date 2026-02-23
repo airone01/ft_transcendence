@@ -11,11 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
 import type { Component } from "svelte";
 import type { Achievements } from "$lib/server/db-services";
 
-type Props = {
-  achievements: Achievements;
-};
-
-const { achievements: oachs }: Props = $props();
+const { achievements: oachs }: { achievements: Achievements } = $props();
 
 type Ach = {
   id: keyof Omit<Achievements, "userId">;
