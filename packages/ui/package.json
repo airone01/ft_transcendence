@@ -30,6 +30,7 @@
     "./sidebar": "./src/components/ui/sidebar/index.ts",
     "./skeleton": "./src/components/ui/skeleton/index.ts",
     "./sonner": "./src/components/ui/sonner/index.ts",
+    "./spinner": "./src/components/ui/spinner/index.ts",
     "./tabs": "./src/components/ui/tabs/index.ts",
     "./tooltip": "./src/components/ui/tooltip/index.ts"
   },
