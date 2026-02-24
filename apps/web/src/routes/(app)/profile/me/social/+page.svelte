@@ -27,10 +27,10 @@ import {
   EmptyTitle,
 } from "@transc/ui/empty";
 import { Input } from "@transc/ui/input";
-import { onDestroy, onMount, untrack } from "svelte";
+import { untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
-import { socketManager } from "$lib/stores/socket.svelte";
+import { onlineUsersStore } from "$lib/stores/presence.store";
 
 const { data } = $props();
 // svelte-ignore state_referenced_locally: idc
@@ -52,82 +52,17 @@ $effect(() => {
   });
 });
 
-// RT STATUS LOGIC
-
-function updateFriendStatus(
-  userId: string | number,
-  status: "online" | "offline" | "ingame",
-) {
-  const id = Number(userId);
-  const index = friends.findIndex((f) => f.userId === id);
-  if (index !== -1) {
-    friends[index].status = status;
-  }
-}
-
-const onPresenceList = (onlineUsers: { userId: string; status: string }[]) => {
-  onlineUsers.forEach((u) => {
-    u.status = "offline";
-  }); // safety
-  onlineUsers.forEach((u) => {
-    updateFriendStatus(u.userId, u.status as "online" | "ingame");
+$effect(() => {
+  const currentOnline = $onlineUsersStore;
+  const serverFriends = data.friends;
+  
+  untrack(() => {
+    friends = serverFriends.map(f => {
+      // check global store for rt status, fallback to offline
+      const rtStatus = (currentOnline.get(String(f.userId)) ?? 'offline') as 'online' | 'offline' | 'ingame';
+      return { ...f, status: rtStatus || "offline" };
+    });
   });
-};
-
-const onPresenceOnline = (data: { userId: string; username: string }) => {
-  updateFriendStatus(data.userId, "online");
-};
-
-const onPresenceOffline = (data: { userId: string }) => {
-  updateFriendStatus(data.userId, "offline");
-};
-
-const onPresenceStatus = (data: {
-  userId: string;
-  status: "online" | "ingame" | "away";
-}) => {
-  updateFriendStatus(
-    data.userId,
-    data.status === "away" ? "online" : data.status,
-  );
-};
-
-onMount(() => {
-  socketManager.on(
-    "presence:list",
-    onPresenceList as (...args: unknown[]) => void,
-  );
-  socketManager.on(
-    "presence:online",
-    onPresenceOnline as (...args: unknown[]) => void,
-  );
-  socketManager.on(
-    "presence:offline",
-    onPresenceOffline as (...args: unknown[]) => void,
-  );
-  socketManager.on(
-    "presence:status",
-    onPresenceStatus as (...args: unknown[]) => void,
-  );
-});
-
-onDestroy(() => {
-  socketManager.off(
-    "presence:list",
-    onPresenceList as (...args: unknown[]) => void,
-  );
-  socketManager.off(
-    "presence:online",
-    onPresenceOnline as (...args: unknown[]) => void,
-  );
-  socketManager.off(
-    "presence:offline",
-    onPresenceOffline as (...args: unknown[]) => void,
-  );
-  socketManager.off(
-    "presence:status",
-    onPresenceStatus as (...args: unknown[]) => void,
-  );
 });
 
 // FORM HANDLING
