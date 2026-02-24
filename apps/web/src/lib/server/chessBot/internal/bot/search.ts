@@ -6,7 +6,9 @@ import {
   type Move,
 } from "$lib/chess";
 import { getAllLegalMoves } from "$lib/chess/internal/gameEndChecks";
+import { isKingInCheck } from "$lib/chess/internal/validation";
 import { evaluate } from "./evaluate";
+import { orderMoves } from "./order";
 
 export function negamax(
   state: GameState,
@@ -17,9 +19,12 @@ export function negamax(
   depth: number,
 ): number {
   if (state.halfMoveCount >= 100) return 0;
-  if (isCheckmate(state)) return -1_000_000;
 
-  let moves = getAllLegalMoves(state);
+  const moves = orderMoves(getAllLegalMoves(state), state.board);
+
+  const isWhite = state.turn === "w";
+  if (isKingInCheck(state, isWhite) && moves.length === 0) return -1_000_000;
+
   if (moves.length === 0) return 0;
 
   if (depth === 0)
@@ -57,9 +62,12 @@ function quiescence(
   existingMoves?: Move[],
 ): number {
   if (state.halfMoveCount >= 100) return 0;
-  if (isCheckmate(state)) return -1_000_000;
 
-  const moves = existingMoves ?? getAllLegalMoves(state);
+  const moves =
+    existingMoves ?? orderMoves(getAllLegalMoves(state), state.board);
+
+  const isWhite = state.turn === "w";
+  if (isKingInCheck(state, isWhite) && moves.length === 0) return -1_000_000;
   if (moves.length === 0) return 0;
 
   const score = evaluate(state, color);
