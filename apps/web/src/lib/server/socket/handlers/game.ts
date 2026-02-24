@@ -4,7 +4,7 @@ import {
   DBPlayersNotFoundError,
   dbGetGame,
   dbGetPlayers,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 import { GameRoom } from "../rooms/GameRoom";
 
 const activeGames = new Map<string, GameRoom>();
@@ -39,14 +39,33 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           blackId: String(players.blackPlayerId),
           fen: game.fen,
           startedAt: game.startedAt || undefined,
+          timeControlSeconds: game.timeControlSeconds,
+          incrementSeconds: game.incrementSeconds,
         });
         activeGames.set(gameId, gameRoom);
+
+        // Forward timer events to clients
+        gameRoom.on(
+          "time_tick",
+          (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+            io.to(`game:${gameId}`).emit("game:time", data);
+          },
+        );
+        gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
+          io.to(`game:${data.gameId}`).emit("game:over", {
+            winner: data.winner,
+            reason: "timeout",
+          });
+          activeGames.delete(data.gameId);
+        });
       }
 
       gameRoom.addPlayer(socket);
 
-      // Send state
-      socket.emit("game:state", gameRoom.getState());
+      // Send state with player's color
+      const myColor =
+        String(players.whitePlayerId) === userId ? "white" : "black";
+      socket.emit("game:state", { ...gameRoom.getState(), myColor });
 
       // Notify opponent
       socket.to(`game:${gameId}`).emit("player:joined", {
@@ -100,6 +119,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           fen: result.fen,
           checkmate: result.checkmate,
           stalemate: result.stalemate,
+          whiteTimeLeft: result.whiteTimeLeft,
+          blackTimeLeft: result.blackTimeLeft,
         });
 
         // Game over

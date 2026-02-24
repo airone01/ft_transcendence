@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
   integer,
@@ -100,6 +101,57 @@ export const usersStats = pgTable(
   (table) => [
     index("users_stats_current_elo").on(table.currentElo),
     check("users_stats_current_elo_check", sql`${table.currentElo} > 0`),
+  ],
+);
+
+// ############################# ELO_HISTORY #############################
+
+export const eloHistory = pgTable(
+  "elo_history",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    elo: integer("elo").notNull().default(1000),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("elo_history_created_at_idx").on(table.createdAt)],
+);
+
+// ############################ ACHIEVEMENTS #############################
+
+export const achievements = pgTable("achievements", {
+  userId: integer("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .primaryKey(),
+  first_game: boolean("first_game").default(false).notNull(),
+  first_win: boolean("first_win").default(false).notNull(),
+  five_wins: boolean("five_wins").default(false).notNull(),
+  reach_high_elo: boolean("reach_high_elo").default(false).notNull(),
+  update_profile: boolean("update_profile").default(false).notNull(),
+});
+
+// ####################### FRIENDSHIPS_INVITATIONS #######################
+
+export const friendshipsInvitations = pgTable(
+  "friendships_invitations",
+  {
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    friendId: integer("friend_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("friendships_invitations_user_id_idx").on(table.userId),
+    index("friendships_invitations_friend_id_idx").on(table.friendId),
+    index("friendships_invitations_created_at_idx").on(table.createdAt),
   ],
 );
 
@@ -222,5 +274,75 @@ export const games = pgTable(
       sql`${table.timeControlSeconds} > 0`,
     ),
     check("games_increment_seconds_check", sql`${table.incrementSeconds} >= 0`),
+  ],
+);
+
+// ################################ CHAT #################################
+
+export const chatChannelType = pgEnum("chat_channel_type", [
+  "global",
+  "game",
+  "private",
+]);
+
+export const chatChannels = pgTable(
+  "chat_channels",
+  {
+    id: serial("id").primaryKey(),
+    type: chatChannelType().notNull(),
+    gameId: integer("game_id").references(() => games.id, {
+      onDelete: "cascade",
+    }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("chat_channels_type_idx").on(table.type),
+    index("chat_channels_game_id_idx").on(table.gameId),
+  ],
+);
+
+export const chatChannelMembers = pgTable(
+  "chat_channel_members",
+  {
+    channelId: integer("channel_id")
+      .references(() => chatChannels.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.channelId, table.userId] }),
+    index("chat_channel_members_channel_id_idx").on(table.channelId),
+    index("chat_channel_members_user_id_idx").on(table.userId),
+  ],
+);
+
+export const chatMessages = pgTable(
+  "chat_messages",
+  {
+    id: serial("id").primaryKey(),
+    channelId: integer("channel_id")
+      .references(() => chatChannels.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    userId: integer("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("chat_messages_channel_id_idx").on(table.channelId),
+    index("chat_messages_user_id_idx").on(table.userId),
+    index("chat_messages_created_at_idx").on(table.createdAt),
   ],
 );

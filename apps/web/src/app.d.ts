@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { User, AuthSession } from "$lib/db-services";
+import type { User, AuthSession } from "$lib/server/db-services";
 
 /* we should not pass the (hashed) password in the user object, otherwise
 a malicious actor might utilize an XSS exploit to fetch users'

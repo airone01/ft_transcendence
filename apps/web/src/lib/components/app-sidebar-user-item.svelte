@@ -9,29 +9,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@transc/ui/dropdown-menu"
-import { enhance } from "$app/forms";
-import { invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
-import { toast } from "svelte-sonner";
 
-const logoutFunc = () => {
-  return async ({ result }: any) => {
-    if (result.type === 'redirect' || result.type === 'success') {
-      toast.success("You logged out. See you soon!");
-      await invalidateAll(); // invalidates data to redraw interface
-    } else {
-      toast.error("Failed to log out");
-    }
-  };
-};
+const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
 const user = $derived(page.data.user);
 const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
-let logoutForm: HTMLFormElement | undefined = $state();
 </script>
 
 {#if user}
-  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/50 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
+  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
     <a href="/profile/me" class="shrink-0">
       <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
         <AvatarImage src={user.avatar} alt={user.username} />
@@ -49,22 +36,19 @@ let logoutForm: HTMLFormElement | undefined = $state();
           <p>{user.username}</p>
         </TooltipContent>
       </Tooltip>
-      <div class="text-xs truncate leading-none text-muted-foreground max-w-full w-fit">...more info</div>
+      <span class="font-mono bg-muted px-1 rounded-sm text-[10px] font-bold w-fit">
+        ELO ????
+      </span>
     </div>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button variant="outline" size="sm" class="cursor-pointer"><EllipsisIcon /></Button>
+        <Button variant="outline" size="icon" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30 p-0">
+          <EllipsisIcon class="aspect-square" />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
-        <form 
-          action="/logout" 
-          method="POST" 
-          bind:this={logoutForm}
-          use:enhance={logoutFunc}
-        >
-          <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>Log out</DropdownMenuItem>
-        </form>
-        <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
+        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
+        <a href="/settings/profile"><DropdownMenuItem class="cursor-pointer">Settings</DropdownMenuItem></a>
       </DropdownMenuContent>
     </DropdownMenu>
   </div>

@@ -1,6 +1,6 @@
 <script lang="ts" generics="T extends AnyZodObject">
 import type { AnyZodObject } from "zod/v3";
-import type { SuperValidated, Infer, FormPath, SuperForm } from "sveltekit-superforms";
+import type { Infer, FormPath, SuperForm } from "sveltekit-superforms";
 
 import { FormField, FormLabel, FormControl, FormFieldErrors } from "@transc/ui/form";
 import { Checkbox } from "@transc/ui/checkbox";
@@ -18,6 +18,7 @@ let {
   fields: [FormPath<Infer<T>>, string, string?][]; 
 }>();
 
+// svelte-ignore state_referenced_locally: idc
 const { form: formData, enhance } = form;
 </script>
 
@@ -32,7 +33,7 @@ const { form: formData, enhance } = form;
     <FormField {form} {name}>
       <FormControl>
         {#snippet children({ props })}
-          <FormLabel class="hover:bg-accent/5 flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-accent/50 has-aria-checked:bg-accent/20 transition-all mb-0 max-w-md">
+          <FormLabel class="hover:bg-accent/10 flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-accent has-aria-checked:bg-accent/20 transition-all mb-0 max-w-md">
             
             <Checkbox
               {...props}

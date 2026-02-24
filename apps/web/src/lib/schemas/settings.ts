@@ -6,7 +6,10 @@ export const profileFormSchema = z.object({
   username: zUsername.optional(),
   avatar: z
     .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
-    .refine((f) => f.size < 100_000, "Max 100 kB upload size." /* i18n */)
+    .refine(
+      (f) => f.size < 1_000_000,
+      "Avatar files uploaded can be at most 1 MB in size" /* i18n */,
+    )
     .optional(),
 });
 
@@ -75,10 +78,15 @@ export const privacyFormSchema = z.object({
   gameHistory: z.boolean(),
 });
 
-export const accountSettingsSchema = z.object({
-  oldPassword: z.string(),
-  newPassword: zPassword,
-  newPasswordConfirm: zPassword,
-});
+export const accountSettingsSchema = z
+  .object({
+    oldPassword: z.string().optional(),
+    newPassword: zPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match" /* i18n */,
+    path: ["confirmPassword"],
+  });
 
 export type ProfileFormSchema = typeof profileFormSchema;

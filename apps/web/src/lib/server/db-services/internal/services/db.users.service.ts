@@ -1,8 +1,17 @@
 import { db } from "@transc/db";
-import { users, usersStats } from "@transc/db/schema";
-import { DrizzleQueryError, eq } from "drizzle-orm";
+import {
+  achievements,
+  chatChannelMembers,
+  chatChannels,
+  eloHistory,
+  users,
+  usersStats,
+} from "@transc/db/schema";
+import { DrizzleQueryError, desc, eq, not, sql } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
+  type Achievements,
+  type ChatChannelType,
   type CreateUserInput,
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
@@ -11,7 +20,7 @@ import {
   type UpdateUserInput,
   type User,
   type UserStats,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 /**
  * Checks if a given username is taken in the database.
@@ -71,14 +80,30 @@ export async function dbCreateUser(
         })
         .returning();
 
-      const [stats] = await tx
-        .insert(usersStats)
-        .values({
-          userId: newUser.id,
-        })
-        .returning({ id: usersStats.userId });
+      await tx.insert(usersStats).values({
+        userId: newUser.id,
+      });
 
-      return stats.id;
+      await tx.insert(eloHistory).values({
+        userId: newUser.id,
+      });
+
+      await tx.insert(achievements).values({
+        userId: newUser.id,
+      });
+
+      const [globalChannelId] = await tx
+        .select({ id: chatChannels.id })
+        .from(chatChannels)
+        .where(eq(chatChannels.type, "global" as ChatChannelType))
+        .limit(1);
+
+      await tx.insert(chatChannelMembers).values({
+        userId: newUser.id,
+        channelId: globalChannelId.id,
+      });
+
+      return newUser.id;
     });
 
     return userId;
@@ -104,6 +129,26 @@ export async function dbCreateUser(
       }
     }
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves five random users
+ * @param {number} userId - The id of the user requesting
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User[]>} - A promise that resolves with the users array
+ */
+export async function dbGetRandomUsers(userId: number): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(users)
+      .where(not(eq(users.id, userId)))
+      .orderBy(sql`RANDOM()`)
+      .limit(5);
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
@@ -150,6 +195,28 @@ export async function dbGetUserByEmail(
   }
 }
 
+/**
+ * Retrieves a user from the database by their username.
+ * @param {string} username - The username of the user to retrieve
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User | undefined>} - A promise that resolves with the user if found, undefined otherwise
+ */
+export async function dbGetUserByUsername(
+  username: string,
+): Promise<User | undefined> {
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, username));
+
+    return user ?? undefined;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
 export async function dbUpdateUser(
   userId: number,
   userInput: UpdateUserInput,
@@ -167,6 +234,11 @@ export async function dbUpdateUser(
       .returning();
 
     if (!user) throw new DBUserNotFoundError();
+
+    await db
+      .update(achievements)
+      .set({ update_profile: true })
+      .where(eq(achievements.userId, userId));
   } catch (err) {
     if (err instanceof DBUserNotFoundError) throw err;
 
@@ -218,6 +290,55 @@ export async function dbGetStats(userId: number): Promise<UserStats> {
   } catch (err) {
     if (err instanceof DBUserNotFoundError) throw err;
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves the elo history of a user.
+ * The elo history is a list of elo entries with their corresponding createdAt date.
+ * The list is sorted in descending order by createdAt date.
+ * @param {number} userId - The id of the user to retrieve elo history for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<{ elo: number; createdAt: Date }[]>} - A promise that resolves with the elo history, or rejects if an unexpected error occurs
+ */
+export async function dbGetEloHistory(userId: number): Promise<
+  {
+    elo: number;
+    createdAt: Date;
+  }[]
+> {
+  try {
+    return await db
+      .select({
+        elo: eloHistory.elo,
+        createdAt: eloHistory.createdAt,
+      })
+      .from(eloHistory)
+      .where(eq(eloHistory.userId, userId))
+      .orderBy(desc(eloHistory.createdAt));
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves the achievements of a user.
+ * @param {number} userId - The id of the user to retrieve achievements for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<Achievements>} - A promise that resolves with the achievements of the user, or rejects if an unexpected error occurs
+ */
+export async function dbGetAchievements(userId: number): Promise<Achievements> {
+  try {
+    const [result] = await db
+      .select()
+      .from(achievements)
+      .where(eq(achievements.userId, userId));
+
+    return result;
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
