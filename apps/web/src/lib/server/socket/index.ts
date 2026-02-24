@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { registerGameHandlers } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
-//import { registerChatHandlers } from "./handlers/chat";
+import { registerChatHandlers } from "./handlers/chat";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import {
@@ -46,7 +46,7 @@ export function initSocketServer(httpServer: HTTPServer) {
 
     // Register handlers
     registerGameHandlers(io, socket);
-    //registerChatHandlers(io, socket);
+    registerChatHandlers(io, socket);
     registerPresenceHandlers(io, socket);
     registerMatchmakingHandlers(io, socket);
 

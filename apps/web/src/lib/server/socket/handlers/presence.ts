@@ -1,7 +1,7 @@
 import type { Server, Socket } from "socket.io";
 
 // In-memory map to track online users
-const onlineUsers = new Map<string, { username: string; status: string }>();
+const onlineUsers = new Map<number, { username: string; status: string }>();
 
 export function registerPresenceHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -36,13 +36,11 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
 
   // Cleanup on disconnect (called from index.ts after a delay)
   socket.on("disconnect", () => {
-    // Do not remove immediately to allow reconnection
-    // Removal is handled in handleDisconnection in index.ts
   });
 }
 
 // Export for cleanup from index.ts
-export function setUserOffline(userId: string) {
+export function setUserOffline(userId: number) {
   onlineUsers.delete(userId);
 }
 
