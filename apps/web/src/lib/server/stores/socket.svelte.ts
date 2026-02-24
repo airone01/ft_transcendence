@@ -22,11 +22,11 @@ class SocketManager {
   connect() {
     if (this.socket?.connected) return;
 
-    this.socket = io("http://localhost:3000", {
-      auth: {
-        token: this.getToken(),
-      },
-      transports: ["websocket", "polling"],
+    this.socket?.disconnect();
+
+    this.socket = io("http://10.11.3.4:3001", {
+      auth: { userId, username },
+      transports: ["websocket"],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
