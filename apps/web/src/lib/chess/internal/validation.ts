@@ -86,6 +86,7 @@ export function isCastleLegal(state: GameState, move: Move): boolean {
   return true;
 }
 
+/** @internal */
 function simulateKingStep(
   state: GameState,
   from: [number, number],

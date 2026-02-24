@@ -3,12 +3,12 @@ import {
   isDraw,
   playMove,
   printBoard,
-  printHistory,
   startGame,
+  type GameState,
 } from "$lib/chess";
-import { findBestMoveTimed } from "./bot.claude";
+import { findBestMove } from "./bot/main";
 
-function testBot() {
+export async function testBot() {
   let state = startGame();
 
   console.log("Starting game");
@@ -19,7 +19,7 @@ function testBot() {
     const startClock = Date.now();
     console.log(state.turn === "w" ? "White's turn" : "Black's turn");
 
-    const move = findBestMoveTimed(state, 3000);
+    const move = findBestMove(state);
     state = playMove(state, move);
 
     printBoard(state.board);
