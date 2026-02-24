@@ -1,6 +1,7 @@
 <script lang="ts">
-import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
+import { Avatar, AvatarFallback } from "@transc/ui/avatar";
 import { Spinner } from "@transc/ui/spinner";
+import UserAvatar from "./user-avatar.svelte";
 
 const { userPromise, fallbackText, class: className } = $props();
 </script>
@@ -12,10 +13,12 @@ const { userPromise, fallbackText, class: className } = $props();
     </AvatarFallback>
   </Avatar>
 {:then user}
-  <Avatar class={className}>
-    <AvatarImage src={user?.avatar} alt={user?.username} />
-    <AvatarFallback class="font-bold">{fallbackText}</AvatarFallback>
-  </Avatar>
+  <UserAvatar
+    userId={user.id}
+    username={user.username}
+    avatarUrl={user.avatar}
+    class="h-12 w-12 md:w-14 md:h-14 {className}"
+  />
 {:catch _e}
   <Avatar class={className}>
     <AvatarFallback class="font-bold text-muted-foreground">

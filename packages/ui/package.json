@@ -22,6 +22,7 @@
     "./dropdown-menu": "./src/components/ui/dropdown-menu/index.ts",
     "./empty": "./src/components/ui/empty/index.ts",
     "./form": "./src/components/ui/form/index.ts",
+    "./hover-card": "./src/components/ui/hover-card/index.ts",
     "./image-cropper": "./src/components/ui/image-cropper/index.ts",
     "./input": "./src/components/ui/input/index.ts",
     "./item": "./src/components/ui/item/index.ts",

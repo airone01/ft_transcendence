@@ -30,6 +30,7 @@ import { Input } from "@transc/ui/input";
 import { untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
+import UserAvatar from "$lib/components/user-avatar.svelte";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 
 const { data } = $props();
@@ -55,11 +56,14 @@ $effect(() => {
 $effect(() => {
   const currentOnline = $onlineUsersStore;
   const serverFriends = data.friends;
-  
+
   untrack(() => {
-    friends = serverFriends.map(f => {
+    friends = serverFriends.map((f) => {
       // check global store for rt status, fallback to offline
-      const rtStatus = (currentOnline.get(String(f.userId)) ?? 'offline') as 'online' | 'offline' | 'ingame';
+      const rtStatus = (currentOnline.get(String(f.userId)) ?? "offline") as
+        | "online"
+        | "offline"
+        | "ingame";
       return { ...f, status: rtStatus || "offline" };
     });
   });
@@ -143,14 +147,12 @@ const formEnhance: SubmitFunction = () => {
               <CardContent class="p-2 flex items-center gap-4">
                 <div class="relative">
                   <a href="/profile/{friend.userId}">
-                    <Avatar
-                      class="h-12 w-12 border-2 border-background shadow-sm"
-                    >
-                      <AvatarImage src={friend.avatar} alt={friend.username} />
-                      <AvatarFallback class="select-none">
-                        {friend.username.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar
+                      class="h-12 w-12 border"
+                      avatarUrl={friend.avatar}
+                      username={friend.username}
+                      userId={friend.userId}
+                    />
                   </a>
                   <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
                     {#if friend.status === 'online'}
@@ -243,12 +245,11 @@ const formEnhance: SubmitFunction = () => {
           {#each data.invitations as invite (invite.userId)}
             <Card class="overflow-hidden py-0 shrink-0">
               <CardContent class="p-2 flex items-center gap-4">
-                <Avatar class="h-10 w-10 border shadow-sm">
-                  <AvatarImage src={invite.avatar} alt={invite.username} />
-                  <AvatarFallback class="select-none">
-                    {invite.username.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  avatarUrl={invite.avatar}
+                  username={invite.username}
+                  userId={invite.userId}
+                />
 
                 <div class="flex-1 min-w-0">
                   <a
@@ -285,7 +286,7 @@ const formEnhance: SubmitFunction = () => {
                       type="submit"
                       variant="ghost"
                       size="sm"
-                      class="h-8 text-muted-foreground hover:text-destructive cursor-pointer px-2"
+                      class="h-8 text-muted-foreground hover:bg-destructive cursor-pointer px-2"
                     >
                       Reject
                     </Button>
@@ -316,14 +317,12 @@ const formEnhance: SubmitFunction = () => {
             <Card class="overflow-hidden flex flex-col flex-1 min-h-0 max-w-sm">
               <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
                 <div class="flex gap-4 items-center h-fit w-full">
-                  <a href="/profile/{id}">
-                    <Avatar class="h-12 w-12 border-2 shadow-sm">
-                      <AvatarImage src={avatar} alt={username} />
-                      <AvatarFallback class="select-none">
-                        {username.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </a>
+                  <UserAvatar
+                    avatarUrl={avatar}
+                    username={username}
+                    userId={id}
+                    class="h-12 w-12"
+                  />
                   <div class="flex-1 min-w-0">
                     <a
                       href="/profile/{id}"

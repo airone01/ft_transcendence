@@ -41,7 +41,6 @@ const { data } = $props();
             {#each topThree as player, i}
               {@const isFirst = i === 0}
               {@const isSecond = i === 1}
-              {@const isThird = i === 2}
 
               <div
                 class="flex flex-col items-center {isFirst ? 'order-2' : isSecond ? 'order-1' : 'order-3'}"
@@ -56,7 +55,7 @@ const { data } = $props();
                     <LeaderboardAvatar
                       userPromise={data.userPromises[player.userId]}
                       fallbackText={player.username.slice(0, 2).toUpperCase()}
-                      class="w-full h-full"
+                      class="w-full h-full border-none"
                     />
                   </div>
 
@@ -93,7 +92,7 @@ const { data } = $props();
           <div class="flex flex-col gap-2 px-4 sm:px-0 pb-4">
             {#each rest as player, i (player.userId)}
               <div
-                class="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/40 transition-colors"
+                class="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/10 transition-colors"
               >
                 <div class="flex items-center gap-4">
                   <span
@@ -113,7 +112,7 @@ const { data } = $props();
                     {player.username}
                   </a>
                 </div>
-                <Badge variant="secondary" class="text-sm px-3 py-1">
+                <Badge variant="outline" class="text-sm px-3 py-1">
                   ELO {player.elo}
                 </Badge>
               </div>

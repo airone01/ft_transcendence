@@ -1,4 +1,4 @@
-import { writable, type Writable } from "svelte/store";
+import { type Writable, writable } from "svelte/store";
 import { socketManager } from "$lib/stores/socket.svelte";
 
 // map tracking userId to status
@@ -11,7 +11,9 @@ export function setupPresenceListeners() {
     onlineList: { userId: string; status: "online" | "offline" | "ingame" }[],
   ) => {
     onlineUsersStore.update((map) => {
-      onlineList.forEach((u) => map.set(u.userId, u.status));
+      onlineList.forEach((u) => {
+        map.set(u.userId, u.status);
+      });
       return map;
     });
   }) as unknown as (...args: unknown[]) => void);
