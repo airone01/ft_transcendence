@@ -1,5 +1,9 @@
-import { dbSendToFriend, dbSendToGame, dbSendToGlobal } from "$lib/server/db-services";
 import type { Server, Socket } from "socket.io";
+import {
+  dbSendToFriend,
+  dbSendToGame,
+  dbSendToGlobal,
+} from "$lib/server/db-services";
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -39,14 +43,13 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     const content = rawContent.trim();
-    const gameIdNum = parseInt(gameId);
+    const gameIdNum = parseInt(gameId, 10);
 
-    if (isNaN(gameIdNum)) {
+    if (Number.isNaN(gameIdNum)) {
       return socket.emit("chat:error", { message: "Invalid game ID" });
     }
 
     try {
-
       await dbSendToGame(userId, gameIdNum, content);
 
       io.to(`game:${gameId}`).emit("chat:game", {
@@ -63,31 +66,34 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   // ─── Friend message (MP) ────────────────────────────────────────────────
 
-  socket.on("chat:friend", async (data: { friendId: number; content: string }) => {
-    const { friendId, content: rawContent } = data;
+  socket.on(
+    "chat:friend",
+    async (data: { friendId: number; content: string }) => {
+      const { friendId, content: rawContent } = data;
 
-    if (!rawContent || rawContent.trim().length === 0) {
-      return socket.emit("chat:error", { message: "Empty message" });
-    }
+      if (!rawContent || rawContent.trim().length === 0) {
+        return socket.emit("chat:error", { message: "Empty message" });
+      }
 
-    const content = rawContent.trim();
+      const content = rawContent.trim();
 
-    try {
-      await dbSendToFriend(userId, friendId, content);
+      try {
+        await dbSendToFriend(userId, friendId, content);
 
-      const messageData = {
-        userId,
-        friendId,
-        username,
-        content,
-        timestamp: new Date().toISOString(),
-      };
+        const messageData = {
+          userId,
+          friendId,
+          username,
+          content,
+          timestamp: new Date().toISOString(),
+        };
 
-      io.to(`user:${userId}`).emit("chat:friend", messageData);
-      io.to(`user:${friendId}`).emit("chat:friend", messageData);
-    } catch (error) {
-      console.error("Failed to send friend message:", error);
-      return socket.emit("chat:error", { message: "Failed to send message" });
-    }
-  });
+        io.to(`user:${userId}`).emit("chat:friend", messageData);
+        io.to(`user:${friendId}`).emit("chat:friend", messageData);
+      } catch (error) {
+        console.error("Failed to send friend message:", error);
+        return socket.emit("chat:error", { message: "Failed to send message" });
+      }
+    },
+  );
 }
