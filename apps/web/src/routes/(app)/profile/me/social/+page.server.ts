@@ -1,7 +1,4 @@
 import { fail } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { friendshipsInvitations, users } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
   dbAddFriend,
