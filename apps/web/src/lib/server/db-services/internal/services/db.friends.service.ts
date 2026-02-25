@@ -43,7 +43,18 @@ export async function dbRequestFriendship(
         ),
       );
 
-    if (!friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
+    const [invitation] = await db
+      .select()
+      .from(friendshipsInvitations)
+      .where(
+        and(
+          eq(friendshipsInvitations.userId, Math.min(userId, friendId)),
+          eq(friendshipsInvitations.friendId, Math.max(userId, friendId)),
+        ),
+      );
+
+    if (friendship || invitation)
+      throw new DBAddFriendFriendshipAlreadyExistsError();
 
     await db.insert(friendshipsInvitations).values({
       userId: userId,
