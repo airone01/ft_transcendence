@@ -87,6 +87,7 @@ export {
 export {
   dbAddFriend,
   dbGetFriendsInfo,
+  dbGetInvitations,
   dbRejectFriendship,
   dbRemoveFriend,
   dbRequestFriendship,

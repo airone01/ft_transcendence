@@ -58,6 +58,34 @@ export async function dbRequestFriendship(
 }
 
 /**
+ * Retrieves the list of friend requests for a given user.
+ * @param {number} userId - The id of the user to retrieve friend requests for
+ * @returns {Promise<{ userId: number; username: string; avatar: string | null; }[]>} - A promise that resolves with the list of friend requests, or rejects if an unexpected error occurs
+ */
+export async function dbGetInvitations(userId: number): Promise<
+  {
+    userId: number;
+    username: string;
+    avatar: string | null;
+  }[]
+> {
+  try {
+    return await db
+      .select({
+        userId: users.id,
+        username: users.username,
+        avatar: users.avatar,
+      })
+      .from(friendshipsInvitations)
+      .innerJoin(users, eq(users.id, friendshipsInvitations.userId))
+      .where(eq(friendshipsInvitations.friendId, userId));
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
  * Rejects a friendship request from a user to another user.
  * @param {number} userId - The id of the user who sent the request
  * @param {number} friendId - The id of the user who received the request

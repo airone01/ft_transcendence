@@ -313,26 +313,26 @@ const formEnhance: SubmitFunction = () => {
           <CardDescription>Make some friends and some enemies</CardDescription>
         </CardHeader>
         <CardContent class="flex justify-start h-full gap-2 pb-6">
-          {#each users as {id, avatar, username}}
+          {#each users as {userId, avatar, username, currentElo}}
             <Card class="overflow-hidden flex flex-col flex-1 min-h-0 max-w-sm">
               <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
                 <div class="flex gap-4 items-center h-fit w-full">
                   <UserAvatar
                     avatarUrl={avatar}
                     username={username}
-                    userId={id}
+                    userId={userId}
                     class="h-12 w-12"
                   />
                   <div class="flex-1 min-w-0">
                     <a
-                      href="/profile/{id}"
+                      href="/profile/{userId}"
                       class="font-medium hover:underline truncate block"
                     >
                       {username}
                     </a>
                     <div class="text-xs text-muted-foreground mt-0.5">
                       <Badge variant="secondary" class="h-4 px-1.5 text-[10px]">
-                        ELO ???
+                        ELO {currentElo}
                       </Badge>
                     </div>
                   </div>
