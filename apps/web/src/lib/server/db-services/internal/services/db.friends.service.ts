@@ -43,7 +43,7 @@ export async function dbRequestFriendship(
         ),
       );
 
-    if (friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
+    if (!friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
 
     await db.insert(friendshipsInvitations).values({
       userId: userId,
