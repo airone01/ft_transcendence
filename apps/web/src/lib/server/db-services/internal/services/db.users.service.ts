@@ -5,6 +5,7 @@ import {
   chatChannels,
   eloHistory,
   friendships,
+  friendshipsInvitations,
   users,
   usersStats,
 } from "@transc/db/schema";
@@ -17,6 +18,7 @@ import {
   isNull,
   not,
   sql,
+  like,
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { DatabaseError } from "pg";
@@ -27,6 +29,7 @@ import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   DBUserNotFoundError,
+  type FriendInfo,
   UnknownError,
   type UpdateUserInput,
   type User,
@@ -151,22 +154,23 @@ export async function dbCreateUser(
  * @throws {UnknownError} - If an unexpected error occurs
  * @returns {Promise<User[]>} - A promise that resolves with the users array
  */
-export async function dbGetRandomUsers(userId: number): Promise<User[]> {
+export async function dbGetRandomUsers(userId: number): Promise<FriendInfo[]> {
   try {
     const friendship1 = alias(friendships, "friendship1");
     const friendship2 = alias(friendships, "friendship2");
+    const invitations1 = alias(friendshipsInvitations, "invitations1");
+    const invitations2 = alias(friendshipsInvitations, "invitations2");
 
     return await db
       .select({
-        id: users.id,
+        userId: users.id,
         username: users.username,
-        email: users.email,
-        password: sql<null>`null`,
         avatar: users.avatar,
         status: users.status,
-        createdAt: users.createdAt,
+        currentElo: usersStats.currentElo,
       })
       .from(users)
+      .innerJoin(usersStats, eq(users.id, usersStats.userId))
       .leftJoin(
         friendship1,
         and(
@@ -181,11 +185,27 @@ export async function dbGetRandomUsers(userId: number): Promise<User[]> {
           eq(friendship2.secondFriendId, userId),
         ),
       )
+      .leftJoin(
+        invitations1,
+        and(
+          eq(invitations1.userId, userId),
+          eq(invitations1.friendId, users.id),
+        ),
+      )
+      .leftJoin(
+        invitations2,
+        and(
+          eq(invitations2.userId, users.id),
+          eq(invitations2.friendId, userId),
+        ),
+      )
       .where(
         and(
           not(eq(users.id, userId)),
           isNull(friendship1.firstFriendId),
           isNull(friendship2.secondFriendId),
+          isNull(invitations1.userId),
+          isNull(invitations2.userId),
         ),
       )
       .orderBy(sql`RANDOM()`)
@@ -253,6 +273,25 @@ export async function dbGetUserByUsername(
       .where(eq(users.username, username));
 
     return user ?? undefined;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+
+/**
+ * Retrieves a list of users whose usernames start with a given prefix.
+ * @param {string} prefix - The prefix to search for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User[]>} - A promise that resolves with the list of users, or rejects if an unexpected error occurs
+ */
+export async function dbGetUsersWithPrefix(prefix: string): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(users)
+      .where(like(users.username, `${prefix}%`));
   } catch (err) {
     console.error(err);
     throw new UnknownError();

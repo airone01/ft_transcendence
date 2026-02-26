@@ -16,10 +16,24 @@ import CurrentEloCard from "./current-elo-card.svelte";
 import EloHistoryCard from "./elo-history-card.svelte";
 import RecentMatchesCard from "./recent-matches-card.svelte";
 import WinRatioCard from "./win-ratio-card.svelte";
+import { enhance } from "$app/forms";
+import type { SubmitFunction } from "@sveltejs/kit";
+import { toast } from "svelte-sonner";
 
 const { data } = $props();
 
 const isMe = (userId: number) => page.data.user?.id === userId;
+
+const formEnhance: SubmitFunction = () => {
+  return async ({ result, update }) => {
+    if (result.type === "failure")
+      toast.error(result.data?.error ?? "An error occurred");
+    else if (result.type === "success")
+      toast.success(result.data?.message ?? "Success");
+    await update();
+  };
+};
+
 </script>
 
 <main class="w-full">
@@ -76,11 +90,16 @@ const isMe = (userId: number) => page.data.user?.id === userId;
               >
                 <SwordsIcon class="w-4 h-4" /> Challenge
               </Button>
-              <form method="POST" action="/profile/me/social?/add">
+              <form
+                  method="POST"
+                  action="/profile/me/social?/add"
+                  use:enhance={formEnhance}
+                  class="w-full"
+                >
                 <input type="hidden" name="username" value={user?.username}>
                 <Button
                   type="submit"
-                  variant="outline"
+                  variant="secondary"
                   class="flex-1 md:flex-none gap-2"
                 >
                   <UserPlusIcon class="w-4 h-4" /> Add Friend

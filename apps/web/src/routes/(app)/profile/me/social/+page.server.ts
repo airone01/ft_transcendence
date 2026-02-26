@@ -1,11 +1,9 @@
 import { fail } from "@sveltejs/kit";
-import { db } from "@transc/db";
-import { friendshipsInvitations, users } from "@transc/db/schema";
-import { eq } from "drizzle-orm";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
   dbAddFriend,
   dbGetFriendsInfo,
+  dbGetInvitations,
   dbGetRandomUsers,
   dbGetUserByUsername,
   dbRejectFriendship,
@@ -19,17 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const friends = await dbGetFriendsInfo(locals.user.id);
   const suggestedUsers = await dbGetRandomUsers(locals.user.id);
-
-  // TODO: DB
-  const invitations = await db
-    .select({
-      userId: users.id,
-      username: users.username,
-      avatar: users.avatar,
-    })
-    .from(friendshipsInvitations)
-    .innerJoin(users, eq(users.id, friendshipsInvitations.userId))
-    .where(eq(friendshipsInvitations.friendId, locals.user.id));
+  const invitations = await dbGetInvitations(locals.user.id);
 
   return {
     users: suggestedUsers,

@@ -19,8 +19,8 @@
     "db:migrate": "drizzle-kit migrate --config=./drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config=./drizzle.config.ts",
     "db:seed": "bun run src/seed.ts",
-    "db:setup": "bun db:migrate && bun db:seed",
-    "db:reset": "docker compose down -v"
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down -v"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"

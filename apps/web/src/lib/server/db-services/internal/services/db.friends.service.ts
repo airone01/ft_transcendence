@@ -43,7 +43,18 @@ export async function dbRequestFriendship(
         ),
       );
 
-    if (friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
+    const [invitation] = await db
+      .select()
+      .from(friendshipsInvitations)
+      .where(
+        and(
+          eq(friendshipsInvitations.userId, Math.min(userId, friendId)),
+          eq(friendshipsInvitations.friendId, Math.max(userId, friendId)),
+        ),
+      );
+
+    if (friendship || invitation)
+      throw new DBAddFriendFriendshipAlreadyExistsError();
 
     await db.insert(friendshipsInvitations).values({
       userId: userId,
@@ -52,6 +63,34 @@ export async function dbRequestFriendship(
   } catch (err) {
     if (err instanceof DBAddFriendFriendshipAlreadyExistsError) throw err;
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves the list of friend requests for a given user.
+ * @param {number} userId - The id of the user to retrieve friend requests for
+ * @returns {Promise<{ userId: number; username: string; avatar: string | null; }[]>} - A promise that resolves with the list of friend requests, or rejects if an unexpected error occurs
+ */
+export async function dbGetInvitations(userId: number): Promise<
+  {
+    userId: number;
+    username: string;
+    avatar: string | null;
+  }[]
+> {
+  try {
+    return await db
+      .select({
+        userId: users.id,
+        username: users.username,
+        avatar: users.avatar,
+      })
+      .from(friendshipsInvitations)
+      .innerJoin(users, eq(users.id, friendshipsInvitations.userId))
+      .where(eq(friendshipsInvitations.friendId, userId));
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }
