@@ -27,10 +27,12 @@ export const actions: Actions = {
     }
 
     try {
-      const updateData: { username?: string; avatar?: string } = {};
+      const updateData: { username?: string; avatar?: string, bio?: string } = {};
 
       if (form.data.username !== locals.user.username)
         updateData.username = form.data.username;
+
+      if (form.data.bio !== locals.user.bio) updateData.bio = form.data.bio;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {
         const buffer = await form.data.avatar.arrayBuffer();
