@@ -1,48 +1,43 @@
 <script lang="ts">
-  import {
-    CalendarIcon,
-    MegaphoneIcon,
-    SwordsIcon,
-    TriangleAlertIcon,
-    UserPlusIcon,
-  } from "@lucide/svelte";
-  import type { SubmitFunction } from "@sveltejs/kit";
-  import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
-  import { Badge } from "@transc/ui/badge";
-  import { Button } from "@transc/ui/button";
-  import {
-    Card,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import { Skeleton } from "@transc/ui/skeleton";
-  import { toast } from "svelte-sonner";
-  import { enhance } from "$app/forms";
-  import { page } from "$app/state";
-  import BadgesCard from "./badges-card.svelte";
-  import CurrentEloCard from "./current-elo-card.svelte";
-  import EloHistoryCard from "./elo-history-card.svelte";
-  import RecentMatchesCard from "./recent-matches-card.svelte";
-  import WinRatioCard from "./win-ratio-card.svelte";
-  import { onlineUsersStore } from "$lib/stores/presence.store";
+import {
+  CalendarIcon,
+  MegaphoneIcon,
+  SwordsIcon,
+  TriangleAlertIcon,
+  UserPlusIcon,
+} from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
+import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
+import { Badge } from "@transc/ui/badge";
+import { Button } from "@transc/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@transc/ui/card";
+import { Skeleton } from "@transc/ui/skeleton";
+import { toast } from "svelte-sonner";
+import { enhance } from "$app/forms";
+import { page } from "$app/state";
+import { onlineUsersStore } from "$lib/stores/presence.store";
+import BadgesCard from "./badges-card.svelte";
+import CurrentEloCard from "./current-elo-card.svelte";
+import EloHistoryCard from "./elo-history-card.svelte";
+import RecentMatchesCard from "./recent-matches-card.svelte";
+import WinRatioCard from "./win-ratio-card.svelte";
 
-  const { data } = $props();
+const { data } = $props();
 
-  const isMe = (userId: number) => page.data.user?.id === userId;
+const isMe = (userId: number) => page.data.user?.id === userId;
 
-  const userStatus = (userId: number) =>
-    $onlineUsersStore.get(String(userId)) ?? "offline";
+const userStatus = (userId: number) =>
+  $onlineUsersStore.get(String(userId)) ?? "offline";
 
-  const formEnhance: SubmitFunction = () => {
-    return async ({ result, update }) => {
-      if (result.type === "failure")
-        toast.error(result.data?.error ?? "An error occurred");
-      else if (result.type === "success")
-        toast.success(result.data?.message ?? "Success");
-      await update();
-    };
+const formEnhance: SubmitFunction = () => {
+  return async ({ result, update }) => {
+    if (result.type === "failure")
+      toast.error(result.data?.error ?? "An error occurred");
+    else if (result.type === "success")
+      toast.success(result.data?.message ?? "Success");
+    await update();
   };
+};
 </script>
 
 <main class="w-full">
@@ -96,7 +91,8 @@
             </p>
             <!-- TODO: fix Icon size and "div" align with the previous one -->
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
-              <MegaphoneIcon class="w-3 h-3" />Biography:
+              <MegaphoneIcon class="w-3 h-3" />
+              Biography:
               {user?.bio}
             </p>
           </div>
@@ -115,7 +111,7 @@
                 use:enhance={formEnhance}
                 class="w-full"
               >
-                <input type="hidden" name="username" value={user?.username} />
+                <input type="hidden" name="username" value={user?.username}>
                 <Button
                   type="submit"
                   variant="secondary"

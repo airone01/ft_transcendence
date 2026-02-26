@@ -17,7 +17,6 @@ import {
   type FriendInfo,
   UnknownError,
 } from "$lib/server/db-services";
-import { Biohazard } from "@lucide/svelte";
 
 /**
  * Requests a friendship from a user to another user.

@@ -37,10 +37,10 @@ const { data } = $props();
 
 // svelte-ignore state_referenced_locally: idc
 let suggestedUsers = $state(
-  data.suggestedUsers.map(user => ({
+  data.suggestedUsers.map((user) => ({
     status: "offline" as "offline" | "online" | "ingame",
     ...user,
-  }))
+  })),
 );
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
