@@ -7,13 +7,13 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
   const username = socket.data.username;
 
-  // Mark user as online
+  // mark user as online
   onlineUsers.set(userId, { username, status: "online" });
 
-  // Broadcast to all that this user is online
+  // broadcast to all that this user is online
   io.emit("presence:online", { userId, username });
 
-  // Send the list of online users to the newly connected user
+  // send list of online users to the newly connected user
   socket.emit(
     "presence:list",
     Array.from(onlineUsers.entries()).map(([id, data]) => ({
@@ -22,7 +22,7 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
     })),
   );
 
-  // User change status
+  // user change status
   socket.on(
     "presence:status",
     (data: { status: "online" | "away" | "in-game" }) => {

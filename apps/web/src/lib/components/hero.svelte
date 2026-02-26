@@ -9,14 +9,16 @@ import { Button } from "@transc/ui/button";
   </div>
   <!-- Chess board -->
   <div class="flex flex-col justify-center items-center w-full relative">
-    <div class="grid grid-cols-8 grid-rows-8 aspect-square w-full max-w-md border rounded-md overflow-hidden">
+    <div
+      class="grid grid-cols-8 grid-rows-8 aspect-square w-full max-w-md border rounded-md overflow-hidden"
+    >
       {#each {length: 8}, row}
         {#each {length: 8}, col}
           <div class={(row%2 ^ col%2) ? 'bg-secondary' : 'bg-primary'}></div>
         {/each}
       {/each}
     </div>
-    
+
     <Button
       variant="outline"
       href="/play"
@@ -27,4 +29,3 @@ import { Button } from "@transc/ui/button";
     </Button>
   </div>
 </section>
-

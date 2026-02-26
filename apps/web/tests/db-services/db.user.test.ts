@@ -12,6 +12,7 @@ import {
   dbDeleteUser,
   dbGetAchievements,
   dbGetEloHistory,
+  dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
@@ -115,6 +116,15 @@ describe("users.service.ts tests", () => {
     } catch (err) {
       expect(err).toBeInstanceOf(DBUserNotFoundError);
     }
+  });
+
+  test.only("getRandomUsers", async () => {
+    try {
+      const random = await dbGetRandomUsers(2);
+
+      expect(random).toBeDefined();
+      console.log(random);
+    } catch (_err) {}
   });
 
   const updatedUser: UpdateUserInput = {

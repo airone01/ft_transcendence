@@ -7,7 +7,7 @@ import {
   users,
   usersStats,
 } from "@transc/db/schema";
-import { and, DrizzleQueryError, eq, ne, or } from "drizzle-orm";
+import { and, DrizzleQueryError, desc, eq, ne, or } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
@@ -43,7 +43,18 @@ export async function dbRequestFriendship(
         ),
       );
 
-    if (friendship) throw new DBAddFriendFriendshipAlreadyExistsError();
+    const [invitation] = await db
+      .select()
+      .from(friendshipsInvitations)
+      .where(
+        and(
+          eq(friendshipsInvitations.userId, Math.min(userId, friendId)),
+          eq(friendshipsInvitations.friendId, Math.max(userId, friendId)),
+        ),
+      );
+
+    if (friendship || invitation)
+      throw new DBAddFriendFriendshipAlreadyExistsError();
 
     await db.insert(friendshipsInvitations).values({
       userId: userId,
@@ -52,6 +63,64 @@ export async function dbRequestFriendship(
   } catch (err) {
     if (err instanceof DBAddFriendFriendshipAlreadyExistsError) throw err;
 
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves all the friend requests of a user.
+ * @param {number} userId - The id of the user to retrieve friend requests for
+ * @returns {Promise<{userId: number, username: string, avatar: string | null, type: "received" | "sent"}[]>} - A promise that resolves with an array of friend requests, with each request containing the id, username, avatar and type of the request.
+ * @throws {UnknownError} - If an unexpected error occurs
+ */
+export async function dbGetInvitations(userId: number): Promise<
+  {
+    userId: number;
+    username: string;
+    avatar: string | null;
+    type: "received" | "sent";
+  }[]
+> {
+  try {
+    const invitationsReceived = await db
+      .select({
+        userId: users.id,
+        username: users.username,
+        avatar: users.avatar,
+        createdAt: friendshipsInvitations.createdAt,
+      })
+      .from(friendshipsInvitations)
+      .innerJoin(users, eq(users.id, friendshipsInvitations.userId))
+      .where(eq(friendshipsInvitations.friendId, userId))
+      .orderBy(desc(friendshipsInvitations.createdAt));
+
+    const invitationsSent = await db
+      .select({
+        userId: users.id,
+        username: users.username,
+        avatar: users.avatar,
+        createdAt: friendshipsInvitations.createdAt,
+      })
+      .from(friendshipsInvitations)
+      .innerJoin(users, eq(users.id, friendshipsInvitations.friendId))
+      .where(eq(friendshipsInvitations.userId, userId))
+      .orderBy(desc(friendshipsInvitations.createdAt));
+
+    // Concatenate the received and sent invitations and sort them by date
+    const result = [
+      ...invitationsReceived.map((i) => ({
+        ...i,
+        type: "received" as "received" | "sent",
+      })),
+      ...invitationsSent.map((i) => ({
+        ...i,
+        type: "sent" as "received" | "sent",
+      })),
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return result;
+  } catch (err) {
     console.error(err);
     throw new UnknownError();
   }

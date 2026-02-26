@@ -3,22 +3,31 @@ import {
   DBAddFriendFriendshipAlreadyExistsError,
   dbAddFriend,
   dbGetFriendsInfo,
+  dbGetInvitations,
   dbGetRandomUsers,
   dbGetUserByUsername,
+  dbRejectFriendship,
   dbRemoveFriend,
+  dbRequestFriendship,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  if (!locals.user) return { friends: [] };
+  if (!locals.user)
+    return {
+      friends: [],
+      suggestedUsers: [],
+      invitations: [],
+    };
 
-  // TODO: handle error here
   const friends = await dbGetFriendsInfo(locals.user.id);
-  const users = dbGetRandomUsers(locals.user.id);
+  const suggestedUsers = await dbGetRandomUsers(locals.user.id);
+  const invitations = await dbGetInvitations(locals.user.id);
 
   return {
-    users,
     friends,
+    suggestedUsers,
+    invitations,
   };
 };
 
@@ -36,17 +45,55 @@ export const actions: Actions = {
 
     try {
       const targetUser = await dbGetUserByUsername(username);
-
       if (!targetUser) return fail(404, { error: "User not found" });
 
-      await dbAddFriend(locals.user.id, targetUser.id);
-      return { success: true, message: `Added ${username} as a friend` };
+      await dbRequestFriendship(locals.user.id, targetUser.id);
+      return { success: true, message: `Sent friend request to ${username}` };
     } catch (error) {
       if (error instanceof DBAddFriendFriendshipAlreadyExistsError) {
-        return fail(400, { error: "You are already friends with this user" });
+        return fail(400, {
+          error: "You are already friends or an invite is pending",
+        });
       }
       console.error(error);
-      return fail(500, { error: "Failed to add friend" });
+      return fail(500, { error: "Failed to send friend request" });
+    }
+  },
+
+  accept: async ({ request, locals }) => {
+    if (!locals.user) return fail(401);
+
+    const formData = await request.formData();
+    const senderId = Number(formData.get("userId"));
+
+    if (!senderId || Number.isNaN(senderId))
+      return fail(400, { error: "Invalid user ID" });
+
+    try {
+      await dbAddFriend(locals.user.id, senderId);
+
+      return { success: true, message: "Friend request accepted" };
+    } catch (error) {
+      console.error(error);
+      return fail(500, { error: "Failed to accept friend request" });
+    }
+  },
+
+  reject: async ({ request, locals }) => {
+    if (!locals.user) return fail(401);
+
+    const formData = await request.formData();
+    const senderId = Number(formData.get("userId"));
+
+    if (!senderId || Number.isNaN(senderId))
+      return fail(400, { error: "Invalid user ID" });
+
+    try {
+      await dbRejectFriendship(senderId, locals.user.id);
+      return { success: true, message: "Friend request rejected" };
+    } catch (error) {
+      console.error(error);
+      return fail(500, { error: "Failed to reject friend request" });
     }
   },
 
