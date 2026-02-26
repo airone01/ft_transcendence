@@ -5,20 +5,20 @@ import {
   TriangleAlertIcon,
   UserPlusIcon,
 } from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Badge } from "@transc/ui/badge";
 import { Button } from "@transc/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@transc/ui/card";
 import { Skeleton } from "@transc/ui/skeleton";
+import { toast } from "svelte-sonner";
+import { enhance } from "$app/forms";
 import { page } from "$app/state";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
 import EloHistoryCard from "./elo-history-card.svelte";
 import RecentMatchesCard from "./recent-matches-card.svelte";
 import WinRatioCard from "./win-ratio-card.svelte";
-import { enhance } from "$app/forms";
-import type { SubmitFunction } from "@sveltejs/kit";
-import { toast } from "svelte-sonner";
 
 const { data } = $props();
 
@@ -33,7 +33,6 @@ const formEnhance: SubmitFunction = () => {
     await update();
   };
 };
-
 </script>
 
 <main class="w-full">
@@ -91,11 +90,11 @@ const formEnhance: SubmitFunction = () => {
                 <SwordsIcon class="w-4 h-4" /> Challenge
               </Button>
               <form
-                  method="POST"
-                  action="/profile/me/social?/add"
-                  use:enhance={formEnhance}
-                  class="w-full"
-                >
+                method="POST"
+                action="/profile/me/social?/add"
+                use:enhance={formEnhance}
+                class="w-full"
+              >
                 <input type="hidden" name="username" value={user?.username}>
                 <Button
                   type="submit"

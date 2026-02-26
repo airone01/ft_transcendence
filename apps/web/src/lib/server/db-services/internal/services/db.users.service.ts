@@ -16,9 +16,9 @@ import {
   eq,
   gte,
   isNull,
+  like,
   not,
   sql,
-  like,
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { DatabaseError } from "pg";
@@ -278,7 +278,6 @@ export async function dbGetUserByUsername(
     throw new UnknownError();
   }
 }
-
 
 /**
  * Retrieves a list of users whose usernames start with a given prefix.
