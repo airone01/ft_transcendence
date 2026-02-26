@@ -12,16 +12,23 @@ import {
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals }) => {
-  if (!locals.user) return { friends: [], users: [], invitations: [] };
+export const load: PageServerLoad = async ({ locals, url }) => {
+  if (!locals.user)
+    return {
+      friends: [],
+      suggestedUsers: [],
+      invitations: [],
+    };
+
+  const search = url.searchParams.get("q") ?? "";
 
   const friends = await dbGetFriendsInfo(locals.user.id);
   const suggestedUsers = await dbGetRandomUsers(locals.user.id);
   const invitations = await dbGetInvitations(locals.user.id);
 
   return {
-    users: suggestedUsers,
     friends,
+    suggestedUsers,
     invitations,
   };
 };
@@ -66,7 +73,6 @@ export const actions: Actions = {
 
     try {
       await dbAddFriend(locals.user.id, senderId);
-      await dbRejectFriendship(senderId, locals.user.id);
 
       return { success: true, message: "Friend request accepted" };
     } catch (error) {

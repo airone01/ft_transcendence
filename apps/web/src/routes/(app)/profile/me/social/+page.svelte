@@ -35,7 +35,7 @@ import { onlineUsersStore } from "$lib/stores/presence.store";
 
 const { data } = $props();
 // svelte-ignore state_referenced_locally: idc
-const { users } = data;
+let suggestedUsers = $state(data.suggestedUsers);
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
 let friends = $state(data.friends);
@@ -45,7 +45,14 @@ $effect(() => {
   but we need to use untrack to avoid circular deps
   see https://svelte.dev/docs/svelte/svelte#untrack */
   const serverFriends = data.friends;
+  const serverSuggestedUsers = data.suggestedUsers;
+
   untrack(() => {
+    suggestedUsers = serverSuggestedUsers.map((u) => {
+      const existing = suggestedUsers.find((eu) => eu.userId === u.userId);
+      return existing ? { ...u, status: existing.status } : u;
+    });
+
     friends = serverFriends.map((f) => {
       const existing = friends.find((ef) => ef.userId === f.userId);
       return existing ? { ...f, status: existing.status } : f;
@@ -306,14 +313,14 @@ const formEnhance: SubmitFunction = () => {
       </CardContent>
     </Card>
 
-    {#if (users?.length ?? 0 > 0)}
+    {#if (suggestedUsers?.length ?? 0 > 0)}
       <Card class="col-span-2">
         <CardHeader>
           <CardTitle>Suggested Players</CardTitle>
           <CardDescription>Make some friends and some enemies</CardDescription>
         </CardHeader>
         <CardContent class="flex justify-start h-full gap-2 pb-6">
-          {#each users as {userId, avatar, username, currentElo}}
+          {#each suggestedUsers as {userId, avatar, username, currentElo}}
             <Card class="overflow-hidden flex flex-col flex-1 min-h-0 max-w-sm">
               <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
                 <div class="flex gap-4 items-center h-fit w-full">
