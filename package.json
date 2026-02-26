@@ -9,7 +9,10 @@
     "dev": "turbo run dev",
     "lint": "$(./biome.sh) check .",
     "format": "$(./biome.sh) check . --fix",
-    "db:push": "bun run --cwd packages/db db:push"
+    "db:setup": "bun run --cwd packages/db db:generate --name=init && bun run --cwd packages/db db:migrate && bun run --cwd packages/db db:seed",
+    "db:down": "bun run --cwd packages/db db:down",
+    "db:seed": "bun run --cwd apps/web src/lib/server/db-services/internal/db.seed.ts",
+    "db:studio": "bun run --cwd packages/db db:studio"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
