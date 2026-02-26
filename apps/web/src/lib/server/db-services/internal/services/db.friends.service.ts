@@ -17,6 +17,7 @@ import {
   type FriendInfo,
   UnknownError,
 } from "$lib/server/db-services";
+import { Biohazard } from "@lucide/svelte";
 
 /**
  * Requests a friendship from a user to another user.
@@ -295,7 +296,7 @@ export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
         userId: users.id,
         username: users.username,
         avatar: users.avatar,
-        status: users.status,
+        bio: users.bio,
         currentElo: usersStats.currentElo,
       })
       .from(friendships)
