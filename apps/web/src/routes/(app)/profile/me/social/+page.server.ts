@@ -12,15 +12,13 @@ import {
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user)
     return {
       friends: [],
       suggestedUsers: [],
       invitations: [],
     };
-
-  const search = url.searchParams.get("q") ?? "";
 
   const friends = await dbGetFriendsInfo(locals.user.id);
   const suggestedUsers = await dbGetRandomUsers(locals.user.id);

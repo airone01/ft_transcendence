@@ -302,7 +302,9 @@ const formEnhance: SubmitFunction = () => {
                   </div>
                 {:else if invite.type === 'sent'}
                   <div class="flex items-center">
-                    <CardDescription>Awaiting friend request approval</CardDescription>
+                    <CardDescription>
+                      Awaiting friend request approval
+                    </CardDescription>
                   </div>
                 {/if}
               </CardContent>

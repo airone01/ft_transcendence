@@ -7,7 +7,7 @@ import {
   users,
   usersStats,
 } from "@transc/db/schema";
-import { and, desc, DrizzleQueryError, eq, ne, or } from "drizzle-orm";
+import { and, DrizzleQueryError, desc, eq, ne, or } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
