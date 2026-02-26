@@ -115,6 +115,7 @@ export {
   dbGetPeakElo,
   dbGetRandomUsers,
   dbGetStats,
+  dbGetUsersWithPrefix,
   dbGetUser,
   dbGetUserByEmail,
   dbGetUserByUsername,

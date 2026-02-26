@@ -285,12 +285,17 @@ export async function dbGetUserByUsername(
  * @throws {UnknownError} - If an unexpected error occurs
  * @returns {Promise<User[]>} - A promise that resolves with the list of users, or rejects if an unexpected error occurs
  */
-export async function dbGetUsersWithPrefix(prefix: string): Promise<User[]> {
+export async function dbGetUsersWithPrefix(
+  prefix: string,
+  userId: number,
+): Promise<User[]> {
   try {
     return await db
       .select()
       .from(users)
-      .where(like(users.username, `${prefix}%`));
+      .where(
+        and(not(eq(users.id, userId)), like(users.username, `${prefix}%`)),
+      );
   } catch (err) {
     console.error(err);
     throw new UnknownError();
