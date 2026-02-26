@@ -18,6 +18,7 @@ import {
   isNull,
   not,
   sql,
+  like,
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { DatabaseError } from "pg";
@@ -272,6 +273,25 @@ export async function dbGetUserByUsername(
       .where(eq(users.username, username));
 
     return user ?? undefined;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+
+/**
+ * Retrieves a list of users whose usernames start with a given prefix.
+ * @param {string} prefix - The prefix to search for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User[]>} - A promise that resolves with the list of users, or rejects if an unexpected error occurs
+ */
+export async function dbGetUsersWithPrefix(prefix: string): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(users)
+      .where(like(users.username, `${prefix}%`));
   } catch (err) {
     console.error(err);
     throw new UnknownError();
