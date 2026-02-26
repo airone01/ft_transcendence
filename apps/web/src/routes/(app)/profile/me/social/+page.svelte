@@ -34,35 +34,27 @@ import UserAvatar from "$lib/components/user-avatar.svelte";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 
 const { data } = $props();
+
 // svelte-ignore state_referenced_locally: idc
-let suggestedUsers = $state(data.suggestedUsers);
+let suggestedUsers = $state(
+  data.suggestedUsers.map(user => ({
+    status: "offline" as "offline" | "online" | "ingame",
+    ...user,
+  }))
+);
 
 // svelte-ignore state_referenced_locally: superForms does not accept functions such as `() => data`
-let friends = $state(data.friends);
-
-$effect(() => {
-  /* merge server data with current known statuses to avoid flickering "offline" on reload
-  but we need to use untrack to avoid circular deps
-  see https://svelte.dev/docs/svelte/svelte#untrack */
-  const serverFriends = data.friends;
-  const serverSuggestedUsers = data.suggestedUsers;
-
-  untrack(() => {
-    suggestedUsers = serverSuggestedUsers.map((u) => {
-      const existing = suggestedUsers.find((eu) => eu.userId === u.userId);
-      return existing ? { ...u, status: existing.status } : u;
-    });
-
-    friends = serverFriends.map((f) => {
-      const existing = friends.find((ef) => ef.userId === f.userId);
-      return existing ? { ...f, status: existing.status } : f;
-    });
-  });
-});
+let friends = $state(
+  data.friends.map((user) => ({
+    status: "offline" as "offline" | "online" | "ingame",
+    ...user,
+  })),
+);
 
 $effect(() => {
   const currentOnline = $onlineUsersStore;
   const serverFriends = data.friends;
+  const serverSuggestedUsers = data.suggestedUsers;
 
   untrack(() => {
     friends = serverFriends.map((f) => {
@@ -72,6 +64,15 @@ $effect(() => {
         | "offline"
         | "ingame";
       return { ...f, status: rtStatus || "offline" };
+    });
+
+    suggestedUsers = serverSuggestedUsers.map((u) => {
+      // check global store for rt status, fallback to offline
+      const rtStatus = (currentOnline.get(String(u.userId)) ?? "offline") as
+        | "online"
+        | "offline"
+        | "ingame";
+      return { ...u, status: rtStatus || "offline" };
     });
   });
 });
@@ -171,7 +172,7 @@ const formEnhance: SubmitFunction = () => {
                       ></span>
                     {:else if friend.status === 'ingame'}
                       <span
-                        class="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange-500 border-2 border-background"
+                        class="relative inline-flex rounded-full h-3.5 w-3.5 bg-purple-500 border-2 border-background"
                       ></span>
                     {:else}
                       <span
