@@ -25,7 +25,7 @@ const chartConfig: ChartConfig = {
 const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
 </script>
 
-{#if eloHistory && eloHistory.length > 1}
+{#if eloHistory && eloHistory.length > 0}
   {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
   {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
   {@const now = new Date()}
