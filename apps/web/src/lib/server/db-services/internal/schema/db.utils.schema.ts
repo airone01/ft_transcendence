@@ -10,16 +10,22 @@ const leaderboardSchema = z.array(
 
 const gameHistorySchema = z.array(
   z.object({
+    // Game info
     gameId: z.number().int(),
     timeControlSeconds: z.number().int(),
     incrementSeconds: z.number().int(),
     result: z.enum(["white_win", "black_win", "draw", "abort"]),
     startedAt: z.date(),
     endedAt: z.date(),
-    oppenentUserId: z.number().int(),
-    oppenentUsername: z.string().min(3).max(20),
-    oppenentPastElo: z.number().int().min(0),
-    oppenentAvatar: z.string().nullable(),
+    // User info
+    userEloBefore: z.number().int().min(0),
+    userEloAfter: z.number().int().min(0),
+    userColor: z.enum(["white", "black"]),
+    // Opponent info
+    opponentUserId: z.number().int(),
+    opponentUsername: z.string().min(3).max(20),
+    opponentPastElo: z.number().int().min(0),
+    opponentAvatar: z.string().nullable(),
   }),
 );
 

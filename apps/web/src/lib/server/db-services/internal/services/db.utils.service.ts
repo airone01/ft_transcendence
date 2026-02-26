@@ -1,6 +1,6 @@
 import { db } from "@transc/db";
 import { games, gamesPlayers, users, usersStats } from "@transc/db/schema";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, ne, not } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import {
   type GameHistory,
@@ -50,16 +50,22 @@ export async function dbGetUserGameHistory(
 
     const history = await db
       .select({
+        // Game info
         gameId: games.id,
         timeControlSeconds: games.timeControlSeconds,
         incrementSeconds: games.incrementSeconds,
         result: games.result,
         startedAt: games.startedAt,
         endedAt: games.endedAt,
-        oppenentUserId: gp2.userId,
-        oppenentUsername: users.username,
-        oppenentPastElo: gp2.eloBefore,
-        oppenentAvatar: users.avatar,
+        // User info
+        userEloBefore: gp1.eloBefore,
+        userEloAfter: gp1.eloAfter,
+        userColor: gp1.color,
+        // Opponent info
+        opponentUserId: gp2.userId,
+        opponentUsername: users.username,
+        opponentPastElo: gp2.eloBefore,
+        opponentAvatar: users.avatar,
       })
       .from(gp1)
       .innerJoin(
@@ -68,7 +74,13 @@ export async function dbGetUserGameHistory(
       )
       .innerJoin(games, eq(games.id, gp1.gameId))
       .innerJoin(users, eq(gp2.userId, users.id))
-      .where(and(eq(gp1.userId, userId), eq(games.status, "finished")))
+      .where(
+        and(
+          eq(gp1.userId, userId),
+          eq(games.status, "finished"),
+          not(eq(games.result, "abort")),
+        ),
+      )
       .orderBy(desc(games.endedAt))
       .limit(10);
 

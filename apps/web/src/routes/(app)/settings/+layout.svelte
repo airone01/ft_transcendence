@@ -1,20 +1,32 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import { cn } from "@transc/ui/utils";
-  import { Button } from "@transc/ui/button";
-  import type { Component } from "svelte";
-  import { AudioLinesIcon, ContrastIcon, EarthLockIcon, Gamepad2Icon, KeyRoundIcon, UserIcon, type IconProps } from "@lucide/svelte";
+import {
+  AudioLinesIcon,
+  ContrastIcon,
+  EarthLockIcon,
+  Gamepad2Icon,
+  type IconProps,
+  KeyRoundIcon,
+  UserIcon,
+} from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import { cn } from "@transc/ui/utils";
+import type { Component } from "svelte";
+import { page } from "$app/state";
 
-  let { children } = $props();
+const { children } = $props();
 
-  const sidebarNavItems: {icon: Component<IconProps, {}, "">, title: string, href: string}[]  = [
-    { icon: UserIcon, title: "Profile", href: "/settings/profile" },
-    { icon: Gamepad2Icon, title: "Gameplay", href: "/settings/gameplay" },
-    { icon: AudioLinesIcon, title: "Sound", href: "/settings/sound" },
-    { icon: ContrastIcon, title: "Display", href: "/settings/display" },
-    { icon: EarthLockIcon, title: "Privacy", href: "/settings/privacy" },
-    { icon: KeyRoundIcon, title: "Account", href: "/settings/account" },
-  ];
+const sidebarNavItems: {
+  icon: Component<IconProps, Record<string, unknown>, "">;
+  title: string;
+  href: string;
+}[] = [
+  { icon: UserIcon, title: "Profile", href: "/settings/profile" },
+  { icon: Gamepad2Icon, title: "Gameplay", href: "/settings/gameplay" },
+  { icon: AudioLinesIcon, title: "Sound", href: "/settings/sound" },
+  { icon: ContrastIcon, title: "Display", href: "/settings/display" },
+  { icon: EarthLockIcon, title: "Privacy", href: "/settings/privacy" },
+  { icon: KeyRoundIcon, title: "Account", href: "/settings/account" },
+];
 </script>
 
 <main class="flex flex-col gap-4 pb-16 w-full h-full">
@@ -24,8 +36,13 @@
       Manage your account settings and preferences.
     </p>
   </header>
-  <div id="hello" class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4 p-4 border rounded-xl">
-    <aside class="lg:max-w-xs border rounded-lg p-2 overflow-x-scroll overflow-y-clip lg:overflow-x-clip">
+  <div
+    id="hello"
+    class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4 p-4 border rounded-xl"
+  >
+    <aside
+      class="lg:max-w-xs border rounded-lg p-2 overflow-x-scroll overflow-y-clip lg:overflow-x-clip"
+    >
       <nav class="flex lg:flex-col gap-1">
         {#each sidebarNavItems as item}
           <Button

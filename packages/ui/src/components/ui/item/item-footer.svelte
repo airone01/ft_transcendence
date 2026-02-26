@@ -11,10 +11,10 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="item-footer"
-	class={cn("flex basis-full items-center justify-between gap-2", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="item-footer"
+  class={cn("flex basis-full items-center justify-between gap-2", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

@@ -1,121 +1,133 @@
 <script lang="ts">
-  import LandingPage from "$lib/components/landing/landing-page.svelte";
+import { Badge } from "@transc/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import LandingPage from "$lib/components/landing/landing-page.svelte";
+import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
 
-  let { data } = $props();
+const { data } = $props();
 </script>
 
 {#if data.user}
-    <main>
-      <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance">
-        Taxing Laughter: The Joke Tax Chronicles
-      </h1>
-      <p class="text-muted-foreground text-xl leading-7 not-first:mt-6">
-        Once upon a time, in a far-off land, there was a very lazy king who spent
-        all day lounging on his throne. One day, his advisors came to him with a
-        problem: the kingdom was running out of money.
-      </p>
-      <h2 class="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        The King&apos;s Plan
-      </h2>
-      <p class="leading-7 not-first:mt-6">
-        The king thought long and hard, and finally came up with
-        <a href="##" class="text-primary font-medium underline underline-offset-4">
-         a brilliant plan
-        </a>
-        : he would tax the jokes in the kingdom.
-      </p>
-      <blockquote class="mt-6 border-s-2 ps-6 italic">
-        &quot;After all,&quot; he said, &quot;everyone enjoys a good joke, so
-        it&apos;s only fair that they should pay for the privilege.&quot;
-      </blockquote>
-      <h3 class="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        The Joke Tax
-      </h3>
-      <p class="leading-7 not-first:mt-6">
-        The king&apos;s subjects were not amused. They grumbled and complained, but
-        the king was firm:
-      </p>
-      <ul class="my-6 ms-6 list-disc [&>li]:mt-2">
-        <li>1st level of puns: 5 gold coins</li>
-        <li>2nd level of jokes: 10 gold coins</li>
-        <li>3rd level of one-liners : 20 gold coins</li>
-      </ul>
-      <p class="leading-7 not-first:mt-6">
-        As a result, people stopped telling jokes, and the kingdom fell into a
-        gloom. But there was one person who refused to let the king&apos;s
-        foolishness get him down: a court jester named Jokester.
-      </p>
-      <h3 class="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        Jokester&apos;s Revolt
-      </h3>
-      <p class="leading-7 not-first:mt-6">
-        Jokester began sneaking into the castle in the middle of the night and
-        leaving jokes all over the place: under the king&apos;s pillow, in his soup,
-        even in the royal toilet. The king was furious, but he couldn&apos;t seem to
-        stop Jokester.
-      </p>
-      <p class="leading-7 not-first:mt-6">
-        And then, one day, the people of the kingdom discovered that the jokes left
-        by Jokester were so funny that they couldn&apos;t help but laugh. And once
-        they started laughing, they couldn&apos;t stop.
-      </p>
-      <h3 class="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-        The People&apos;s Rebellion
-      </h3>
-      <p class="leading-7 not-first:mt-6">
-        The people of the kingdom, feeling uplifted by the laughter, started to tell
-        jokes and puns again, and soon the entire kingdom was in on the joke.
-      </p>
-      <div class="my-6 w-full overflow-y-auto">
-        <table class="w-full">
-          <thead>
-            <tr class="even:bg-muted m-0 border-t p-0">
-              <th class="border px-4 py-2 text-start font-bold [[align=center]]:text-center [[align=right]]:text-end">
-                King&apos;s Treasury
-              </th>
-              <th class="border px-4 py-2 text-start font-bold [[align=center]]:text-center [[align=right]]:text-end">
-                People&apos;s happiness
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="even:bg-muted m-0 border-t p-0">
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Empty
-              </td>
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Overflowing
-              </td>
-            </tr>
-            <tr class="even:bg-muted m-0 border-t p-0">
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Modest
-              </td>
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Satisfied
-              </td>
-            </tr>
-            <tr class="even:bg-muted m-0 border-t p-0">
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Full
-              </td>
-              <td class="border px-4 py-2 text-start [[align=center]]:text-center [[align=right]]:text-end">
-                Ecstatic
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="leading-7 not-first:mt-6">
-        The king, seeing how much happier his subjects were, realized the error of
-        his ways and repealed the joke tax. Jokester was declared a hero, and the
-        kingdom lived happily ever after.
-      </p>
-      <p class="leading-7 not-first:mt-6">
-        The moral of the story is: never underestimate the power of a good laugh and
-        always be careful of bad ideas.
-      </p>
-    </main>
+  <main
+    class="container mx-auto max-w-4xl p-4 md:p-6 h-full flex flex-col gap-6 mt-11"
+  >
+    <header class="text-center sm:text-left">
+      <h2 class="text-3xl font-bold tracking-tight">Leaderboard</h2>
+      <p class="text-muted-foreground">Top players ranked by their ELO.</p>
+    </header>
+
+    <Card class="flex-1 overflow-hidden flex flex-col shadow-sm">
+      <CardHeader>
+        <CardTitle>Global Ranking</CardTitle>
+        <CardDescription>
+          The best of the best across the server.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent class="overflow-y-auto flex-1 p-0 sm:p-6">
+        {#if data.leaderboard && data.leaderboard.length > 0}
+          {@const topThree = data.leaderboard.slice(0, 3)}
+          {@const rest = data.leaderboard.slice(3)}
+
+          <div
+            class="flex items-end justify-center gap-2 sm:gap-4 md:gap-8 pt-8 pb-10 px-2 sm:px-4"
+          >
+            {#each topThree as player, i}
+              {@const isFirst = i === 0}
+              {@const isSecond = i === 1}
+
+              <div
+                class="flex flex-col items-center {isFirst ? 'order-2' : isSecond ? 'order-1' : 'order-3'}"
+              >
+                <div
+                  class="flex flex-col items-center mb-3 z-10 transition-transform hover:-translate-y-1"
+                >
+                  <div
+                    class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-4 shadow-sm mb-2 bg-background
+                    {isFirst ? 'border-yellow-400' : isSecond ? 'border-slate-300' : 'border-amber-600'}"
+                  >
+                    <LeaderboardAvatar
+                      userPromise={data.userPromises[player.userId]}
+                      fallbackText={player.username.slice(0, 2).toUpperCase()}
+                      class="w-full h-full border-none"
+                    />
+                  </div>
+
+                  <a
+                    href="/profile/{player.userId}"
+                    class="font-bold hover:underline truncate w-20 sm:w-24 text-center text-sm md:text-base"
+                  >
+                    {player.username}
+                  </a>
+                  <Badge
+                    variant="outline"
+                    class="mt-1 text-xs border-none bg-accent/50"
+                  >
+                    {player.elo}
+                  </Badge>
+                </div>
+
+                <div
+                  class="w-20 sm:w-24 md:w-32 rounded-t-lg shadow-inner flex justify-center pt-2 md:pt-4 transition-all
+                  {isFirst ? 'h-32 md:h-40 bg-linear-to-t from-yellow-500/10 to-yellow-500/40 border-t-4 border-yellow-500' : 
+                   isSecond ? 'h-24 md:h-28 bg-linear-to-t from-slate-400/10 to-slate-400/40 border-t-4 border-slate-400' : 
+                   'h-20 md:h-24 bg-linear-to-t from-amber-600/10 to-amber-600/40 border-t-4 border-amber-600'}"
+                >
+                  <span
+                    class="text-3xl md:text-5xl font-black text-foreground/20"
+                  >
+                    {i + 1}
+                  </span>
+                </div>
+              </div>
+            {/each}
+          </div>
+
+          <div class="flex flex-col gap-2 px-4 sm:px-0 pb-4">
+            {#each rest as player, i (player.userId)}
+              <div
+                class="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/10 transition-colors"
+              >
+                <div class="flex items-center gap-4">
+                  <span
+                    class="text-xl font-bold w-8 text-center text-muted-foreground"
+                  >
+                    #{i + 4}
+                  </span>
+                  <LeaderboardAvatar
+                    userPromise={data.userPromises[player.userId]}
+                    fallbackText={player.username.slice(0, 2).toUpperCase()}
+                    class="w-10 h-10 border shadow-sm"
+                  />
+                  <a
+                    href="/profile/{player.userId}"
+                    class="font-medium hover:underline text-lg"
+                  >
+                    {player.username}
+                  </a>
+                </div>
+                <Badge variant="outline" class="text-sm px-3 py-1">
+                  ELO {player.elo}
+                </Badge>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <div
+            class="flex flex-col items-center justify-center py-16 text-muted-foreground"
+          >
+            <p>No players found yet.</p>
+          </div>
+        {/if}
+      </CardContent>
+    </Card>
+  </main>
 {:else}
   <LandingPage />
 {/if}

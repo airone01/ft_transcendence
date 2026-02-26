@@ -1,20 +1,12 @@
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
-import { db } from "@transc/db";
-import { chatChannels } from "@transc/db/schema";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 import {
   auth,
   deleteSessionTokenCookie,
   setSessionTokenCookie,
 } from "$lib/server/auth";
-
-await db
-  .insert(chatChannels)
-  .values({
-    type: "global",
-  })
-  .returning();
+import { dbGetStats } from "$lib/server/db-services";
 
 const handleParaglide: Handle = ({ event, resolve }) =>
   paraglideMiddleware(event.request, ({ request, locale }) => {
@@ -43,6 +35,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
     deleteSessionTokenCookie(event);
   }
 
+  event.locals.stats = user != null ? await dbGetStats(user.id) : null;
   event.locals.session = session;
   event.locals.user = user;
 
