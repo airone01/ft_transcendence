@@ -251,7 +251,7 @@ const formEnhance: SubmitFunction = () => {
         {#if data.invitations && data.invitations.length > 0}
           {#each data.invitations as invite (invite.userId)}
             <Card class="overflow-hidden py-0 shrink-0">
-              <CardContent class="p-2 flex items-center gap-4">
+              <CardContent class="p-2 px-3 flex items-center gap-4">
                 <UserAvatar
                   avatarUrl={invite.avatar}
                   username={invite.username}
@@ -267,38 +267,44 @@ const formEnhance: SubmitFunction = () => {
                   </a>
                 </div>
 
-                <div class="flex items-center gap-1">
-                  <form
-                    method="POST"
-                    action="?/accept"
-                    use:enhance={formEnhance}
-                  >
-                    <input type="hidden" name="userId" value={invite.userId}>
-                    <Button
-                      type="submit"
-                      variant="secondary"
-                      size="sm"
-                      class="h-8 cursor-pointer"
+                {#if invite.type === 'received'}
+                  <div class="flex items-center gap-1">
+                    <form
+                      method="POST"
+                      action="?/accept"
+                      use:enhance={formEnhance}
                     >
-                      Accept
-                    </Button>
-                  </form>
-                  <form
-                    method="POST"
-                    action="?/reject"
-                    use:enhance={formEnhance}
-                  >
-                    <input type="hidden" name="userId" value={invite.userId}>
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="sm"
-                      class="h-8 text-muted-foreground hover:bg-destructive cursor-pointer px-2"
+                      <input type="hidden" name="userId" value={invite.userId}>
+                      <Button
+                        type="submit"
+                        variant="secondary"
+                        size="sm"
+                        class="h-8 cursor-pointer"
+                      >
+                        Accept
+                      </Button>
+                    </form>
+                    <form
+                      method="POST"
+                      action="?/reject"
+                      use:enhance={formEnhance}
                     >
-                      Reject
-                    </Button>
-                  </form>
-                </div>
+                      <input type="hidden" name="userId" value={invite.userId}>
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
+                        class="h-8 text-muted-foreground hover:bg-destructive cursor-pointer px-2"
+                      >
+                        Reject
+                      </Button>
+                    </form>
+                  </div>
+                {:else if invite.type === 'sent'}
+                  <div class="flex items-center">
+                    <CardDescription>Awaiting friend request approval</CardDescription>
+                  </div>
+                {/if}
               </CardContent>
             </Card>
           {/each}
