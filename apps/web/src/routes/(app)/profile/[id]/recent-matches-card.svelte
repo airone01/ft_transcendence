@@ -7,8 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@transc/ui/card";
-import { Empty } from "@transc/ui/command";
 import {
+  Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
