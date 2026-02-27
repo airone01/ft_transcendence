@@ -30,11 +30,11 @@ const { stats }: { stats: UserStats } = $props();
   <CardContent class="flex-1 flex flex-col justify-center">
     {#if stats.gamesPlayed !== 0}
       <div
-        class="flex h-10 w-full rounded-full overflow-hidden mb-3 shadow-inner"
+        class="flex h-5 w-full rounded-full overflow-hidden mb-3 shadow-inner"
       >
-        <div style="flex: {stats.wins}" class="text-primary bg-emerald-500 h-full"></div>
-        <div style="flex: {stats.draws}" class="text-primary bg-slate-400 h-full"></div>
-        <div style="flex: {stats.losses}" class="text-primary bg-rose-500 h-full"></div>
+        <div style="flex: {stats.wins}" class="bg-emerald-500 h-full"></div>
+        <div style="flex: {stats.draws}" class="bg-slate-400 h-full"></div>
+        <div style="flex: {stats.losses}" class="bg-rose-500 h-full"></div>
       </div>
       <div class="flex w-full text-sm font-medium">
         {#if stats.wins > 0}
