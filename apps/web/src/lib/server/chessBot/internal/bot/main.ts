@@ -32,7 +32,7 @@ export function findBestMoveTimed(
         newState,
         sharedHistory,
         state.turn === "w" ? "b" : "w",
-        -Infinity,
+        alpha,
         Infinity,
         depth,
       );

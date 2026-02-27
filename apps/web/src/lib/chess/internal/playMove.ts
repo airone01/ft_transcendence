@@ -24,7 +24,7 @@ export function playMove(state: GameState, move: Move): GameState {
   const newState: GameState = applyMoveCopy(state, move);
 
   const [fr, fc] = move.from;
-  const [tr, _tc] = move.to;
+  // const [tr, _tc] = move.to;
   const piece: Piece | null = state.board[fr][fc];
 
   newState.turn = state.turn === "w" ? "b" : "w";
@@ -76,8 +76,6 @@ export function playMove(state: GameState, move: Move): GameState {
  * @returns The new GameState object after the move has been applied.
  */
 export function applyMoveForSearch(state: GameState, move: Move): GameState {
-  (globalThis as any).__applyCount = ((globalThis as any).__applyCount ?? 0) + 1;
-  
   const newState: GameState = applyMoveCopy(state, move);
 
   const [fr, fc] = move.from;

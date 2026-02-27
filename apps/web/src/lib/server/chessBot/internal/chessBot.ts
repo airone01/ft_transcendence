@@ -1,5 +1,5 @@
+import { Worker } from "node:worker_threads";
 import type { GameState } from "$lib/chess";
-import { Worker } from "worker_threads";
 
 export function getBotMove(state: GameState): Promise<GameState> {
   return new Promise((resolve, reject) => {

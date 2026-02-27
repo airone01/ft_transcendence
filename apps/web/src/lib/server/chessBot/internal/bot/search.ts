@@ -1,6 +1,5 @@
 import {
   applyMoveForSearch,
-  isCheckmate,
   type Color,
   type GameState,
   type Move,

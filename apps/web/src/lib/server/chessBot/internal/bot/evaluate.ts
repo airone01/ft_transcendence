@@ -121,7 +121,7 @@ export function evaluate(state: GameState, color: Color): number {
 
       score += sign * pieceValues[type];
 
-      let table;
+      let table: number[][];
       if (type === "K")
         table = endGame ? kingEndGameTable : kingMiddleGameTable;
       else table = pieceTables[type];

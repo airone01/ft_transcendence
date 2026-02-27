@@ -23,14 +23,12 @@ export async function testBot() {
 
     printBoard(state.board);
 
-    console.log("Time taken: " + (Date.now() - startClock) + "ms");
+    console.log(`Time taken: ${Date.now() - startClock} ms`);
     console.log("");
   }
 
   if (isCheckmate(state)) {
-    console.log(
-      "Checkmate! " + (state.turn === "b" ? "White" : "Black") + " wins!",
-    );
+    console.log(`Checkmate! ${state.turn === "b" ? "White" : "Black"}  wins!`);
   } else if (isDraw(state)) {
     console.log("Draw!");
   }
