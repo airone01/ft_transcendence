@@ -29,6 +29,7 @@ export function playMove(state: GameState, move: Move): GameState {
 
   newState.turn = state.turn === "w" ? "b" : "w";
 
+  // TODO: did this cause an issue?
   // if (piece?.toLowerCase() === "k") {
   //   if (state.turn === "w") {
   //     newState.castling.whiteKingSide = false;
