@@ -1,11 +1,11 @@
 import { parseFEN } from "./handleFEN";
-import type { Piece } from "./types";
+import type { GameState, Piece } from "./types";
 
 /**
  * Starts a new chess game.
  * @return {GameState} The starting state of the chess game.
  */
-export function startGame() {
+export function startGame(): GameState {
   const startingFEN =
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
