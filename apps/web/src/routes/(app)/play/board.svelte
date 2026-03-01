@@ -11,9 +11,13 @@ import type { Component } from "svelte";
 import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
-import { startGame, getLegalMoves, parseFEN, playMove } from "$lib/chess";
-import type { GameState, Piece as ChessPiece, Move } from "$lib/chess";
-import { gameState as gameStore, joinGame, makeMove } from "$lib/stores/game.store";
+import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
+import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
+import {
+  gameState as gameStore,
+  joinGame,
+  makeMove,
+} from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 
 // Props
@@ -59,7 +63,6 @@ let legalTargets: Set<number> = $state(new Set());
 let dragFromIndex: number | null = $state(null);
 let isDragging = false;
 let rebuildScheduled = false;
-
 
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
@@ -222,8 +225,7 @@ function handleDndFinalize(
         promotion: isPromotion ? ("Q" as ChessPiece) : undefined,
       };
       localState = playMove(localState, move);
-    } catch {
-    }
+    } catch {}
   }
   scheduleRebuild();
 }

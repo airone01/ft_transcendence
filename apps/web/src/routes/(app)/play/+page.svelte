@@ -2,15 +2,15 @@
 import { ClockIcon, TargetIcon, XIcon, ZapIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
+import { onMount } from "svelte";
+import { goto } from "$app/navigation";
+import { gameState } from "$lib/stores/game.store";
 import {
   joinQueue,
   leaveQueue,
   matchmakingState,
 } from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
-import { gameState } from "$lib/stores/game.store";
-import { goto } from "$app/navigation";
-import { onMount } from "svelte";
 
 onMount(() => {
   return gameState.subscribe((state) => {
@@ -41,7 +41,10 @@ function handleCancelQueue() {
       <div class="space-y-2">
         <h2 class="text-xl font-semibold">Looking for an opponent...</h2>
         <p class="text-muted-foreground">
-          Mode: <span class="font-medium text-foreground">{$matchmakingState.mode}</span>
+          Mode:
+          <span class="font-medium text-foreground"
+            >{$matchmakingState.mode}</span
+          >
         </p>
         {#if $matchmakingState.position}
           <p class="text-sm text-muted-foreground">
