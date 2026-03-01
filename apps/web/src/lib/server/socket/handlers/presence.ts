@@ -1,19 +1,19 @@
 import type { Server, Socket } from "socket.io";
 
 // In-memory map to track online users
-const onlineUsers = new Map<string, { username: string; status: string }>();
+const onlineUsers = new Map<number, { username: string; status: string }>();
 
 export function registerPresenceHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
   const username = socket.data.username;
 
-  // Mark user as online
+  // mark user as online
   onlineUsers.set(userId, { username, status: "online" });
 
-  // Broadcast to all that this user is online
+  // broadcast to all that this user is online
   io.emit("presence:online", { userId, username });
 
-  // Send the list of online users to the newly connected user
+  // send list of online users to the newly connected user
   socket.emit(
     "presence:list",
     Array.from(onlineUsers.entries()).map(([id, data]) => ({
@@ -22,7 +22,7 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
     })),
   );
 
-  // User change status
+  // user change status
   socket.on(
     "presence:status",
     (data: { status: "online" | "away" | "in-game" }) => {
@@ -35,14 +35,11 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
   );
 
   // Cleanup on disconnect (called from index.ts after a delay)
-  socket.on("disconnect", () => {
-    // Do not remove immediately to allow reconnection
-    // Removal is handled in handleDisconnection in index.ts
-  });
+  socket.on("disconnect", () => {});
 }
 
 // Export for cleanup from index.ts
-export function setUserOffline(userId: string) {
+export function setUserOffline(userId: number) {
   onlineUsers.delete(userId);
 }
 

@@ -1,5 +1,5 @@
 {
-  "id": "614f2108-cf62-44e3-b4bd-3d8c78a6c3be",
+  "id": "0c470151-9ccc-46c6-9967-c134a7ca9787",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -665,7 +665,12 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "friendships_invitations_user_id_friend_id_pk": {
+          "name": "friendships_invitations_user_id_friend_id_pk",
+          "columns": ["user_id", "friend_id"]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},

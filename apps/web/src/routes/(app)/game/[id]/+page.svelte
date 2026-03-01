@@ -1,18 +1,20 @@
 <script lang="ts">
-import { page } from "$app/state";
-import { RotateCcwIcon, ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
+import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Separator } from "@transc/ui/separator";
-import { gameState, isMyTurn, resign, offerDraw, type MoveRecord } from "$lib/stores/game.store";
+import * as Dialog from "@transc/ui/dialog";
+import { gameState, isMyTurn, resign, offerDraw, acceptDraw, type MoveRecord } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
+import { page } from "$app/state";
 import Board from "../../play/board.svelte";
 
-const gameId = page.params.id!;
+let gameId: string = page.params.id ?? "0";
 
-function handleResign() {
-  if (confirm("Resign the game?")) {
-    resign();
-  }
+let resignDialogOpen = $state(false);
+
+function confirmResign() {
+  resignDialogOpen = false;
+  resign();
 }
 
 function handleOfferDraw() {
@@ -124,11 +126,19 @@ const movePairs = $derived(() => {
     <!-- Controls -->
     <div class="space-y-2 mt-auto">
       {#if !$gameState.gameOver}
-        <Button variant="outline" class="w-full justify-start" onclick={handleOfferDraw}>
+        <Button
+          variant="outline"
+          class="w-full justify-start"
+          onclick={handleOfferDraw}
+        >
           <HandshakeIcon class="w-4 h-4 mr-2" />
           Offer draw
         </Button>
-        <Button variant="outline" class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]" onclick={handleResign}>
+        <Button
+          variant="outline"
+          class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+          onclick={() => resignDialogOpen = true}
+        >
           <FlagIcon class="w-4 h-4 mr-2" />
           Resign
         </Button>
@@ -141,7 +151,7 @@ const movePairs = $derived(() => {
   </div>
 
   <!-- Center: Board -->
-  <div class="flex-1 max-w-[800px] min-w-[400px]">
+  <div class="flex-1 max-w-200 min-w-100">
     <Board {gameId} />
   </div>
 
@@ -175,27 +185,82 @@ const movePairs = $derived(() => {
 
     <!-- Timers -->
     <div class="grid grid-cols-2 gap-2 mt-4">
-      <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
+      <div
+        class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}"
+      >
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-white"></div>
           <span class="text-xs font-medium">White</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold {whiteIsLow ? 'text-red-400' : ''}">{whiteTime}</span>
+          <span
+            class="text-sm font-mono font-semibold {whiteIsLow ? 'text-red-400' : ''}"
+            >{whiteTime}</span
+          >
         </div>
       </div>
-      <div class="flex items-center gap-2 rounded-lg px-3 py-2.5 {blackIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}">
+      <div
+        class="flex items-center gap-2 rounded-lg px-3 py-2.5 {blackIsActive ? 'bg-[#b58863] text-white' : 'bg-zinc-800 dark:bg-zinc-900 text-white'}"
+      >
         <div class="flex items-center gap-1.5">
           <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
           <span class="text-xs font-medium">Black</span>
         </div>
         <div class="flex items-center gap-1 ml-auto">
           <ClockIcon class="w-3.5 h-3.5 opacity-70" />
-          <span class="text-sm font-mono font-semibold {blackIsLow ? 'text-red-400' : ''}">{blackTime}</span>
+          <span
+            class="text-sm font-mono font-semibold {blackIsLow ? 'text-red-400' : ''}"
+            >{blackTime}</span
+          >
         </div>
       </div>
     </div>
   </div>
   </div>
+<!-- Draw offer dialog (shown to the recipient) -->
+<Dialog.Root open={$gameState.drawOffered && !$gameState.gameOver}>
+  <Dialog.Content showCloseButton={false}>
+    <Dialog.Header>
+      <Dialog.Title>Draw offer</Dialog.Title>
+      <Dialog.Description>
+        Your opponent is offering a draw. Do you accept?
+      </Dialog.Description>
+    </Dialog.Header>
+    <Dialog.Footer>
+      <Button variant="outline" onclick={() => gameState.update(s => ({ ...s, drawOffered: false }))}>
+        Decline
+      </Button>
+      <Button onclick={acceptDraw}>
+        <HandshakeIcon class="w-4 h-4 mr-2" />
+        Accept
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+
+<!-- Resign confirmation dialog -->
+<Dialog.Root bind:open={resignDialogOpen}>
+  <Dialog.Content showCloseButton={false}>
+    <Dialog.Header>
+      <Dialog.Title>Resign the game?</Dialog.Title>
+      <Dialog.Description>
+        Your opponent will be declared the winner. This cannot be undone.
+      </Dialog.Description>
+    </Dialog.Header>
+    <Dialog.Footer>
+      <Dialog.Close>
+        <Button variant="outline" class="w-full">Cancel</Button>
+      </Dialog.Close>
+      <Button
+        class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+        onclick={confirmResign}
+      >
+        <FlagIcon class="w-4 h-4 mr-2" />
+        Resign
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+
 </main>

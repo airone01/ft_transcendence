@@ -4,10 +4,23 @@ import {
   chatChannelMembers,
   chatChannels,
   eloHistory,
+  friendships,
+  friendshipsInvitations,
   users,
   usersStats,
 } from "@transc/db/schema";
-import { DrizzleQueryError, desc, eq, not, sql } from "drizzle-orm";
+import {
+  and,
+  DrizzleQueryError,
+  desc,
+  eq,
+  gte,
+  isNull,
+  like,
+  not,
+  sql,
+} from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import type { DatabaseError } from "pg";
 import {
   type Achievements,
@@ -16,6 +29,7 @@ import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   DBUserNotFoundError,
+  type FriendInfo,
   UnknownError,
   type UpdateUserInput,
   type User,
@@ -135,17 +149,65 @@ export async function dbCreateUser(
 }
 
 /**
- * Retrieves five random users
+ * Retrieves five non fridends random users
  * @param {number} userId - The id of the user requesting
  * @throws {UnknownError} - If an unexpected error occurs
  * @returns {Promise<User[]>} - A promise that resolves with the users array
  */
-export async function dbGetRandomUsers(userId: number): Promise<User[]> {
+export async function dbGetRandomUsers(userId: number): Promise<FriendInfo[]> {
   try {
+    const friendship1 = alias(friendships, "friendship1");
+    const friendship2 = alias(friendships, "friendship2");
+    const invitations1 = alias(friendshipsInvitations, "invitations1");
+    const invitations2 = alias(friendshipsInvitations, "invitations2");
+
     return await db
-      .select()
+      .select({
+        userId: users.id,
+        username: users.username,
+        avatar: users.avatar,
+        status: users.status,
+        currentElo: usersStats.currentElo,
+      })
       .from(users)
-      .where(not(eq(users.id, userId)))
+      .innerJoin(usersStats, eq(users.id, usersStats.userId))
+      .leftJoin(
+        friendship1,
+        and(
+          eq(friendship1.firstFriendId, userId),
+          eq(friendship1.secondFriendId, users.id),
+        ),
+      )
+      .leftJoin(
+        friendship2,
+        and(
+          eq(friendship2.firstFriendId, users.id),
+          eq(friendship2.secondFriendId, userId),
+        ),
+      )
+      .leftJoin(
+        invitations1,
+        and(
+          eq(invitations1.userId, userId),
+          eq(invitations1.friendId, users.id),
+        ),
+      )
+      .leftJoin(
+        invitations2,
+        and(
+          eq(invitations2.userId, users.id),
+          eq(invitations2.friendId, userId),
+        ),
+      )
+      .where(
+        and(
+          not(eq(users.id, userId)),
+          isNull(friendship1.firstFriendId),
+          isNull(friendship2.secondFriendId),
+          isNull(invitations1.userId),
+          isNull(invitations2.userId),
+        ),
+      )
       .orderBy(sql`RANDOM()`)
       .limit(5);
   } catch (err) {
@@ -211,6 +273,29 @@ export async function dbGetUserByUsername(
       .where(eq(users.username, username));
 
     return user ?? undefined;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
+ * Retrieves a list of users whose usernames start with a given prefix.
+ * @param {string} prefix - The prefix to search for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<User[]>} - A promise that resolves with the list of users, or rejects if an unexpected error occurs
+ */
+export async function dbGetUsersWithPrefix(
+  prefix: string,
+  userId: number,
+): Promise<User[]> {
+  try {
+    return await db
+      .select()
+      .from(users)
+      .where(
+        and(not(eq(users.id, userId)), like(users.username, `${prefix}%`)),
+      );
   } catch (err) {
     console.error(err);
     throw new UnknownError();
@@ -296,6 +381,28 @@ export async function dbGetStats(userId: number): Promise<UserStats> {
 }
 
 /**
+ * Retrieves the peak elo of a user.
+ * @param {number} userId - The id of the user to retrieve peak elo for
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<number>} - A promise that resolves with the user's peak elo if found, 0 otherwise
+ */
+export async function dbGetPeakElo(userId: number): Promise<number> {
+  try {
+    const [peak] = await db
+      .select()
+      .from(eloHistory)
+      .where(eq(eloHistory.userId, userId))
+      .orderBy(desc(eloHistory.elo))
+      .limit(1);
+
+    return peak?.elo ?? 0;
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
  * Retrieves the elo history of a user.
  * The elo history is a list of elo entries with their corresponding createdAt date.
  * The list is sorted in descending order by createdAt date.
@@ -316,7 +423,12 @@ export async function dbGetEloHistory(userId: number): Promise<
         createdAt: eloHistory.createdAt,
       })
       .from(eloHistory)
-      .where(eq(eloHistory.userId, userId))
+      .where(
+        and(
+          eq(eloHistory.userId, userId),
+          gte(eloHistory.createdAt, sql`now() - interval '7 days'`),
+        ),
+      )
       .orderBy(desc(eloHistory.createdAt));
   } catch (err) {
     console.error(err);

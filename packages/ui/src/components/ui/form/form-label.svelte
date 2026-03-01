@@ -12,13 +12,13 @@ let {
 </script>
 
 <FormPrimitive.Label {...restProps} bind:ref>
-	{#snippet child({ props })}
-		<Label
-			{...props}
-			data-slot="form-label"
-			class={cn("data-fs-error:text-destructive", className)}
-		>
-			{@render children?.()}
-		</Label>
-	{/snippet}
+  {#snippet child({ props })}
+    <Label
+      {...props}
+      data-slot="form-label"
+      class={cn("data-fs-error:text-destructive", className)}
+    >
+      {@render children?.()}
+    </Label>
+  {/snippet}
 </FormPrimitive.Label>

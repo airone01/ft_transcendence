@@ -1,10 +1,4 @@
-import {
-  HandshakeIcon,
-  HouseIcon,
-  TrophyIcon,
-  UserIcon,
-  ZapIcon,
-} from "@lucide/svelte";
+import { HandshakeIcon, TrophyIcon, UserIcon, ZapIcon } from "@lucide/svelte";
 import type { Component } from "svelte";
 
 export type SidebarItem = {
@@ -32,11 +26,6 @@ export const sidebarGroups: SidebarGroup[] = [
     label: "My Content",
     items: [
       {
-        label: "Home",
-        href: "/",
-        icon: HouseIcon,
-      },
-      {
         label: "Profile",
         href: "/profile/me",
         icon: UserIcon,
@@ -58,8 +47,8 @@ export const sidebarGroups: SidebarGroup[] = [
         icon: ZapIcon,
       },
       {
-        label: "Ranking",
-        href: "/ranking",
+        label: "Leaderboard",
+        href: "/",
         icon: TrophyIcon,
       },
     ],

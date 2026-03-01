@@ -59,7 +59,8 @@ CREATE TABLE "friendships" (
 CREATE TABLE "friendships_invitations" (
 	"user_id" integer NOT NULL,
 	"friend_id" integer NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "friendships_invitations_user_id_friend_id_pk" PRIMARY KEY("user_id","friend_id")
 );
 --> statement-breakpoint
 CREATE TABLE "games" (

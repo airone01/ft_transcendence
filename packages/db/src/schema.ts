@@ -149,6 +149,7 @@ export const friendshipsInvitations = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
+    primaryKey({ columns: [table.userId, table.friendId] }),
     index("friendships_invitations_user_id_idx").on(table.userId),
     index("friendships_invitations_friend_id_idx").on(table.friendId),
     index("friendships_invitations_created_at_idx").on(table.createdAt),

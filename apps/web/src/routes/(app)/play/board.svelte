@@ -1,7 +1,14 @@
 <script lang="ts">
-import { ChessBishopIcon, ChessKingIcon, ChessKnightIcon, ChessPawnIcon, ChessQueenIcon, ChessRookIcon } from "@lucide/svelte";
+import {
+  ChessBishopIcon,
+  ChessKingIcon,
+  ChessKnightIcon,
+  ChessPawnIcon,
+  ChessQueenIcon,
+  ChessRookIcon,
+} from "@lucide/svelte";
 import type { Component } from "svelte";
-import { onMount, onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import { startGame, getLegalMoves, parseFEN, playMove } from "$lib/chess";
@@ -11,7 +18,7 @@ import { socketConnected } from "$lib/stores/socket.svelte";
 
 // Props
 
-let { gameId }: { gameId: string } = $props();
+const { gameId }: { gameId: string } = $props();
 
 // Types
 
@@ -69,7 +76,7 @@ let unsubSocket: () => void;
 
 onMount(() => {
   unsubSocket = socketConnected.subscribe((connected) => {
-    if (connected) joinGame(gameId);
+    if (connected && !gameOver) joinGame(gameId);
   });
 });
 
@@ -237,12 +244,19 @@ function isDragDisabled(index: number): boolean {
   const isWhite = piece === piece.toUpperCase();
   if (myColor === "white" && !isWhite) return true;
   if (myColor === "black" && isWhite) return true;
-  return (isWhite && localState.turn !== "w") || (!isWhite && localState.turn !== "b");
+  return (
+    (isWhite && localState.turn !== "w") ||
+    (!isWhite && localState.turn !== "b")
+  );
 }
 
 // Labels (flipped if black)
-const displayFiles = $derived(myColor === "black" ? [...files].reverse() : files);
-const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks);
+const displayFiles = $derived(
+  myColor === "black" ? [...files].reverse() : files,
+);
+const displayRanks = $derived(
+  myColor === "black" ? [...ranks].reverse() : ranks,
+);
 </script>
 
 <!-- Board -->
@@ -250,7 +264,9 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
   <div class="flex">
     <div class="flex flex-col w-6 shrink-0">
       {#each displayRanks as rank}
-        <div class="flex-1 flex items-center justify-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70">
+        <div
+          class="flex-1 flex items-center justify-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70"
+        >
           {rank}
         </div>
       {/each}
@@ -286,9 +302,7 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
             <div
               class="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
             >
-              <div
-                class="w-1/4 h-1/4 rounded-full bg-black/25"
-              ></div>
+              <div class="w-1/4 h-1/4 rounded-full bg-black/25"></div>
             </div>
           {/if}
           {#if hasEnemyPiece}
@@ -318,7 +332,9 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
   <!-- File labels (bottom) -->
   <div class="flex pl-6">
     {#each displayFiles as file}
-      <div class="flex-1 text-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70 pt-1">
+      <div
+        class="flex-1 text-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70 pt-1"
+      >
         {file}
       </div>
     {/each}

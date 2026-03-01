@@ -11,10 +11,10 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="card-title"
-	class={cn("leading-none font-semibold", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="card-title"
+  class={cn("leading-none font-semibold", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

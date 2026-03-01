@@ -11,11 +11,11 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	role="list"
-	data-slot="item-group"
-	class={cn("group/item-group flex flex-col", className)}
-	{...restProps}
+  bind:this={ref}
+  role="list"
+  data-slot="item-group"
+  class={cn("group/item-group flex flex-col", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

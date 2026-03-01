@@ -1,8 +1,12 @@
 <script lang="ts">
-import { ZapIcon, ClockIcon, TargetIcon, LoaderCircleIcon, XIcon } from "@lucide/svelte";
+import { ClockIcon, TargetIcon, XIcon, ZapIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
-import { Separator } from "@transc/ui/separator";
-import { matchmakingState, joinQueue, leaveQueue } from "$lib/stores/matchmaking.store";
+import { Spinner } from "@transc/ui/spinner";
+import {
+  joinQueue,
+  leaveQueue,
+  matchmakingState,
+} from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import { gameState } from "$lib/stores/game.store";
 import { goto } from "$app/navigation";
@@ -27,13 +31,13 @@ function handleCancelQueue() {
 <main class="h-full flex items-center justify-center p-6">
   {#if !$socketConnected}
     <div class="text-center space-y-3">
-      <LoaderCircleIcon class="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
+      <Spinner class="w-8 h-8 mx-auto text-muted-foreground" />
       <p class="text-muted-foreground">Connecting to server...</p>
     </div>
   {:else if $matchmakingState.inQueue}
     <!-- In queue -->
     <div class="text-center space-y-6 max-w-md">
-      <LoaderCircleIcon class="w-12 h-12 animate-spin mx-auto text-primary" />
+      <Spinner class="w-12 h-12 mx-auto text-primary" />
       <div class="space-y-2">
         <h2 class="text-xl font-semibold">Looking for an opponent...</h2>
         <p class="text-muted-foreground">
