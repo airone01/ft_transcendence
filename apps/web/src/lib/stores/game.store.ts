@@ -3,6 +3,15 @@ import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
+export interface MoveRecord {
+  from: string;
+  to: string;
+  promotion?: string;
+  color: "w" | "b";
+  check: boolean;
+  checkmate: boolean;
+}
+
 export interface GameState {
   gameId: string | null;
   fen: string;
@@ -16,6 +25,8 @@ export interface GameState {
   reason: string | null;
   whiteTimeLeft: number;
   blackTimeLeft: number;
+  moves: MoveRecord[];
+  drawOffered: boolean;
 }
 
 export interface GameMove {
@@ -45,6 +56,8 @@ export const gameState: Writable<GameState> = writable({
   reason: null,
   whiteTimeLeft: DEFAULT_TIME,
   blackTimeLeft: DEFAULT_TIME,
+  moves: [],
+  drawOffered: false,
 });
 
 export const isMyTurn = derived(gameState, ($state) => {
@@ -132,6 +145,8 @@ export function leaveGame() {
     reason: null,
     whiteTimeLeft: DEFAULT_TIME,
     blackTimeLeft: DEFAULT_TIME,
+    moves: [],
+    drawOffered: false,
   });
 }
 
@@ -155,6 +170,11 @@ export function setupGameListeners() {
       isDraw: data.isDraw,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
+      gameOver: false,
+      winner: null,
+      reason: null,
+      check: false,
+      moves: [],
     }));
   }) as unknown as (...args: unknown[]) => void);
 
@@ -168,8 +188,20 @@ export function setupGameListeners() {
       check: data.check || false,
       isCheckmate: data.checkmate || false,
       isDraw: data.stalemate || false,
+      drawOffered: false,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
+      moves: [
+        ...state.moves,
+        {
+          from: data.from,
+          to: data.to,
+          promotion: data.promotion,
+          color: state.turn,
+          check: data.check || false,
+          checkmate: data.checkmate || false,
+        },
+      ],
     }));
   }) as unknown as (...args: unknown[]) => void);
 
@@ -193,11 +225,12 @@ export function setupGameListeners() {
       gameOver: true,
       winner: data.winner,
       reason: data.reason,
+      drawOffered: false,
     }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:draw_offered", ((data: { from: string }) => {
-    console.log("Draw offered by", data.from);
+  socketManager.on("game:draw_offered", ((_data: { from: string }) => {
+    gameState.update((state) => ({ ...state, drawOffered: true }));
   }) as unknown as (...args: unknown[]) => void);
 
   socketManager.on("game:error", ((data: { message: string }) => {

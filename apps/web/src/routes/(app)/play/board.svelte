@@ -16,9 +16,9 @@ import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
 import {
   gameState as gameStore,
   joinGame,
-  leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
+import { socketConnected } from "$lib/stores/socket.svelte";
 
 // Props
 
@@ -55,25 +55,36 @@ const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 // State — driven by websocket store
 
 let myColor: "white" | "black" | null = $state(null);
+let gameOver = $state(false);
 const initialState = startGame();
 let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
 let legalTargets: Set<number> = $state(new Set());
 let dragFromIndex: number | null = $state(null);
-
-// Subscribe to game store — rebuild board when FEN changes
+let isDragging = false;
+let rebuildScheduled = false;
 
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
+  gameOver = store.gameOver;
   if (store.fen) {
     localState = parseFEN(store.fen);
-    board = buildBoard(localState);
+    if (!isDragging) {
+      board = buildBoard(localState);
+    }
   }
 });
 
-onMount(() => joinGame(gameId));
+let unsubSocket: () => void;
+
+onMount(() => {
+  unsubSocket = socketConnected.subscribe((connected) => {
+    if (connected && !gameOver) joinGame(gameId);
+  });
+});
+
 onDestroy(() => {
-  leaveGame();
+  unsubSocket?.();
   unsubscribe();
 });
 
@@ -154,6 +165,7 @@ function handleDndConsider(
             }),
           );
           dragFromIndex = squareIndex;
+          isDragging = true;
         } else {
           legalTargets = new Set();
           dragFromIndex = null;
@@ -162,14 +174,29 @@ function handleDndConsider(
     }
   }
 
-  board[squareIndex].pieces = e.detail.items;
-  board = [...board];
+  if (!isDragging || squareIndex === dragFromIndex) {
+    board[squareIndex].pieces = e.detail.items;
+  }
+}
+
+function scheduleRebuild() {
+  if (rebuildScheduled) return;
+  rebuildScheduled = true;
+  setTimeout(() => {
+    isDragging = false;
+    legalTargets = new Set();
+    dragFromIndex = null;
+    board = buildBoard(localState);
+    rebuildScheduled = false;
+  }, 0);
 }
 
 function handleDndFinalize(
   squareIndex: number,
   e: CustomEvent<DndEvent<DndPiece>>,
 ) {
+  board[squareIndex].pieces = e.detail.items;
+
   const { info } = e.detail;
 
   // Only process valid moves
@@ -198,16 +225,9 @@ function handleDndFinalize(
         promotion: isPromotion ? ("Q" as ChessPiece) : undefined,
       };
       localState = playMove(localState, move);
-      board = buildBoard(localState);
-    } catch {
-      board = buildBoard(localState);
-    }
-  } else {
-    board = buildBoard(localState);
+    } catch {}
   }
-
-  legalTargets = new Set();
-  dragFromIndex = null;
+  scheduleRebuild();
 }
 
 //  Helpers
@@ -219,6 +239,7 @@ function isLightSquare(index: number): boolean {
 }
 
 function isDragDisabled(index: number): boolean {
+  if (gameOver) return true;
   const [row, col] = indexToBoard(index);
   const piece = localState.board[row][col];
   if (!piece) return true;
