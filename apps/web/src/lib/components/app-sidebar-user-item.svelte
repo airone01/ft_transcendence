@@ -8,9 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@transc/ui/tooltip";
 import { page } from "$app/state";
 import UserAvatar from "./user-avatar.svelte";
+import UserProfileLink from "./user-profile-link.svelte";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
@@ -20,38 +20,21 @@ const stats = $derived(page.data.stats);
 
 {#if user}
   <div
-    class="group flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
+    class="flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
   >
-    <UserAvatar
-      username={user.username}
+    <UserProfileLink
       userId={user.id}
-      avatarUrl={user.avatar}
-      class="shrink-0"
-      href="/profile/me"
-    />
-    <div
-      class="flex flex-col justify-center shrink w-full min-w-0 h-full group-data-[state=collapsed]:hidden"
+      fallbackUsername={user.username}
+      class="gap-3 w-full"
     >
-      <Tooltip>
-        <TooltipTrigger class="h-4 flex justify-center w-fit max-w-full">
-          <a
-            href="/profile/me"
-            class="text-left hover:underline text-sm max-w-full w-fit truncate leading-none"
-          >
-            {user.username}
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{user.username}</p>
-        </TooltipContent>
-      </Tooltip>
-      <Badge
-        variant="outline"
-        class="text-xs text-[0.6rem] py-px px-0.75 text-muted-foreground border-muted"
-      >
-        ELO {stats?.currentElo ?? '???'}
-      </Badge>
-    </div>
+      <UserAvatar userId={user.id} avatarUrl={user.avatar} class="h-8 w-8" />
+      <div class="flex flex-col group-data-[collapsible=icon]:hidden">
+        <span class="text-sm font-medium">{user.username}</span>
+        <Badge class="text-xs text-[0.6rem] py-px px-0.75">
+          ELO {stats?.currentElo ?? '???'}
+        </Badge>
+      </div>
+    </UserProfileLink>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
         <Button
