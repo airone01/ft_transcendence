@@ -44,10 +44,10 @@ const {
     </CardTitle>
     <CardDescription>Make some friends and some enemies</CardDescription>
   </CardHeader>
-  <CardContent class="flex justify-start h-full gap-4">
+  <CardContent class="flex flex-col lg:flex-row justify-start h-full gap-4 overflow-x-scroll">
     {#if (suggestedUsers?.length ?? 0 > 0)}
       {#each suggestedUsers as {userId, avatar, username, currentElo}}
-        <Card class="overflow-hidden flex flex-col flex-1 min-h-0 max-w-sm">
+        <Card class="overflow-hidden flex flex-col flex-1 min-h-0 min-w-xs lg:max-w-sm max-w-full lg:w-auto">
           <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
             <div class="flex gap-4 items-center h-fit w-full">
               <UserAvatar

@@ -137,9 +137,9 @@ const commandGroups: ShellGroup[] = [
   </CommandList>
 </CommandDialog>
 
-<SidebarProvider class="h-full" bind:open={sidebarOpen}>
+<SidebarProvider bind:open={sidebarOpen}>
   <AppSidebar {logoutForm} />
-  <div class="flex flex-col h-full w-full [&>main]:p-4 [&>main]:mt-11">
+  <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
     <header
       class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
     >

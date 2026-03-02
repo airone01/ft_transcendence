@@ -68,7 +68,7 @@ const formEnhance: SubmitFunction = () => {
 };
 </script>
 
-<main class="flex flex-col gap-6 mx-auto w-full min-h-full">
+<main class="flex flex-col gap-6 mx-auto w-full pb-16">
   <div class="flex flex-col gap-4 md:flex-row md:items-end justify-between">
     <div class="space-y-1">
       <h2 class="text-2xl font-bold tracking-tight">Social</h2>
@@ -107,7 +107,7 @@ const formEnhance: SubmitFunction = () => {
     </form>
   </div>
 
-  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 h-full">
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
     <!-- friend list -->
     <FriendsCard {friends} {formEnhance} />
 
