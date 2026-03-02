@@ -7,8 +7,8 @@ import { untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { onlineUsersStore } from "$lib/stores/presence.store";
-import RequestsCard from "./requests-card.svelte";
 import FriendsCard from "./friends-card.svelte";
+import RequestsCard from "./requests-card.svelte";
 import SuggestedUsersCard from "./suggested-users-card.svelte";
 
 const { data } = $props();
