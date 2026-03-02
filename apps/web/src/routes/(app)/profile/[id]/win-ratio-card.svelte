@@ -10,6 +10,9 @@ import {
 import type { UserStats } from "$lib/server/db-services";
 
 const { stats }: { stats: UserStats } = $props();
+
+// svelte-ignore state_referenced_locally idc, inital page load
+if (stats.wins + stats.losses + stats.draws === 0) stats.gamesPlayed = 0; // edge case
 </script>
 
 <Card
