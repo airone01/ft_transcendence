@@ -7,7 +7,7 @@ import { untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { onlineUsersStore } from "$lib/stores/presence.store";
-import FriendRequestsCard from "./friend-requests-card.svelte";
+import RequestsCard from "./requests-card.svelte";
 import FriendsCard from "./friends-card.svelte";
 import SuggestedUsersCard from "./suggested-users-card.svelte";
 
@@ -111,7 +111,7 @@ const formEnhance: SubmitFunction = () => {
     <!-- friend list -->
     <FriendsCard {friends} {formEnhance} />
 
-    <FriendRequestsCard invitations={data.invitations} {formEnhance} />
+    <RequestsCard invitations={data.invitations} {formEnhance} />
 
     <SuggestedUsersCard {suggestedUsers} {formEnhance} />
   </section>
