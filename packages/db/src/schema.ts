@@ -16,12 +16,6 @@ import {
 
 // ################################ USERS ################################
 
-export const userStatus = pgEnum("user_status", [
-  "online",
-  "offline",
-  "ingame",
-]);
-
 export const users = pgTable(
   "users",
   {
@@ -30,7 +24,7 @@ export const users = pgTable(
     email: varchar("email").unique().notNull(),
     password: varchar("password"),
     avatar: text("avatar"), // unlimited size is fine, we encode in backend
-    status: userStatus().default("offline").notNull(),
+    bio: varchar("bio").default("").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
@@ -109,6 +103,7 @@ export const usersStats = pgTable(
 export const eloHistory = pgTable(
   "elo_history",
   {
+    id: serial("id").primaryKey(),
     userId: integer("user_id")
       .references(() => users.id, { onDelete: "cascade" })
       .notNull(),
@@ -259,9 +254,6 @@ export const games = pgTable(
     status: gameStatus().default("waiting").notNull(),
     timeControlSeconds: integer("time_control_seconds").notNull(),
     incrementSeconds: integer("increment_seconds").notNull(),
-    fen: varchar("fen")
-      .notNull()
-      .default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"),
     result: result(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     startedAt: timestamp("started_at"),

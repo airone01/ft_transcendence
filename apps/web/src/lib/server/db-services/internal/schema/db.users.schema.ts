@@ -12,13 +12,14 @@ const updateUserSchema = z.object({
   email: z.string().optional(),
   password: z.string().min(8).optional(),
   avatar: z.string().optional(),
+  bio: z.string().max(255).optional(),
 });
 
 const friendInfo = z.object({
   userId: z.number().int(),
   username: z.string().min(3).max(20),
   avatar: z.string().nullable(),
-  status: z.enum(["online", "offline", "ingame"]),
+  bio: z.string().max(255),
   currentElo: z.number().int().min(0),
 });
 

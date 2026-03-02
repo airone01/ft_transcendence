@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
 
   const form = await superValidate(
-    { username: locals.user.username },
+    { username: locals.user.username, bio: locals.user.bio },
     zod(profileFormSchema),
   );
 
@@ -27,10 +27,13 @@ export const actions: Actions = {
     }
 
     try {
-      const updateData: { username?: string; avatar?: string } = {};
+      const updateData: { username?: string; avatar?: string; bio?: string } =
+        {};
 
       if (form.data.username !== locals.user.username)
         updateData.username = form.data.username;
+
+      if (form.data.bio !== locals.user.bio) updateData.bio = form.data.bio;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {
         const buffer = await form.data.avatar.arrayBuffer();
@@ -47,6 +50,7 @@ export const actions: Actions = {
         // manually update locals so ui reflects changes immediately
         if (updateData.username) locals.user.username = updateData.username;
         if (updateData.avatar) locals.user.avatar = updateData.avatar;
+        if (updateData.bio) locals.user.bio = updateData.bio;
       }
     } catch (_error) {
       return fail(500, {

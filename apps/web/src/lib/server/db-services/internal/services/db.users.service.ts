@@ -166,7 +166,7 @@ export async function dbGetRandomUsers(userId: number): Promise<FriendInfo[]> {
         userId: users.id,
         username: users.username,
         avatar: users.avatar,
-        status: users.status,
+        bio: users.bio,
         currentElo: usersStats.currentElo,
       })
       .from(users)
@@ -314,6 +314,7 @@ export async function dbUpdateUser(
         email: userInput.email,
         password: userInput.password,
         avatar: userInput.avatar,
+        bio: userInput.bio,
       })
       .where(eq(users.id, userId))
       .returning();

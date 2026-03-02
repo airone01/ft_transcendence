@@ -94,7 +94,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
               <div>
                 <div class="flex items-center gap-2">
                   <span class="font-bold">
-                    {game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}
+                    {hasWon ? 'Won' : game.result === 'draw' ? 'Draw' : 'Lost'}
                   </span>
                   <span class="text-xs text-muted-foreground"
                     >vs

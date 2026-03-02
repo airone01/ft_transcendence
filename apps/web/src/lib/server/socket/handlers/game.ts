@@ -37,7 +37,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         gameRoom = new GameRoom(gameId, {
           whiteId: String(players.whitePlayerId),
           blackId: String(players.blackPlayerId),
-          fen: game.fen,
           startedAt: game.startedAt || undefined,
           timeControlSeconds: game.timeControlSeconds,
           incrementSeconds: game.incrementSeconds,

@@ -3,7 +3,6 @@ CREATE TYPE "public"."colors" AS ENUM('white', 'black');--> statement-breakpoint
 CREATE TYPE "public"."game_status" AS ENUM('waiting', 'ongoing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."oauth_providers" AS ENUM('discord', 'google', 'github');--> statement-breakpoint
 CREATE TYPE "public"."result" AS ENUM('white_win', 'black_win', 'draw', 'abort');--> statement-breakpoint
-CREATE TYPE "public"."user_status" AS ENUM('online', 'offline', 'ingame');--> statement-breakpoint
 CREATE TABLE "achievements" (
 	"user_id" integer PRIMARY KEY NOT NULL,
 	"first_game" boolean DEFAULT false NOT NULL,
@@ -43,6 +42,7 @@ CREATE TABLE "chat_messages" (
 );
 --> statement-breakpoint
 CREATE TABLE "elo_history" (
+	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
 	"elo" integer DEFAULT 1000 NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
@@ -68,7 +68,6 @@ CREATE TABLE "games" (
 	"status" "game_status" DEFAULT 'waiting' NOT NULL,
 	"time_control_seconds" integer NOT NULL,
 	"increment_seconds" integer NOT NULL,
-	"fen" varchar DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0' NOT NULL,
 	"result" "result",
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"started_at" timestamp,
@@ -108,7 +107,7 @@ CREATE TABLE "users" (
 	"email" varchar NOT NULL,
 	"password" varchar,
 	"avatar" text,
-	"status" "user_status" DEFAULT 'offline' NOT NULL,
+	"bio" varchar DEFAULT '' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "users_username_unique" UNIQUE("username"),
 	CONSTRAINT "users_email_unique" UNIQUE("email"),

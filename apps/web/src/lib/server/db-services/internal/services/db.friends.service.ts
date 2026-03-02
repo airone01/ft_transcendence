@@ -295,7 +295,7 @@ export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
         userId: users.id,
         username: users.username,
         avatar: users.avatar,
-        status: users.status,
+        bio: users.bio,
         currentElo: usersStats.currentElo,
       })
       .from(friendships)

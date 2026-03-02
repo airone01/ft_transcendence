@@ -1,6 +1,7 @@
 <script lang="ts">
 import {
   CalendarIcon,
+  MegaphoneIcon,
   SwordsIcon,
   TriangleAlertIcon,
   UserPlusIcon,
@@ -14,6 +15,7 @@ import { Skeleton } from "@transc/ui/skeleton";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
+import { onlineUsersStore } from "$lib/stores/presence.store";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
 import EloHistoryCard from "./elo-history-card.svelte";
@@ -23,6 +25,9 @@ import WinRatioCard from "./win-ratio-card.svelte";
 const { data } = $props();
 
 const isMe = (userId: number) => page.data.user?.id === userId;
+
+const userStatus = (userId: number) =>
+  $onlineUsersStore.get(String(userId)) ?? "offline";
 
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
@@ -44,7 +49,7 @@ const formEnhance: SubmitFunction = () => {
         <Skeleton class="h-64 w-full md:col-span-2" />
       </div>
     </div>
-  {:then {user, stats, games: matches, eloHistory, achievements, peakElo }}
+  {:then { user, stats, games: matches, eloHistory, achievements, peakElo }}
     <div class="relative w-full">
       <div
         class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"
@@ -69,15 +74,26 @@ const formEnhance: SubmitFunction = () => {
                 {user?.username}
               </h1>
               <Badge
-                variant={user?.status === 'online' ? 'default' : 'secondary'}
+                variant={(userStatus(user?.id) === "online")
+                  ? "default"
+                  : "secondary"}
                 class="uppercase text-[10px]"
               >
-                {user?.status}
+                {userStatus(user?.id)}
               </Badge>
             </div>
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
               <CalendarIcon class="w-3 h-3" /> Member since
-              {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+              {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+              })}
+            </p>
+            <!-- TODO: fix Icon size and "div" align with the previous one -->
+            <p class="text-muted-foreground flex items-center gap-2 text-sm">
+              <MegaphoneIcon class="w-3 h-3" />
+              Biography:
+              {user?.bio}
             </p>
           </div>
 

@@ -6,7 +6,7 @@ const userSchema = z.object({
   email: z.string(),
   password: z.string().min(8).nullable(),
   avatar: z.string().nullable(),
-  status: z.enum(["online", "offline", "ingame"]),
+  bio: z.string().max(255),
   createdAt: z.date(),
 });
 
@@ -21,6 +21,7 @@ const userStatsSchema = z.object({
 });
 
 const eloHistorySchema = z.object({
+  id: z.number().int(),
   userId: z.number().int(),
   elo: z.number().int().min(0),
   createdAt: z.date(),
@@ -65,7 +66,6 @@ const gamesSchema = z.object({
   status: z.enum(["waiting", "ongoing", "finished"]),
   timeControlSeconds: z.number().int(),
   incrementSeconds: z.number().int(),
-  fen: z.string(),
   result: z.enum(["white_win", "black_win", "draw", "abort"]).nullable(),
   createdAt: z.date(),
   startedAt: z.date().nullable(),
