@@ -1,6 +1,7 @@
 <div align="center">
   <h3>
-  This project has been created as part of the 42 curriculum by 
+  This project has been created as part of the 42 curriculum by
+  </br>
     <a href="">
       elagouch
     </a>
@@ -22,7 +23,7 @@
 <div align="center">
     <img alt="ft_transcendence logo" src="https://raw.githubusercontent.com/ayogun/42-project-badges/main/badges/ft_transcendencem.png"/>
 </div>
-<br/>
+</br>
 
 <div align="center">
   <p>
@@ -41,15 +42,15 @@
 
 - [Description](#description)
 - [Instructions](#instructions)
-- [Feature List](#features-list)
 - [Team Information](#team-information)
 - [Project Management](#project-management)
 - [Technical Stack](#technical-stack)
 - [Database Schema](#database-schema)
+- [Feature List](#features-list)
 - [Modules](#modules)
 - [Individual Contributions](#individual-contributions)
 - [Resources](#resources)
-- [Others???](#others) MAY NEED AN UPDATE
+- [Others???](#others) <--------------------------------------------- MAY NEED AN UPDATE
 
 
 ## Description
@@ -60,6 +61,15 @@ The “Description” section should also contain a clear name for the project a
 key features.
 ```
 
+***INSERT PROJECT NAME HERE*** is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
+
+#### Key Features
+
+- Real-time multiplayer chess (remote players) with chat system
+- User authentication & profile management
+- Friends system with online status
+
+
 ## Instructions
 
 ```
@@ -69,14 +79,18 @@ tools, versions, configuration like .env setup, etc.), and step-by-step instruct
 run the project.
 ```
 
-## Features List
+### Software
 
-```
-Subject:
-◦ Complete list of implemented features.
-◦ Which team member(s) worked on each feature.
-◦ Brief description of each feature’s functionality.
-```
+- Example `^v0.0.0`
+
+### Tools
+
+- Example `^v0.0.0`
+
+### `.env` files
+
+- `./apps/web/.env` [example](./apps/web/.env.example)
+- `./packages/db/.env` [example](./packages/db/.env.example)
 
 
 ## Team Information
@@ -119,11 +133,30 @@ Subject:
 ◦ Communication channels used (Discord, Slack, etc.).
 ```
 
-- **Task distribution:** <a href="">elagouch</a> and <a href="">scottene</a> for **front-end** mainly, <a href="">enpassel</a> and <a href="">vblanc</a> for **back-end** mainly.
-- **Task organization:** GitHub Project / Issues
-- **Communication channel:** Discord
-- **Regular communication:** **Weekly meetings** with the whole team and almost **daily discussions** with some team members.
-- **Code reviews:** Each **Pull Request** has been reviewed by at least one team member.
+### Organization
+
+- **Scrum** (Agile) method
+- Weekly sprint meetings and daily scrum
+- Feature-based task distribution
+- Mandatory code reviews before merge
+
+### Tools Used
+
+- **GitHub Issues** for task tracking
+- **GitHub Projects** for sprint board
+- **Discord** for communication
+
+### Workflow
+
+- Feature branches
+- Clear commit messages according to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- Pull Requests required
+- Code review mandatory
+
+### Task Distribution
+
+- **Front-end Team:** <a href="">elagouch</a> and <a href="">scottene</a>
+- **Back-end Team:** <a href="">enpassel</a> and <a href="">vblanc</a>
 
 ## Technical Stack
 
@@ -136,61 +169,13 @@ Subject:
 ◦ Justification for major technical choices.
 ```
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Frontend | Svelte 5, TypeScript, Tailwind CSS | UI development |
-| Backend | SvelteKit, Bun | Server logic and API |
-| Database | PostgreSQL, Drizzle ORM | Data persistence and access |
-| Realtime | WebSockets | Live communication |
-| Infrastructure | Docker | Containerization |
-| Security | .env, Let’s Encrypt | Secrets management and HTTPS |
-
-We choose ... because ...
-
-### --------------------------------------------------------- OR ---------------------------------------------------------
-
-**Choose center or not "Technology" column**
-
-|-------|:----------:|---------|
-
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Frontend | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)| UI development |
-| Backend | ![SvelteKit](https://img.shields.io/badge/Svelte--Kit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white) | Server logic and API |
-| Database | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black) | Data persistence and access |
-| Infrastructure | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) | Containerization |
-| Security | ![.env](https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black) ![Let's Encrypt](https://img.shields.io/badge/Let's_Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white) | Secrets management and HTTPS |
-| Realtime | ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white) | Live communication |
-
-We choose ... because ...
-
-### --------------------------------------------------------- OR ---------------------------------------------------------
-
-### Frontend
-- **Svelte 5** — reactive UI framework compiled for performance
-- **TypeScript** — static typing and improved developer experience
-- **Tailwind CSS** — utility-first CSS framework for styling
-
-### Backend
-- **SvelteKit** — full-stack framework for server routes, API, and SSR
-- **Bun** — JavaScript runtime, package manager, and build tool
-
-### Database
-- **PostgreSQL** — relational database
-- **Drizzle ORM** — type-safe ORM and SQL query builder for TypeScript
-
-### Realtime Communication
-- **WebSockets** — bidirectional real-time communication between client and server
-
-### Infrastructure & Deployment
-- **Docker** — containerization and reproducible environments
-
-### Security
-- **Environment Variables (.env)** — configuration and secret management
-- **Let’s Encrypt** — free automated SSL/TLS certificates (HTTPS)
-
-### Libraries
-- **???** —
+| Layer | Technology |
+|-------|------------|
+| Frontend | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![i18next](https://img.shields.io/badge/i18next-26A69A?style=for-the-badge&logo=i18next&logoColor=white) |
+| Backend | ![SvelteKit](https://img.shields.io/badge/Svelte--Kit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white) |
+| Database | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black) |
+| Security | ![.env](https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black) ![Let's Encrypt](https://img.shields.io/badge/Let's_Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white) |
+| Infrastructure | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
 
 We choose ... because ...
 
@@ -209,6 +194,84 @@ Subject:
 Take a snapshot [here]("https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9")
 
 ![DB](./assets/ft_transcendence_db.jpg)
+*This image have been generated thanks to [dbdiagram.io](https://dbdiagram.io/)*
+
+**------------------------- CENTER DESCRIPTION ?? -------------------------**
+
+## Features List
+
+```
+Subject:
+◦ Complete list of implemented features.
+◦ Which team member(s) worked on each feature.
+◦ Brief description of each feature’s functionality.
+```
+
+**-------------------------------------- CHECK AND UPDATE - AI GENERATED --------------------------------------**
+
+### 1. User Authentication
+- Secure signup/login
+- JWT-based session
+- OAuth login (Google)
+- Password hashing (bcrypt)
+- **Developed by:** <login1>
+
+### 2. Profile System
+- Avatar upload
+- Editable username
+- Online status
+- Profile page
+- **Developed by:** <login1>
+
+### 3. Friends System
+- Send/remove friend requests
+- Online status display
+- Friend list
+- **Developed by:** <login2>
+
+### 4. Real-time Chess Game
+- WebSocket-based live gameplay
+- Move validation
+- Game state synchronization
+- Reconnection handling
+- **Developed by:** <login3>
+
+### 5. AI Opponent
+- Minimax with depth limitation
+- Randomized evaluation for human-like behavior
+- Adjustable difficulty
+- **Developed by:** <login4>
+
+### 6. Spectator Mode
+- Watch ongoing games
+- Real-time board updates
+- **Developed by:** <login2>
+
+### 7. Chat System
+- Private messaging
+- Real-time message updates
+- **Developed by:** <login2>
+
+### 8. Game Statistics & Leaderboard
+- Win/loss tracking
+- Match history
+- Player ranking
+- **Developed by:** <login4>
+
+### 9. Accessibility (WCAG 2.1 AA)
+- Full keyboard navigation
+- Screen reader support (ARIA labels)
+- Color contrast compliance
+- Focus management
+- **Developed by:** <login4>
+
+### 10. Internationalization
+- English
+- French
+- Spanish
+- Language switcher
+- **Developed by:** <login1>
+
 
 ## Modules
 
@@ -328,8 +391,39 @@ choice".
 | Gaming and user experience | 2 Major(s) and 2 Minor(s) | 6 pts |
 | **Total** | **7 Major(s) and 9 Minor(s)** | **23 pts** |
 
+**-------------------------------------- OR - AI GENERATED --------------------------------------**
 
+## Major Modules (2 pts each)
 
+| Module | Points | Implementation | Team Member(s) |
+|--------|--------|---------------|----------------|
+| Frontend & Backend Framework | 2 | Next.js + NestJS | <login3> |
+| Real-time WebSockets | 2 | Socket.io | <login2> |
+| User Interaction System | 2 | Chat + Friends + Profiles | <login1>, <login2> |
+| Standard User Management | 2 | Profile + Avatar + Friends | <login1> |
+| AI Opponent | 2 | Minimax + evaluation | <login4> |
+| Complete Multiplayer Game | 2 | Chess engine + validation | <login3> |
+| Remote Players | 2 | Reconnection logic | <login2> |
+| Accessibility WCAG 2.1 AA | 2 | Full compliance audit | <login4> |
+
+**Total Major Points: 16**
+
+---
+
+## Minor Modules (1 pt each)
+
+| Module | Points | Implementation | Team Member(s) |
+|--------|--------| ---------------|----------------|
+| ORM (Prisma) | 1 | ... | <login2> |
+| SSR | 1 |
+| Custom Design System | 1 |
+| Multi-language (3 languages) | 1 |
+| Additional Browser Support | 1 |
+| Game Statistics | 1 |
+| OAuth 2.0 | 1 |
+| Spectator Mode | 1 |
+
+**Total Minor Points: 8**
 
 ## Individual Contributions
 
@@ -339,6 +433,8 @@ Subject:
 ◦ Specific features, modules, or components implemented by each person.
 ◦ Any challenges faced and how they were overcome.
 ```
+
+...
 
 ## Resources
 
@@ -355,13 +451,23 @@ specifying for which tasks and which parts of the project.
 - [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
 - [Docker Documentation](https://docs.docker.com)
 - [Socket.io Documentation](https://socket.io/docs/v4)
+- ...
 
 ### Usefull websites
 - [Figma](https://www.figma.com) — For site design
 - [dbdiagram.io](https://dbdiagram.io/home) — For DB visual
-
-### AIs
 - ...
+
+### AI Usage
+
+AI tools (*ChatGPT*, *Claude*, *Gemini*, ...) were used for:
+- Brainstorming architectural ideas
+- Improving documentation wording
+- Debugging specific errors
+- ...
+
+***All code was written, reviewed, and validated by team members.</br>
+AI was not used to generate complete features without understanding.***
 
 ## Others???
 
@@ -370,3 +476,12 @@ Subject:
 Any other useful or relevant information is welcome (usage documentation, known
 limitations, license, credits, etc.).
 ```
+
+## Known Limitations
+
+- AI depth limited to avoid high CPU usage
+- ...
+
+## License
+
+This project was developed as part of the 42 curriculum and is intended for educational purposes, under [MIT License](...).
