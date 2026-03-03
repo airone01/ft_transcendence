@@ -2,6 +2,7 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
+import { activeGames } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
@@ -34,7 +35,7 @@ export function initSocketServer(httpServer: HTTPServer) {
   // Run heartbeat
   startHeartbeat(io);
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
@@ -42,7 +43,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     socket.join(`user:${userId}`);
 
     // Try to restore a previous session
-    restoreSessionOnReconnect(socket);
+    const { restored, gameId } = await restoreSessionOnReconnect(socket, activeGames);
 
     // Register handlers
     registerGameHandlers(io, socket);

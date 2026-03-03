@@ -7,7 +7,7 @@ import {
 } from "$lib/server/db-services";
 import { GameRoom } from "../rooms/GameRoom";
 
-const activeGames = new Map<string, GameRoom>();
+export const activeGames = new Map<string, GameRoom>();
 
 export function registerGameHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -30,6 +30,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
       // Join the room
       socket.join(`game:${gameId}`);
+      socket.data.currentGameId = gameId;  // ← Cette ligne doit être là
 
       // Create or get GameRoom
       let gameRoom = activeGames.get(gameId);

@@ -20,18 +20,11 @@ export function saveSessionOnDisconnect(socket: Socket) {
   const userId = socket.data.userId;
   if (!userId) return;
 
-  // Récupérer les rooms actuelles du socket
-  const rooms = new Set(socket.rooms);
-  rooms.delete(socket.id); // Supprimer la room auto-créée
+  // ✅ Récupérer le gameId depuis socket.data (sauvegardé pendant game:join)
+  const gameId = socket.data.currentGameId || null;
 
-  // Trouver si dans une game room
-  let gameId: string | null = null;
-  for (const room of rooms) {
-    if (room.startsWith("game:")) {
-      gameId = room.replace("game:", "");
-      break;
-    }
-  }
+  const rooms = new Set(socket.rooms);
+  rooms.delete(socket.id);
 
   disconnectedSessions.set(userId, {
     userId,
@@ -40,24 +33,28 @@ export function saveSessionOnDisconnect(socket: Socket) {
     gameId,
   });
 
-  console.log(`[Reconnection] Session saved for user ${userId}`);
+  console.log(`[Reconnection] Session saved for user ${userId}${gameId ? ` (game:${gameId})` : ""}`);
 }
 
 /**
  * Restaure la session si le user reconnecte dans le délai
+ * @param activeGames - Map des GameRooms actives pour récupérer l'état
  */
-export function restoreSessionOnReconnect(socket: Socket): boolean {
+export async function restoreSessionOnReconnect(
+  socket: Socket,
+  activeGames: Map<string, any>
+): Promise<{ restored: boolean; gameId: string | null }> {
   const userId = socket.data.userId;
-  if (!userId) return false;
+  if (!userId) return { restored: false, gameId: null };
 
   const session = disconnectedSessions.get(userId);
-  if (!session) return false;
+  if (!session) return { restored: false, gameId: null };
 
   // Vérifier le délai
   if (Date.now() - session.disconnectedAt > MAX_DISCONNECTION_DURATION) {
     disconnectedSessions.delete(userId);
     console.log(`[Reconnection] Session expired for user ${userId}`);
-    return false;
+    return { restored: false, gameId: null };
   }
 
   // Restaurer les rooms
@@ -65,9 +62,27 @@ export function restoreSessionOnReconnect(socket: Socket): boolean {
     socket.join(room);
   }
 
+  //  Si gameId, rejoindre la game room et envoyer l'état depuis la GameRoom
+  if (session.gameId) {
+    socket.join(`game:${session.gameId}`);
+    socket.data.currentGameId = session.gameId; // Restaurer dans socket.data
+
+    // Récupérer l'état depuis la GameRoom en mémoire
+    const gameRoom = activeGames.get(session.gameId);
+    if (gameRoom) {
+      socket.emit("game:state", {
+        gameId: session.gameId,
+        ...gameRoom.getState(), // État actuel depuis la mémoire !
+      });
+      console.log(`[Reconnection] Game state sent from memory for game ${session.gameId}`);
+    } else {
+      console.log(`[Reconnection] GameRoom ${session.gameId} not found in memory`);
+    }
+  }
+
   disconnectedSessions.delete(userId);
   console.log(`[Reconnection] Session restored for user ${userId}`);
-  return true;
+  return { restored: true, gameId: session.gameId };
 }
 
 /**

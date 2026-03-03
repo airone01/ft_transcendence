@@ -5,6 +5,7 @@ import { Toaster } from "@transc/ui/sonner";
 import { TooltipProvider } from "@transc/ui/tooltip";
 import { onMount } from "svelte";
 import { page } from "$app/state";
+import { goto } from "$app/navigation";
 import favicon from "$lib/assets/favicon.svg";
 import AuthDialog from "$lib/components/auth-dialog.svelte";
 import AppShell from "$lib/components/layout/app-shell.svelte";
@@ -19,6 +20,20 @@ onMount(() => {
     socketManager.connect(String(data.user.id), data.user.username);
   }
   initializeSocketListeners();
+
+  socketManager.on('game:reconnected', (eventData: any) => {
+    const { gameId } = eventData as { gameId: string };
+    const currentPath = page.url.pathname;
+    
+    if (!currentPath.includes(`/game/${gameId}`)) {
+      console.log(`[Redirect] Going to /game/${gameId}`);
+      goto(`/game/${gameId}`);
+    }
+  });
+
+  return () => {
+    socketManager.off('game:reconnected');
+  };
 });
 </script>
 
