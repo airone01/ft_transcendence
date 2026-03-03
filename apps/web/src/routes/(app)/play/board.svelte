@@ -8,6 +8,7 @@ import {
   ChessRookIcon,
 } from "@lucide/svelte";
 import type { Component } from "svelte";
+import { socketManager } from "$lib/stores/socket.svelte";
 import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";

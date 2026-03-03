@@ -31,7 +31,15 @@ onMount(() => {
     }
   });
 
-  return () => {
+socketManager.on('game:redirect', (eventData: any) => {// TODO
+  console.log('[Client] game:redirect received:', eventData);
+  const { path } = eventData as { path: string };
+  console.log(`[Client] Redirecting to ${path}`);
+  goto(path);
+});
+
+  return () => { 
+    socketManager.off('game:redirect');
     socketManager.off('game:reconnected');
   };
 });

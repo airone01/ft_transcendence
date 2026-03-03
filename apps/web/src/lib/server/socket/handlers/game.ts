@@ -20,19 +20,18 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       const game = await dbGetGame(parseInt(gameId, 10));
       const players = await dbGetPlayers(parseInt(gameId, 10));
 
-      // Vérifier que le userId correspond à un des joueurs
       if (
         String(players.whitePlayerId) !== userId &&
         String(players.blackPlayerId) !== userId
       ) {
-        return socket.emit("game:error", { message: "Not authorized" });
+        return socket.emit("game:error", { 
+          message: "Not authorized",
+          redirect: "/play"
+        }); 
       }
 
-      // Join the room
       socket.join(`game:${gameId}`);
-      socket.data.currentGameId = gameId;  // ← Cette ligne doit être là
-
-      // Create or get GameRoom
+      socket.data.currentGameId = gameId;
       let gameRoom = activeGames.get(gameId);
       if (!gameRoom) {
         gameRoom = new GameRoom(gameId, {
@@ -45,7 +44,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         });
         activeGames.set(gameId, gameRoom);
 
-        // Forward timer events to clients
         gameRoom.on(
           "time_tick",
           (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
@@ -63,12 +61,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
       gameRoom.addPlayer(socket);
 
-      // Send state with player's color
       const myColor =
         String(players.whitePlayerId) === userId ? "white" : "black";
       socket.emit("game:state", { ...gameRoom.getState(), myColor });
 
-      // Notify opponent
       socket.to(`game:${gameId}`).emit("player:joined", {
         userId,
         username: socket.data.username,
@@ -85,7 +81,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     }
   });
 
-  // Make a move
   socket.on(
     "game:move",
     async (data: {
@@ -112,7 +107,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           return socket.emit("game:error", { message: result.error });
         }
 
-        // Broadcast the move
         io.to(`game:${gameId}`).emit("game:move", {
           from,
           to,
@@ -124,7 +118,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           blackTimeLeft: result.blackTimeLeft,
         });
 
-        // Game over
         if (result.gameOver) {
           io.to(`game:${gameId}`).emit("game:over", {
             winner: result.winner,
@@ -139,14 +132,12 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     },
   );
 
-  // Offer draw
   socket.on("game:offer_draw", (data: { gameId: string }) => {
     socket
       .to(`game:${data.gameId}`)
       .emit("game:draw_offered", { from: userId });
   });
 
-  // Accept draw
   socket.on("game:accept_draw", async (data: { gameId: string }) => {
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) {
