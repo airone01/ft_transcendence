@@ -71,6 +71,7 @@ export const actions: Actions = {
 
     try {
       await dbAddFriend(locals.user.id, senderId);
+      await dbRejectFriendship(senderId, locals.user.id);
 
       return { success: true, message: "Friend request accepted" };
     } catch (error) {
