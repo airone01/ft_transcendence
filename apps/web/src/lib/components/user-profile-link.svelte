@@ -1,5 +1,5 @@
 <script lang="ts">
-import { CalendarIcon } from "@lucide/svelte";
+import { CalendarIcon, ChartSplineIcon } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Badge } from "@transc/ui/badge";
 import {
@@ -67,19 +67,19 @@ let userPromise = $derived(
         </Avatar>
         <div class="space-y-1 flex flex-col">
           <h4 class="text-sm font-semibold">@{fullUser.username}</h4>
-          <p class="text-sm mt-1">{fullUser.bio ?? "No bio provided."}</p>
-          <div
-            class="flex items-center pt-2 text-xs text-muted-foreground gap-2"
-          >
+          <p class="text-sm mt-1">
+            {fullUser.bio || "This user does not have a bio."}
+          </p>
+          <div class="text-xs text-muted-foreground"></div>
+          <div class="flex items-center text-xs text-muted-foreground gap-2">
+            {#if fullUser.currentElo}
+              <ChartSplineIcon class="w-3 h-3" />
+              <span>ELO {fullUser.currentElo}</span>
+            {/if}
             <CalendarIcon class="w-3 h-3" />
             <span
               >Joined {new Date(fullUser.createdAt).toLocaleDateString()}</span
             >
-            {#if fullUser.currentElo}
-              <Badge variant="secondary" class="text-[10px] ml-auto">
-                ELO {fullUser.currentElo}
-              </Badge>
-            {/if}
           </div>
         </div>
       </div>
