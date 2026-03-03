@@ -103,6 +103,7 @@ export {
   dbGetSpectatorsCount,
   dbRemoveSpectator,
   dbStartGame,
+  dbUpdateGame,
 } from "./internal/services/db.games.service";
 
 /* Users Services */

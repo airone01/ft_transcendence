@@ -150,6 +150,33 @@ export async function dbStartGame(gameId: number): Promise<void> {
 }
 
 /**
+ * Updates the FEN position of an ongoing game.
+ * @param {number} gameId - The id of the game to update
+ * @param {string} fen - The new FEN position
+ * @throws {DBGameNotFoundError} - If the game is not found
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<void>} - A promise that resolves when the game has been successfully updated
+ */
+export async function dbUpdateGame(gameId: number, fen: string): Promise<void> {
+  try {
+    const [game] = await db
+      .update(games)
+      .set({
+        fen: fen,
+      })
+      .where(eq(games.id, gameId))
+      .returning();
+
+    if (!game) throw new DBGameNotFoundError();
+  } catch (err) {
+    if (err instanceof DBGameNotFoundError) throw err;
+
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
  * Retrieves a game from the database by its ID.
  * @param {number} gameId - The ID of the game to retrieve
  * @throws {DBGameNotFoundError} - If the game is not found

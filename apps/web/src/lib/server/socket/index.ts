@@ -34,15 +34,19 @@ export function initSocketServer(httpServer: HTTPServer) {
   // Run heartbeat
   startHeartbeat(io);
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {  // ← async ajouté
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
     // Join personal room
     socket.join(`user:${userId}`);
 
-    // Try to restore a previous session
-    restoreSessionOnReconnect(socket);
+    // Try to restore a previous session (va chercher en DB)
+    const { restored, gameId } = await restoreSessionOnReconnect(socket);  // ← await ajouté
+    
+    if (restored && gameId) {
+      console.log(`[Reconnection] User ${userId} back in game ${gameId}`);
+    }
 
     // Register handlers
     registerGameHandlers(io, socket);

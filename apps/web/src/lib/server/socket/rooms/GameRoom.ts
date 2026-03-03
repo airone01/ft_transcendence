@@ -9,8 +9,7 @@ import {
   playMove, // [chess] Apply a move to the state and return the new state
   startGame, // [chess] Start a new game
 } from "$lib/chess";
-import { dbEndGame, type EndGameInput } from "$lib/server/db-services";
-
+import { dbEndGame, dbUpdateGame, type EndGameInput } from "$lib/server/db-services";
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Types
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -267,6 +266,12 @@ export class GameRoom extends EventEmitter {
         timestamp: new Date(),
       });
 
+      const newFen = boardToFEN(this.state);
+      console.log(`[GameRoom ${this.gameId}] DEBUG - Saving FEN to DB:`, newFen);
+      await dbUpdateGame(parseInt(this.gameId), newFen);
+      console.log(`[GameRoom ${this.gameId}] DEBUG - Saving FEN to DB:`, newFen);
+
+
       if (userId === this.whiteId) {
         this.whiteTimeLeft += this.incrementSeconds * 1000;
       } else {
@@ -305,7 +310,7 @@ export class GameRoom extends EventEmitter {
 
       return {
         valid: true,
-        fen: boardToFEN(this.state),
+        fen: newFen,
         checkmate,
         stalemate: draw && !checkmate,
         gameOver,

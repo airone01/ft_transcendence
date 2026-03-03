@@ -31,6 +31,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       // Join the room
       socket.join(`game:${gameId}`);
 
+      // ✅ Sauvegarder le gameId dans socket.data pour la reconnexion
+      socket.data.currentGameId = gameId;
+
       // Create or get GameRoom
       let gameRoom = activeGames.get(gameId);
       if (!gameRoom) {
@@ -130,6 +133,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
             reason: result.reason,
           });
           activeGames.delete(gameId);
+          // ✅ Nettoyer le gameId quand la partie est finie
+          socket.data.currentGameId = null;
         }
       } catch (error) {
         console.error("Move error:", error);
@@ -155,6 +160,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         reason: "agreement",
       });
       activeGames.delete(data.gameId);
+      // ✅ Nettoyer le gameId
+      socket.data.currentGameId = null;
     }
   });
 
@@ -169,6 +176,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         reason: "resignation",
       });
       activeGames.delete(data.gameId);
+      // ✅ Nettoyer le gameId
+      socket.data.currentGameId = null;
     }
   });
 
@@ -177,5 +186,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     socket.leave(`game:${data.gameId}`);
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) gameRoom.removePlayer(socket);
+    // ✅ Nettoyer le gameId
+    socket.data.currentGameId = null;
   });
 }

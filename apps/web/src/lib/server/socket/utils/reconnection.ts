@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io";
+import { dbGetGame } from "$lib/server/db-services";
 
 // Track les sessions des users qui se sont déconnectés
 const disconnectedSessions = new Map<
@@ -20,18 +21,14 @@ export function saveSessionOnDisconnect(socket: Socket) {
   const userId = socket.data.userId;
   if (!userId) return;
 
-  // Récupérer les rooms actuelles du socket
-  const rooms = new Set(socket.rooms);
-  rooms.delete(socket.id); // Supprimer la room auto-créée
+  // ✅ Récupérer le gameId depuis socket.data (sauvegardé pendant game:join)
+  const gameId = socket.data.currentGameId || null;
 
-  // Trouver si dans une game room
-  let gameId: string | null = null;
-  for (const room of rooms) {
-    if (room.startsWith("game:")) {
-      gameId = room.replace("game:", "");
-      break;
-    }
-  }
+  console.log(`[Reconnection] DEBUG - currentGameId for user ${userId}: ${gameId}`);
+
+  // Récupérer les rooms actuelles du socket (pour référence)
+  const rooms = new Set(socket.rooms);
+  rooms.delete(socket.id);
 
   disconnectedSessions.set(userId, {
     userId,
@@ -40,34 +37,88 @@ export function saveSessionOnDisconnect(socket: Socket) {
     gameId,
   });
 
-  console.log(`[Reconnection] Session saved for user ${userId}`);
+  console.log(`[Reconnection] Session saved for user ${userId}${gameId ? ` (game:${gameId})` : " (no game)"}`);
 }
 
 /**
  * Restaure la session si le user reconnecte dans le délai
  */
-export function restoreSessionOnReconnect(socket: Socket): boolean {
+export async function restoreSessionOnReconnect(
+  socket: Socket
+): Promise<{ restored: boolean; gameId: string | null }> {
   const userId = socket.data.userId;
-  if (!userId) return false;
+  if (!userId) return { restored: false, gameId: null };
 
   const session = disconnectedSessions.get(userId);
-  if (!session) return false;
+  if (!session) {
+    console.log(`[Reconnection] DEBUG - No session found for user ${userId}`);
+    return { restored: false, gameId: null };
+  }
+
+  console.log(`[Reconnection] DEBUG - Session found for user ${userId}:`, {
+    rooms: Array.from(session.rooms),
+    gameId: session.gameId,
+    disconnectedAt: new Date(session.disconnectedAt).toISOString(),
+  });
 
   // Vérifier le délai
   if (Date.now() - session.disconnectedAt > MAX_DISCONNECTION_DURATION) {
     disconnectedSessions.delete(userId);
     console.log(`[Reconnection] Session expired for user ${userId}`);
-    return false;
+    return { restored: false, gameId: null };
   }
 
   // Restaurer les rooms
+  console.log(`[Reconnection] DEBUG - Restoring rooms for user ${userId}:`, Array.from(session.rooms));
   for (const room of session.rooms) {
     socket.join(room);
   }
 
+  // ✅ Si gameId, rejoindre la game room
+  if (session.gameId) {
+    socket.join(`game:${session.gameId}`);
+    socket.data.currentGameId = session.gameId;  // Restaurer aussi dans socket.data
+    console.log(`[Reconnection] DEBUG - Rejoined game room: game:${session.gameId}`);
+  }
+
+  // ✅ Si dans une partie, récupérer l'état depuis la DB
+  if (session.gameId) {
+    console.log(`[Reconnection] DEBUG - gameId found: ${session.gameId}`);
+    
+    try {
+      const gameIdNum = parseInt(session.gameId);
+      console.log(`[Reconnection] DEBUG - Fetching game from DB: ${gameIdNum}`);
+      
+      const game = await dbGetGame(gameIdNum);
+      console.log(`[Reconnection] DEBUG - Game fetched:`, {
+        id: game.id,
+        fen: game.fen,
+        status: game.status,
+        result: game.result,
+      });
+
+      // Envoyer l'état du jeu depuis la DB
+      socket.emit("game:state", {
+        gameId: session.gameId,
+        fen: game.fen,
+        turn: game.fen.split(" ")[1] as "w" | "b",
+        isCheckmate: game.status === "finished" && game.result?.includes("win"),
+        isDraw: game.status === "finished" && game.result === "draw",
+        status: game.status,
+        result: game.result,
+      });
+
+      console.log(`[Reconnection] Game state sent to user ${userId} for game ${session.gameId}`);
+    } catch (error) {
+      console.error(`[Reconnection] Failed to load game ${session.gameId}:`, error);
+    }
+  } else {
+    console.log(`[Reconnection] DEBUG - No gameId in session for user ${userId}`);
+  }
+
   disconnectedSessions.delete(userId);
   console.log(`[Reconnection] Session restored for user ${userId}`);
-  return true;
+  return { restored: true, gameId: session.gameId };
 }
 
 /**
