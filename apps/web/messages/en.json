@@ -101,6 +101,51 @@
   "suggested_players_card_empty_title": "[i18n] No recommendations",
   "suggested_players_card_empty_description": "[i18n] We will soon recommend users here!",
 
+
+  "profile_page_user_joined_on": "[i18n] Member since",
+  "profile_page_user_bio": "[i18n] Bio",
+  "profile_page_button_challange": "[i18n] Challenge",
+  "profile_page_button_add": "[i18n] Add Friend",
+  "profile_page_button_edit_profile": "[i18n] Edit Profile",
+  "profile_page_error_title": "[i18n] Profile Error",
+  "profile_page_error_description": "[i18n] Could not load user profile.",
+
+  "badges_card_title": "[i18n] Badges",
+  "badges_card_ach_label_update_profile": "[i18n] True Beauty",
+  "badges_card_ach_desc_update_profile": "[i18n] Edit your player profile",
+  "badges_card_ach_label_first_game": "[i18n] Baby Steps",
+  "badges_card_ach_desc_first_game": "[i18n] Play your first game",
+  "badges_card_ach_label_first_win": "[i18n] For The Win!",
+  "badges_card_ach_desc_first_win": "[i18n] Win your first match",
+  "badges_card_ach_label_five_wins": "[i18n] Hold Up, They're Cooking!",
+  "badges_card_ach_desc_five_wins": "[i18n] Win five matches",
+  "badges_card_ach_label_reach_high_elo": "[i18n] Peak Performance",
+  "badges_card_ach_desc_reach_high_elo": "[i18n] Reach 2k ELO",
+
+  "current_elo_card_title": "[i18n] Performances",
+  "current_elo_card_peak_elo": "[i18n] Peak ELO",
+  "current_elo_card_current_elo": "[i18n] Current ELO",
+
+  "elo_history_card_title": "[i18n] ELO Progression",
+  "elo_history_card_description": "[i18n] Your rating evolution over the last 7 days.",
+  "elo_history_card_empty_title": "[i18n] No Significant Data",
+  "elo_history_card_empty_description": "[i18n] Play more ranked matches to display ELO progression.",
+
+  "recent_matches_card_title": "[i18n] Match History",
+  "recent_matches_card_description": "[i18n] Recent games played across all modes",
+  "recent_matches_card_empty_title": "[i18n] No Recent Matches",
+  "recent_matches_card_empty_description": "[i18n] Play a few matches to see your statistics with details here.",
+  "recent_matches_card_won": "[i18n] Won",
+  "recent_matches_card_draw": "[i18n] Draw",
+  "recent_matches_card_lost": "[i18n] Lost",
+  
+  "win_ratio_card_title": "[i18n] Win Ratio",
+  "win_ratio_card_description": "[i18n] Total games played",
+  "win_ratio_card_empty_description": "[i18n] Play more to see your stats!",
+  "win_ratio_card_wins": "[i18n] W",
+  "win_ratio_card_draws": "[i18n] D",
+  "win_ratio_card_losses": "[i18n] L",
+
   "settings_header_saving": "[i18n] Saving...",
   "settings_header_saved": "[i18n] Save Changes"
 }

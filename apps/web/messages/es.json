@@ -101,6 +101,51 @@
   "suggested_players_card_empty_title": "[i18n] TODO",
   "suggested_players_card_empty_description": "[i18n] TODO",
 
+
+  "profile_page_user_joined_on": "[i18n] TODO",
+  "profile_page_user_bio": "[i18n] TODO",
+  "profile_page_button_challange": "[i18n] TODO",
+  "profile_page_button_add": "[i18n] TODO",
+  "profile_page_button_edit_profile": "[i18n] TODO",
+  "profile_page_error_title": "[i18n] TODO",
+  "profile_page_error_description": "[i18n] TODO",
+
+  "badges_card_title": "[i18n] TODO",
+  "badges_card_ach_label_update_profile": "[i18n] TODO",
+  "badges_card_ach_desc_update_profile": "[i18n] TODO",
+  "badges_card_ach_label_first_game": "[i18n] TODO",
+  "badges_card_ach_desc_first_game": "[i18n] TODO",
+  "badges_card_ach_label_first_win": "[i18n] TODO",
+  "badges_card_ach_desc_first_win": "[i18n] TODO",
+  "badges_card_ach_label_five_wins": "[i18n] TODO",
+  "badges_card_ach_desc_five_wins": "[i18n] TODO",
+  "badges_card_ach_label_reach_high_elo": "[i18n] TODO",
+  "badges_card_ach_desc_reach_high_elo": "[i18n] TODO",
+
+  "current_elo_card_title": "[i18n] TODO",
+  "current_elo_card_peak_elo": "[i18n] TODO",
+  "current_elo_card_current_elo": "[i18n] TODO",
+
+  "elo_history_card_title": "[i18n] TODO",
+  "elo_history_card_description": "[i18n] TODO",
+  "elo_history_card_empty_title": "[i18n] TODO",
+  "elo_history_card_empty_description": "[i18n] TODO",
+
+  "recent_matches_card_title": "[i18n] TODO",
+  "recent_matches_card_description": "[i18n] TODO",
+  "recent_matches_card_empty_title": "[i18n] TODO",
+  "recent_matches_card_empty_description": "[i18n] TODO",
+  "recent_matches_card_won": "[i18n] TODO",
+  "recent_matches_card_draw": "[i18n] TODO",
+  "recent_matches_card_lost": "[i18n] TODO",
+  
+  "win_ratio_card_title": "[i18n] TODO",
+  "win_ratio_card_description": "[i18n] TODO",
+  "win_ratio_card_empty_description": "[i18n] TODO",
+  "win_ratio_card_wins": "[i18n] TODO",
+  "win_ratio_card_draws": "[i18n] TODO",
+  "win_ratio_card_losses": "[i18n] TODO",
+
   "settings_header_saving": "[i18n] TODO",
   "settings_header_saved": "[i18n] TODO"
 }

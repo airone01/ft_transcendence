@@ -1,28 +1,30 @@
 <script lang="ts">
-import { ChartLineIcon } from "@lucide/svelte";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@transc/ui/card";
-import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyMedia,
-  EmptyTitle,
-} from "@transc/ui/empty";
-import { scaleUtc } from "d3-scale";
-import { AreaChart } from "layerchart";
+  import { ChartLineIcon } from "@lucide/svelte";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@transc/ui/card";
+  import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
+  import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyMedia,
+    EmptyTitle,
+  } from "@transc/ui/empty";
+  import { scaleUtc } from "d3-scale";
+  import { AreaChart } from "layerchart";
+  import * as m from "$lib/paraglide/messages";
 
-const chartConfig: ChartConfig = {
-  elo: { label: "ELO", color: "var(--chart-1)" },
-};
+  const chartConfig: ChartConfig = {
+    elo: { label: "ELO", color: "var(--chart-1)" },
+  };
 
-const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
+  const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } =
+    $props();
 </script>
 
 <Card
@@ -30,23 +32,28 @@ const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
 >
   <CardHeader class="shrink-0">
     <CardTitle class="flex items-center gap-2">
-      <ChartLineIcon class="w-5 h-5 text-primary" /> ELO Progression
+      <ChartLineIcon class="w-5 h-5 text-primary" />
+      {m.elo_history_card_title()}
     </CardTitle>
     <CardDescription>
-      Your rating evolution over the last 7 days
+      {m.elo_history_card_description()}
     </CardDescription>
   </CardHeader>
   <CardContent
-    class={`flex-1 min-h-0 px-4 sm:px-6 pb-6 relative ${eloHistory&& eloHistory.length > 0 ? 'flex justify-center items-center flex-1' : ''}`}
+    class={`flex-1 min-h-0 px-4 sm:px-6 pb-6 relative ${eloHistory && eloHistory.length > 0 ? "flex justify-center items-center flex-1" : ""}`}
   >
     {#if eloHistory && eloHistory.length > 0}
-      {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
-      {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
+      {@const minElo = Math.max(
+        0,
+        Math.min(...eloHistory.map((h) => h.elo)) - 50,
+      )}
+      {@const maxElo = Math.max(...eloHistory.map((h) => h.elo)) + 50}
       {@const now = new Date()}
       {@const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
-      {@const minDate = eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo 
-            ? eloHistory[0].date 
-            : sevenDaysAgo}
+      {@const minDate =
+        eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo
+          ? eloHistory[0].date
+          : sevenDaysAgo}
       <ChartContainer config={chartConfig} class="h-full w-full">
         <AreaChart
           data={eloHistory}
@@ -54,18 +61,22 @@ const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
           xScale={scaleUtc()}
           xDomain={[minDate, now]}
           yDomain={[minElo, maxElo]}
-          series={[{key: "elo", label: "ELO", color: chartConfig.elo.color}]}
+          series={[{ key: "elo", label: "ELO", color: chartConfig.elo.color }]}
           axis="x"
           padding={{ top: 16, right: 16, bottom: 32, left: 16 }}
           props={{
             area: {
               fillOpacity: 0.4,
               line: { class: "stroke-2" },
-              motion: "tween"
+              motion: "tween",
             },
             xAxis: {
-              format: (v: Date) => v.toLocaleDateString(undefined, {month: "short",  day: "2-digit"}),
-            }
+              format: (v: Date) =>
+                v.toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "2-digit",
+                }),
+            },
           }}
         />
       </ChartContainer>
@@ -75,9 +86,9 @@ const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
           <ChartLineIcon />
         </EmptyMedia>
         <EmptyContent>
-          <EmptyTitle>No Significant Data</EmptyTitle>
+          <EmptyTitle>{m.elo_history_card_empty_title()}</EmptyTitle>
           <EmptyDescription>
-            Play more ranked matches to display ELO progression.
+            {m.elo_history_card_empty_description()}
           </EmptyDescription>
         </EmptyContent>
       </Empty>
