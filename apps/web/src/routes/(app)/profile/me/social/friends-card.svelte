@@ -1,57 +1,58 @@
 <script lang="ts">
-import {
-  ContactRoundIcon,
-  FrownIcon,
-  MessageSquareIcon,
-  SwordsIcon,
-  UserMinusIcon,
-} from "@lucide/svelte";
-import type { SubmitFunction } from "@sveltejs/kit";
-import { Badge } from "@transc/ui/badge";
-import { Button } from "@transc/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@transc/ui/card";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@transc/ui/empty";
-import { enhance } from "$app/forms";
-import UserAvatar from "$lib/components/user-avatar.svelte";
+  import {
+    ContactRoundIcon,
+    FrownIcon,
+    MessageSquareIcon,
+    SwordsIcon,
+    UserMinusIcon,
+  } from "@lucide/svelte";
+  import type { SubmitFunction } from "@sveltejs/kit";
+  import { Badge } from "@transc/ui/badge";
+  import { Button } from "@transc/ui/button";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@transc/ui/card";
+  import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+  } from "@transc/ui/empty";
+  import { enhance } from "$app/forms";
+  import UserAvatar from "$lib/components/user-avatar.svelte";
+  import * as m from "$lib/paraglide/messages";
 
-const {
-  friends,
-  formEnhance,
-}: {
-  friends: {
-    userId: number;
-    username: string;
-    avatar: string | null;
-    bio: string;
-    currentElo: number;
-    status: "offline" | "online" | "ingame";
-  }[];
-  formEnhance: SubmitFunction;
-} = $props();
+  const {
+    friends,
+    formEnhance,
+  }: {
+    friends: {
+      userId: number;
+      username: string;
+      avatar: string | null;
+      bio: string;
+      currentElo: number;
+      status: "offline" | "online" | "ingame";
+    }[];
+    formEnhance: SubmitFunction;
+  } = $props();
 </script>
 
 <Card class="col-span-1 lg:col-span-2 min-h-100 shadow-sm grow">
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
       <ContactRoundIcon />
-      Friends ({friends.length})
+      {m.friends_card_title()} ({friends.length})
     </CardTitle>
-    <CardDescription>All your friends are here!</CardDescription>
+    <CardDescription>{m.friends_card_description()}</CardDescription>
   </CardHeader>
   <CardContent
-    class={`overflow-y-scroll flex flex-col gap-2 ${friends.length === 0 ? 'justify-center items-center h-full' : ''}`}
+    class={`overflow-y-scroll flex flex-col gap-2 ${friends.length === 0 ? "justify-center items-center h-full" : ""}`}
   >
     {#if friends.length !== 0}
       {#each friends as friend (friend.userId)}
@@ -67,14 +68,14 @@ const {
                 />
               </a>
               <span class="absolute bottom-0 right-0 flex h-3.5 w-3.5">
-                {#if friend.status === 'online'}
+                {#if friend.status === "online"}
                   <span
                     class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
                   ></span>
                   <span
                     class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500 border-2 border-background"
                   ></span>
-                {:else if friend.status === 'ingame'}
+                {:else if friend.status === "ingame"}
                   <span
                     class="relative inline-flex rounded-full h-3.5 w-3.5 bg-purple-500 border-2 border-background"
                   ></span>
@@ -111,6 +112,7 @@ const {
                 class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
               >
                 <MessageSquareIcon class="h-4 w-4" />
+                <!-- TODO: maybe i18n or delete? -->
                 <span class="sr-only">Chat</span>
               </Button>
 
@@ -120,11 +122,12 @@ const {
                 class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
               >
                 <SwordsIcon class="h-4 w-4" />
+                <!-- TODO: maybe i18n or delete? -->
                 <span class="sr-only">Fight</span>
               </Button>
 
               <form method="POST" action="?/remove" use:enhance={formEnhance}>
-                <input type="hidden" name="friendId" value={friend.userId}>
+                <input type="hidden" name="friendId" value={friend.userId} />
                 <Button
                   type="submit"
                   variant="ghost"
@@ -132,6 +135,7 @@ const {
                   class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive cursor-pointer"
                 >
                   <UserMinusIcon class="h-4 w-4" />
+                  <!-- TODO: maybe i18n or delete? -->
                   <span class="sr-only">Remove</span>
                 </Button>
               </form>
@@ -145,9 +149,9 @@ const {
           <EmptyMedia variant="icon">
             <FrownIcon />
           </EmptyMedia>
-          <EmptyTitle>No friends yet</EmptyTitle>
+          <EmptyTitle>{m.friends_card_empty_title()}</EmptyTitle>
           <EmptyDescription>
-            Search for a username above to start building your list.
+            {m.friends_card_empty_description()}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

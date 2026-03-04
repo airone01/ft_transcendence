@@ -10,6 +10,7 @@ import { onlineUsersStore } from "$lib/stores/presence.store";
 import FriendsCard from "./friends-card.svelte";
 import RequestsCard from "./requests-card.svelte";
 import SuggestedUsersCard from "./suggested-users-card.svelte";
+import * as m from "$lib/paraglide/messages";
 
 const { data } = $props();
 
@@ -71,9 +72,9 @@ const formEnhance: SubmitFunction = () => {
 <main class="flex flex-col gap-6 mx-auto w-full pb-16">
   <div class="flex flex-col gap-4 md:flex-row md:items-end justify-between">
     <div class="space-y-1">
-      <h2 class="text-2xl font-bold tracking-tight">Social</h2>
+      <h2 class="text-2xl font-bold tracking-tight">{m.social_page_title()}</h2>
       <p class="text-muted-foreground">
-        Manage your friends list and see who is online.
+        {m.social_page_description()}
       </p>
     </div>
 
@@ -90,7 +91,7 @@ const formEnhance: SubmitFunction = () => {
         <Input
           type="text"
           name="username"
-          placeholder="Add by username..."
+          placeholder={m.social_page_search_placeholder()}
           class="pl-9"
           autocomplete="off"
         />
@@ -102,6 +103,7 @@ const formEnhance: SubmitFunction = () => {
         class="cursor-pointer"
       >
         <UserPlusIcon class="h-4 w-4" />
+        <!-- TODO: maybe i18n or delete? -->
         <span class="sr-only">Add</span>
       </Button>
     </form>

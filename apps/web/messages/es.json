@@ -2,6 +2,9 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
 
   "project_name": "[i18n] TODO",
+  "online": "[i18n] TODO",
+  "offline": "[i18n] TODO",
+  "ingame": "[i18n] TODO",
 
 
   "hero_page_title": "[i18n] TODO",
@@ -55,15 +58,49 @@
   "app_sidebar_user_item_settings": "[i18n] TODO",
   
 
-  "app_shell_sidebar_heading_my_content": "[i18n] TODO",
-  "app_shell_sidebar_heading_quick_nav": "[i18n] TODO",
-  "app_shell_sidebar_heading_chess": "[i18n] TODO",
-  "app_shell_sidebar_item_play": "[i18n] TODO",
-  "app_shell_sidebar_item_play_vs_bot": "[i18n] TODO",
-  "app_shell_sidebar_heading_account": "[i18n] TODO",
-  "app_shell_sidebar_item_settings": "[i18n] TODO",
-  "app_shell_sidebar_item_logout": "[i18n] TODO",
+  "app_shell_heading_content": "[i18n] TODO",
+  "app_shell_heading_quick_nav": "[i18n] TODO",
+  "app_shell_heading_chess": "[i18n] TODO",
+  "app_shell_item_play": "[i18n] TODO",
+  "app_shell_item_play_vs_bot": "[i18n] TODO",
+  "app_shell_heading_account": "[i18n] TODO",
+  "app_shell_item_settings": "[i18n] TODO",
+  "app_shell_item_logout": "[i18n] TODO",
 
   "app_shell_popup_success_logout": "[i18n] TODO",
-  "app_shell_popup_fail_logout": "[i18n] TODO"
+  "app_shell_popup_fail_logout": "[i18n] TODO",
+
+
+  "leaderboard_page_title": "[i18n] TODO",
+  "leaderboard_page_description": "[i18n] TODO",
+  "leaderboard_page_card_title": "[i18n] TODO",
+  "leaderboard_page_card_description": "[i18n] TODO",
+  "leaderboard_page_empty": "[i18n] TODO",
+
+
+  "social_page_title": "[i18n] TODO",
+  "social_page_description": "[i18n] TODO",
+  "social_page_search_placeholder": "[i18n] TODO",
+
+  "friends_card_title": "[i18n] TODO",
+  "friends_card_description": "[i18n] TODO",
+  "friends_card_empty_title": "[i18n] TODO",
+  "friends_card_empty_description": "[i18n] TODO",
+  
+  "requests_card_title": "[i18n] TODO",
+  "requests_card_description": "[i18n] TODO",
+  "requests_card_sent_description": "[i18n] TODO",
+  "requests_card_received_button_accept": "[i18n] TODO",
+  "requests_card_received_button_reject": "[i18n] TODO",
+  "requests_card_empty_title": "[i18n] TODO",
+  "requests_card_empty_description": "[i18n] TODO",
+
+  "suggested_players_card_title": "[i18n] TODO",
+  "suggested_players_card_description": "[i18n] TODO",
+  "suggested_players_cqrd_button_request": "[i18n] TODO",
+  "suggested_players_card_empty_title": "[i18n] TODO",
+  "suggested_players_card_empty_description": "[i18n] TODO",
+
+  "settings_header_saving": "[i18n] TODO",
+  "settings_header_saved": "[i18n] TODO"
 }

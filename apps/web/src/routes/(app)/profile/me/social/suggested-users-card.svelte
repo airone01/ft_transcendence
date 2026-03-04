@@ -20,6 +20,7 @@ import {
 } from "@transc/ui/empty";
 import { enhance } from "$app/forms";
 import UserAvatar from "$lib/components/user-avatar.svelte";
+import * as m from "$lib/paraglide/messages";
 
 const {
   suggestedUsers,
@@ -40,9 +41,9 @@ const {
 <Card class="col-span-1 md:col-span-2 lg:col-span-5">
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
-      <ThumbsUpIcon /> Suggested Players
+      <ThumbsUpIcon /> {m.suggested_players_card_title()}
     </CardTitle>
-    <CardDescription>Make some friends and some enemies</CardDescription>
+    <CardDescription>{m.suggested_players_card_description()}</CardDescription>
   </CardHeader>
   <CardContent
     class="flex flex-col lg:flex-row justify-start h-full gap-4 overflow-x-scroll"
@@ -88,7 +89,7 @@ const {
                 variant="secondary"
                 class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
               >
-                <UserPlusIcon class="w-4 h-4 mr-2" /> Request
+                <UserPlusIcon class="w-4 h-4 mr-2" /> {m.suggested_players_cqrd_button_request()}
               </Button>
             </form>
           </CardFooter>
@@ -100,9 +101,9 @@ const {
           <EmptyMedia variant="icon">
             <FrownIcon />
           </EmptyMedia>
-          <EmptyTitle>No recommendations</EmptyTitle>
+          <EmptyTitle>{m.suggested_players_card_empty_title()}</EmptyTitle>
           <EmptyDescription>
-            We will soon recommend users here!
+            {m.suggested_players_card_empty_description()}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

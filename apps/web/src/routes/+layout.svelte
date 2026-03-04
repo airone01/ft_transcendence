@@ -11,6 +11,7 @@ import AppShell from "$lib/components/layout/app-shell.svelte";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { initializeSocketListeners } from "$lib/socket-init";
 import { socketManager } from "$lib/stores/socket.svelte";
+import * as m from "$lib/paraglide/messages";
 
 const { children, data } = $props();
 
@@ -24,7 +25,7 @@ onMount(() => {
 
 <svelte:head>
   <link rel="icon" href={favicon}>
-  <title>transc</title>
+  <title>{m.project_name()}</title>
 </svelte:head>
 
 <Toaster />

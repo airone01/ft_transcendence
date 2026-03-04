@@ -2,6 +2,9 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
 
   "project_name": "[i18n] Chess.io",
+  "online": "[i18n] Online",
+  "offline": "[i18n] Offline",
+  "ingame": "[i18n] In Game",
 
 
   "hero_page_title": "[i18n] Play Chess Now!",
@@ -73,6 +76,30 @@
   "leaderboard_page_card_title": "[i18n] Global Ranking",
   "leaderboard_page_card_description": "[i18n] The best of the best across the server.",
   "leaderboard_page_empty": "[i18n] No players found yet.",
+
+
+  "social_page_title": "[i18n] Social",
+  "social_page_description": "[i18n] Manage your friends list and see who is online.",
+  "social_page_search_placeholder": "[i18n] Add by username...",
+
+  "friends_card_title": "[i18n] Friends",
+  "friends_card_description": "[i18n] All your friends are here!",
+  "friends_card_empty_title": "[i18n] No friends yet",
+  "friends_card_empty_description": "[i18n] Search for a username above to start building your list.",
+  
+  "requests_card_title": "[i18n] Friend Requests",
+  "requests_card_description": "[i18n] People who want to connect with you.",
+  "requests_card_sent_description": "[i18n] Awaiting friend request approval",
+  "requests_card_received_button_accept": "[i18n] Accept",
+  "requests_card_received_button_reject": "[i18n] Reject",
+  "requests_card_empty_title": "[i18n] No pending requests",
+  "requests_card_empty_description": "[i18n] We'll show your friend requests here.",
+
+  "suggested_players_card_title": "[i18n] Suggested Players",
+  "suggested_players_card_description": "[i18n] Make some friends and some enemies!",
+  "suggested_players_cqrd_button_request": "[i18n] Request",
+  "suggested_players_card_empty_title": "[i18n] No recommendations",
+  "suggested_players_card_empty_description": "[i18n] We will soon recommend users here!",
 
   "settings_header_saving": "[i18n] Saving...",
   "settings_header_saved": "[i18n] Save Changes"
