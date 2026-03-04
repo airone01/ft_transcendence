@@ -9,7 +9,13 @@ import {
 } from "@transc/db/schema";
 import { and, DrizzleQueryError, desc, eq, ne, or } from "drizzle-orm";
 import type { DatabaseError } from "pg";
-import { DBAddFriendFriendshipAlreadyExistsError, DBAddFriendWrongFriendshipError, DBCreateChatChannelError, DBUserNotFoundError, UnknownError } from "../db.errors";
+import {
+  DBAddFriendFriendshipAlreadyExistsError,
+  DBAddFriendWrongFriendshipError,
+  DBCreateChatChannelError,
+  DBUserNotFoundError,
+  UnknownError,
+} from "../db.errors";
 import type { FriendInfo } from "../schema/db.users.schema";
 
 /**

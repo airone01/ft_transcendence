@@ -22,10 +22,19 @@ import {
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { DatabaseError } from "pg";
-import { DBCreateUserEmailAlreadyExistsError, DBCreateUserUsernameAlreadyExistsError, DBUserNotFoundError, UnknownError } from "../db.errors";
-import type { CreateUserInput, FriendInfo, UpdateUserInput } from "../schema/db.users.schema";
+import {
+  DBCreateUserEmailAlreadyExistsError,
+  DBCreateUserUsernameAlreadyExistsError,
+  DBUserNotFoundError,
+  UnknownError,
+} from "../db.errors";
 import type { ChatChannelType } from "../schema/db.chat.schema";
 import type { Achievements, User, UserStats } from "../schema/db.schema";
+import type {
+  CreateUserInput,
+  FriendInfo,
+  UpdateUserInput,
+} from "../schema/db.users.schema";
 
 /**
  * Checks if a given username is taken in the database.

@@ -6,8 +6,11 @@ import {
 } from "@transc/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { ChatChannelType, ChatMessageType } from "../schema/db.chat.schema";
 import { DBChatChannelNotFoundError, UnknownError } from "../db.errors";
+import type {
+  ChatChannelType,
+  ChatMessageType,
+} from "../schema/db.chat.schema";
 
 /**
  * Sends a message to the global chat channel.
