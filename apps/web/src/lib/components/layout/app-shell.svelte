@@ -17,6 +17,7 @@ import { goto, invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
 import AppSidebar from "$lib/components/app-sidebar.svelte";
 import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
+import * as m from "$lib/paraglide/messages.js";
 
 const { children } = $props();
 
@@ -46,10 +47,10 @@ function runCommand(url: string) {
 const logoutFunc: SubmitFunction = () => {
   return async ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
-      toast.success("You logged out. See you soon!");
+      toast.success(m.app_shell_popup_success_logout());
       await invalidateAll(); // invalidates data to redraw interface
     } else {
-      toast.error("Failed to log out");
+      toast.error(m.app_shell_popup_fail_logout());
     }
   };
 };
@@ -64,7 +65,7 @@ $effect(() => {
 const commandGroups: ShellGroup[] = [
   ...sidebarGroups
     .map(({ label, items }) => ({
-      heading: label === "My Content" ? "Quick navigation" : naturalCap(label),
+      heading: label === m.app_shell_sidebar_heading_my_content() ? m.app_shell_sidebar_heading_quick_nav() : naturalCap(label),
       items: items.map((e) => {
         const { href, label, ...el } = e;
         return {
@@ -76,22 +77,22 @@ const commandGroups: ShellGroup[] = [
     }))
     .filter((e) => e.heading !== "Chess"),
   {
-    heading: "Start a game",
+    heading: m.app_shell_sidebar_heading_chess(),
     items: [
-      { label: "Start ranked match making", navUrl: "/play", icon: ZapIcon },
-      { label: "Start a game against AI", navUrl: "/play/bot", icon: BotIcon },
+      { label: m.app_shell_sidebar_item_play(), navUrl: "/play", icon: ZapIcon },
+      { label: m.app_shell_sidebar_item_play_vs_bot(), navUrl: "/play/bot", icon: BotIcon },
     ],
   },
   {
-    heading: "Account",
+    heading: m.app_shell_sidebar_heading_account(),
     items: [
       {
-        label: "Settings",
+        label: m.app_shell_sidebar_item_settings(),
         navUrl: "/settings",
         icon: SettingsIcon,
       },
       {
-        label: "Log out",
+        label: m.app_shell_sidebar_item_logout(),
         icon: LogOutIcon,
         onClick: () => logoutForm?.requestSubmit(),
       },

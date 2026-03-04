@@ -11,6 +11,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@transc/ui/tooltip";
 import { page } from "$app/state";
 import UserAvatar from "./user-avatar.svelte";
+import * as m from "$lib/paraglide/messages.js";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
@@ -67,11 +68,11 @@ const stats = $derived(page.data.stats);
           onclick={() => logoutForm?.requestSubmit()}
           class="cursor-pointer"
         >
-          Log out
+          {m.app_sidebar_user_item_logout()}
         </DropdownMenuItem>
         <a href="/settings/profile"
           ><DropdownMenuItem class="cursor-pointer">
-            Settings
+            {m.app_sidebar_user_item_settings()}
           </DropdownMenuItem></a
         >
       </DropdownMenuContent>

@@ -1,4 +1,69 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  "hello_world": "Hello, {name} from en!"
+
+  "project_name": "[i18n] Chess.io",
+
+
+  "hero_page_title": "[i18n] Play Chess Now!",
+  "hero_page_button": "[i18n] New Game",
+
+
+  "landing_page_button_login": "[i18n] Log in",
+  "landing_page_button_register": "[i18n] Sign up",
+  "landing_page_button_logout": "[i18n] Log out",
+
+  "landing_page_auth_dialog_title_login": "[i18n] Welcome back",
+  "landing_page_auth_dialog_title_register": "[i18n] Create an Account",
+  "landing_page_auth_dialog_description_login": "[i18n] Enter your credentials to sign in.",
+  "landing_page_auth_dialog_description_register": "[i18n] Enter your details to create a new account.",
+
+  "landing_page_auth_dialog_username": "[i18n] Username",
+  "landing_page_auth_dialog_username_placeholder": "[i18n] johndoe",
+  "landing_page_auth_dialog_email": "[i18n] Email",
+  "landing_page_auth_dialog_email_placeholder": "[i18n] name@example.com",
+  "landing_page_auth_dialog_password": "[i18n] Password",
+  "landing_page_auth_dialog_confirm_password": "[i18n] Confirm Password",
+  
+  "landing_page_auth_dialog_button_login": "[i18n] Login",
+  "landing_page_auth_dialog_button_register": "[i18n] Create Account",
+
+  "landing_page_auth_dialog_middle_span": "[i18n] Or continue with",
+  "landing_page_auth_dialog_discord": "[i18n] Discord",
+  
+  "landing_page_auth_dialog_login_to_register": "[i18n] Don't have an account?",
+  "landing_page_auth_dialog_register_to_login": "[i18n] Already have an account?",
+  "landing_page_auth_dialog_text_register": "[i18n] Sign up",
+  "landing_page_auth_dialog_text_login": "[i18n] Login",
+  
+  "landing_page_auth_dialog_popup_success_login": "[i18n] Welcome back!",
+  "landing_page_auth_dialog_popup_success_register": "[i18n] Account created successfully. Welcome!",
+
+
+  "navigation_label_content": "[i18n] My Content",
+  "navigation_label_chess": "[i18n] Chess",
+  "navigation_item_profile": "[i18n] Profile",
+  "navigation_item_social": "[i18n] Social",
+  "navigation_item_leaderboard": "[i18n] Leaderboard",
+  "navigation_item_play": "[i18n] Play Now",
+
+
+  "app_sidebar_group_label": "[i18n] Quick Play",
+  "app_sidebar_group_button_play": "[i18n] Matchmaking",
+  "app_sidebar_group_button_bot": "[i18n] Play vs AI",
+  
+  "app_sidebar_user_item_logout": "[i18n] Log out",
+  "app_sidebar_user_item_settings": "[i18n] Settings",
+  
+
+  "app_shell_sidebar_heading_my_content": "[i18n] My Content",
+  "app_shell_sidebar_heading_quick_nav": "[i18n] Quick Navigation",
+  "app_shell_sidebar_heading_chess": "[i18n] Start a game",
+  "app_shell_sidebar_item_play": "[i18n] Start ranked match making",
+  "app_shell_sidebar_item_play_vs_bot": "[i18n] Start a game against AI",
+  "app_shell_sidebar_heading_account": "[i18n] Account",
+  "app_shell_sidebar_item_settings": "[i18n] Settings",
+  "app_shell_sidebar_item_logout": "[i18n] Log out",
+
+  "app_shell_popup_success_logout": "[i18n] You logged out. See you soon!",
+  "app_shell_popup_fail_logout": "[i18n] Failed to log out"
 }

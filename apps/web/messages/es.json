@@ -1,0 +1,37 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  
+  "project_name": "[i18n] TODO",
+
+  "hero_page_title": "[i18n] TODO",
+  "hero_page_button": "[i18n] TODO",
+  
+  "landing_page_login_button": "[i18n] TODO",
+  "landing_page_sign_up_button": "[i18n] TODO",
+  "landing_page_logout_button": "[i18n] TODO",
+
+  "landing_page_auth_dialog_login_title": "[i18n] TODO",
+  "landing_page_auth_dialog_login_description": "[i18n] TODO",
+  "landing_page_auth_dialog_register_title": "[i18n] TODO",
+  "landing_page_auth_dialog_register_description": "[i18n] TODO",
+  
+  "landing_page_auth_dialog_login_success_popup": "[i18n] TODO",
+  "landing_page_auth_dialog_register_success_popup": "[i18n] TODO",
+  
+  "landing_page_auth_dialog_username": "[i18n] TODO",
+  "landing_page_auth_dialog_username_placeholder": "[i18n] TODO",
+  "landing_page_auth_dialog_email": "[i18n] TODO",
+  "landing_page_auth_dialog_email_placeholder": "[i18n] TODO",
+  "landing_page_auth_dialog_password": "[i18n] TODO",
+  "landing_page_auth_dialog_confirm_password": "[i18n] TODO",
+
+  "landing_page_auth_dialog_login_button": "[i18n] TODO",
+  "landing_page_auth_dialog_create_account_button": "[i18n] TODO",
+  "landing_page_auth_dialog_middle_span": "[i18n] TODO",
+  "landing_page_auth_dialog_discord": "[i18n] TODO",
+
+  "landing_page_auth_dialog_login_to_sign_up": "[i18n] TODO",
+  "landing_page_auth_dialog_sign_up_to_login": "[i18n] TODO",
+  "landing_page_auth_dialog_sign_up_text": "[i18n] TODO",
+  "landing_page_auth_dialog_login_text": "[i18n] TODO"
+}

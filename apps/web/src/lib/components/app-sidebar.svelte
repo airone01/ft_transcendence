@@ -16,6 +16,7 @@ import {
 import { page } from "$app/state";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import { sidebarGroups } from "$lib/navigation";
+import * as m from "$lib/paraglide/messages.js";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
@@ -38,7 +39,7 @@ function getIsActive(href: string, exact?: boolean): boolean {
       <p
         class="font-bold font-sans group-data-[collapsible=icon]:hidden shrink overflow-clip min-w-0 max-w-full"
       >
-        ft_transcendence
+        {m.project_name()}
       </p>
     </SidebarHeader>
   </a>
@@ -74,11 +75,11 @@ function getIsActive(href: string, exact?: boolean): boolean {
     <div
       class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/10 transition-all"
     >
-      <SidebarGroupLabel>Quick Play</SidebarGroupLabel>
+      <SidebarGroupLabel>{m.app_sidebar_group_label()}</SidebarGroupLabel>
       <div class="flex flex-col gap-2">
         <Button href="/play" class="overflow-clip">
           <ZapIcon />
-          Matchmaking
+          {m.app_sidebar_group_button_play()}
         </Button>
         <Button
           href="/play/bot"
@@ -86,7 +87,7 @@ function getIsActive(href: string, exact?: boolean): boolean {
           class="overflow-clip group-hover:bg-accent/10 hover:bg-accent/30"
         >
           <BotIcon />
-          Play vs AI
+          {m.app_sidebar_group_button_bot()}
         </Button>
       </div>
     </div>
