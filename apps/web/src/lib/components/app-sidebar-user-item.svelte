@@ -31,7 +31,7 @@ const stats = $derived(page.data.stats);
         userId={user.id}
         avatarUrl={user.avatar}
         username={user.username}
-        class="h-8 w-8"
+        class="h-10 w-10 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8"
       />
       <div class="flex flex-col group-data-[collapsible=icon]:hidden">
         <span class="text-sm font-medium">{user.username}</span>
