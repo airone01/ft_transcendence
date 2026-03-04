@@ -27,9 +27,9 @@ export let formId: string;
       class="cursor-pointer"
     >
       {#if $delayed}
-        {m.settings_header_saving()}
+        {m.settings_page_button_saving()}
       {:else}
-        {m.settings_header_saved()}
+        {m.settings_page_button_saved()}
       {/if}
     </Button>
   </div>

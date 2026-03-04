@@ -26,18 +26,18 @@
   "landing_page_auth_dialog_email_placeholder": "[i18n] TODO",
   "landing_page_auth_dialog_password": "[i18n] TODO",
   "landing_page_auth_dialog_confirm_password": "[i18n] TODO",
-  
+
   "landing_page_auth_dialog_button_login": "[i18n] TODO",
   "landing_page_auth_dialog_button_register": "[i18n] TODO",
 
   "landing_page_auth_dialog_middle_span": "[i18n] TODO",
   "landing_page_auth_dialog_discord": "[i18n] TODO",
-  
+
   "landing_page_auth_dialog_login_to_register": "[i18n] TODO",
   "landing_page_auth_dialog_register_to_login": "[i18n] TODO",
   "landing_page_auth_dialog_text_register": "[i18n] TODO",
   "landing_page_auth_dialog_text_login": "[i18n] TODO",
-  
+
   "landing_page_auth_dialog_popup_success_login": "[i18n] TODO",
   "landing_page_auth_dialog_popup_success_register": "[i18n] TODO",
 
@@ -49,14 +49,13 @@
   "navigation_item_leaderboard": "[i18n] TODO",
   "navigation_item_play": "[i18n] TODO",
 
-
   "app_sidebar_group_label": "[i18n] TODO",
   "app_sidebar_group_button_play": "[i18n] TODO",
   "app_sidebar_group_button_bot": "[i18n] TODO",
-  
+
   "app_sidebar_user_item_logout": "[i18n] TODO",
   "app_sidebar_user_item_settings": "[i18n] TODO",
-  
+
 
   "app_shell_heading_content": "[i18n] TODO",
   "app_shell_heading_quick_nav": "[i18n] TODO",
@@ -86,7 +85,7 @@
   "friends_card_description": "[i18n] TODO",
   "friends_card_empty_title": "[i18n] TODO",
   "friends_card_empty_description": "[i18n] TODO",
-  
+
   "requests_card_title": "[i18n] TODO",
   "requests_card_description": "[i18n] TODO",
   "requests_card_sent_description": "[i18n] TODO",
@@ -138,7 +137,7 @@
   "recent_matches_card_won": "[i18n] TODO",
   "recent_matches_card_draw": "[i18n] TODO",
   "recent_matches_card_lost": "[i18n] TODO",
-  
+
   "win_ratio_card_title": "[i18n] TODO",
   "win_ratio_card_description": "[i18n] TODO",
   "win_ratio_card_empty_description": "[i18n] TODO",
@@ -146,6 +145,36 @@
   "win_ratio_card_draws": "[i18n] TODO",
   "win_ratio_card_losses": "[i18n] TODO",
 
-  "settings_header_saving": "[i18n] TODO",
-  "settings_header_saved": "[i18n] TODO"
+
+  "settings_page_title": "[i18n] TODO",
+  "settings_page_description": "[i18n] TODO",
+  "settings_page_button_saving": "[i18n] TODO",
+  "settings_page_button_saved": "[i18n] TODO",
+
+  "settings_page_profile_title": "[i18n] TODO",
+  "settings_page_profile_description": "[i18n] TODO",
+  "settings_page_profile_label_username": "[i18n] TODO",
+  "settings_page_profile_label_bio": "[i18n] TODO",
+
+  "settings_page_account_title": "[i18n] TODO",
+  "settings_page_account_description": "[i18n] TODO",
+  "settings_page_account_header_accounts": "[i18n] TODO",
+  "settings_page_account_header_accounts_desc": "[i18n] TODO",
+  "settings_page_account_connected": "[i18n] TODO",
+  "settings_page_account_not_connected": "[i18n] TODO",
+  "settings_page_account_button_connect": "[i18n] TODO",
+  "settings_page_account_button_disconnect": "[i18n] TODO",
+  
+  "settings_page_account_label_password": "[i18n] TODO",
+  "settings_page_account_label_password_desc": "[i18n] TODO",
+  "settings_page_account_label_no_password_desc": "[i18n] TODO",
+  "settings_page_account_label_current_password": "[i18n] TODO",
+  "settings_page_account_label_new_password": "[i18n] TODO",
+  "settings_page_account_label_confirm_password": "[i18n] TODO",
+
+  "settings_page_gameplay_title": "[i18n] TODO",
+  "settings_page_sound_title": "[i18n] TODO",
+  "settings_page_display_title": "[i18n] TODO",
+  "settings_page_privacy_title": "[i18n] TODO"
+
 }
