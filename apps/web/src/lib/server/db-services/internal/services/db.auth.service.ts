@@ -1,13 +1,9 @@
 import { db } from "@transc/db";
 import { authSessions, oauthAccounts, users } from "@transc/db/schema";
 import { and, eq } from "drizzle-orm";
-import {
-  type AuthSession,
-  type OAuthProvider,
-  type OauthAccount,
-  UnknownError,
-  type User,
-} from "$lib/server/db-services";
+import type { AuthSession, OauthAccount, User } from "../schema/db.schema";
+import { UnknownError } from "../db.errors";
+import type { OAuthProvider } from "../schema/db.auth.schema";
 
 /**
  * Creates a new authentication session in the database.

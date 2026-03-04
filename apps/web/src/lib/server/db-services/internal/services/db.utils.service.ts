@@ -2,11 +2,8 @@ import { db } from "@transc/db";
 import { games, gamesPlayers, users, usersStats } from "@transc/db/schema";
 import { and, desc, eq, ne, not } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import {
-  type GameHistory,
-  type Leaderboard,
-  UnknownError,
-} from "$lib/server/db-services";
+import type { GameHistory, Leaderboard } from "../schema/db.utils.schema";
+import { UnknownError } from "../db.errors";
 
 /**
  * Retrieves the leaderboard of users sorted by their elo in descending order.
