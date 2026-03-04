@@ -15,10 +15,13 @@ import { socketManager } from "$lib/stores/socket.svelte";
 
 const { children, data } = $props();
 
-onMount(() => {
+$effect(() => {
   if (data.user) {
     socketManager.connect(String(data.user.id), data.user.username);
   }
+});
+
+onMount(() => {
   initializeSocketListeners();
 
   socketManager.on('game:reconnected', (eventData: any) => {
