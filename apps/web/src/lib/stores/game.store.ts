@@ -1,6 +1,6 @@
 import { derived, type Writable, writable } from "svelte/store";
-import { socketManager } from "$lib/stores/socket.svelte";
 import { toast } from "svelte-sonner";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -28,7 +28,7 @@ export interface GameState {
   blackTimeLeft: number;
   moves: MoveRecord[];
   drawOffered: boolean;
-  isSpectator: boolean
+  isSpectator: boolean;
 }
 
 export interface GameMove {

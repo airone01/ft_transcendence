@@ -9,7 +9,6 @@ import {
 } from "@lucide/svelte";
 import type { Component } from "svelte";
 import { onDestroy, onMount } from "svelte";
-import { leaveGame } from "$lib/stores/game.store";
 import { flip } from "svelte/animate";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
@@ -17,6 +16,7 @@ import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
 import {
   gameState as gameStore,
   joinGame,
+  leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
@@ -87,9 +87,8 @@ onMount(() => {
 });
 
 onDestroy(() => {
-
   if (isSpectator) {
-    console.log('[Board] Leaving game (spectator mode)');
+    console.log("[Board] Leaving game (spectator mode)");
     leaveGame();
   }
 

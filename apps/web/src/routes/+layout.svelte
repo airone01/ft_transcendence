@@ -4,8 +4,8 @@ import "@transc/ui/app.css";
 import { Toaster } from "@transc/ui/sonner";
 import { TooltipProvider } from "@transc/ui/tooltip";
 import { onMount } from "svelte";
-import { page } from "$app/state";
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
 import AuthDialog from "$lib/components/auth-dialog.svelte";
 import AppShell from "$lib/components/layout/app-shell.svelte";
@@ -24,32 +24,29 @@ $effect(() => {
 onMount(() => {
   initializeSocketListeners();
 
-  socketManager.on('game:reconnected', (eventData: any) => {
-    const { gameId, isSpectator = false } = eventData as { gameId: string; isSpectator?: boolean };
+  socketManager.on("game:reconnected", (eventData: unknown) => {
+    const { gameId, isSpectator = false } = eventData as {
+      gameId: string;
+      isSpectator?: boolean;
+    };
 
-    if (isSpectator){
-        console.log(`[Redirect] Skipping redirect, user is spectator of game ${gameId}`);
+    if (isSpectator) {
+      console.log(
+        `[Redirect] Skipping redirect, user is spectator of game ${gameId}`,
+      );
       return;
     }
 
     const currentPath = page.url.pathname;
-    
+
     if (!currentPath.includes(`/game/${gameId}`)) {
       console.log(`[Redirect] Going to /game/${gameId}`);
       goto(`/game/${gameId}`);
     }
   });
 
-socketManager.on('game:redirect', (eventData: any) => {// TODO
-  console.log('[Client] game:redirect received:', eventData);
-  const { path } = eventData as { path: string };
-  console.log(`[Client] Redirecting to ${path}`);
-  goto(path);
-});
-
-  return () => { 
-    socketManager.off('game:redirect');
-    socketManager.off('game:reconnected');
+  return () => {
+    socketManager.off("game:reconnected");
   };
 });
 </script>

@@ -1,5 +1,5 @@
-import { GamepadIcon } from "@lucide/svelte";
 import type { Socket } from "socket.io";
+import type { GameRoom } from "../rooms/GameRoom";
 
 // Track les sessions des users qui se sont déconnectés
 const disconnectedSessions = new Map<
@@ -22,7 +22,9 @@ export function saveSessionOnDisconnect(socket: Socket) {
   if (!userId) return;
 
   if (socket.data.isSpectator) {
-    console.log(`[Reconnection] User ${userId} is spectator, not saving session`);
+    console.log(
+      `[Reconnection] User ${userId} is spectator, not saving session`,
+    );
     return;
   }
 
@@ -38,7 +40,9 @@ export function saveSessionOnDisconnect(socket: Socket) {
     gameId,
   });
 
-  console.log(`[Reconnection] Session saved for user ${userId}${gameId ? ` (game:${gameId})` : ""}`);
+  console.log(
+    `[Reconnection] Session saved for user ${userId}${gameId ? ` (game:${gameId})` : ""}`,
+  );
 }
 
 /**
@@ -47,7 +51,7 @@ export function saveSessionOnDisconnect(socket: Socket) {
  */
 export async function restoreSessionOnReconnect(
   socket: Socket,
-  activeGames: Map<string, any>
+  activeGames: Map<string, GameRoom>,
 ): Promise<{ restored: boolean; gameId: string | null }> {
   const userId = socket.data.userId;
   if (!userId) return { restored: false, gameId: null };
@@ -76,16 +80,20 @@ export async function restoreSessionOnReconnect(
     const gameRoom = activeGames.get(session.gameId);
     if (gameRoom) {
       socket.emit("game:state", {
-        gameId: session.gameId,
         ...gameRoom.getState(),
+        gameId: session.gameId,
       });
       socket.emit("game:reconnected", {
         gameId: session.gameId,
         isSpectator: socket.data.isSpectator || false,
       });
-      console.log(`[Reconnection] Game state sent from memory for game ${session.gameId}`);
+      console.log(
+        `[Reconnection] Game state sent from memory for game ${session.gameId}`,
+      );
     } else {
-      console.log(`[Reconnection] GameRoom ${session.gameId} not found in memory`);
+      console.log(
+        `[Reconnection] GameRoom ${session.gameId} not found in memory`,
+      );
     }
   }
 

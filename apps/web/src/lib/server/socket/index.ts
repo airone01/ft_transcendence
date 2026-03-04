@@ -2,15 +2,11 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
-import { activeGames } from "./handlers/game";
 import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
-import {
-  restoreSessionOnReconnect,
-  saveSessionOnDisconnect,
-} from "./utils/reconnection";
+import { saveSessionOnDisconnect } from "./utils/reconnection";
 
 let io: Server;
 
@@ -41,9 +37,6 @@ export function initSocketServer(httpServer: HTTPServer) {
 
     // Join personal room
     socket.join(`user:${userId}`);
-
-    // Try to restore a previous session
-    const { restored, gameId } = await restoreSessionOnReconnect(socket, activeGames);
 
     // Register handlers
     registerGameHandlers(io, socket);

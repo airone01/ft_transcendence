@@ -24,35 +24,37 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         String(players.whitePlayerId) !== userId &&
         String(players.blackPlayerId) !== userId
       ) {
-      console.log(`[Game] User ${userId} joining as spectator for game ${gameId}`);
-      
-      socket.join(`game:${gameId}`);
-      socket.data.isSpectator = true; 
-      
-      let gameRoom = activeGames.get(gameId);
-      if (!gameRoom) {
-        gameRoom = new GameRoom(gameId, {
-          whiteId: String(players.whitePlayerId),
-          blackId: String(players.blackPlayerId),
-          fen: game.fen,
-          startedAt: game.startedAt || undefined,
-          timeControlSeconds: game.timeControlSeconds,
-          incrementSeconds: game.incrementSeconds,
+        console.log(
+          `[Game] User ${userId} joining as spectator for game ${gameId}`,
+        );
+
+        socket.join(`game:${gameId}`);
+        socket.data.isSpectator = true;
+
+        let gameRoom = activeGames.get(gameId);
+        if (!gameRoom) {
+          gameRoom = new GameRoom(gameId, {
+            whiteId: String(players.whitePlayerId),
+            blackId: String(players.blackPlayerId),
+            fen: game.fen,
+            startedAt: game.startedAt || undefined,
+            timeControlSeconds: game.timeControlSeconds,
+            incrementSeconds: game.incrementSeconds,
+          });
+          activeGames.set(gameId, gameRoom);
+        }
+
+        socket.emit("game:state", {
+          ...gameRoom.getState(),
+          isSpectator: true,
         });
-        activeGames.set(gameId, gameRoom);
-      }
 
-      socket.emit("game:state", {
-        ...gameRoom.getState(),
-        isSpectator: true,
-      });
+        socket.to(`game:${gameId}`).emit("spectator:joined", {
+          userId,
+          username: socket.data.username,
+        });
 
-      socket.to(`game:${gameId}`).emit("spectator:joined", {
-        userId,
-        username: socket.data.username,
-      });
-
-      return;
+        return;
       }
 
       socket.join(`game:${gameId}`);
@@ -119,8 +121,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
         const gameRoom = activeGames.get(gameId);
 
-        if(socket.data.isSpectator) {
-            return socket.emit("game:error", { message: "Spectators cannot move pawn" });
+        if (socket.data.isSpectator) {
+          return socket.emit("game:error", {
+            message: "Spectators cannot move pawn",
+          });
         }
 
         if (!gameRoom) {
@@ -163,8 +167,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   );
 
   socket.on("game:offer_draw", (data: { gameId: string }) => {
-    if(socket.data.isSpectator) {
-        return socket.emit("game:error", { message: "Spectators cannot offer draw" });
+    if (socket.data.isSpectator) {
+      return socket.emit("game:error", {
+        message: "Spectators cannot offer draw",
+      });
     }
     socket
       .to(`game:${data.gameId}`)
@@ -172,8 +178,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("game:accept_draw", async (data: { gameId: string }) => {
-    if(socket.data.isSpectator) {
-        return socket.emit("game:error", { message: "Spectators cannot accept draw" });
+    if (socket.data.isSpectator) {
+      return socket.emit("game:error", {
+        message: "Spectators cannot accept draw",
+      });
     }
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) {
@@ -188,8 +196,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
   // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
-    if(socket.data.isSpectator) {
-        return socket.emit("game:error", { message: "Spectators cannot resign" });
+    if (socket.data.isSpectator) {
+      return socket.emit("game:error", { message: "Spectators cannot resign" });
     }
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) {
