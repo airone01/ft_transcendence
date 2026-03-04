@@ -25,7 +25,13 @@ onMount(() => {
   initializeSocketListeners();
 
   socketManager.on('game:reconnected', (eventData: any) => {
-    const { gameId } = eventData as { gameId: string };
+    const { gameId, isSpectator = false } = eventData as { gameId: string; isSpectator?: boolean };
+
+    if (isSpectator){
+        console.log(`[Redirect] Skipping redirect, user is spectator of game ${gameId}`);
+      return;
+    }
+
     const currentPath = page.url.pathname;
     
     if (!currentPath.includes(`/game/${gameId}`)) {

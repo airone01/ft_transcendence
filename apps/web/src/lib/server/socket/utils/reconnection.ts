@@ -1,3 +1,4 @@
+import { GamepadIcon } from "@lucide/svelte";
 import type { Socket } from "socket.io";
 
 // Track les sessions des users qui se sont déconnectés
@@ -20,7 +21,11 @@ export function saveSessionOnDisconnect(socket: Socket) {
   const userId = socket.data.userId;
   if (!userId) return;
 
-  // ✅ Récupérer le gameId depuis socket.data (sauvegardé pendant game:join)
+  if (socket.data.isSpectator) {
+    console.log(`[Reconnection] User ${userId} is spectator, not saving session`);
+    return;
+  }
+
   const gameId = socket.data.currentGameId || null;
 
   const rooms = new Set(socket.rooms);
@@ -72,7 +77,11 @@ export async function restoreSessionOnReconnect(
     if (gameRoom) {
       socket.emit("game:state", {
         gameId: session.gameId,
-        ...gameRoom.getState(), // État actuel depuis la mémoire !
+        ...gameRoom.getState(),
+      });
+      socket.emit("game:reconnected", {
+        gameId: session.gameId,
+        isSpectator: socket.data.isSpectator || false,
       });
       console.log(`[Reconnection] Game state sent from memory for game ${session.gameId}`);
     } else {
