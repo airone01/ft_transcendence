@@ -11,14 +11,14 @@ import type { UserNoPass } from "../../../../app";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
+  if (locals.user == null) throw redirect(301, "/");
+
   const fetchUser = async () => {
     let userId: number | undefined;
     let user: UserNoPass | undefined;
 
-    if (locals.user == null) throw redirect(301, "/");
-
     if (params.id === "me") {
-      userId = locals.user.id;
+      userId = (locals.user as UserNoPass).id;
       user = locals.user ?? undefined;
     } else if (params.id != null) {
       userId = parseInt(params.id, 10);
