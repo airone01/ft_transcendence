@@ -20,6 +20,7 @@ import {
 } from "@transc/ui/empty";
 import { enhance } from "$app/forms";
 import UserAvatar from "$lib/components/user-avatar.svelte";
+import UserProfileLink from "$lib/components/user-profile-link.svelte";
 
 const {
   suggestedUsers,
@@ -40,7 +41,8 @@ const {
 <Card class="col-span-1 md:col-span-2 lg:col-span-5">
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
-      <ThumbsUpIcon /> Suggested Players
+      <ThumbsUpIcon />
+      Suggested Players
     </CardTitle>
     <CardDescription>Make some friends and some enemies</CardDescription>
   </CardHeader>
@@ -48,31 +50,29 @@ const {
     class="flex flex-col lg:flex-row justify-start h-full gap-4 overflow-x-scroll"
   >
     {#if (suggestedUsers?.length ?? 0 > 0)}
-      {#each suggestedUsers as {userId, avatar, username, currentElo}}
+      {#each suggestedUsers as { userId, avatar, username, currentElo }}
         <Card
           class="overflow-hidden flex flex-col flex-1 min-h-0 min-w-xs lg:max-w-sm max-w-full lg:w-auto"
         >
           <CardContent class="px-4 py-4 flex gap-4 justify-start flex-1">
             <div class="flex gap-4 items-center h-fit w-full">
-              <UserAvatar
-                avatarUrl={avatar}
-                username={username}
-                userId={userId}
-                class="h-12 w-12"
-              />
-              <div class="flex-1 min-w-0">
-                <a
-                  href="/profile/{userId}"
-                  class="font-medium hover:underline truncate block"
-                >
+              <UserProfileLink
+                {userId}
+                fallbackUsername={username}
+                class="flex items-center gap-4"
+                href="/profile/{userId}"
+              >
+                <UserAvatar
+                  {userId}
                   {username}
-                </a>
-                <div class="text-xs text-muted-foreground mt-0.5">
-                  <Badge variant="secondary" class="h-4 px-1.5 text-[10px]">
-                    ELO {currentElo}
-                  </Badge>
+                  avatarUrl={avatar}
+                  class="h-12 w-12 border"
+                />
+                <div class="flex flex-col">
+                  <span class="hover:underline">{username}</span>
+                  <Badge variant="default">{currentElo}</Badge>
                 </div>
-              </div>
+              </UserProfileLink>
             </div>
           </CardContent>
           <CardFooter class="pt-0 pb-3 px-3">
@@ -88,7 +88,8 @@ const {
                 variant="secondary"
                 class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
               >
-                <UserPlusIcon class="w-4 h-4 mr-2" /> Request
+                <UserPlusIcon class="w-4 h-4 mr-2" />
+                Request
               </Button>
             </form>
           </CardFooter>

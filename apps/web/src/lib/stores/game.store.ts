@@ -72,6 +72,7 @@ export const isMyTurn = derived(gameState, ($state) => {
 
 export function joinGame(gameId: string) {
   socketManager.emit("game:join", { gameId });
+  socketManager.emit("presence:status", { status: "ingame" });
 }
 
 export function makeMove(from: string, to: string, promotion?: string) {
@@ -126,11 +127,12 @@ export function resign() {
 export function leaveGame() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
   socketManager.emit("game:leave", { gameId: state.gameId });
+  socketManager.emit("presence:status", { status: "online" });
 
   gameState.set({
     gameId: null,
