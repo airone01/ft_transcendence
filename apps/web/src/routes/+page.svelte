@@ -1,16 +1,17 @@
 <script lang="ts">
-import { Badge } from "@transc/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@transc/ui/card";
-import LandingPage from "$lib/components/landing/landing-page.svelte";
-import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
+  import { Badge } from "@transc/ui/badge";
+  import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+  } from "@transc/ui/card";
+  import LandingPage from "$lib/components/landing/landing-page.svelte";
+  import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
+  import * as m from "$lib/paraglide/messages.js";
 
-const { data } = $props();
+  const { data } = $props();
 </script>
 
 {#if data.user}
@@ -18,15 +19,17 @@ const { data } = $props();
     class="container mx-auto max-w-4xl p-4 md:p-6 h-full flex flex-col gap-6 mt-11"
   >
     <header class="text-center sm:text-left">
-      <h2 class="text-3xl font-bold tracking-tight">Leaderboard</h2>
-      <p class="text-muted-foreground">Top players ranked by their ELO.</p>
+      <h2 class="text-3xl font-bold tracking-tight">
+        {m.leaderboard_page_title()}
+      </h2>
+      <p class="text-muted-foreground">{m.leaderboard_page_description()}</p>
     </header>
 
     <Card class="flex-1 overflow-hidden flex flex-col shadow-sm">
       <CardHeader>
-        <CardTitle>Global Ranking</CardTitle>
+        <CardTitle>{m.leaderboard_page_card_title()}</CardTitle>
         <CardDescription>
-          The best of the best across the server.
+          {m.leaderboard_page_card_description()}
         </CardDescription>
       </CardHeader>
 
@@ -43,14 +46,22 @@ const { data } = $props();
               {@const isSecond = i === 1}
 
               <div
-                class="flex flex-col items-center {isFirst ? 'order-2' : isSecond ? 'order-1' : 'order-3'}"
+                class="flex flex-col items-center {isFirst
+                  ? 'order-2'
+                  : isSecond
+                    ? 'order-1'
+                    : 'order-3'}"
               >
                 <div
                   class="flex flex-col items-center mb-3 z-10 transition-transform hover:-translate-y-1"
                 >
                   <div
                     class="w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-4 shadow-sm mb-2 bg-background
-                    {isFirst ? 'border-yellow-400' : isSecond ? 'border-slate-300' : 'border-amber-600'}"
+                    {isFirst
+                      ? 'border-yellow-400'
+                      : isSecond
+                        ? 'border-slate-300'
+                        : 'border-amber-600'}"
                   >
                     <LeaderboardAvatar
                       userPromise={data.userPromises[player.userId]}
@@ -75,9 +86,11 @@ const { data } = $props();
 
                 <div
                   class="w-20 sm:w-24 md:w-32 rounded-t-lg shadow-inner flex justify-center pt-2 md:pt-4 transition-all
-                  {isFirst ? 'h-32 md:h-40 bg-linear-to-t from-yellow-500/10 to-yellow-500/40 border-t-4 border-yellow-500' : 
-                   isSecond ? 'h-24 md:h-28 bg-linear-to-t from-slate-400/10 to-slate-400/40 border-t-4 border-slate-400' : 
-                   'h-20 md:h-24 bg-linear-to-t from-amber-600/10 to-amber-600/40 border-t-4 border-amber-600'}"
+                  {isFirst
+                    ? 'h-32 md:h-40 bg-linear-to-t from-yellow-500/10 to-yellow-500/40 border-t-4 border-yellow-500'
+                    : isSecond
+                      ? 'h-24 md:h-28 bg-linear-to-t from-slate-400/10 to-slate-400/40 border-t-4 border-slate-400'
+                      : 'h-20 md:h-24 bg-linear-to-t from-amber-600/10 to-amber-600/40 border-t-4 border-amber-600'}"
                 >
                   <span
                     class="text-3xl md:text-5xl font-black text-foreground/20"
@@ -122,7 +135,7 @@ const { data } = $props();
           <div
             class="flex flex-col items-center justify-center py-16 text-muted-foreground"
           >
-            <p>No players found yet.</p>
+            <p>{m.leaderboard_page_empty()}</p>
           </div>
         {/if}
       </CardContent>

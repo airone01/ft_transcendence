@@ -1,104 +1,111 @@
 <script lang="ts">
-import { BotIcon, LogOutIcon, SettingsIcon, ZapIcon } from "@lucide/svelte";
-import type { SubmitFunction } from "@sveltejs/kit";
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "@transc/ui/command";
-import { SidebarProvider, SidebarTrigger } from "@transc/ui/sidebar";
-import { toast } from "svelte-sonner";
-import { enhance } from "$app/forms";
-import { goto, invalidateAll } from "$app/navigation";
-import { page } from "$app/state";
-import AppSidebar from "$lib/components/app-sidebar.svelte";
-import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
-import * as m from "$lib/paraglide/messages.js";
+  import { BotIcon, LogOutIcon, SettingsIcon, ZapIcon } from "@lucide/svelte";
+  import type { SubmitFunction } from "@sveltejs/kit";
+  import {
+    CommandDialog,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+    CommandSeparator,
+  } from "@transc/ui/command";
+  import { SidebarProvider, SidebarTrigger } from "@transc/ui/sidebar";
+  import { toast } from "svelte-sonner";
+  import { enhance } from "$app/forms";
+  import { goto, invalidateAll } from "$app/navigation";
+  import { page } from "$app/state";
+  import AppSidebar from "$lib/components/app-sidebar.svelte";
+  import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
+  import * as m from "$lib/paraglide/messages.js";
 
-const { children } = $props();
+  const { children } = $props();
 
-let logoutForm: HTMLFormElement | undefined = $state();
-let commandInput: string = $state("");
-let sidebarOpen: boolean = $state(page.data.sidebarOpen);
-let commandOpen: boolean = $state(false);
+  let logoutForm: HTMLFormElement | undefined = $state();
+  let commandInput: string = $state("");
+  let sidebarOpen: boolean = $state(page.data.sidebarOpen);
+  let commandOpen: boolean = $state(false);
 
-$effect(() => {
-  // set cookie when bar state changes
-  // biome-ignore lint/suspicious/noDocumentCookie: can't use CookieStore because $effect can't be async
-  document.cookie = `sidebar:state=${sidebarOpen}; path=/; max-age=31536000; SameSite=Lax`;
-});
+  $effect(() => {
+    // set cookie when bar state changes
+    // biome-ignore lint/suspicious/noDocumentCookie: can't use CookieStore because $effect can't be async
+    document.cookie = `sidebar:state=${sidebarOpen}; path=/; max-age=31536000; SameSite=Lax`;
+  });
 
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-    e.preventDefault();
-    commandOpen = !commandOpen;
-  }
-}
-
-function runCommand(url: string) {
-  commandOpen = false;
-  goto(url);
-}
-
-const logoutFunc: SubmitFunction = () => {
-  return async ({ result }) => {
-    if (result.type === "redirect" || result.type === "success") {
-      toast.success(m.app_shell_popup_success_logout());
-      await invalidateAll(); // invalidates data to redraw interface
-    } else {
-      toast.error(m.app_shell_popup_fail_logout());
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      commandOpen = !commandOpen;
     }
+  }
+
+  function runCommand(url: string) {
+    commandOpen = false;
+    goto(url);
+  }
+
+  const logoutFunc: SubmitFunction = () => {
+    return async ({ result }) => {
+      if (result.type === "redirect" || result.type === "success") {
+        toast.success(m.app_shell_popup_success_logout());
+        await invalidateAll(); // invalidates data to redraw interface
+      } else {
+        toast.error(m.app_shell_popup_fail_logout());
+      }
+    };
   };
-};
 
-$effect(() => {
-  if (commandInput.toLowerCase() === "secretcat")
-    window.location =
-      "https://i.pinimg.com/originals/20/69/fd/2069fd0482fe844c802fd3cc76f39045.jpg" as string &
-        Location;
-});
+  $effect(() => {
+    if (commandInput.toLowerCase() === "secretcat")
+      window.location =
+        "https://i.pinimg.com/originals/20/69/fd/2069fd0482fe844c802fd3cc76f39045.jpg" as string &
+          Location;
+  });
 
-const commandGroups: ShellGroup[] = [
-  ...sidebarGroups
-    .map(({ label, items }) => ({
-      heading: label === m.app_shell_sidebar_heading_my_content() ? m.app_shell_sidebar_heading_quick_nav() : naturalCap(label),
-      items: items.map((e) => {
-        const { href, label, ...el } = e;
-        return {
-          navUrl: href,
-          label: naturalCap(label),
-          ...el,
-        };
-      }),
-    }))
-    .filter((e) => e.heading !== "Chess"),
-  {
-    heading: m.app_shell_sidebar_heading_chess(),
-    items: [
-      { label: m.app_shell_sidebar_item_play(), navUrl: "/play", icon: ZapIcon },
-      { label: m.app_shell_sidebar_item_play_vs_bot(), navUrl: "/play/bot", icon: BotIcon },
-    ],
-  },
-  {
-    heading: m.app_shell_sidebar_heading_account(),
-    items: [
-      {
-        label: m.app_shell_sidebar_item_settings(),
-        navUrl: "/settings",
-        icon: SettingsIcon,
-      },
-      {
-        label: m.app_shell_sidebar_item_logout(),
-        icon: LogOutIcon,
-        onClick: () => logoutForm?.requestSubmit(),
-      },
-    ],
-  },
-];
+  const commandGroups: ShellGroup[] = [
+    ...sidebarGroups
+      .map(({ label, items }) => ({
+        heading:
+          label === m.app_shell_heading_content()
+            ? m.app_shell_heading_quick_nav()
+            : naturalCap(label),
+        items: items.map((e) => {
+          const { href, label, ...el } = e;
+          return {
+            navUrl: href,
+            label: naturalCap(label),
+            ...el,
+          };
+        }),
+      }))
+      .filter((e) => e.heading !== "Chess"),
+    {
+      heading: m.app_shell_heading_chess(),
+      items: [
+        { label: m.app_shell_item_play(), navUrl: "/play", icon: ZapIcon },
+        {
+          label: m.app_shell_item_play_vs_bot(),
+          navUrl: "/play/bot",
+          icon: BotIcon,
+        },
+      ],
+    },
+    {
+      heading: m.app_shell_heading_account(),
+      items: [
+        {
+          label: m.app_shell_item_settings(),
+          navUrl: "/settings",
+          icon: SettingsIcon,
+        },
+        {
+          label: m.app_shell_item_logout(),
+          icon: LogOutIcon,
+          onClick: () => logoutForm?.requestSubmit(),
+        },
+      ],
+    },
+  ];
 </script>
 
 <svelte:document onkeydown={handleKeydown} />
@@ -117,11 +124,15 @@ const commandGroups: ShellGroup[] = [
   />
   <CommandList>
     <CommandEmpty>No results found.</CommandEmpty>
-    {#each commandGroups as {items, heading}, i (heading)}
+    {#each commandGroups as { items, heading }, i (heading)}
       <CommandGroup {heading}>
-        {#each items as {navUrl, label, onClick, icon: Icon} (label)}
+        {#each items as { navUrl, label, onClick, icon: Icon } (label)}
           <CommandItem
-            onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)}
+            onSelect={onClick
+              ? onClick
+              : navUrl
+                ? () => runCommand(navUrl)
+                : undefined}
             class="cursor-pointer aria-selected:bg-accent group"
           >
             <Icon
@@ -131,7 +142,7 @@ const commandGroups: ShellGroup[] = [
           </CommandItem>
         {/each}
       </CommandGroup>
-      {#if i+1 > commandGroups.length}
+      {#if i + 1 > commandGroups.length}
         <CommandSeparator />
       {/if}
     {/each}

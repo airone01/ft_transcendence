@@ -55,15 +55,25 @@
   "app_sidebar_user_item_settings": "[i18n] Settings",
   
 
-  "app_shell_sidebar_heading_my_content": "[i18n] My Content",
-  "app_shell_sidebar_heading_quick_nav": "[i18n] Quick Navigation",
-  "app_shell_sidebar_heading_chess": "[i18n] Start a game",
-  "app_shell_sidebar_item_play": "[i18n] Start ranked match making",
-  "app_shell_sidebar_item_play_vs_bot": "[i18n] Start a game against AI",
-  "app_shell_sidebar_heading_account": "[i18n] Account",
-  "app_shell_sidebar_item_settings": "[i18n] Settings",
-  "app_shell_sidebar_item_logout": "[i18n] Log out",
+  "app_shell_heading_content": "[i18n] My Content",
+  "app_shell_heading_quick_nav": "[i18n] Quick Navigation",
+  "app_shell_heading_chess": "[i18n] Start a game",
+  "app_shell_item_play": "[i18n] Start ranked match making",
+  "app_shell_item_play_vs_bot": "[i18n] Start a game against AI",
+  "app_shell_heading_account": "[i18n] Account",
+  "app_shell_item_settings": "[i18n] Settings",
+  "app_shell_item_logout": "[i18n] Log out",
 
   "app_shell_popup_success_logout": "[i18n] You logged out. See you soon!",
-  "app_shell_popup_fail_logout": "[i18n] Failed to log out"
+  "app_shell_popup_fail_logout": "[i18n] Failed to log out",
+
+
+  "leaderboard_page_title": "[i18n] Leaderboard",
+  "leaderboard_page_description": "[i18n] Top players ranked by their ELO.",
+  "leaderboard_page_card_title": "[i18n] Global Ranking",
+  "leaderboard_page_card_description": "[i18n] The best of the best across the server.",
+  "leaderboard_page_empty": "[i18n] No players found yet.",
+
+  "settings_header_saving": "[i18n] Saving...",
+  "settings_header_saved": "[i18n] Save Changes"
 }

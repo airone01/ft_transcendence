@@ -1,37 +1,69 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
-  
+
   "project_name": "[i18n] TODO",
+
 
   "hero_page_title": "[i18n] TODO",
   "hero_page_button": "[i18n] TODO",
-  
-  "landing_page_login_button": "[i18n] TODO",
-  "landing_page_sign_up_button": "[i18n] TODO",
-  "landing_page_logout_button": "[i18n] TODO",
 
-  "landing_page_auth_dialog_login_title": "[i18n] TODO",
-  "landing_page_auth_dialog_login_description": "[i18n] TODO",
-  "landing_page_auth_dialog_register_title": "[i18n] TODO",
-  "landing_page_auth_dialog_register_description": "[i18n] TODO",
-  
-  "landing_page_auth_dialog_login_success_popup": "[i18n] TODO",
-  "landing_page_auth_dialog_register_success_popup": "[i18n] TODO",
-  
+
+  "landing_page_button_login": "[i18n] TODO",
+  "landing_page_button_register": "[i18n] TODO",
+  "landing_page_button_logout": "[i18n] TODO",
+
+  "landing_page_auth_dialog_title_login": "[i18n] TODO",
+  "landing_page_auth_dialog_title_register": "[i18n] TODO",
+  "landing_page_auth_dialog_description_login": "[i18n] TODO",
+  "landing_page_auth_dialog_description_register": "[i18n] TODO",
+
   "landing_page_auth_dialog_username": "[i18n] TODO",
   "landing_page_auth_dialog_username_placeholder": "[i18n] TODO",
   "landing_page_auth_dialog_email": "[i18n] TODO",
   "landing_page_auth_dialog_email_placeholder": "[i18n] TODO",
   "landing_page_auth_dialog_password": "[i18n] TODO",
   "landing_page_auth_dialog_confirm_password": "[i18n] TODO",
+  
+  "landing_page_auth_dialog_button_login": "[i18n] TODO",
+  "landing_page_auth_dialog_button_register": "[i18n] TODO",
 
-  "landing_page_auth_dialog_login_button": "[i18n] TODO",
-  "landing_page_auth_dialog_create_account_button": "[i18n] TODO",
   "landing_page_auth_dialog_middle_span": "[i18n] TODO",
   "landing_page_auth_dialog_discord": "[i18n] TODO",
+  
+  "landing_page_auth_dialog_login_to_register": "[i18n] TODO",
+  "landing_page_auth_dialog_register_to_login": "[i18n] TODO",
+  "landing_page_auth_dialog_text_register": "[i18n] TODO",
+  "landing_page_auth_dialog_text_login": "[i18n] TODO",
+  
+  "landing_page_auth_dialog_popup_success_login": "[i18n] TODO",
+  "landing_page_auth_dialog_popup_success_register": "[i18n] TODO",
 
-  "landing_page_auth_dialog_login_to_sign_up": "[i18n] TODO",
-  "landing_page_auth_dialog_sign_up_to_login": "[i18n] TODO",
-  "landing_page_auth_dialog_sign_up_text": "[i18n] TODO",
-  "landing_page_auth_dialog_login_text": "[i18n] TODO"
+
+  "navigation_label_content": "[i18n] TODO",
+  "navigation_label_chess": "[i18n] TODO",
+  "navigation_item_profile": "[i18n] TODO",
+  "navigation_item_social": "[i18n] TODO",
+  "navigation_item_leaderboard": "[i18n] TODO",
+  "navigation_item_play": "[i18n] TODO",
+
+
+  "app_sidebar_group_label": "[i18n] TODO",
+  "app_sidebar_group_button_play": "[i18n] TODO",
+  "app_sidebar_group_button_bot": "[i18n] TODO",
+  
+  "app_sidebar_user_item_logout": "[i18n] TODO",
+  "app_sidebar_user_item_settings": "[i18n] TODO",
+  
+
+  "app_shell_sidebar_heading_my_content": "[i18n] TODO",
+  "app_shell_sidebar_heading_quick_nav": "[i18n] TODO",
+  "app_shell_sidebar_heading_chess": "[i18n] TODO",
+  "app_shell_sidebar_item_play": "[i18n] TODO",
+  "app_shell_sidebar_item_play_vs_bot": "[i18n] TODO",
+  "app_shell_sidebar_heading_account": "[i18n] TODO",
+  "app_shell_sidebar_item_settings": "[i18n] TODO",
+  "app_shell_sidebar_item_logout": "[i18n] TODO",
+
+  "app_shell_popup_success_logout": "[i18n] TODO",
+  "app_shell_popup_fail_logout": "[i18n] TODO"
 }
