@@ -91,7 +91,7 @@ const {
                 class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
               >
                 <UserPlusIcon class="w-4 h-4 mr-2" />
-                {m.suggested_players_cqrd_button_request()}
+                {m.suggested_players_card_button_request()}
               </Button>
             </form>
           </CardFooter>
