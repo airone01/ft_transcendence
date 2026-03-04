@@ -11,6 +11,9 @@ import AppShell from "$lib/components/layout/app-shell.svelte";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { initializeSocketListeners } from "$lib/socket-init";
 import { socketManager } from "$lib/stores/socket.svelte";
+import "@fontsource-variable/merriweather";
+import "@fontsource-variable/montserrat";
+import "@fontsource-variable/source-code-pro";
 
 const { children, data } = $props();
 
