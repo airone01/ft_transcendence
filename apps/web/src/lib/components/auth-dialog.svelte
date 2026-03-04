@@ -1,64 +1,60 @@
 <script lang="ts">
-  import { KeyRoundIcon } from "@lucide/svelte";
-  import { Button } from "@transc/ui/button";
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-  } from "@transc/ui/dialog";
-  import {
-    FormControl,
-    FormField,
-    FormFieldErrors,
-    FormLabel,
-  } from "@transc/ui/form";
-  import { Input } from "@transc/ui/input";
-  import { toast } from "svelte-sonner";
-  import { superForm } from "sveltekit-superforms";
-  import { zodClient } from "sveltekit-superforms/adapters";
-  import { page } from "$app/state";
-  import { loginSchema, registerSchema } from "$lib/schemas/auth";
-  import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
-  import * as m from "$lib/paraglide/messages.js";
+import { KeyRoundIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@transc/ui/dialog";
+import {
+  FormControl,
+  FormField,
+  FormFieldErrors,
+  FormLabel,
+} from "@transc/ui/form";
+import { Input } from "@transc/ui/input";
+import { toast } from "svelte-sonner";
+import { superForm } from "sveltekit-superforms";
+import { zodClient } from "sveltekit-superforms/adapters";
+import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages.js";
+import { loginSchema, registerSchema } from "$lib/schemas/auth";
+import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
 
-  const loginForm = superForm(page.data.loginForm, {
-    validators: zodClient(loginSchema),
-    onResult: ({ result }) => {
-      if (result.type === "redirect" || result.type === "success") {
-        toast.success(m.landing_page_auth_dialog_popup_success_login());
-        authDialogState.isOpen = false;
-      }
-    },
-  });
+const loginForm = superForm(page.data.loginForm, {
+  validators: zodClient(loginSchema),
+  onResult: ({ result }) => {
+    if (result.type === "redirect" || result.type === "success") {
+      toast.success(m.landing_page_auth_dialog_popup_success_login());
+      authDialogState.isOpen = false;
+    }
+  },
+});
 
-  const registerForm = superForm(page.data.registerForm, {
-    validators: zodClient(registerSchema),
-    onResult: ({ result }) => {
-      if (result.type === "redirect" || result.type === "success") {
-        toast.success(m.landing_page_auth_dialog_popup_success_register());
-        authDialogState.isOpen = false;
-      }
-    },
-  });
+const registerForm = superForm(page.data.registerForm, {
+  validators: zodClient(registerSchema),
+  onResult: ({ result }) => {
+    if (result.type === "redirect" || result.type === "success") {
+      toast.success(m.landing_page_auth_dialog_popup_success_register());
+      authDialogState.isOpen = false;
+    }
+  },
+});
 
-  // extract form data :-)
-  const {
-    form: loginData,
-    enhance: loginEnhance,
-    message: loginMsg,
-  } = loginForm;
-  const {
-    form: registerData,
-    enhance: registerEnhance,
-    message: registerMsg,
-  } = registerForm;
+// extract form data :-)
+const { form: loginData, enhance: loginEnhance, message: loginMsg } = loginForm;
+const {
+  form: registerData,
+  enhance: registerEnhance,
+  message: registerMsg,
+} = registerForm;
 
-  function toggleMode() {
-    authDialogState.mode =
-      authDialogState.mode === "login" ? "register" : "login";
-  }
+function toggleMode() {
+  authDialogState.mode =
+    authDialogState.mode === "login" ? "register" : "login";
+}
 </script>
 
 <Dialog bind:open={authDialogState.isOpen}>
@@ -92,9 +88,7 @@
         <FormField form={loginForm} name="email">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>
-                {m.landing_page_auth_dialog_email()}
-              </FormLabel>
+              <FormLabel>{m.landing_page_auth_dialog_email()}</FormLabel>
               <Input
                 {...props}
                 type="email"
@@ -109,9 +103,7 @@
         <FormField form={loginForm} name="password">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>
-                {m.landing_page_auth_dialog_password()}
-              </FormLabel>
+              <FormLabel>{m.landing_page_auth_dialog_password()}</FormLabel>
               <Input
                 {...props}
                 type="password"
@@ -123,9 +115,9 @@
           <FormFieldErrors />
         </FormField>
 
-        <Button type="submit" class="w-full"
-          >{m.landing_page_auth_dialog_button_login()}</Button
-        >
+        <Button type="submit" class="w-full">
+          {m.landing_page_auth_dialog_button_login()}
+        </Button>
       </form>
     {:else}
       <form
@@ -143,9 +135,7 @@
         <FormField form={registerForm} name="username">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>
-                {m.landing_page_auth_dialog_username()}
-              </FormLabel>
+              <FormLabel>{m.landing_page_auth_dialog_username()}</FormLabel>
               <Input
                 {...props}
                 bind:value={$registerData.username}
@@ -159,9 +149,7 @@
         <FormField form={registerForm} name="email">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>
-                {m.landing_page_auth_dialog_email()}
-              </FormLabel>
+              <FormLabel>{m.landing_page_auth_dialog_email()}</FormLabel>
               <Input
                 {...props}
                 type="email"
@@ -176,9 +164,7 @@
         <FormField form={registerForm} name="password">
           <FormControl>
             {#snippet children({ props })}
-              <FormLabel>
-                {m.landing_page_auth_dialog_password()}
-              </FormLabel>
+              <FormLabel>{m.landing_page_auth_dialog_password()}</FormLabel>
               <Input
                 {...props}
                 type="password"

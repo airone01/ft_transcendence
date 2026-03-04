@@ -33,9 +33,7 @@ const sidebarNavItems: {
 <main class="flex flex-col gap-4 pb-16 w-full h-full">
   <header>
     <h2 class="text-2xl font-bold tracking-tight">{m.settings_page_title()}</h2>
-    <p class="text-muted-foreground">
-      {m.settings_page_description()}
-    </p>
+    <p class="text-muted-foreground">{m.settings_page_description()}</p>
   </header>
   <div
     id="hello"

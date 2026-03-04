@@ -6,10 +6,8 @@
   "offline": "[i18n] TODO",
   "ingame": "[i18n] TODO",
 
-
   "hero_page_title": "[i18n] TODO",
   "hero_page_button": "[i18n] TODO",
-
 
   "landing_page_button_login": "[i18n] TODO",
   "landing_page_button_register": "[i18n] TODO",
@@ -41,7 +39,6 @@
   "landing_page_auth_dialog_popup_success_login": "[i18n] TODO",
   "landing_page_auth_dialog_popup_success_register": "[i18n] TODO",
 
-
   "navigation_label_content": "[i18n] TODO",
   "navigation_label_chess": "[i18n] TODO",
   "navigation_item_profile": "[i18n] TODO",
@@ -56,7 +53,6 @@
   "app_sidebar_user_item_logout": "[i18n] TODO",
   "app_sidebar_user_item_settings": "[i18n] TODO",
 
-
   "app_shell_heading_content": "[i18n] TODO",
   "app_shell_heading_quick_nav": "[i18n] TODO",
   "app_shell_heading_chess": "[i18n] TODO",
@@ -69,13 +65,11 @@
   "app_shell_popup_success_logout": "[i18n] TODO",
   "app_shell_popup_fail_logout": "[i18n] TODO",
 
-
   "leaderboard_page_title": "[i18n] TODO",
   "leaderboard_page_description": "[i18n] TODO",
   "leaderboard_page_card_title": "[i18n] TODO",
   "leaderboard_page_card_description": "[i18n] TODO",
   "leaderboard_page_empty": "[i18n] TODO",
-
 
   "social_page_title": "[i18n] TODO",
   "social_page_description": "[i18n] TODO",
@@ -99,7 +93,6 @@
   "suggested_players_cqrd_button_request": "[i18n] TODO",
   "suggested_players_card_empty_title": "[i18n] TODO",
   "suggested_players_card_empty_description": "[i18n] TODO",
-
 
   "profile_page_user_joined_on": "[i18n] TODO",
   "profile_page_user_bio": "[i18n] TODO",
@@ -145,7 +138,6 @@
   "win_ratio_card_draws": "[i18n] TODO",
   "win_ratio_card_losses": "[i18n] TODO",
 
-
   "settings_page_title": "[i18n] TODO",
   "settings_page_description": "[i18n] TODO",
   "settings_page_button_saving": "[i18n] TODO",
@@ -164,7 +156,7 @@
   "settings_page_account_not_connected": "[i18n] TODO",
   "settings_page_account_button_connect": "[i18n] TODO",
   "settings_page_account_button_disconnect": "[i18n] TODO",
-  
+
   "settings_page_account_label_password": "[i18n] TODO",
   "settings_page_account_label_password_desc": "[i18n] TODO",
   "settings_page_account_label_no_password_desc": "[i18n] TODO",
@@ -176,5 +168,4 @@
   "settings_page_sound_title": "[i18n] TODO",
   "settings_page_display_title": "[i18n] TODO",
   "settings_page_privacy_title": "[i18n] TODO"
-
 }

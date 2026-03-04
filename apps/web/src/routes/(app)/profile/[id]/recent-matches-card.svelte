@@ -1,70 +1,70 @@
 <script lang="ts">
-  import { HistoryIcon, SwordsIcon } from "@lucide/svelte";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-  } from "@transc/ui/empty";
-  import * as m from "$lib/paraglide/messages";
+import { HistoryIcon, SwordsIcon } from "@lucide/svelte";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
+import * as m from "$lib/paraglide/messages";
 
-  type Match = {
-    gameId: number;
-    timeControlSeconds: number;
-    incrementSeconds: number;
-    result: "abort" | "white_win" | "black_win" | "draw";
-    startedAt: Date;
-    endedAt: Date;
-    userEloBefore: number;
-    userEloAfter: number;
-    userColor: "white" | "black";
-    opponentUserId: number;
-    opponentUsername: string;
-    opponentPastElo: number;
-    opponentAvatar: string | null;
-  };
+type Match = {
+  gameId: number;
+  timeControlSeconds: number;
+  incrementSeconds: number;
+  result: "abort" | "white_win" | "black_win" | "draw";
+  startedAt: Date;
+  endedAt: Date;
+  userEloBefore: number;
+  userEloAfter: number;
+  userColor: "white" | "black";
+  opponentUserId: number;
+  opponentUsername: string;
+  opponentPastElo: number;
+  opponentAvatar: string | null;
+};
 
-  const { matches }: { matches: Match[] } = $props();
+const { matches }: { matches: Match[] } = $props();
 
-  // svelte-ignore state_referenced_locally: idc
-  const recentGames = matches.filter((g) => g.result !== "abort");
+// svelte-ignore state_referenced_locally: idc
+const recentGames = matches.filter((g) => g.result !== "abort");
 
-  function getDurationMs(start: Date, end: Date): number {
-    return Math.max(0, end.getTime() - start.getTime());
-  }
+function getDurationMs(start: Date, end: Date): number {
+  return Math.max(0, end.getTime() - start.getTime());
+}
 
-  function formatCompactDuration(start: Date, end: Date, locale?: string) {
-    const diffMs = getDurationMs(start, end);
+function formatCompactDuration(start: Date, end: Date, locale?: string) {
+  const diffMs = getDurationMs(start, end);
 
-    const totalSeconds = Math.floor(diffMs / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
-    const nfMinute = new Intl.NumberFormat(locale, {
-      style: "unit",
-      unit: "minute",
-      unitDisplay: "narrow",
-    });
+  const nfMinute = new Intl.NumberFormat(locale, {
+    style: "unit",
+    unit: "minute",
+    unitDisplay: "narrow",
+  });
 
-    const nfSecond = new Intl.NumberFormat(locale, {
-      style: "unit",
-      unit: "second",
-      unitDisplay: "narrow",
-    });
+  const nfSecond = new Intl.NumberFormat(locale, {
+    style: "unit",
+    unit: "second",
+    unitDisplay: "narrow",
+  });
 
-    if (minutes === 0) return nfSecond.format(seconds);
-    if (seconds === 0) return nfMinute.format(minutes);
+  if (minutes === 0) return nfSecond.format(seconds);
+  if (seconds === 0) return nfMinute.format(minutes);
 
-    return `${nfMinute.format(minutes)} ${nfSecond.format(seconds)}`;
-  }
+  return `${nfMinute.format(minutes)} ${nfSecond.format(seconds)}`;
+}
 </script>
 
 <Card
@@ -113,7 +113,8 @@
                     >vs
                     <a
                       href="/profile/{game.opponentUserId}"
-                      class="hover:underline">{game.opponentUsername}</a
+                      class="hover:underline"
+                      >{game.opponentUsername}</a
                     >
                   </span>
                 </div>

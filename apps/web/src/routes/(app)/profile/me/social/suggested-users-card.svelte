@@ -41,7 +41,8 @@ const {
 <Card class="col-span-1 md:col-span-2 lg:col-span-5">
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
-      <ThumbsUpIcon /> {m.suggested_players_card_title()}
+      <ThumbsUpIcon />
+      {m.suggested_players_card_title()}
     </CardTitle>
     <CardDescription>{m.suggested_players_card_description()}</CardDescription>
   </CardHeader>
@@ -89,7 +90,8 @@ const {
                 variant="secondary"
                 class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
               >
-                <UserPlusIcon class="w-4 h-4 mr-2" /> {m.suggested_players_cqrd_button_request()}
+                <UserPlusIcon class="w-4 h-4 mr-2" />
+                {m.suggested_players_cqrd_button_request()}
               </Button>
             </form>
           </CardFooter>

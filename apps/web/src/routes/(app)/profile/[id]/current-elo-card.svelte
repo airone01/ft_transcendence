@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { TrendingUpIcon } from "@lucide/svelte";
-  import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
-  import type { UserStats } from "$lib/server/db-services";
-  import * as m from "$lib/paraglide/messages";
+import { TrendingUpIcon } from "@lucide/svelte";
+import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
+import * as m from "$lib/paraglide/messages";
+import type { UserStats } from "$lib/server/db-services";
 
-  const { stats, peakElo }: { stats: UserStats; peakElo: number } = $props();
+const { stats, peakElo }: { stats: UserStats; peakElo: number } = $props();
 </script>
 
 <Card
@@ -12,7 +12,8 @@
 >
   <CardHeader class="pb-2">
     <CardTitle class="flex items-center gap-2 text-base">
-      <TrendingUpIcon class="w-5 h-5 text-primary" /> {m.current_elo_card_title()}
+      <TrendingUpIcon class="w-5 h-5 text-primary" />
+      {m.current_elo_card_title()}
     </CardTitle>
   </CardHeader>
   <CardContent class="flex-1 flex flex-col justify-evenly items-center px-1">

@@ -1,58 +1,58 @@
 <script lang="ts">
-  import {
-    BabyIcon,
-    CookingPotIcon,
-    MedalIcon,
-    MirrorRoundIcon,
-    MountainSnowIcon,
-    TrophyIcon,
-  } from "@lucide/svelte";
-  import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
-  import type { Component } from "svelte";
-  import type { Achievements } from "$lib/server/db-services";
-  import * as m from "$lib/paraglide/messages";
+import {
+  BabyIcon,
+  CookingPotIcon,
+  MedalIcon,
+  MirrorRoundIcon,
+  MountainSnowIcon,
+  TrophyIcon,
+} from "@lucide/svelte";
+import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
+import type { Component } from "svelte";
+import * as m from "$lib/paraglide/messages";
+import type { Achievements } from "$lib/server/db-services";
 
-  const { achievements: oachs }: { achievements: Achievements } = $props();
+const { achievements: oachs }: { achievements: Achievements } = $props();
 
-  type Ach = {
-    id: keyof Omit<Achievements, "userId">;
-    label: string;
-    description: string;
-    icon: Component;
-  };
+type Ach = {
+  id: keyof Omit<Achievements, "userId">;
+  label: string;
+  description: string;
+  icon: Component;
+};
 
-  const achs: Ach[] = [
-    {
-      id: "update_profile",
-      label: m.badges_card_ach_label_update_profile(),
-      description: m.badges_card_ach_desc_update_profile(),
-      icon: MirrorRoundIcon,
-    },
-    {
-      id: "first_game",
-      label: m.badges_card_ach_label_first_game(),
-      description: m.badges_card_ach_desc_first_game(),
-      icon: BabyIcon,
-    },
-    {
-      id: "first_win",
-      label: m.badges_card_ach_label_first_win(),
-      description: m.badges_card_ach_desc_first_win(),
-      icon: MedalIcon,
-    },
-    {
-      id: "five_wins",
-      label: m.badges_card_ach_label_five_wins(),
-      description: m.badges_card_ach_desc_five_wins(),
-      icon: CookingPotIcon,
-    },
-    {
-      id: "reach_high_elo",
-      label: m.badges_card_ach_label_reach_high_elo(),
-      description: m.badges_card_ach_desc_reach_high_elo(),
-      icon: MountainSnowIcon,
-    },
-  ];
+const achs: Ach[] = [
+  {
+    id: "update_profile",
+    label: m.badges_card_ach_label_update_profile(),
+    description: m.badges_card_ach_desc_update_profile(),
+    icon: MirrorRoundIcon,
+  },
+  {
+    id: "first_game",
+    label: m.badges_card_ach_label_first_game(),
+    description: m.badges_card_ach_desc_first_game(),
+    icon: BabyIcon,
+  },
+  {
+    id: "first_win",
+    label: m.badges_card_ach_label_first_win(),
+    description: m.badges_card_ach_desc_first_win(),
+    icon: MedalIcon,
+  },
+  {
+    id: "five_wins",
+    label: m.badges_card_ach_label_five_wins(),
+    description: m.badges_card_ach_desc_five_wins(),
+    icon: CookingPotIcon,
+  },
+  {
+    id: "reach_high_elo",
+    label: m.badges_card_ach_label_reach_high_elo(),
+    description: m.badges_card_ach_desc_reach_high_elo(),
+    icon: MountainSnowIcon,
+  },
+];
 </script>
 
 <Card

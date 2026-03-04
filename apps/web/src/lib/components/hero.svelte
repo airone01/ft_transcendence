@@ -6,7 +6,9 @@ import * as m from "$lib/paraglide/messages.js";
 <section class="flex gap-4 container">
   <!-- Main title -->
   <div class="flex flex-col justify-center items-center w-full">
-    <h1 class="text-7xl uppercase font-semibold text-center">{m.hero_page_title()}</h1>
+    <h1 class="text-7xl uppercase font-semibold text-center">
+      {m.hero_page_title()}
+    </h1>
   </div>
   <!-- Chess board -->
   <div class="flex flex-col justify-center items-center w-full relative">

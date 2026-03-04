@@ -1,30 +1,29 @@
 <script lang="ts">
-  import { ChartLineIcon } from "@lucide/svelte";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
-  import {
-    Empty,
-    EmptyContent,
-    EmptyDescription,
-    EmptyMedia,
-    EmptyTitle,
-  } from "@transc/ui/empty";
-  import { scaleUtc } from "d3-scale";
-  import { AreaChart } from "layerchart";
-  import * as m from "$lib/paraglide/messages";
+import { ChartLineIcon } from "@lucide/svelte";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
+import { scaleUtc } from "d3-scale";
+import { AreaChart } from "layerchart";
+import * as m from "$lib/paraglide/messages";
 
-  const chartConfig: ChartConfig = {
-    elo: { label: "ELO", color: "var(--chart-1)" },
-  };
+const chartConfig: ChartConfig = {
+  elo: { label: "ELO", color: "var(--chart-1)" },
+};
 
-  const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } =
-    $props();
+const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
 </script>
 
 <Card
@@ -35,9 +34,7 @@
       <ChartLineIcon class="w-5 h-5 text-primary" />
       {m.elo_history_card_title()}
     </CardTitle>
-    <CardDescription>
-      {m.elo_history_card_description()}
-    </CardDescription>
+    <CardDescription>{m.elo_history_card_description()}</CardDescription>
   </CardHeader>
   <CardContent
     class={`flex-1 min-h-0 px-4 sm:px-6 pb-6 relative ${eloHistory && eloHistory.length > 0 ? "flex justify-center items-center flex-1" : ""}`}

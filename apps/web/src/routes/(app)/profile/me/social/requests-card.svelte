@@ -1,37 +1,37 @@
 <script lang="ts">
-  import { BrushCleaningIcon, HandHeartIcon } from "@lucide/svelte";
-  import type { SubmitFunction } from "@sveltejs/kit";
-  import { Button } from "@transc/ui/button";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-  } from "@transc/ui/empty";
-  import { enhance } from "$app/forms";
-  import UserAvatar from "$lib/components/user-avatar.svelte";
-  import * as m from "$lib/paraglide/messages";
+import { BrushCleaningIcon, HandHeartIcon } from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
+import { Button } from "@transc/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
+import { enhance } from "$app/forms";
+import UserAvatar from "$lib/components/user-avatar.svelte";
+import * as m from "$lib/paraglide/messages";
 
-  const {
-    invitations,
-    formEnhance,
-  }: {
-    invitations: {
-      userId: number;
-      username: string;
-      avatar: string | null;
-      type: "received" | "sent";
-    }[];
-    formEnhance: SubmitFunction;
-  } = $props();
+const {
+  invitations,
+  formEnhance,
+}: {
+  invitations: {
+    userId: number;
+    username: string;
+    avatar: string | null;
+    type: "received" | "sent";
+  }[];
+  formEnhance: SubmitFunction;
+} = $props();
 </script>
 
 <Card class="flex flex-col col-span-1 lg:col-span-3 min-h-100 grow">
@@ -65,7 +65,7 @@
             {#if invite.type === "received"}
               <div class="flex items-center gap-1">
                 <form method="POST" action="?/accept" use:enhance={formEnhance}>
-                  <input type="hidden" name="userId" value={invite.userId} />
+                  <input type="hidden" name="userId" value={invite.userId}>
                   <Button
                     type="submit"
                     variant="secondary"
@@ -76,7 +76,7 @@
                   </Button>
                 </form>
                 <form method="POST" action="?/reject" use:enhance={formEnhance}>
-                  <input type="hidden" name="userId" value={invite.userId} />
+                  <input type="hidden" name="userId" value={invite.userId}>
                   <Button
                     type="submit"
                     variant="ghost"

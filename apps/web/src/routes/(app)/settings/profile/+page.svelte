@@ -14,8 +14,8 @@ import { toast } from "svelte-sonner";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
 import SettingsHeader from "$lib/components/settings-header.svelte";
-import { profileFormSchema } from "$lib/schemas/settings";
 import * as m from "$lib/paraglide/messages";
+import { profileFormSchema } from "$lib/schemas/settings";
 
 const { data } = $props();
 
@@ -101,9 +101,7 @@ function handleCroppedImage(file: File) {
       <FormField {form} name="username">
         <FormControl>
           {#snippet children({ props })}
-            <FormLabel>
-              {m.settings_page_profile_label_username()}
-            </FormLabel>
+            <FormLabel>{m.settings_page_profile_label_username()}</FormLabel>
             <Input {...props} bind:value={$formData.username} />
           {/snippet}
         </FormControl>
@@ -114,9 +112,7 @@ function handleCroppedImage(file: File) {
       <FormField {form} name="bio">
         <FormControl>
           {#snippet children({ props })}
-            <FormLabel>
-              {m.settings_page_profile_label_bio()}
-            </FormLabel>
+            <FormLabel>{m.settings_page_profile_label_bio()}</FormLabel>
             <Input {...props} bind:value={$formData.bio} />
           {/snippet}
         </FormControl>

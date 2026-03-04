@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { Badge } from "@transc/ui/badge";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import LandingPage from "$lib/components/landing/landing-page.svelte";
-  import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
-  import * as m from "$lib/paraglide/messages.js";
+import { Badge } from "@transc/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import LandingPage from "$lib/components/landing/landing-page.svelte";
+import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
+import * as m from "$lib/paraglide/messages.js";
 
-  const { data } = $props();
+const { data } = $props();
 </script>
 
 {#if data.user}

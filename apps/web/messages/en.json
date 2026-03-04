@@ -6,10 +6,8 @@
   "offline": "[i18n] Offline",
   "ingame": "[i18n] In Game",
 
-
   "hero_page_title": "[i18n] Play Chess Now!",
   "hero_page_button": "[i18n] New Game",
-
 
   "landing_page_button_login": "[i18n] Log in",
   "landing_page_button_register": "[i18n] Sign up",
@@ -41,7 +39,6 @@
   "landing_page_auth_dialog_popup_success_login": "[i18n] Welcome back!",
   "landing_page_auth_dialog_popup_success_register": "[i18n] Account created successfully. Welcome!",
 
-
   "navigation_label_content": "[i18n] My Content",
   "navigation_label_chess": "[i18n] Chess",
   "navigation_item_profile": "[i18n] Profile",
@@ -56,7 +53,6 @@
   "app_sidebar_user_item_logout": "[i18n] Log out",
   "app_sidebar_user_item_settings": "[i18n] Settings",
 
-
   "app_shell_heading_content": "[i18n] My Content",
   "app_shell_heading_quick_nav": "[i18n] Quick Navigation",
   "app_shell_heading_chess": "[i18n] Start a game",
@@ -69,13 +65,11 @@
   "app_shell_popup_success_logout": "[i18n] You logged out. See you soon!",
   "app_shell_popup_fail_logout": "[i18n] Failed to log out",
 
-
   "leaderboard_page_title": "[i18n] Leaderboard",
   "leaderboard_page_description": "[i18n] Top players ranked by their ELO.",
   "leaderboard_page_card_title": "[i18n] Global Ranking",
   "leaderboard_page_card_description": "[i18n] The best of the best across the server.",
   "leaderboard_page_empty": "[i18n] No players found yet.",
-
 
   "social_page_title": "[i18n] Social",
   "social_page_description": "[i18n] Manage your friends list and see who is online.",
@@ -99,7 +93,6 @@
   "suggested_players_cqrd_button_request": "[i18n] Request",
   "suggested_players_card_empty_title": "[i18n] No recommendations",
   "suggested_players_card_empty_description": "[i18n] We will soon recommend users here!",
-
 
   "profile_page_user_joined_on": "[i18n] Member since",
   "profile_page_user_bio": "[i18n] Bio",
@@ -145,7 +138,6 @@
   "win_ratio_card_draws": "[i18n] D",
   "win_ratio_card_losses": "[i18n] L",
 
-
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
   "settings_page_button_saving": "[i18n] Saving...",
@@ -164,7 +156,7 @@
   "settings_page_account_not_connected": "[i18n] Not Connected",
   "settings_page_account_button_connect": "[i18n] Connect",
   "settings_page_account_button_disconnect": "[i18n] Disconnect",
-  
+
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
   "settings_page_account_label_no_password_desc": "You haven't set a password yet. Set one to log in with email/password.",
@@ -176,5 +168,4 @@
   "settings_page_sound_title": "[i18n] Sound",
   "settings_page_display_title": "[i18n] Display",
   "settings_page_privacy_title": "[i18n] Privacy"
-
 }

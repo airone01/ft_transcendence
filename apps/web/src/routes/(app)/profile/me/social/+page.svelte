@@ -6,11 +6,11 @@ import { Input } from "@transc/ui/input";
 import { untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
+import * as m from "$lib/paraglide/messages";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import FriendsCard from "./friends-card.svelte";
 import RequestsCard from "./requests-card.svelte";
 import SuggestedUsersCard from "./suggested-users-card.svelte";
-import * as m from "$lib/paraglide/messages";
 
 const { data } = $props();
 
@@ -73,9 +73,7 @@ const formEnhance: SubmitFunction = () => {
   <div class="flex flex-col gap-4 md:flex-row md:items-end justify-between">
     <div class="space-y-1">
       <h2 class="text-2xl font-bold tracking-tight">{m.social_page_title()}</h2>
-      <p class="text-muted-foreground">
-        {m.social_page_description()}
-      </p>
+      <p class="text-muted-foreground">{m.social_page_description()}</p>
     </div>
 
     <form

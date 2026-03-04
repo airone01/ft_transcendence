@@ -10,8 +10,8 @@ import {
 } from "@transc/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@transc/ui/tooltip";
 import { page } from "$app/state";
-import UserAvatar from "./user-avatar.svelte";
 import * as m from "$lib/paraglide/messages.js";
+import UserAvatar from "./user-avatar.svelte";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 

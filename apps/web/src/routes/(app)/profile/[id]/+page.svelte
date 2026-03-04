@@ -15,13 +15,13 @@ import { Skeleton } from "@transc/ui/skeleton";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
 import EloHistoryCard from "./elo-history-card.svelte";
 import RecentMatchesCard from "./recent-matches-card.svelte";
 import WinRatioCard from "./win-ratio-card.svelte";
-import * as m from "$lib/paraglide/messages";
 
 const { data } = $props();
 
@@ -85,7 +85,8 @@ const formEnhance: SubmitFunction = () => {
               </Badge>
             </div>
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
-              <CalendarIcon class="w-3 h-3" /> {m.profile_page_user_joined_on()}
+              <CalendarIcon class="w-3 h-3" />
+              {m.profile_page_user_joined_on()}
               {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
@@ -94,8 +95,7 @@ const formEnhance: SubmitFunction = () => {
             <!-- TODO: fix Icon size and "div" align with the previous one -->
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
               <MegaphoneIcon class="w-3 h-3" />
-              {m.profile_page_user_bio()}:
-              {user?.bio}
+              {m.profile_page_user_bio()}:{user?.bio}
             </p>
           </div>
 
@@ -105,7 +105,8 @@ const formEnhance: SubmitFunction = () => {
                 href={`/play/challenge/${user?.id}`}
                 class="flex-1 md:flex-none gap-2"
               >
-                <SwordsIcon class="w-4 h-4" /> {m.profile_page_button_challange()}
+                <SwordsIcon class="w-4 h-4" />
+                {m.profile_page_button_challange()}
               </Button>
               <form
                 method="POST"
@@ -119,7 +120,8 @@ const formEnhance: SubmitFunction = () => {
                   variant="secondary"
                   class="flex-1 md:flex-none gap-2"
                 >
-                  <UserPlusIcon class="w-4 h-4" /> {m.profile_page_button_add()}
+                  <UserPlusIcon class="w-4 h-4" />
+                  {m.profile_page_button_add()}
                 </Button>
               </form>
             </div>
@@ -153,7 +155,9 @@ const formEnhance: SubmitFunction = () => {
             <TriangleAlertIcon class="h-5 w-5" />
             <CardTitle>{m.profile_page_error_title()}</CardTitle>
           </div>
-          <CardDescription>{m.profile_page_error_description()}</CardDescription>
+          <CardDescription>
+            {m.profile_page_error_description()}
+          </CardDescription>
         </CardHeader>
       </Card>
     </div>

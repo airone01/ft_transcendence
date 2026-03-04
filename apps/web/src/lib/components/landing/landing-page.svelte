@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { ChessPawnIcon } from "@lucide/svelte";
-  import { Button } from "@transc/ui/button";
-  import { authState } from "$lib/auth";
-  import Hero from "$lib/components/hero.svelte";
-  import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
-  import * as m from "$lib/paraglide/messages.js";
+import { ChessPawnIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import { authState } from "$lib/auth";
+import Hero from "$lib/components/hero.svelte";
+import * as m from "$lib/paraglide/messages.js";
+import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 </script>
 
 <div class="min-h-screen h-full flex flex-col">

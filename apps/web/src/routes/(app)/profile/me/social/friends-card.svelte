@@ -1,46 +1,46 @@
 <script lang="ts">
-  import {
-    ContactRoundIcon,
-    FrownIcon,
-    MessageSquareIcon,
-    SwordsIcon,
-    UserMinusIcon,
-  } from "@lucide/svelte";
-  import type { SubmitFunction } from "@sveltejs/kit";
-  import { Badge } from "@transc/ui/badge";
-  import { Button } from "@transc/ui/button";
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@transc/ui/card";
-  import {
-    Empty,
-    EmptyDescription,
-    EmptyHeader,
-    EmptyMedia,
-    EmptyTitle,
-  } from "@transc/ui/empty";
-  import { enhance } from "$app/forms";
-  import UserAvatar from "$lib/components/user-avatar.svelte";
-  import * as m from "$lib/paraglide/messages";
+import {
+  ContactRoundIcon,
+  FrownIcon,
+  MessageSquareIcon,
+  SwordsIcon,
+  UserMinusIcon,
+} from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
+import { Badge } from "@transc/ui/badge";
+import { Button } from "@transc/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@transc/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
+import { enhance } from "$app/forms";
+import UserAvatar from "$lib/components/user-avatar.svelte";
+import * as m from "$lib/paraglide/messages";
 
-  const {
-    friends,
-    formEnhance,
-  }: {
-    friends: {
-      userId: number;
-      username: string;
-      avatar: string | null;
-      bio: string;
-      currentElo: number;
-      status: "offline" | "online" | "ingame";
-    }[];
-    formEnhance: SubmitFunction;
-  } = $props();
+const {
+  friends,
+  formEnhance,
+}: {
+  friends: {
+    userId: number;
+    username: string;
+    avatar: string | null;
+    bio: string;
+    currentElo: number;
+    status: "offline" | "online" | "ingame";
+  }[];
+  formEnhance: SubmitFunction;
+} = $props();
 </script>
 
 <Card class="col-span-1 lg:col-span-2 min-h-100 shadow-sm grow">
@@ -127,7 +127,7 @@
               </Button>
 
               <form method="POST" action="?/remove" use:enhance={formEnhance}>
-                <input type="hidden" name="friendId" value={friend.userId} />
+                <input type="hidden" name="friendId" value={friend.userId}>
                 <Button
                   type="submit"
                   variant="ghost"
