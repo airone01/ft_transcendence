@@ -23,6 +23,9 @@
     "apps/*"
   ],
   "dependencies": {
+    "@fontsource-variable/merriweather": "^5.2.6",
+    "@fontsource-variable/montserrat": "^5.2.8",
+    "@fontsource-variable/source-code-pro": "^5.2.7",
     "pg": "^8.18.0",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3"
