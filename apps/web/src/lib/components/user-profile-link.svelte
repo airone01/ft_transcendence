@@ -1,7 +1,6 @@
 <script lang="ts">
 import { CalendarIcon, ChartSplineIcon } from "@lucide/svelte";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
-import { Badge } from "@transc/ui/badge";
 import {
   HoverCard,
   HoverCardContent,
