@@ -15,12 +15,14 @@ let {
   fallbackAvatar = null,
   children,
   class: className = "",
+  href,
 } = $props<{
   userId: number | string;
   fallbackUsername?: string;
   fallbackAvatar?: string | null;
   children: Snippet;
   class?: string;
+  href?: string;
 }>();
 
 let isOpen = $state(false);
@@ -35,7 +37,7 @@ let userPromise = $derived(
 
 <HoverCard bind:open={isOpen}>
   <HoverCardTrigger
-    href="/profile/{userId}"
+    href={href ?? "/profile/{userId}"}
     class="inline-flex items-center {className}"
   >
     {@render children()}

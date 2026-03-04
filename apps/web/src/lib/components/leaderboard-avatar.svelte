@@ -39,6 +39,7 @@ const {
       <UserAvatar
         userId={user.id}
         avatarUrl={user.avatar}
+        username={user.username}
         class="h-14 w-14 border-4 {isFirst ? 'border-yellow-400' : isSecond ? 'border-slate-300' : 'border-amber-600'}"
       />
       <span class="font-bold">{user.username}</span>
@@ -50,7 +51,12 @@ const {
       fallbackUsername={user.username}
       class="gap-2"
     >
-      <UserAvatar userId={user.id} avatarUrl={user.avatar} class="h-12 w-12" />
+      <UserAvatar
+        username={user.username}
+        userId={user.id}
+        avatarUrl={user.avatar}
+        class="h-12 w-12"
+      />
       <div class="flex flex-col">
         <span class="font-bold">{user.username}</span>
         <Badge variant="default">{currentElo}</Badge>

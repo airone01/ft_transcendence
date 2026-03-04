@@ -9,7 +9,7 @@ let {
   class: className = "h-10 w-10",
 } = $props<{
   userId: string | number;
-  username?: string;
+  username: string | undefined | null;
   avatarUrl?: string | null;
   class?: string;
 }>();

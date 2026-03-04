@@ -27,7 +27,12 @@ const stats = $derived(page.data.stats);
       fallbackUsername={user.username}
       class="gap-3 w-full"
     >
-      <UserAvatar userId={user.id} avatarUrl={user.avatar} class="h-8 w-8" />
+      <UserAvatar
+        userId={user.id}
+        avatarUrl={user.avatar}
+        username={user.username}
+        class="h-8 w-8"
+      />
       <div class="flex flex-col group-data-[collapsible=icon]:hidden">
         <span class="text-sm font-medium">{user.username}</span>
         <Badge class="text-xs text-[0.6rem] py-px px-0.75">

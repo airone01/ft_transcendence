@@ -18,6 +18,7 @@ import {
 } from "@transc/ui/empty";
 import { enhance } from "$app/forms";
 import UserAvatar from "$lib/components/user-avatar.svelte";
+import UserProfileLink from "$lib/components/user-profile-link.svelte";
 
 const {
   invitations,
@@ -34,7 +35,7 @@ const {
 </script>
 
 <Card class="flex flex-col col-span-1 lg:col-span-3 min-h-100 grow">
-  <CardHeader class="shrink-0 pb-3">
+  <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
       <HandHeartIcon />
       Friend Requests
@@ -45,21 +46,21 @@ const {
     {#if invitations && invitations.length > 0}
       {#each invitations as invite (invite.userId)}
         <Card class="overflow-hidden py-0 shrink-0">
-          <CardContent class="p-2 px-3 flex items-center gap-4">
-            <UserAvatar
-              avatarUrl={invite.avatar}
-              username={invite.username}
+          <CardContent class="p-2 px-3 flex items-center justify-between gap-4">
+            <UserProfileLink
               userId={invite.userId}
-            />
-
-            <div class="flex-1 min-w-0">
-              <a
-                href="/profile/{invite.userId}"
-                class="font-medium hover:underline truncate block text-sm"
-              >
-                {invite.username}
-              </a>
-            </div>
+              fallbackUsername={invite.username}
+              class="flex items-center gap-4"
+              href="/profile/{invite.userId}"
+            >
+              <UserAvatar
+                username={invite.username}
+                userId={invite.userId}
+                avatarUrl={invite.avatar}
+                class="h-12 w-12 border"
+              />
+              <span class="hover:underline">{invite.username}</span>
+            </UserProfileLink>
 
             {#if invite.type === 'received'}
               <div class="flex items-center gap-1">
