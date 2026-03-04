@@ -37,7 +37,7 @@ let userPromise = $derived(
 
 <HoverCard bind:open={isOpen}>
   <HoverCardTrigger
-    href={href ?? "/profile/{userId}"}
+    href={href ?? `/profile/${userId}`}
     class="inline-flex items-center {className}"
   >
     {@render children()}

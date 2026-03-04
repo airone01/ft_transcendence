@@ -25,7 +25,7 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
   // user change status
   socket.on(
     "presence:status",
-    (data: { status: "online" | "away" | "in-game" }) => {
+    (data: { status: "online" | "away" | "ingame" }) => {
       const user = onlineUsers.get(userId);
       if (user) {
         user.status = data.status;
