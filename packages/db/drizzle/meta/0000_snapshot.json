@@ -1,5 +1,5 @@
 {
-  "id": "0c470151-9ccc-46c6-9967-c134a7ca9787",
+  "id": "49abbe61-65fc-45bd-b3e8-deabaaed7d97",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -427,6 +427,12 @@
       "name": "elo_history",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
         "user_id": {
           "name": "user_id",
           "type": "integer",
@@ -705,13 +711,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
-        },
-        "fen": {
-          "name": "fen",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0'"
         },
         "result": {
           "name": "result",
@@ -1079,13 +1078,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "user_status",
-          "typeSchema": "public",
+        "bio": {
+          "name": "bio",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true,
-          "default": "'offline'"
+          "default": "''"
         },
         "created_at": {
           "name": "created_at",
@@ -1237,11 +1235,6 @@
       "name": "result",
       "schema": "public",
       "values": ["white_win", "black_win", "draw", "abort"]
-    },
-    "public.user_status": {
-      "name": "user_status",
-      "schema": "public",
-      "values": ["online", "offline", "ingame"]
     }
   },
   "schemas": {},

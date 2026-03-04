@@ -17,7 +17,7 @@ class SocketManager {
 
     this.socket?.disconnect();
 
-    this.socket = io("http://10.14.6.5:3001", {
+    this.socket = io("http://localhost:3001", {
       auth: { userId, username },
       transports: ["websocket"],
       reconnection: true,

@@ -16,7 +16,6 @@ import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
 import {
   gameState as gameStore,
   joinGame,
-  leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";

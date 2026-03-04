@@ -42,14 +42,14 @@ export const sidebarGroups: SidebarGroup[] = [
     label: "Chess",
     items: [
       {
-        label: "Play Now",
-        href: "/play",
-        icon: ZapIcon,
-      },
-      {
         label: "Leaderboard",
         href: "/",
         icon: TrophyIcon,
+      },
+      {
+        label: "Play Now",
+        href: "/play",
+        icon: ZapIcon,
       },
     ],
   },

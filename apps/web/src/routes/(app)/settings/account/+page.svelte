@@ -83,10 +83,10 @@ const unlinkEnhance: SubmitFunction = () => {
         <form action="?/unlink" method="POST" use:enhance={unlinkEnhance}>
           <input type="hidden" name="provider" value="discord">
           <Button
-            variant="outline"
+            variant="destructive"
             size="sm"
             type="submit"
-            class="text-destructive hover:text-destructive"
+            class="cursor-pointer"
           >
             <Unplug class="mr-2 h-4 w-4" /> Disconnect
           </Button>

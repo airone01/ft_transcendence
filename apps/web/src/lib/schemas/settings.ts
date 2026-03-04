@@ -4,6 +4,10 @@ import { zPassword, zUsername } from "./auth";
 
 export const profileFormSchema = z.object({
   username: zUsername.optional(),
+  bio: z
+    .string()
+    .max(255, "Biography must be at most 255 characters." /* i18n */)
+    .optional(),
   avatar: z
     .instanceof(File, { message: "Avatar must be a file" /* i18n */ })
     .refine(

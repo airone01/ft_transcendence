@@ -79,7 +79,6 @@ function handleCroppedImage(file: File) {
       </button>
     </ImageCropper>
 
-    <!-- username input -->
     <form
       id="profileSettingsForm"
       method="POST"
@@ -88,6 +87,7 @@ function handleCroppedImage(file: File) {
       use:enhance
       class="flex-1 md:max-w-md self-start md:self-auto w-full"
     >
+      <!-- hidden file input -->
       <input
         type="file"
         name="avatar"
@@ -96,6 +96,7 @@ function handleCroppedImage(file: File) {
         accept="image/*"
       >
 
+      <!-- username input -->
       <FormField {form} name="username">
         <FormControl>
           {#snippet children({ props })}
@@ -104,6 +105,20 @@ function handleCroppedImage(file: File) {
               <!-- i18n --><!-- i18n -->
             </FormLabel>
             <Input {...props} bind:value={$formData.username} />
+          {/snippet}
+        </FormControl>
+        <FormFieldErrors />
+      </FormField>
+
+      <!-- bio input -->
+      <FormField {form} name="bio">
+        <FormControl>
+          {#snippet children({ props })}
+            <FormLabel>
+              Biography<!-- i18n --><!-- i18n -->
+              <!-- i18n --><!-- i18n -->
+            </FormLabel>
+            <Input {...props} bind:value={$formData.bio} />
           {/snippet}
         </FormControl>
         <FormFieldErrors />

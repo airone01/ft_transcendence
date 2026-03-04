@@ -66,17 +66,19 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 }
 </script>
 
-{#if recentGames.length > 0}
-  <Card
-    class="flex flex-col col-span-1 md:col-span-2 lg:col-span-5 h-100 shadow-sm pb-0 overflow-hidden"
+<Card
+  class="flex flex-col col-span-1 md:col-span-2 lg:col-span-5 h-100 shadow-sm pb-0 overflow-hidden"
+>
+  <CardHeader class="shrink-0">
+    <CardTitle class="flex items-center gap-2">
+      <HistoryIcon class="w-5 h-5" /> Match History
+    </CardTitle>
+    <CardDescription>Recent games played across all modes</CardDescription>
+  </CardHeader>
+  <CardContent
+    class={`p-0 overflow-y-auto flex-1 ${recentGames.length <= 0 ? 'flex items-center' : ''}`}
   >
-    <CardHeader class="shrink-0">
-      <CardTitle class="flex items-center gap-2">
-        <HistoryIcon class="w-5 h-5" /> Match History
-      </CardTitle>
-      <CardDescription>Recent games played across all modes</CardDescription>
-    </CardHeader>
-    <CardContent class="p-0 overflow-y-auto flex-1">
+    {#if recentGames.length > 0}
       <div class="flex flex-col divide-y">
         {#each recentGames as game (game.gameId)}
           {@const eloDiff = game.userEloAfter - game.userEloBefore}
@@ -94,7 +96,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
               <div>
                 <div class="flex items-center gap-2">
                   <span class="font-bold">
-                    {game.result === 'white_win' ? 'Won' : game.result === 'black_win' ? 'Lost' : 'Draw'}
+                    {hasWon ? 'Won' : game.result === 'draw' ? 'Draw' : 'Lost'}
                   </span>
                   <span class="text-xs text-muted-foreground"
                     >vs
@@ -127,20 +129,18 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
           </div>
         {/each}
       </div>
-    </CardContent>
-  </Card>
-{:else}
-  <Empty
-    class="col-span-1 md:col-span-2 lg:col-span-5 h-100 border-2 border-dashed border-muted-foreground rounded-lg"
-  >
-    <EmptyMedia variant="icon">
-      <SwordsIcon />
-    </EmptyMedia>
-    <EmptyHeader>
-      <EmptyTitle>No Recent Matches</EmptyTitle>
-      <EmptyDescription>
-        Play a few matches to see your statistics with details here.
-      </EmptyDescription>
-    </EmptyHeader>
-  </Empty>
-{/if}
+    {:else}
+      <Empty>
+        <EmptyMedia variant="icon">
+          <SwordsIcon />
+        </EmptyMedia>
+        <EmptyHeader>
+          <EmptyTitle>No Recent Matches</EmptyTitle>
+          <EmptyDescription>
+            Play a few matches to see your statistics with details here.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    {/if}
+  </CardContent>
+</Card>

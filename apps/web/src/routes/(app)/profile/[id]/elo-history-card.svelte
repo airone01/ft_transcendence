@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@transc/ui/card";
 import { type ChartConfig, ChartContainer } from "@transc/ui/chart";
-import { Empty } from "@transc/ui/command";
 import {
+  Empty,
   EmptyContent,
   EmptyDescription,
   EmptyMedia,
@@ -25,27 +25,28 @@ const chartConfig: ChartConfig = {
 const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
 </script>
 
-{#if eloHistory && eloHistory.length > 0}
-  {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
-  {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
-  {@const now = new Date()}
-  {@const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
-  {@const minDate = eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo 
+<Card
+  class="flex flex-col col-span-1 md:col-span-2 lg:col-span-7 h-100 shadow-sm"
+>
+  <CardHeader class="shrink-0">
+    <CardTitle class="flex items-center gap-2">
+      <ChartLineIcon class="w-5 h-5 text-primary" /> ELO Progression
+    </CardTitle>
+    <CardDescription>
+      Your rating evolution over the last 7 days
+    </CardDescription>
+  </CardHeader>
+  <CardContent
+    class={`flex-1 min-h-0 px-4 sm:px-6 pb-6 relative ${eloHistory&& eloHistory.length > 0 ? 'flex justify-center items-center flex-1' : ''}`}
+  >
+    {#if eloHistory && eloHistory.length > 0}
+      {@const minElo = Math.max(0, Math.min(...eloHistory.map(h => h.elo)) - 50)}
+      {@const maxElo = Math.max(...eloHistory.map(h => h.elo)) + 50}
+      {@const now = new Date()}
+      {@const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)}
+      {@const minDate = eloHistory.length > 0 && eloHistory[0].date < sevenDaysAgo 
             ? eloHistory[0].date 
             : sevenDaysAgo}
-
-  <Card
-    class="flex flex-col col-span-1 md:col-span-2 lg:col-span-7 h-100 shadow-sm"
-  >
-    <CardHeader class="shrink-0">
-      <CardTitle class="flex items-center gap-2">
-        <ChartLineIcon class="w-5 h-5 text-primary" /> ELO Progression
-      </CardTitle>
-      <CardDescription>
-        Your rating evolution over the last 7 days
-      </CardDescription>
-    </CardHeader>
-    <CardContent class="flex-1 min-h-0 px-4 sm:px-6 pb-6 relative">
       <ChartContainer config={chartConfig} class="h-full w-full">
         <AreaChart
           data={eloHistory}
@@ -68,20 +69,18 @@ const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
           }}
         />
       </ChartContainer>
-    </CardContent>
-  </Card>
-{:else}
-  <Empty
-    class="col-span-1 md:col-span-2 lg:col-span-7 h-100 border-2 border-dashed border-muted-foreground rounded-lg"
-  >
-    <EmptyMedia variant="icon">
-      <ChartLineIcon />
-    </EmptyMedia>
-    <EmptyContent>
-      <EmptyTitle>No Significant Data</EmptyTitle>
-      <EmptyDescription>
-        Play more ranked matches to display ELO progression.
-      </EmptyDescription>
-    </EmptyContent>
-  </Empty>
-{/if}
+    {:else}
+      <Empty>
+        <EmptyMedia variant="icon">
+          <ChartLineIcon />
+        </EmptyMedia>
+        <EmptyContent>
+          <EmptyTitle>No Significant Data</EmptyTitle>
+          <EmptyDescription>
+            Play more ranked matches to display ELO progression.
+          </EmptyDescription>
+        </EmptyContent>
+      </Empty>
+    {/if}
+  </CardContent>
+</Card>
