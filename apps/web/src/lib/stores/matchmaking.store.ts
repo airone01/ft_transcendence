@@ -51,11 +51,17 @@ export function setupMatchmakingListeners() {
     console.log("Match found!", data);
     matchmakingState.set({ inQueue: false, mode: null, position: null });
 
-    // Pre-set color in game store before navigating
+    // Pre-set color in game store before navigating, reset previous game state
     gameState.update((state) => ({
       ...state,
       gameId: data.gameId,
       myColor: data.color,
+      gameOver: false,
+      winner: null,
+      reason: null,
+      check: false,
+      drawOffered: false,
+      moves: [],
     }));
 
     goto(`/game/${data.gameId}`);

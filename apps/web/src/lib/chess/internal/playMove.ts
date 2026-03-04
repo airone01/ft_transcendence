@@ -18,10 +18,16 @@ export function playMove(state: GameState, move: Move): GameState {
 
   const moves = getLegalMoves(state, move.from);
 
-  if (!moves.find((m) => m.to[0] === move.to[0] && m.to[1] === move.to[1]))
-    throw new InvalidMove();
+  const matchedMove = moves.find(
+    (m) => m.to[0] === move.to[0] && m.to[1] === move.to[1],
+  );
+  if (!matchedMove) throw new InvalidMove();
 
-  const newState: GameState = applyMoveCopy(state, move);
+  // Use the matched legal move (which carries castle/capture metadata),
+  // but keep the user-supplied promotion choice.
+  const effectiveMove: Move = { ...matchedMove, promotion: move.promotion };
+
+  const newState: GameState = applyMoveCopy(state, effectiveMove);
 
   const [fr, fc] = move.from;
   const [tr, _tc] = move.to;

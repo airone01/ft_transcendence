@@ -147,7 +147,7 @@ const formEnhance: SubmitFunction = () => {
         <RecentMatchesCard {matches} />
       </div>
     </div>
-  {:catch _}
+  {:catch _e}
     <div class="container mx-auto p-4 flex justify-center">
       <Card class="w-full max-w-md border-destructive/50 bg-destructive/5">
         <CardHeader>
