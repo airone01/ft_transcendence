@@ -25,8 +25,8 @@ import {
 } from "@transc/ui/empty";
 import { enhance } from "$app/forms";
 import UserAvatar from "$lib/components/user-avatar.svelte";
-import * as m from "$lib/paraglide/messages";
 import UserProfileLink from "$lib/components/user-profile-link.svelte";
+import * as m from "$lib/paraglide/messages";
 
 const {
   friends,
