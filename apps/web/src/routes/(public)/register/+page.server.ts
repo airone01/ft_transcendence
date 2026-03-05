@@ -10,6 +10,7 @@ import {
   dbIsEmailTaken,
 } from "$lib/server/db-services";
 import type { Actions } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -20,7 +21,7 @@ export const actions = {
     }
 
     if (await dbIsEmailTaken(form.data.email))
-      return message(form, "Email already registered." /* i18n */, {
+      return message(form, m.register_email_taken(), {
         status: 400,
       });
 
@@ -46,7 +47,7 @@ export const actions = {
             ...form,
             errors: {
               ...form.errors,
-              username: ["Username already taken." /* i18n */],
+              username: [m.register_username_taken()],
             },
           },
         });
@@ -56,12 +57,12 @@ export const actions = {
             ...form,
             errors: {
               ...form.errors,
-              email: ["Email already registered." /* i18n */],
+              email: [m.register_email_taken()],
             },
           },
         });
       console.error(e);
-      return message(form, "Unknown database error." /* i18n */, {
+      return message(form, m.unkown_db_error(), {
         status: 500,
       });
     }

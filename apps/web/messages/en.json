@@ -247,5 +247,9 @@
   "oauth_error": "[i18n] OAuth Error: ",
   "oauth_internal_error": "[i18n] Authentication failed",
 
+  "register_email_taken": "[i18n] Email already registered.",
+  "register_username_taken": "[i18n] Username already taken.",
+  
+  "unkown_db_error": "[i18n] Unknown database error",
   "internal_server_error": "[i18n] Internal server error"
 }
