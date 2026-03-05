@@ -14,6 +14,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@transc/ui/empty";
+import * as m from "$lib/paraglide/messages";
 
 type Match = {
   gameId: number;
@@ -71,32 +72,42 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 >
   <CardHeader class="shrink-0">
     <CardTitle class="flex items-center gap-2">
-      <HistoryIcon class="w-5 h-5" /> Match History
+      <HistoryIcon class="w-5 h-5" />
+      {m.recent_matches_card_title()}
     </CardTitle>
-    <CardDescription>Recent games played across all modes</CardDescription>
+    <CardDescription></CardDescription>
   </CardHeader>
   <CardContent
-    class={`p-0 overflow-y-auto flex-1 ${recentGames.length <= 0 ? 'flex items-center' : ''}`}
+    class={`p-0 overflow-y-auto flex-1 ${recentGames.length <= 0 ? "flex items-center" : ""}`}
   >
     {#if recentGames.length > 0}
       <div class="flex flex-col divide-y">
         {#each recentGames as game (game.gameId)}
           {@const eloDiff = game.userEloAfter - game.userEloBefore}
-          {@const hasWon = (game.result === 'white_win' && game.userColor == 'white')
-            || (game.result == 'black_win' && game.userColor == 'black')}
+          {@const hasWon =
+            (game.result === "white_win" && game.userColor == "white") ||
+            (game.result == "black_win" && game.userColor == "black")}
           <div
             class="flex items-center justify-between p-4 hover:bg-accent/20 transition-colors"
           >
             <div class="flex items-center gap-4">
               <div
                 class={`w-1.5 h-10 rounded-full ${
-                  hasWon ? 'bg-emerald-500' : game.result === 'draw' ? 'bg-slate-400' : 'bg-rose-500'
+                  hasWon
+                    ? "bg-emerald-500"
+                    : game.result === "draw"
+                      ? "bg-slate-400"
+                      : "bg-rose-500"
                 }`}
               ></div>
               <div>
                 <div class="flex items-center gap-2">
                   <span class="font-bold">
-                    {hasWon ? 'Won' : game.result === 'draw' ? 'Draw' : 'Lost'}
+                    {hasWon
+                      ? m.recent_matches_card_won()
+                      : game.result === "draw"
+                        ? m.recent_matches_card_draw()
+                        : m.recent_matches_card_lost()}
                   </span>
                   <span class="text-xs text-muted-foreground"
                     >vs
@@ -108,6 +119,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
                   </span>
                 </div>
                 <p class="text-sm text-muted-foreground">
+                  <!-- TODO: i18n or delete? -->
                   Normal •{formatCompactDuration(game.startedAt, game.endedAt)}
                 </p>
               </div>
@@ -115,7 +127,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 
             <div class="text-right">
               <span
-                class={`text-sm font-bold ${eloDiff > 0 ? 'text-emerald-600' : eloDiff < 0 ? 'text-rose-600' : 'text-slate-500'}`}
+                class={`text-sm font-bold ${eloDiff > 0 ? "text-emerald-600" : eloDiff < 0 ? "text-rose-600" : "text-slate-500"}`}
               >
                 {#if eloDiff > 0}
                   +
@@ -123,7 +135,10 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
                 {eloDiff}
               </span>
               <p class="text-xs text-muted-foreground">
-                {new Intl.DateTimeFormat(undefined, {dateStyle: 'short', timeStyle: 'short'}).format(game.endedAt)}
+                {new Intl.DateTimeFormat(undefined, {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }).format(game.endedAt)}
               </p>
             </div>
           </div>
@@ -135,9 +150,9 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
           <SwordsIcon />
         </EmptyMedia>
         <EmptyHeader>
-          <EmptyTitle>No Recent Matches</EmptyTitle>
+          <EmptyTitle>{m.recent_matches_card_empty_title()}</EmptyTitle>
           <EmptyDescription>
-            Play a few matches to see your statistics with details here.
+            {m.recent_matches_card_empty_description()}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>

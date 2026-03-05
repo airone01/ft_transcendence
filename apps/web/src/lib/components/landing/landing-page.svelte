@@ -3,6 +3,7 @@ import { ChessPawnIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { authState } from "$lib/auth";
 import Hero from "$lib/components/hero.svelte";
+import * as m from "$lib/paraglide/messages.js";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 </script>
 
@@ -14,7 +15,7 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
       <div class="flex items-center gap-2 select-none">
         <ChessPawnIcon class="w-7 h-7" />
         <span class="text-xl font-semibold tracking-tight">
-          Transcendence
+          {m.project_name()}
         </span>
       </div>
       <nav class="hidden items-center gap-6 md:flex">
@@ -22,6 +23,7 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
       </nav>
       <div class="flex items-center gap-3">
         {#if authState.isAuthenticated}
+          <!-- TODO: wtf? -->
           <form action="/logout" method="POST">
             <Button
               type="submit"
@@ -29,7 +31,7 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
               size="sm"
               class="cursor-pointer"
             >
-              Log out
+              {m.landing_page_button_logout()}
             </Button>
           </form>
           <Button href="/home" size="sm" class="cursor-pointer">
@@ -42,14 +44,14 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
             size="sm"
             class="cursor-pointer"
           >
-            Log in
+            {m.landing_page_button_login()}
           </Button>
           <Button
             onclick={() => openAuthDialog("register")}
             size="sm"
             class="cursor-pointer"
           >
-            Sign up
+            {m.landing_page_button_register()}
           </Button>
         {/if}
       </div>

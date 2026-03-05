@@ -14,6 +14,7 @@ import { toast } from "svelte-sonner";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
 import SettingsHeader from "$lib/components/settings-header.svelte";
+import * as m from "$lib/paraglide/messages";
 import { profileFormSchema } from "$lib/schemas/settings";
 
 const { data } = $props();
@@ -52,8 +53,8 @@ function handleCroppedImage(file: File) {
 </script>
 
 <SettingsHeader
-  title="Profile"
-  description="This is how others will see you on the site."
+  title={m.settings_page_profile_title()}
+  description={m.settings_page_profile_description()}
   formId="profileSettingsForm"
   {delayed}
 >
@@ -100,10 +101,7 @@ function handleCroppedImage(file: File) {
       <FormField {form} name="username">
         <FormControl>
           {#snippet children({ props })}
-            <FormLabel>
-              Username<!-- i18n --><!-- i18n -->
-              <!-- i18n --><!-- i18n -->
-            </FormLabel>
+            <FormLabel>{m.settings_page_profile_label_username()}</FormLabel>
             <Input {...props} bind:value={$formData.username} />
           {/snippet}
         </FormControl>
@@ -114,10 +112,7 @@ function handleCroppedImage(file: File) {
       <FormField {form} name="bio">
         <FormControl>
           {#snippet children({ props })}
-            <FormLabel>
-              Biography<!-- i18n --><!-- i18n -->
-              <!-- i18n --><!-- i18n -->
-            </FormLabel>
+            <FormLabel>{m.settings_page_profile_label_bio()}</FormLabel>
             <Input {...props} bind:value={$formData.bio} />
           {/snippet}
         </FormControl>

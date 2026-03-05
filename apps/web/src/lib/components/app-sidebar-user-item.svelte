@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
 import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages.js";
 import UserAvatar from "./user-avatar.svelte";
 import UserProfileLink from "./user-profile-link.svelte";
 
@@ -55,11 +56,11 @@ const stats = $derived(page.data.stats);
           onclick={() => logoutForm?.requestSubmit()}
           class="cursor-pointer"
         >
-          Log out
+          {m.app_sidebar_user_item_logout()}
         </DropdownMenuItem>
         <a href="/settings/profile"
           ><DropdownMenuItem class="cursor-pointer">
-            Settings
+            {m.app_sidebar_user_item_settings()}
           </DropdownMenuItem></a
         >
       </DropdownMenuContent>

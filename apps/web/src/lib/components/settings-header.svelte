@@ -2,6 +2,7 @@
 import { Button } from "@transc/ui/button";
 import type { Snippet } from "svelte";
 import type { Readable } from "svelte/store";
+import * as m from "$lib/paraglide/messages.js";
 
 export let title: string;
 export let description: string;
@@ -26,9 +27,9 @@ export let formId: string;
       class="cursor-pointer"
     >
       {#if $delayed}
-        Saving...
+        {m.settings_page_button_saving()}
       {:else}
-        Save Changes
+        {m.settings_page_button_saved()}
       {/if}
     </Button>
   </div>

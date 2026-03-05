@@ -9,6 +9,7 @@ import {
 } from "@lucide/svelte";
 import { Card, CardContent, CardHeader, CardTitle } from "@transc/ui/card";
 import type { Component } from "svelte";
+import * as m from "$lib/paraglide/messages";
 import type { Achievements } from "$lib/server/db-services";
 
 const { achievements: oachs }: { achievements: Achievements } = $props();
@@ -23,32 +24,32 @@ type Ach = {
 const achs: Ach[] = [
   {
     id: "update_profile",
-    label: "True Beauty",
-    description: "Edit your player profile",
+    label: m.badges_card_ach_label_update_profile(),
+    description: m.badges_card_ach_desc_update_profile(),
     icon: MirrorRoundIcon,
   },
   {
     id: "first_game",
-    label: "Baby Steps",
-    description: "Play your first game",
+    label: m.badges_card_ach_label_first_game(),
+    description: m.badges_card_ach_desc_first_game(),
     icon: BabyIcon,
   },
   {
     id: "first_win",
-    label: "For The Win!",
-    description: "Win your first match",
+    label: m.badges_card_ach_label_first_win(),
+    description: m.badges_card_ach_desc_first_win(),
     icon: MedalIcon,
   },
   {
     id: "five_wins",
-    label: "Hold Up, They're Cooking",
-    description: "Win five matches",
+    label: m.badges_card_ach_label_five_wins(),
+    description: m.badges_card_ach_desc_five_wins(),
     icon: CookingPotIcon,
   },
   {
     id: "reach_high_elo",
-    label: "Peak Performance",
-    description: "Reach 2k ELO",
+    label: m.badges_card_ach_label_reach_high_elo(),
+    description: m.badges_card_ach_desc_reach_high_elo(),
     icon: MountainSnowIcon,
   },
 ];
@@ -59,11 +60,12 @@ const achs: Ach[] = [
 >
   <CardHeader class="pb-2">
     <CardTitle class="flex items-center gap-2 text-base">
-      <TrophyIcon class="w-5 h-5" /> Badges
+      <TrophyIcon class="w-5 h-5" />
+      {m.badges_card_title()}
     </CardTitle>
   </CardHeader>
   <CardContent class="flex-1 flex flex-col justify-center gap-3">
-    {#each achs as {icon: Icon, description, label, id} (id)}
+    {#each achs as { icon: Icon, description, label, id } (id)}
       <div class="flex items-center gap-3">
         <div
           class={`p-2 rounded-full bg-muted/40 text-muted-foreground/30 ${oachs[id] && "bg-primary/10 text-primary"}`}

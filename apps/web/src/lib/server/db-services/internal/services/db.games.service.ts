@@ -12,17 +12,16 @@ import {
 import { and, count, DrizzleQueryError, eq, inArray, sql } from "drizzle-orm";
 import type { DatabaseError } from "pg";
 import {
-  type CreateGameInput,
   DBCreateChatChannelError,
   DBDeleteChatChannelError,
   DBGameNotFoundError,
   DBPlayersNotFoundError,
   DBRemoveSpectatorError,
   DBUserNotFoundError,
-  type EndGameInput,
-  type Game,
   UnknownError,
-} from "$lib/server/db-services";
+} from "../db.errors";
+import type { CreateGameInput, EndGameInput } from "../schema/db.games.schema";
+import type { Game } from "../schema/db.schema";
 
 /**
  * Creates a new game in the database.
