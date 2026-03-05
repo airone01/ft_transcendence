@@ -26,7 +26,7 @@ let statusColorClass = $derived(
       : "bg-muted-foreground",
 );
 
-let resolveStatus = (status: string) => {
+const resolveStatus = (status: string) => {
   switch (status) {
     case "online":
       return m.online();
