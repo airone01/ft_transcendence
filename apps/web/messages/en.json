@@ -168,9 +168,21 @@
   "game_page_button_draw": "[i18n] Offer Draw",
   "game_page_button_resign": "[i18n] Resign",
   "game_page_button_leave": "[i18n] Back to lobby",
+  "game_page_button_leave_spectator": "[i18n] Leave spectator mode",
 
   "game_page_move_history_title": "[i18n] Move History",
   "game_page_move_history_empty": "[i18n] No moves yet",
+
+  "game_page_spectator_title": "[i18n] Spectator mode",
+  "game_page_spectator_description": "[i18n] You are now spectating this game.",
+  "game_page_spectator_info": "[i18n] Watch only",
+
+  "game_page_reason_checkmate": "[i18n] By Checkmate",
+  "game_page_reason_stalemate": "[i18n] By Stalemate",
+  "game_page_reason_draw": "[i18n] By Draw",
+  "game_page_reason_timeout": "[i18n] By Time out",
+  "game_page_reason_agreement": "[i18n] By Agreement",
+  "game_page_reason_resignation": "[i18n] By Resignation",
 
   "game_page_popup_draw_offer_title": "[i18n] Draw offer",
   "game_page_popup_draw_offer_description": "[i18n] Do you want to accept this draw offer?",
@@ -181,6 +193,13 @@
   "game_page_popup_resign_description": "[i18n] Do you want to resign?",
   "game_page_popup_resign_button_accept": "[i18n] Resign",
   "game_page_popup_resign_button_decline": "[i18n] close",
+
+  "game_page_popup_gameover_title_victory": "[i18n] Victory!",
+  "game_page_popup_gameover_title_draw": "[i18n] Draw",
+  "game_page_popup_gameover_title_defeat": "[i18n] Defeat",
+  "game_page_popup_gameover_title_spectator": "[i18n] Game Over",
+  "game_page_popup_gameover_description_winner": "[i18n] {winner} wins!",
+  "game_page_popup_gameover_description_draw": "[i18n] Game drawn!",
 
   "game_page_white": "[i18n] White",
   "game_page_black": "[i18n] Black",

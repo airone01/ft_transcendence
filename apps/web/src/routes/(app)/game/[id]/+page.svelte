@@ -1,59 +1,82 @@
 <script lang="ts">
-import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
-import { Button } from "@transc/ui/button";
-import * as Dialog from "@transc/ui/dialog";
-import { Separator } from "@transc/ui/separator";
-import { page } from "$app/state";
-import { m } from "$lib/paraglide/messages";
-import {
-  acceptDraw,
-  gameState,
-  isMyTurn,
-  leaveGame,
-  type MoveRecord,
-  offerDraw,
-  resign,
-} from "$lib/stores/game.store";
-import { socketConnected } from "$lib/stores/socket.svelte";
-import Board from "../../play/board.svelte";
+  import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
+  import { Button } from "@transc/ui/button";
+  import * as Dialog from "@transc/ui/dialog";
+  import { Separator } from "@transc/ui/separator";
+  import { page } from "$app/state";
+  import { m } from "$lib/paraglide/messages";
+  import {
+    acceptDraw,
+    gameState,
+    isMyTurn,
+    leaveGame,
+    type MoveRecord,
+    offerDraw,
+    resign,
+  } from "$lib/stores/game.store";
+  import { socketConnected } from "$lib/stores/socket.svelte";
+  import Board from "../../play/board.svelte";
 
-let gameId: string = page.params.id ?? "0";
+  let gameId: string = page.params.id ?? "0";
 
-let resignDialogOpen = $state(false);
+  let resignDialogOpen = $state(false);
 
-function confirmResign() {
-  resignDialogOpen = false;
-  resign();
-}
-
-function handleOfferDraw() {
-  if ($gameState.gameOver) return;
-  offerDraw();
-}
-
-function formatTime(ms: number): string {
-  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-}
-
-const whiteTime = $derived(formatTime($gameState.whiteTimeLeft));
-const blackTime = $derived(formatTime($gameState.blackTimeLeft));
-const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
-const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
-const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
-const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
-
-// Group moves by pairs: [[white, black?], ...]
-const movePairs = $derived(() => {
-  const pairs: [MoveRecord, MoveRecord | null][] = [];
-  const moves = $gameState.moves;
-  for (let i = 0; i < moves.length; i += 2) {
-    pairs.push([moves[i], moves[i + 1] ?? null]);
+  function confirmResign() {
+    resignDialogOpen = false;
+    resign();
   }
-  return pairs;
-});
+
+  function handleOfferDraw() {
+    if ($gameState.gameOver) return;
+    offerDraw();
+  }
+
+  function formatTime(ms: number): string {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  const whiteTime = $derived(formatTime($gameState.whiteTimeLeft));
+  const blackTime = $derived(formatTime($gameState.blackTimeLeft));
+  const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
+  const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
+  const whiteIsActive = $derived(
+    $gameState.turn === "w" && !$gameState.gameOver,
+  );
+  const blackIsActive = $derived(
+    $gameState.turn === "b" && !$gameState.gameOver,
+  );
+
+  // Group moves by pairs: [[white, black?], ...]
+  const movePairs = $derived(() => {
+    const pairs: [MoveRecord, MoveRecord | null][] = [];
+    const moves = $gameState.moves;
+    for (let i = 0; i < moves.length; i += 2) {
+      pairs.push([moves[i], moves[i + 1] ?? null]);
+    }
+    return pairs;
+  });
+
+  const resolveGameReason = (reason: string) => {
+    switch (reason) {
+      case "checkmate":
+        return m.game_page_reason_checkmate();
+      case "stalemate":
+        return m.game_page_reason_stalemate();
+      case "draw":
+        return m.game_page_reason_draw();
+      case "timeout":
+        return m.game_page_reason_timeout();
+      case "agreement":
+        return m.game_page_reason_agreement();
+      case "resignation":
+        return m.game_page_reason_resignation();
+      default:
+        return "";
+    }
+  };
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
@@ -123,13 +146,14 @@ const movePairs = $derived(() => {
           >
             <p class="font-semibold">{m.game_page_status_game_over()}</p>
             {#if $gameState.winner}
-              <p>{m.game_page_status_winner({winner: $gameState.winner})}</p>
+              <p>{m.game_page_status_winner({ winner: $gameState.winner })}</p>
             {:else}
               <p>{m.game_page_status_draw()}</p>
             {/if}
             {#if $gameState.reason}
-              <!-- TODO: i18n -->
-              <p class="text-xs opacity-75">{$gameState.reason}</p>
+              <p class="text-xs opacity-75">
+                {resolveGameReason($gameState.reason)}
+              </p>
             {/if}
           </div>
         {/if}
@@ -138,11 +162,17 @@ const movePairs = $derived(() => {
       <!-- My color -->
       {#if $gameState.isSpectator}
         <div class="mt-4 space-y-1">
-          <span class="text-sm text-muted-foreground">Mode</span>
+          <span class="text-sm text-muted-foreground"
+            >{m.game_page_spectator_title()}</span
+          >
           <div class="flex items-center gap-2">
-            <span class="font-medium text-sm">Spectator</span>
+            <span class="font-medium text-sm"
+              >{m.game_page_spectator_description()}</span
+            >
           </div>
-          <span class="text-xs text-muted-foreground">Watch only</span>
+          <span class="text-xs text-muted-foreground"
+            >{m.game_page_spectator_info()}</span
+          >
         </div>
       {:else if $gameState.myColor}
         <!-- Code joueur existant -->
@@ -176,11 +206,11 @@ const movePairs = $derived(() => {
             variant="outline"
             class="w-full"
             onclick={() => {
-            leaveGame();
-            window.history.back();
-          }}
+              leaveGame();
+              window.history.back();
+            }}
           >
-            Leave spectator mode
+            {m.game_page_button_leave_spectator()}
           </Button>
         {:else if !$gameState.gameOver}
           <!-- Code joueur existant - inchangé -->
@@ -220,26 +250,30 @@ const movePairs = $derived(() => {
         <div class="flex items-center gap-2">
           {#if !$socketConnected}
             <span class="text-xs text-destructive font-medium"
-              >Disconnected</span
+              >{m.game_page_disconnected()}</span
             >
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
-              Game over —
+              {m.game_page_status_game_over()} —
               {#if $gameState.winner}
-                Winner: {$gameState.winner}
+                {m.game_page_status_winner({ winner: $gameState.winner })}
               {:else}
-                Draw
+                {m.game_page_status_draw()}
               {/if}
             </span>
           {:else if $gameState.check && !$gameState.isCheckmate}
             <span
               class="text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/15 px-2 py-1 rounded-md"
-              >Check!</span
+              >{m.game_page_status_check()}</span
             >
           {:else if $isMyTurn}
-            <span class="text-xs text-primary font-medium">Your turn</span>
+            <span class="text-xs text-primary font-medium"
+              >{m.game_page_turn_user()}</span
+            >
           {:else}
-            <span class="text-xs text-muted-foreground">Opponent's turn</span>
+            <span class="text-xs text-muted-foreground"
+              >{m.game_page_turn_opponent()}</span
+            >
           {/if}
           {#if $gameState.myColor}
             <div
@@ -261,7 +295,9 @@ const movePairs = $derived(() => {
           <div class="flex gap-2">
             <Button size="sm" variant="outline" onclick={handleOfferDraw}>
               <HandshakeIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1">Draw</span>
+              <span class="hidden sm:inline ml-1"
+                >{m.game_page_button_draw()}</span
+              >
             </Button>
             <Button
               size="sm"
@@ -270,7 +306,9 @@ const movePairs = $derived(() => {
               onclick={() => (resignDialogOpen = true)}
             >
               <FlagIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1">Resign</span>
+              <span class="hidden sm:inline ml-1"
+                >{m.game_page_button_resign()}</span
+              >
             </Button>
           </div>
         {:else}
@@ -279,7 +317,7 @@ const movePairs = $derived(() => {
             variant="outline"
             onclick={() => window.history.back()}
           >
-            Back to lobby
+            {m.game_page_button_leave()}
           </Button>
         {/if}
       </div>
@@ -294,7 +332,9 @@ const movePairs = $derived(() => {
       class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
     >
       <!-- Header — only on desktop -->
-      <h2 class="hidden md:block text-lg font-semibold mb-4">Move history</h2>
+      <h2 class="hidden md:block text-lg font-semibold mb-4">
+        {m.game_page_move_history_title()}
+      </h2>
 
       <!-- Timers — always visible, at top on mobile -->
       <div class="grid grid-cols-2 gap-2 md:order-last md:mt-4">
@@ -312,8 +352,7 @@ const movePairs = $derived(() => {
             <span
               class="text-sm font-mono font-semibold {whiteIsLow
                 ? 'text-red-400'
-                : ''}"
-              >{whiteTime}</span
+                : ''}">{whiteTime}</span
             >
           </div>
         </div>
@@ -331,8 +370,7 @@ const movePairs = $derived(() => {
             <span
               class="text-sm font-mono font-semibold {blackIsLow
                 ? 'text-red-400'
-                : ''}"
-              >{blackTime}</span
+                : ''}">{blackTime}</span
             >
           </div>
         </div>
@@ -341,12 +379,14 @@ const movePairs = $derived(() => {
       <!-- Move history — collapsible on mobile, always shown on desktop -->
       <details class="mt-3 md:hidden" open>
         <summary class="text-sm font-semibold cursor-pointer select-none py-1">
-          Move history
+          {m.game_page_move_history_title()}
         </summary>
         <div class="max-h-40 overflow-y-auto rounded-lg bg-muted/50 mt-2">
           {#if movePairs().length === 0}
             <div class="flex items-center justify-center py-4">
-              <span class="text-sm text-muted-foreground">No moves yet</span>
+              <span class="text-sm text-muted-foreground"
+                >{m.game_page_move_history_empty()}</span
+              >
             </div>
           {:else}
             <div class="p-2 space-y-0.5">
@@ -358,12 +398,14 @@ const movePairs = $derived(() => {
                     >{i + 1}.</span
                   >
                   <span class="font-mono"
-                    >{white.from}-{white.to} {white.promotion ?? ""}
+                    >{white.from}-{white.to}
+                    {white.promotion ?? ""}
                     {white.checkmate ? "#" : white.check ? "+" : ""}</span
                   >
                   {#if black}
                     <span class="font-mono"
-                      >{black.from}-{black.to} {black.promotion ?? ""}
+                      >{black.from}-{black.to}
+                      {black.promotion ?? ""}
                       {black.checkmate ? "#" : black.check ? "+" : ""}</span
                     >
                   {:else}
@@ -382,7 +424,9 @@ const movePairs = $derived(() => {
       >
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center w-full">
-            <span class="text-sm text-muted-foreground">No moves yet</span>
+            <span class="text-sm text-muted-foreground"
+              >{m.game_page_move_history_empty()}</span
+            >
           </div>
         {:else}
           <div class="p-2 space-y-0.5 w-full">
@@ -396,21 +440,13 @@ const movePairs = $derived(() => {
                 <span class="font-mono"
                   >{white.from}-{white.to}
                   {white.promotion ?? ""}
-                  {white.checkmate
-                    ? "#"
-                    : white.check
-                      ? "+"
-                      : ""}</span
+                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
                 >
                 {#if black}
                   <span class="font-mono"
                     >{black.from}-{black.to}
                     {black.promotion ?? ""}
-                    {black.checkmate
-                      ? "#"
-                      : black.check
-                        ? "+"
-                        : ""}</span
+                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
                   >
                 {:else}
                   <span></span>
@@ -435,7 +471,8 @@ const movePairs = $derived(() => {
       <Dialog.Footer>
         <Button
           variant="outline"
-          onclick={() => gameState.update((s) => ({ ...s, drawOffered: false }))}
+          onclick={() =>
+            gameState.update((s) => ({ ...s, drawOffered: false }))}
         >
           {m.game_page_popup_draw_offer_button_decline()}
         </Button>
@@ -480,31 +517,31 @@ const movePairs = $derived(() => {
         <Dialog.Title class="text-2xl text-center">
           {#if $gameState.winner}
             {#if $gameState.winner === $gameState.myColor}
-              Victory!
+              {m.game_page_popup_gameover_title_victory()}
             {:else if $gameState.isSpectator}
-              Game Over
+              {m.game_page_popup_gameover_title_spectator()}
             {:else}
-              Defeat
+              {m.game_page_popup_gameover_title_defeat()}
             {/if}
           {:else}
-            Draw
+            {m.game_page_popup_gameover_title_draw()}
           {/if}
         </Dialog.Title>
         <Dialog.Description class="text-center space-y-2">
           {#if $gameState.winner}
             <p class="text-lg font-semibold">
-              {$gameState.winnerName || $gameState.winner} wins!
+              {m.game_page_popup_gameover_description_winner({
+                winner: $gameState.winnerName || $gameState.winner,
+              })}
             </p>
           {:else}
-            <p class="text-lg font-semibold">Game drawn</p>
+            <p class="text-lg font-semibold">
+              {m.game_page_popup_gameover_description_draw()}
+            </p>
           {/if}
           {#if $gameState.reason}
             <p class="text-sm text-muted-foreground capitalize">
-              {$gameState.reason === "timeout" ? "by timeout" : 
-                   $gameState.reason === "checkmate" ? "by checkmate" :
-                   $gameState.reason === "resignation" ? "by resignation" :
-                   $gameState.reason === "agreement" ? "by agreement" :
-                   $gameState.reason}
+              {resolveGameReason($gameState.reason)}
             </p>
           {/if}
         </Dialog.Description>
@@ -515,7 +552,7 @@ const movePairs = $derived(() => {
           class="flex-1"
           onclick={() => window.history.back()}
         >
-          Back to lobby
+          {m.game_page_button_leave()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>
