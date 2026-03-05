@@ -5,6 +5,7 @@ import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
 import { dbGetUserByEmail } from "$lib/server/db-services";
 import type { Actions } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -36,7 +37,7 @@ export const actions = {
       )
         return message(
           form,
-          "Invalid email or password, or an associated account uses OAuth." /* i18n */,
+           m.login_action_default_fail(),
           { status: 400 },
         );
 
@@ -48,7 +49,7 @@ export const actions = {
         expiresAt,
       );
     } catch (_err) {
-      return message(form, "Internal server error" /* i18n */, { status: 500 });
+      return message(form, m.internal_server_error(), { status: 500 });
     }
 
     throw redirect(302, "/");

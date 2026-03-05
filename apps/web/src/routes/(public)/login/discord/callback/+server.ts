@@ -8,6 +8,7 @@ import {
   dbGetUserByOauthId,
 } from "$lib/server/db-services";
 import type { RequestEvent } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 // helper interface for discord response typing
 interface DiscordUser {
@@ -26,7 +27,7 @@ export const GET = async (event: RequestEvent) => {
 
   // validate state
   if (!code || !state || !storedState || state !== storedState) {
-    throw error(400, "Invalid state or code" /* i18n */);
+    throw error(400, m.oauth_invalid_state_or_code());
   }
 
   try {
@@ -43,15 +44,14 @@ export const GET = async (event: RequestEvent) => {
     });
 
     if (!tokenResponse.ok)
-      throw error(400, "Failed to get access token" /* i18n */);
+      throw error(400, m.oauth_failed_to_get_access_token());
     const tokens = await tokenResponse.json();
 
     const userResponse = await fetch("https://discord.com/api/users/@me", {
       headers: { Authorization: `Bearer ${tokens.access_token}` },
     });
 
-    if (!userResponse.ok)
-      throw error(400, "Failed to fetch user data" /* i18n */);
+    if (!userResponse.ok) throw error(400, m.oauth_failed_to_fetch_user());
     const discordUser: DiscordUser = await userResponse.json();
 
     // check if this discord ID is already linked
@@ -66,10 +66,7 @@ export const GET = async (event: RequestEvent) => {
         } else {
           // linked to a different user
           // TODO: maybe show an error on the settings page
-          throw error(
-            400,
-            "This Discord account is already connected to another user." /* i18n */,
-          );
+          throw error(400, m.oauth_discord_other_account_connected());
         }
       }
 
@@ -117,8 +114,8 @@ export const GET = async (event: RequestEvent) => {
     const { token, expiresAt } = await auth.createSession(userId);
     setSessionTokenCookie(event, token, expiresAt);
   } catch (e) {
-    console.error("OAuth Error:" /* i18n */, e);
-    return error(500, "Authentication failed" /* i18n */);
+    console.error(m.oauth_error(), e);
+    return error(500, m.oauth_internal_error());
   }
 
   throw redirect(302, "/");
