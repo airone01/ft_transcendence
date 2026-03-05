@@ -28,15 +28,15 @@ function handleCancelQueue() {
   }
 }
 
-let resolveModeTranslation = (mode: string | null) => {
+const resolveModeTranslation = (mode: string | null) => {
   if (!mode) return "";
   switch (mode) {
     case "blitz":
       return m.play_page_mode_blitz();
     case "rapid":
       return m.play_page_mode_rapid();
-    default:
-      return mode;
+    case "casual":
+      return m.play_page_mode_casual();
   }
 };
 </script>
