@@ -1,82 +1,78 @@
 <script lang="ts">
-  import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
-  import { Button } from "@transc/ui/button";
-  import * as Dialog from "@transc/ui/dialog";
-  import { Separator } from "@transc/ui/separator";
-  import { page } from "$app/state";
-  import { m } from "$lib/paraglide/messages";
-  import {
-    acceptDraw,
-    gameState,
-    isMyTurn,
-    leaveGame,
-    type MoveRecord,
-    offerDraw,
-    resign,
-  } from "$lib/stores/game.store";
-  import { socketConnected } from "$lib/stores/socket.svelte";
-  import Board from "../../play/board.svelte";
+import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import * as Dialog from "@transc/ui/dialog";
+import { Separator } from "@transc/ui/separator";
+import { page } from "$app/state";
+import { m } from "$lib/paraglide/messages";
+import {
+  acceptDraw,
+  gameState,
+  isMyTurn,
+  leaveGame,
+  type MoveRecord,
+  offerDraw,
+  resign,
+} from "$lib/stores/game.store";
+import { socketConnected } from "$lib/stores/socket.svelte";
+import Board from "../../play/board.svelte";
 
-  let gameId: string = page.params.id ?? "0";
+let gameId: string = page.params.id ?? "0";
 
-  let resignDialogOpen = $state(false);
+let resignDialogOpen = $state(false);
 
-  function confirmResign() {
-    resignDialogOpen = false;
-    resign();
+function confirmResign() {
+  resignDialogOpen = false;
+  resign();
+}
+
+function handleOfferDraw() {
+  if ($gameState.gameOver) return;
+  offerDraw();
+}
+
+function formatTime(ms: number): string {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+const whiteTime = $derived(formatTime($gameState.whiteTimeLeft));
+const blackTime = $derived(formatTime($gameState.blackTimeLeft));
+const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
+const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
+const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
+const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
+
+// Group moves by pairs: [[white, black?], ...]
+const movePairs = $derived(() => {
+  const pairs: [MoveRecord, MoveRecord | null][] = [];
+  const moves = $gameState.moves;
+  for (let i = 0; i < moves.length; i += 2) {
+    pairs.push([moves[i], moves[i + 1] ?? null]);
   }
+  return pairs;
+});
 
-  function handleOfferDraw() {
-    if ($gameState.gameOver) return;
-    offerDraw();
+const resolveGameReason = (reason: string) => {
+  switch (reason) {
+    case "checkmate":
+      return m.game_page_reason_checkmate();
+    case "stalemate":
+      return m.game_page_reason_stalemate();
+    case "draw":
+      return m.game_page_reason_draw();
+    case "timeout":
+      return m.game_page_reason_timeout();
+    case "agreement":
+      return m.game_page_reason_agreement();
+    case "resignation":
+      return m.game_page_reason_resignation();
+    default:
+      return "";
   }
-
-  function formatTime(ms: number): string {
-    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${String(seconds).padStart(2, "0")}`;
-  }
-
-  const whiteTime = $derived(formatTime($gameState.whiteTimeLeft));
-  const blackTime = $derived(formatTime($gameState.blackTimeLeft));
-  const whiteIsLow = $derived($gameState.whiteTimeLeft < 30_000);
-  const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
-  const whiteIsActive = $derived(
-    $gameState.turn === "w" && !$gameState.gameOver,
-  );
-  const blackIsActive = $derived(
-    $gameState.turn === "b" && !$gameState.gameOver,
-  );
-
-  // Group moves by pairs: [[white, black?], ...]
-  const movePairs = $derived(() => {
-    const pairs: [MoveRecord, MoveRecord | null][] = [];
-    const moves = $gameState.moves;
-    for (let i = 0; i < moves.length; i += 2) {
-      pairs.push([moves[i], moves[i + 1] ?? null]);
-    }
-    return pairs;
-  });
-
-  const resolveGameReason = (reason: string) => {
-    switch (reason) {
-      case "checkmate":
-        return m.game_page_reason_checkmate();
-      case "stalemate":
-        return m.game_page_reason_stalemate();
-      case "draw":
-        return m.game_page_reason_draw();
-      case "timeout":
-        return m.game_page_reason_timeout();
-      case "agreement":
-        return m.game_page_reason_agreement();
-      case "resignation":
-        return m.game_page_reason_resignation();
-      default:
-        return "";
-    }
-  };
+};
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
@@ -352,7 +348,8 @@
             <span
               class="text-sm font-mono font-semibold {whiteIsLow
                 ? 'text-red-400'
-                : ''}">{whiteTime}</span
+                : ''}"
+              >{whiteTime}</span
             >
           </div>
         </div>
@@ -370,7 +367,8 @@
             <span
               class="text-sm font-mono font-semibold {blackIsLow
                 ? 'text-red-400'
-                : ''}">{blackTime}</span
+                : ''}"
+              >{blackTime}</span
             >
           </div>
         </div>
