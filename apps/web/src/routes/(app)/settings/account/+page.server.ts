@@ -11,6 +11,7 @@ import {
   type OAuthProvider,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
@@ -40,16 +41,20 @@ export const actions: Actions = {
 
       if (user.password) {
         if (!form.data.oldPassword) {
-          return message(form, "Current password is required" /* i18n */, {
-            status: 400,
-          });
+          return message(
+            form,
+            m.settings_page_account_action_updatepassword_password_required(),
+            {
+              status: 400,
+            },
+          );
         }
         const valid = await verifyPassword(
           user.password,
           form.data.oldPassword,
         );
         if (!valid) {
-          return message(form, "Incorrect current password" /* i18n */, {
+          return message(form,  m.settings_page_account_action_updatepassword_password_invalid(), {
             status: 400,
           });
         }
@@ -59,10 +64,10 @@ export const actions: Actions = {
 
       await dbUpdateUser(locals.user.id, { password: newHash });
 
-      return message(form, "Password updated successfully" /* i18n */);
+      return message(form, m.settings_page_account_action_updatepassword_success());
     } catch (e) {
       console.error(e);
-      return message(form, "Failed to update password" /* i18n */, {
+      return message(form, m.settings_page_account_action_updatepassword_fail(), {
         status: 500,
       });
     }
@@ -75,7 +80,7 @@ export const actions: Actions = {
     const provider = formData.get("provider") as OAuthProvider;
 
     if (!provider)
-      return fail(400, { message: "Provider required" /* i18n */ });
+      return fail(400, { message: m.settings_page_account_action_unlink_no_provider() });
 
     try {
       const user = await dbGetUser(locals.user.id);
@@ -87,7 +92,7 @@ export const actions: Actions = {
       if (!hasPassword && providers.length <= 1) {
         return fail(400, {
           message:
-            "You must set a password before disconnecting your last login method." /* i18n */,
+            m.settings_page_account_action_unlink_password_required(),
         });
       }
 
@@ -95,7 +100,7 @@ export const actions: Actions = {
       return { success: true };
     } catch (e) {
       console.error(e);
-      return fail(500, { message: "Could not unlink account" /* i18n */ });
+      return fail(500, { message: m.settings_page_account_action_unlink_fail() });
     }
   },
 };

@@ -204,6 +204,14 @@
   "settings_page_account_not_connected": "[i18n] Not Connected",
   "settings_page_account_button_connect": "[i18n] Connect",
   "settings_page_account_button_disconnect": "[i18n] Disconnect",
+  "settings_page_account_action_updatepassword_password_required": "Current password is required.",
+  "settings_page_account_action_updatepassword_password_invalid": "Incorrect current password.",
+  "settings_page_account_action_updatepassword_success": "Password updated successfully.",
+  "settings_page_account_action_updatepassword_fail": "Failed to update password.",
+  "settings_page_account_action_unlink_no_provider": "Provider required.",
+  "settings_page_account_action_unlink_password_required": "You must set a password before disconnecting your last login method.",
+  "settings_page_account_action_unlink_fail": "Could not unlink account.",
+
 
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
