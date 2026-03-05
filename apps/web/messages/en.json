@@ -138,6 +138,19 @@
   "win_ratio_card_draws": "[i18n] D",
   "win_ratio_card_losses": "[i18n] L",
 
+  "play_page_connecting": "[i18n] Connecting to server...",
+  "play_page_inqueue_title": "[i18n] Looking for an opponent...",
+  "play_page_inqueue_mode": "[i18n] Mode",
+  "play_page_inqueue_position_title": "[i18n] Queue position:",
+  "play_page_inqueue_button_cancel": "[i18n] Cancel",
+
+  "play_page_gameselect_title": "[i18n] Play a game",
+  "play_page_gameselect_description": "[i18n] Choose your game mode",
+  "play_page_mode_blitz": "[i18n] Blitz",
+  "play_page_mode_rapid": "[i18n] Rapid",
+  "play_page_mode_casual": "[i18n] Casual",
+  "play_page_minutes_and_increment": "[i18n] {minutes}min + {increment}sec/move",
+
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
   "settings_page_button_saving": "[i18n] Saving...",
