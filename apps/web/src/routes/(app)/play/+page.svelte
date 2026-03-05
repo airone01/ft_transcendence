@@ -28,8 +28,7 @@ function handleCancelQueue() {
   }
 }
 
-let resolveModeTranslation = (mode: string | null) =>
-{
+let resolveModeTranslation = (mode: string | null) => {
   if (!mode) return "";
   switch (mode) {
     case "blitz":
@@ -39,8 +38,7 @@ let resolveModeTranslation = (mode: string | null) =>
     default:
       return mode;
   }
-}
-
+};
 </script>
 
 <main class="h-full flex items-center justify-center p-6">

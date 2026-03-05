@@ -2,10 +2,10 @@ import { fail, redirect } from "@sveltejs/kit";
 import sharp from "sharp";
 import { superValidate, withFiles } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
 import { profileFormSchema } from "$lib/schemas/settings";
 import { dbUpdateUser } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");

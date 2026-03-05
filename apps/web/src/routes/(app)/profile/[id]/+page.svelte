@@ -39,7 +39,7 @@ const resolveUserStatusTranslation = (userId: number) => {
     case "ingame":
       return m.ingame();
   }
-}
+};
 
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {

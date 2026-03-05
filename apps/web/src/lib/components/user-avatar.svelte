@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
+import { m } from "$lib/paraglide/messages";
 import { onlineUsersStore } from "$lib/stores/presence.store";
-  import { m } from "$lib/paraglide/messages";
 
 let {
   userId,
@@ -35,7 +35,7 @@ let resolveStatus = (status: string) => {
     case "ingame":
       return m.ingame();
   }
-}
+};
 </script>
 
 <div class="relative inline-flex shrink-0 align-middle">

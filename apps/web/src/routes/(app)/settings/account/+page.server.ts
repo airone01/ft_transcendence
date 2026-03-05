@@ -1,6 +1,7 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
 import { accountSettingsSchema } from "$lib/schemas/settings";
 import { hashPassword, verifyPassword } from "$lib/server/auth";
 import {
@@ -11,7 +12,6 @@ import {
   type OAuthProvider,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
@@ -54,9 +54,13 @@ export const actions: Actions = {
           form.data.oldPassword,
         );
         if (!valid) {
-          return message(form,  m.settings_page_account_action_updatepassword_password_invalid(), {
-            status: 400,
-          });
+          return message(
+            form,
+            m.settings_page_account_action_updatepassword_password_invalid(),
+            {
+              status: 400,
+            },
+          );
         }
       }
 
@@ -64,12 +68,19 @@ export const actions: Actions = {
 
       await dbUpdateUser(locals.user.id, { password: newHash });
 
-      return message(form, m.settings_page_account_action_updatepassword_success());
+      return message(
+        form,
+        m.settings_page_account_action_updatepassword_success(),
+      );
     } catch (e) {
       console.error(e);
-      return message(form, m.settings_page_account_action_updatepassword_fail(), {
-        status: 500,
-      });
+      return message(
+        form,
+        m.settings_page_account_action_updatepassword_fail(),
+        {
+          status: 500,
+        },
+      );
     }
   },
 
@@ -80,7 +91,9 @@ export const actions: Actions = {
     const provider = formData.get("provider") as OAuthProvider;
 
     if (!provider)
-      return fail(400, { message: m.settings_page_account_action_unlink_no_provider() });
+      return fail(400, {
+        message: m.settings_page_account_action_unlink_no_provider(),
+      });
 
     try {
       const user = await dbGetUser(locals.user.id);
@@ -91,8 +104,7 @@ export const actions: Actions = {
       // (user has no password and only 1 connected provider)
       if (!hasPassword && providers.length <= 1) {
         return fail(400, {
-          message:
-            m.settings_page_account_action_unlink_password_required(),
+          message: m.settings_page_account_action_unlink_password_required(),
         });
       }
 
@@ -100,7 +112,9 @@ export const actions: Actions = {
       return { success: true };
     } catch (e) {
       console.error(e);
-      return fail(500, { message: m.settings_page_account_action_unlink_fail() });
+      return fail(500, {
+        message: m.settings_page_account_action_unlink_fail(),
+      });
     }
   },
 };

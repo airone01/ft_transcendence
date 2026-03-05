@@ -212,7 +212,6 @@
   "settings_page_account_action_unlink_password_required": "You must set a password before disconnecting your last login method.",
   "settings_page_account_action_unlink_fail": "Could not unlink account.",
 
-
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
   "settings_page_account_label_no_password_desc": "You haven't set a password yet. Set one to log in with email/password.",
