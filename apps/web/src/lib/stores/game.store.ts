@@ -63,6 +63,30 @@ export const gameState: Writable<GameState> = writable({
   isSpectator: false,
 });
 
+if (typeof window !== "undefined") {
+  const saved = localStorage.getItem("gameState");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.gameId && !parsed.gameOver && !parsed.isSpectator) {
+        gameState.set(parsed);
+        console.log(
+          "[GameStore] Restored game state from localStorage:",
+          parsed.gameId,
+        );
+      }
+    } catch (_e) {
+      console.error("[GameStore] Failed to parse saved game state");
+    }
+  }
+}
+
+gameState.subscribe((state) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("gameState", JSON.stringify(state));
+  }
+});
+
 export const isMyTurn = derived(gameState, ($state) => {
   if (!$state.myColor) return false;
   return (

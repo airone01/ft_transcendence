@@ -155,6 +155,14 @@ export function registerGameHandlers(io: Server, socket: Socket) {
             winner: result.winner,
             reason: result.reason,
           });
+
+          const sockets = await io.in(`game:${gameId}`).fetchSockets();
+          for (const s of sockets) {
+            if (!s.data.isSpectator) {
+              s.data.currentGameId = null;
+            }
+          }
+
           activeGames.delete(gameId);
         }
       } catch (error) {
@@ -188,6 +196,14 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         winner: null,
         reason: "agreement",
       });
+
+      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+      for (const s of sockets) {
+        if (!s.data.isSpectator) {
+          s.data.currentGameId = null;
+        }
+      }
+
       activeGames.delete(data.gameId);
     }
   });
@@ -205,6 +221,14 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         winner,
         reason: "resignation",
       });
+
+      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+      for (const s of sockets) {
+        if (!s.data.isSpectator) {
+          s.data.currentGameId = null;
+        }
+      }
+
       activeGames.delete(data.gameId);
     }
   });

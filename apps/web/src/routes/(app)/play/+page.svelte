@@ -14,7 +14,7 @@ import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
   return gameState.subscribe((state) => {
-    if (state.gameId && !state.gameOver) {
+    if (state.gameId && !state.gameOver && !state.isSpectator) {
       goto(`/game/${state.gameId}`);
     }
   });
