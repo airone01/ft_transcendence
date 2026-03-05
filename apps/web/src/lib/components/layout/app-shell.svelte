@@ -141,7 +141,10 @@ const commandGroups: ShellGroup[] = [
 </CommandDialog>
 
 <SidebarProvider bind:open={sidebarOpen}>
-  <AppSidebar {logoutForm} collapsible={isMobile.current ? "offcanvas" : "icon"} />
+  <AppSidebar
+    {logoutForm}
+    collapsible={isMobile.current ? "offcanvas" : "icon"}
+  />
   <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
     <header
       class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"

@@ -55,8 +55,9 @@ const movePairs = $derived(() => {
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
-  <div class="w-full max-w-[1424px] flex flex-col lg:flex-row items-stretch gap-3 lg:gap-6">
-
+  <div
+    class="w-full max-w-[1424px] flex flex-col lg:flex-row items-stretch gap-3 lg:gap-6"
+  >
     <!-- Left Panel: Game Info — hidden on mobile/tablet, shown on desktop -->
     <div
       class="hidden lg:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden"
@@ -182,22 +183,38 @@ const movePairs = $derived(() => {
       <div class="flex lg:hidden items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-2">
           {#if !$socketConnected}
-            <span class="text-xs text-destructive font-medium">Disconnected</span>
+            <span class="text-xs text-destructive font-medium"
+              >Disconnected</span
+            >
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
               Game over —
-              {#if $gameState.winner}Winner: {$gameState.winner}{:else}Draw{/if}
+              {#if $gameState.winner}
+                Winner: {$gameState.winner}
+              {:else}
+                Draw
+              {/if}
             </span>
           {:else if $gameState.check && !$gameState.isCheckmate}
-            <span class="text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/15 px-2 py-1 rounded-md">Check!</span>
+            <span
+              class="text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/15 px-2 py-1 rounded-md"
+              >Check!</span
+            >
           {:else if $isMyTurn}
             <span class="text-xs text-primary font-medium">Your turn</span>
           {:else}
             <span class="text-xs text-muted-foreground">Opponent's turn</span>
           {/if}
           {#if $gameState.myColor}
-            <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <div class="w-2.5 h-2.5 rounded-full border {$gameState.myColor === 'white' ? 'bg-white border-zinc-300' : 'bg-zinc-800 dark:bg-zinc-300 border-transparent'}"></div>
+            <div
+              class="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <div
+                class="w-2.5 h-2.5 rounded-full border {$gameState.myColor ===
+                'white'
+                  ? 'bg-white border-zinc-300'
+                  : 'bg-zinc-800 dark:bg-zinc-300 border-transparent'}"
+              ></div>
               {$gameState.myColor === "white" ? "White" : "Black"}
             </div>
           {/if}
@@ -221,7 +238,11 @@ const movePairs = $derived(() => {
             </Button>
           </div>
         {:else}
-          <Button size="sm" variant="outline" onclick={() => window.history.back()}>
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => window.history.back()}
+          >
             Back to lobby
           </Button>
         {/if}
@@ -281,7 +302,9 @@ const movePairs = $derived(() => {
 
       <!-- Move history — collapsible on mobile, always shown on desktop -->
       <details class="mt-3 lg:hidden" open>
-        <summary class="text-sm font-semibold cursor-pointer select-none py-1">Move history</summary>
+        <summary class="text-sm font-semibold cursor-pointer select-none py-1">
+          Move history
+        </summary>
         <div class="max-h-40 overflow-y-auto rounded-lg bg-muted/50 mt-2">
           {#if movePairs().length === 0}
             <div class="flex items-center justify-center py-4">
@@ -293,10 +316,18 @@ const movePairs = $derived(() => {
                 <div
                   class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
                 >
-                  <span class="text-muted-foreground text-xs font-mono">{i + 1}.</span>
-                  <span class="font-mono">{white.from}-{white.to} {white.promotion ?? ""}{white.checkmate ? "#" : white.check ? "+" : ""}</span>
+                  <span class="text-muted-foreground text-xs font-mono"
+                    >{i + 1}.</span
+                  >
+                  <span class="font-mono"
+                    >{white.from}-{white.to} {white.promotion ?? ""}
+                    {white.checkmate ? "#" : white.check ? "+" : ""}</span
+                  >
                   {#if black}
-                    <span class="font-mono">{black.from}-{black.to} {black.promotion ?? ""}{black.checkmate ? "#" : black.check ? "+" : ""}</span>
+                    <span class="font-mono"
+                      >{black.from}-{black.to} {black.promotion ?? ""}
+                      {black.checkmate ? "#" : black.check ? "+" : ""}</span
+                    >
                   {:else}
                     <span></span>
                   {/if}
@@ -308,7 +339,9 @@ const movePairs = $derived(() => {
       </details>
 
       <!-- Move history desktop -->
-      <div class="hidden lg:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0">
+      <div
+        class="hidden lg:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
+      >
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center w-full">
             <span class="text-sm text-muted-foreground">No moves yet</span>
