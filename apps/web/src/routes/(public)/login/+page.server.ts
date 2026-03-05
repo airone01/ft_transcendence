@@ -1,6 +1,7 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
 import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
 import { dbGetUserByEmail } from "$lib/server/db-services";
@@ -34,11 +35,7 @@ export const actions = {
         !user.password ||
         !(await verifyPassword(user.password, form.data.password))
       )
-        return message(
-          form,
-          "Invalid email or password, or an associated account uses OAuth." /* i18n */,
-          { status: 400 },
-        );
+        return message(form, m.login_action_default_fail(), { status: 400 });
 
       const { token, expiresAt } = await auth.createSession(user.id);
 
@@ -48,7 +45,7 @@ export const actions = {
         expiresAt,
       );
     } catch (_err) {
-      return message(form, "Internal server error" /* i18n */, { status: 500 });
+      return message(form, m.internal_server_error(), { status: 500 });
     }
 
     throw redirect(302, "/");

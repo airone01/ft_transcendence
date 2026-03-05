@@ -1,39 +1,26 @@
 // yes, the fact that zod is on v3 is important.
 import { z } from "zod/v3";
+import * as m from "$lib/paraglide/messages";
 
 export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address." /* i18n */),
-  password: z.string().min(1, "Password is required." /* i18n */),
+  email: z.string().email(m.zod_schema_email_invalid()),
+  password: z.string().min(1, m.zod_schema_password_required()),
 });
 
 export const zUsername = z
   .string()
-  .min(3, "Username must be at least 3 characters." /* i18n */)
-  .max(20, "Username must be at most 20 characters." /* i18n */)
-  .regex(
-    /^[a-zA-Z0-9_]+$/,
-    "Only letters, numbers, and underscores allowed." /* i18n */,
-  );
-export const zEmail = z
-  .string()
-  .email("Please enter a valid email address." /* i18n */);
+  .min(3, m.zod_schema_username_min_length())
+  .max(20, m.zod_schema_username_max_length())
+  .regex(/^[a-zA-Z0-9_]+$/, m.zod_schema_username_char_allowed());
+export const zEmail = z.string().email(m.zod_schema_email_invalid());
 export const zPassword = z
   .string()
-  .min(8, "Password must be at least 8 characters." /* i18n */)
-  .max(64, "Password must be less than 64 characters." /* i18n */)
-  .regex(
-    /[A-Z]/,
-    "Password must contain at least one uppercase letter." /* i18n */,
-  )
-  .regex(
-    /[a-z]/,
-    "Password must contain at least one lowercase letter." /* i18n */,
-  )
-  .regex(/[0-9]/, "Password must contain at least one number." /* i18n */)
-  .regex(
-    /[^A-Za-z0-9]/,
-    "Password must contain at least one special character." /* i18n */,
-  );
+  .min(8, m.zod_schema_password_min_length())
+  .max(64, m.zod_schema_password_max_length())
+  .regex(/[A-Z]/, m.zod_schema_password_uppercase())
+  .regex(/[a-z]/, m.zod_schema_password_lowercase())
+  .regex(/[0-9]/, m.zod_schema_password_digit())
+  .regex(/[^A-Za-z0-9]/, m.zod_schema_password_special());
 
 export const registerSchema = z
   .object({
@@ -43,7 +30,7 @@ export const registerSchema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match" /* i18n */,
+    message: m.zod_schema_password_match(),
     path: ["confirmPassword"],
   });
 

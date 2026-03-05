@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
 import { page } from "$app/state";
+import { m } from "$lib/paraglide/messages";
 import {
   acceptDraw,
   gameState,
@@ -53,6 +54,25 @@ const movePairs = $derived(() => {
   }
   return pairs;
 });
+
+const resolveGameReason = (reason: string) => {
+  switch (reason) {
+    case "checkmate":
+      return m.game_page_reason_checkmate();
+    case "stalemate":
+      return m.game_page_reason_stalemate();
+    case "draw":
+      return m.game_page_reason_draw();
+    case "timeout":
+      return m.game_page_reason_timeout();
+    case "agreement":
+      return m.game_page_reason_agreement();
+    case "resignation":
+      return m.game_page_reason_resignation();
+    default:
+      return "";
+  }
+};
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
@@ -65,9 +85,11 @@ const movePairs = $derived(() => {
     >
       <!-- Header -->
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Current game</h2>
+        <h2 class="text-lg font-semibold">{m.game_page_title()}</h2>
         {#if !$socketConnected}
-          <span class="text-xs text-destructive">Disconnected</span>
+          <span class="text-xs text-destructive"
+            >{m.game_page_disconnected()}</span
+          >
         {/if}
       </div>
 
@@ -75,24 +97,30 @@ const movePairs = $derived(() => {
 
       <!-- Current turn -->
       <div class="space-y-1">
-        <span class="text-sm text-muted-foreground">Current turn</span>
+        <span class="text-sm text-muted-foreground"
+          >{m.game_page_turn_title()}</span
+        >
         <div class="flex items-center gap-2">
           {#if $gameState.turn === "w"}
             <div
               class="w-3 h-3 rounded-full bg-white border border-zinc-300"
             ></div>
-            <span class="font-medium text-sm">White</span>
+            <span class="font-medium text-sm">{m.game_page_white()}</span>
           {:else}
             <div
               class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"
             ></div>
-            <span class="font-medium text-sm">Black</span>
+            <span class="font-medium text-sm">{m.game_page_black()}</span>
           {/if}
         </div>
         {#if $isMyTurn}
-          <span class="text-xs text-primary font-medium">Your turn</span>
+          <span class="text-xs text-primary font-medium"
+            >{m.game_page_turn_user()}</span
+          >
         {:else if !$gameState.gameOver}
-          <span class="text-xs text-muted-foreground">Opponent's turn</span>
+          <span class="text-xs text-muted-foreground"
+            >{m.game_page_turn_opponent()}</span
+          >
         {/if}
       </div>
 
@@ -104,7 +132,7 @@ const movePairs = $derived(() => {
           <div
             class="bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs font-medium px-3 py-1.5 rounded-md"
           >
-            Check!
+            {m.game_page_status_check()}
           </div>
         {/if}
 
@@ -112,14 +140,16 @@ const movePairs = $derived(() => {
           <div
             class="bg-primary/15 text-primary text-sm font-medium px-3 py-2 rounded-md space-y-1"
           >
-            <p class="font-semibold">Game over</p>
+            <p class="font-semibold">{m.game_page_status_game_over()}</p>
             {#if $gameState.winner}
-              <p>Winner: {$gameState.winner}</p>
+              <p>{m.game_page_status_winner({ winner: $gameState.winner })}</p>
             {:else}
-              <p>Draw</p>
+              <p>{m.game_page_status_draw()}</p>
             {/if}
             {#if $gameState.reason}
-              <p class="text-xs opacity-75">{$gameState.reason}</p>
+              <p class="text-xs opacity-75">
+                {resolveGameReason($gameState.reason)}
+              </p>
             {/if}
           </div>
         {/if}
@@ -128,27 +158,35 @@ const movePairs = $derived(() => {
       <!-- My color -->
       {#if $gameState.isSpectator}
         <div class="mt-4 space-y-1">
-          <span class="text-sm text-muted-foreground">Mode</span>
+          <span class="text-sm text-muted-foreground"
+            >{m.game_page_spectator_title()}</span
+          >
           <div class="flex items-center gap-2">
-            <span class="font-medium text-sm">Spectator</span>
+            <span class="font-medium text-sm"
+              >{m.game_page_spectator_description()}</span
+            >
           </div>
-          <span class="text-xs text-muted-foreground">Watch only</span>
+          <span class="text-xs text-muted-foreground"
+            >{m.game_page_spectator_info()}</span
+          >
         </div>
       {:else if $gameState.myColor}
         <!-- Code joueur existant -->
         <div class="mt-4 space-y-1">
-          <span class="text-sm text-muted-foreground">You play</span>
+          <span class="text-sm text-muted-foreground"
+            >{m.game_page_color_title()}</span
+          >
           <div class="flex items-center gap-2">
             {#if $gameState.myColor === "white"}
               <div
                 class="w-3 h-3 rounded-full bg-white border border-zinc-300"
               ></div>
-              <span class="font-medium text-sm">White</span>
+              <span class="font-medium text-sm">{m.game_page_white()}</span>
             {:else}
               <div
                 class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"
               ></div>
-              <span class="font-medium text-sm">Black</span>
+              <span class="font-medium text-sm">{m.game_page_black()}</span>
             {/if}
           </div>
         </div>
@@ -164,11 +202,11 @@ const movePairs = $derived(() => {
             variant="outline"
             class="w-full"
             onclick={() => {
-            leaveGame();
-            window.history.back();
-          }}
+              leaveGame();
+              window.history.back();
+            }}
           >
-            Leave spectator mode
+            {m.game_page_button_leave_spectator()}
           </Button>
         {:else if !$gameState.gameOver}
           <!-- Code joueur existant - inchangé -->
@@ -178,7 +216,7 @@ const movePairs = $derived(() => {
             onclick={handleOfferDraw}
           >
             <HandshakeIcon class="w-4 h-4 mr-2" />
-            Offer draw
+            {m.game_page_button_draw()}
           </Button>
           <Button
             variant="outline"
@@ -186,7 +224,7 @@ const movePairs = $derived(() => {
             onclick={() => (resignDialogOpen = true)}
           >
             <FlagIcon class="w-4 h-4 mr-2" />
-            Resign
+            {m.game_page_button_resign()}
           </Button>
         {:else}
           <!-- Code game over existant - inchangé -->
@@ -195,7 +233,7 @@ const movePairs = $derived(() => {
             class="w-full"
             onclick={() => window.history.back()}
           >
-            Back to lobby
+            {m.game_page_button_leave()}
           </Button>
         {/if}
       </div>
@@ -208,26 +246,30 @@ const movePairs = $derived(() => {
         <div class="flex items-center gap-2">
           {#if !$socketConnected}
             <span class="text-xs text-destructive font-medium"
-              >Disconnected</span
+              >{m.game_page_disconnected()}</span
             >
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
-              Game over —
+              {m.game_page_status_game_over()} —
               {#if $gameState.winner}
-                Winner: {$gameState.winner}
+                {m.game_page_status_winner({ winner: $gameState.winner })}
               {:else}
-                Draw
+                {m.game_page_status_draw()}
               {/if}
             </span>
           {:else if $gameState.check && !$gameState.isCheckmate}
             <span
               class="text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/15 px-2 py-1 rounded-md"
-              >Check!</span
+              >{m.game_page_status_check()}</span
             >
           {:else if $isMyTurn}
-            <span class="text-xs text-primary font-medium">Your turn</span>
+            <span class="text-xs text-primary font-medium"
+              >{m.game_page_turn_user()}</span
+            >
           {:else}
-            <span class="text-xs text-muted-foreground">Opponent's turn</span>
+            <span class="text-xs text-muted-foreground"
+              >{m.game_page_turn_opponent()}</span
+            >
           {/if}
           {#if $gameState.myColor}
             <div
@@ -249,7 +291,9 @@ const movePairs = $derived(() => {
           <div class="flex gap-2">
             <Button size="sm" variant="outline" onclick={handleOfferDraw}>
               <HandshakeIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1">Draw</span>
+              <span class="hidden sm:inline ml-1"
+                >{m.game_page_button_draw()}</span
+              >
             </Button>
             <Button
               size="sm"
@@ -258,7 +302,9 @@ const movePairs = $derived(() => {
               onclick={() => (resignDialogOpen = true)}
             >
               <FlagIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1">Resign</span>
+              <span class="hidden sm:inline ml-1"
+                >{m.game_page_button_resign()}</span
+              >
             </Button>
           </div>
         {:else}
@@ -267,7 +313,7 @@ const movePairs = $derived(() => {
             variant="outline"
             onclick={() => window.history.back()}
           >
-            Back to lobby
+            {m.game_page_button_leave()}
           </Button>
         {/if}
       </div>
@@ -282,7 +328,9 @@ const movePairs = $derived(() => {
       class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
     >
       <!-- Header — only on desktop -->
-      <h2 class="hidden md:block text-lg font-semibold mb-4">Move history</h2>
+      <h2 class="hidden md:block text-lg font-semibold mb-4">
+        {m.game_page_move_history_title()}
+      </h2>
 
       <!-- Timers — always visible, at top on mobile -->
       <div class="grid grid-cols-2 gap-2 md:order-last md:mt-4">
@@ -293,7 +341,7 @@ const movePairs = $derived(() => {
         >
           <div class="flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full bg-white"></div>
-            <span class="text-xs font-medium">White</span>
+            <span class="text-xs font-medium">{m.game_page_white()}</span>
           </div>
           <div class="flex items-center gap-1 ml-auto">
             <ClockIcon class="w-3.5 h-3.5 opacity-70" />
@@ -312,7 +360,7 @@ const movePairs = $derived(() => {
         >
           <div class="flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
-            <span class="text-xs font-medium">Black</span>
+            <span class="text-xs font-medium">{m.game_page_black()}</span>
           </div>
           <div class="flex items-center gap-1 ml-auto">
             <ClockIcon class="w-3.5 h-3.5 opacity-70" />
@@ -329,12 +377,14 @@ const movePairs = $derived(() => {
       <!-- Move history — collapsible on mobile, always shown on desktop -->
       <details class="mt-3 md:hidden" open>
         <summary class="text-sm font-semibold cursor-pointer select-none py-1">
-          Move history
+          {m.game_page_move_history_title()}
         </summary>
         <div class="max-h-40 overflow-y-auto rounded-lg bg-muted/50 mt-2">
           {#if movePairs().length === 0}
             <div class="flex items-center justify-center py-4">
-              <span class="text-sm text-muted-foreground">No moves yet</span>
+              <span class="text-sm text-muted-foreground"
+                >{m.game_page_move_history_empty()}</span
+              >
             </div>
           {:else}
             <div class="p-2 space-y-0.5">
@@ -346,12 +396,14 @@ const movePairs = $derived(() => {
                     >{i + 1}.</span
                   >
                   <span class="font-mono"
-                    >{white.from}-{white.to} {white.promotion ?? ""}
+                    >{white.from}-{white.to}
+                    {white.promotion ?? ""}
                     {white.checkmate ? "#" : white.check ? "+" : ""}</span
                   >
                   {#if black}
                     <span class="font-mono"
-                      >{black.from}-{black.to} {black.promotion ?? ""}
+                      >{black.from}-{black.to}
+                      {black.promotion ?? ""}
                       {black.checkmate ? "#" : black.check ? "+" : ""}</span
                     >
                   {:else}
@@ -370,7 +422,9 @@ const movePairs = $derived(() => {
       >
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center w-full">
-            <span class="text-sm text-muted-foreground">No moves yet</span>
+            <span class="text-sm text-muted-foreground"
+              >{m.game_page_move_history_empty()}</span
+            >
           </div>
         {:else}
           <div class="p-2 space-y-0.5 w-full">
@@ -384,21 +438,13 @@ const movePairs = $derived(() => {
                 <span class="font-mono"
                   >{white.from}-{white.to}
                   {white.promotion ?? ""}
-                  {white.checkmate
-                    ? "#"
-                    : white.check
-                      ? "+"
-                      : ""}</span
+                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
                 >
                 {#if black}
                   <span class="font-mono"
                     >{black.from}-{black.to}
                     {black.promotion ?? ""}
-                    {black.checkmate
-                      ? "#"
-                      : black.check
-                        ? "+"
-                        : ""}</span
+                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
                   >
                 {:else}
                   <span></span>
@@ -415,21 +461,22 @@ const movePairs = $derived(() => {
   <Dialog.Root open={$gameState.drawOffered && !$gameState.gameOver}>
     <Dialog.Content showCloseButton={false}>
       <Dialog.Header>
-        <Dialog.Title>Draw offer</Dialog.Title>
+        <Dialog.Title>{m.game_page_popup_draw_offer_title()}</Dialog.Title>
         <Dialog.Description>
-          Your opponent is offering a draw. Do you accept?
+          {m.game_page_popup_draw_offer_description()}
         </Dialog.Description>
       </Dialog.Header>
       <Dialog.Footer>
         <Button
           variant="outline"
-          onclick={() => gameState.update((s) => ({ ...s, drawOffered: false }))}
+          onclick={() =>
+            gameState.update((s) => ({ ...s, drawOffered: false }))}
         >
-          Decline
+          {m.game_page_popup_draw_offer_button_decline()}
         </Button>
         <Button onclick={acceptDraw}>
           <HandshakeIcon class="w-4 h-4 mr-2" />
-          Accept
+          {m.game_page_popup_draw_offer_button_accept()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>
@@ -439,21 +486,23 @@ const movePairs = $derived(() => {
   <Dialog.Root bind:open={resignDialogOpen}>
     <Dialog.Content showCloseButton={false}>
       <Dialog.Header>
-        <Dialog.Title>Resign the game?</Dialog.Title>
+        <Dialog.Title>{m.game_page_popup_resign_title()}</Dialog.Title>
         <Dialog.Description>
-          Your opponent will be declared the winner. This cannot be undone.
+          {m.game_page_popup_resign_description()}
         </Dialog.Description>
       </Dialog.Header>
       <Dialog.Footer>
         <Dialog.Close>
-          <Button variant="outline" class="w-full">Cancel</Button>
+          <Button variant="outline" class="w-full">
+            {m.game_page_popup_resign_button_decline()}
+          </Button>
         </Dialog.Close>
         <Button
           class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
           onclick={confirmResign}
         >
           <FlagIcon class="w-4 h-4 mr-2" />
-          Resign
+          {m.game_page_popup_resign_button_accept()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>
@@ -466,31 +515,31 @@ const movePairs = $derived(() => {
         <Dialog.Title class="text-2xl text-center">
           {#if $gameState.winner}
             {#if $gameState.winner === $gameState.myColor}
-              Victory!
+              {m.game_page_popup_gameover_title_victory()}
             {:else if $gameState.isSpectator}
-              Game Over
+              {m.game_page_popup_gameover_title_spectator()}
             {:else}
-              Defeat
+              {m.game_page_popup_gameover_title_defeat()}
             {/if}
           {:else}
-            Draw
+            {m.game_page_popup_gameover_title_draw()}
           {/if}
         </Dialog.Title>
         <Dialog.Description class="text-center space-y-2">
           {#if $gameState.winner}
             <p class="text-lg font-semibold">
-              {$gameState.winnerName || $gameState.winner} wins!
+              {m.game_page_popup_gameover_description_winner({
+                winner: $gameState.winnerName || $gameState.winner,
+              })}
             </p>
           {:else}
-            <p class="text-lg font-semibold">Game drawn</p>
+            <p class="text-lg font-semibold">
+              {m.game_page_popup_gameover_description_draw()}
+            </p>
           {/if}
           {#if $gameState.reason}
             <p class="text-sm text-muted-foreground capitalize">
-              {$gameState.reason === "timeout" ? "by timeout" : 
-                   $gameState.reason === "checkmate" ? "by checkmate" :
-                   $gameState.reason === "resignation" ? "by resignation" :
-                   $gameState.reason === "agreement" ? "by agreement" :
-                   $gameState.reason}
+              {resolveGameReason($gameState.reason)}
             </p>
           {/if}
         </Dialog.Description>
@@ -501,7 +550,7 @@ const movePairs = $derived(() => {
           class="flex-1"
           onclick={() => window.history.back()}
         >
-          Back to lobby
+          {m.game_page_button_leave()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>

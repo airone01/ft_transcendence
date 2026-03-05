@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import {
   joinQueue,
@@ -26,43 +27,58 @@ function handleCancelQueue() {
     leaveQueue(state.mode);
   }
 }
+
+let resolveModeTranslation = (mode: string | null) => {
+  if (!mode) return "";
+  switch (mode) {
+    case "blitz":
+      return m.play_page_mode_blitz();
+    case "rapid":
+      return m.play_page_mode_rapid();
+    default:
+      return mode;
+  }
+};
 </script>
 
 <main class="h-full flex items-center justify-center p-6">
   {#if !$socketConnected}
     <div class="text-center space-y-3">
       <Spinner class="w-8 h-8 mx-auto text-muted-foreground" />
-      <p class="text-muted-foreground">Connecting to server...</p>
+      <p class="text-muted-foreground">{m.play_page_connecting()}</p>
     </div>
   {:else if $matchmakingState.inQueue}
     <!-- In queue -->
     <div class="text-center space-y-6 max-w-md">
       <Spinner class="w-12 h-12 mx-auto text-primary" />
       <div class="space-y-2">
-        <h2 class="text-xl font-semibold">Looking for an opponent...</h2>
+        <h2 class="text-xl font-semibold">{m.play_page_inqueue_title()}</h2>
         <p class="text-muted-foreground">
-          Mode:
+          {m.play_page_inqueue_mode()}
           <span class="font-medium text-foreground"
-            >{$matchmakingState.mode}</span
+            >{resolveModeTranslation($matchmakingState.mode)}</span
           >
         </p>
         {#if $matchmakingState.position}
           <p class="text-sm text-muted-foreground">
-            Queue position: {$matchmakingState.position}
+            {m.play_page_inqueue_position_title()}
+            {$matchmakingState.position}
           </p>
         {/if}
       </div>
       <Button variant="outline" onclick={handleCancelQueue}>
         <XIcon class="w-4 h-4 mr-2" />
-        Cancel
+        {m.play_page_inqueue_button_cancel()}
       </Button>
     </div>
   {:else}
     <!-- Mode selection -->
     <div class="space-y-8 max-w-2xl w-full">
       <div class="text-center space-y-2">
-        <h1 class="text-3xl font-bold">Play a game</h1>
-        <p class="text-muted-foreground">Choose your game mode</p>
+        <h1 class="text-3xl font-bold">{m.play_page_gameselect_title()}</h1>
+        <p class="text-muted-foreground">
+          {m.play_page_gameselect_description()}
+        </p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -72,8 +88,10 @@ function handleCancelQueue() {
         >
           <ZapIcon class="w-10 h-10 text-amber-500" />
           <div class="text-center">
-            <h3 class="font-semibold text-lg">Blitz</h3>
-            <p class="text-sm text-muted-foreground">5 min + 2s/move</p>
+            <h3 class="font-semibold text-lg">{m.play_page_mode_blitz()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({ minutes: 5, increment: 2 })}
+            </p>
           </div>
         </button>
 
@@ -83,8 +101,10 @@ function handleCancelQueue() {
         >
           <ClockIcon class="w-10 h-10 text-blue-500" />
           <div class="text-center">
-            <h3 class="font-semibold text-lg">Rapid</h3>
-            <p class="text-sm text-muted-foreground">15 min + 10s/move</p>
+            <h3 class="font-semibold text-lg">{m.play_page_mode_rapid()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({ minutes: 15, increment: 10 })}
+            </p>
           </div>
         </button>
 
@@ -94,8 +114,10 @@ function handleCancelQueue() {
         >
           <TargetIcon class="w-10 h-10 text-green-500" />
           <div class="text-center">
-            <h3 class="font-semibold text-lg">Casual</h3>
-            <p class="text-sm text-muted-foreground">10 min + 5s/move</p>
+            <h3 class="font-semibold text-lg">{m.play_page_mode_casual()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({ minutes: 10, increment: 5 })}
+            </p>
           </div>
         </button>
       </div>

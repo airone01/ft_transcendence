@@ -30,6 +30,17 @@ const isMe = (userId: number) => page.data.user?.id === userId;
 const userStatus = (userId: number) =>
   $onlineUsersStore.get(String(userId)) ?? "offline";
 
+const resolveUserStatusTranslation = (userId: number) => {
+  switch (userStatus(userId)) {
+    case "online":
+      return m.online();
+    case "offline":
+      return m.offline();
+    case "ingame":
+      return m.ingame();
+  }
+};
+
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
     // TODO: i18n maybe needed around here
@@ -81,7 +92,7 @@ const formEnhance: SubmitFunction = () => {
                   : "secondary"}
                 class="uppercase text-[10px]"
               >
-                {userStatus(user?.id)}
+                {resolveUserStatusTranslation(user?.id)}
               </Badge>
             </div>
             <p class="text-muted-foreground flex items-center gap-2 text-sm">

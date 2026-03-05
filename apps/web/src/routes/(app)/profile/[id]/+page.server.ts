@@ -1,4 +1,5 @@
 import { error, redirect } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
 import {
   dbGetAchievements,
   dbGetEloHistory,
@@ -27,9 +28,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     }
 
     if (Number.isNaN(userId) || userId == null)
-      throw error(400, "Invalid user ID");
+      throw error(400, m.profile_page_fecth_user_invalid_userid());
 
-    if (!user) throw error(404, "User not found");
+    if (!user) throw error(404, m.profile_page_fecth_user_not_found());
 
     const [stats, games, rawEloHistory, achievements, peakElo] =
       await Promise.all([

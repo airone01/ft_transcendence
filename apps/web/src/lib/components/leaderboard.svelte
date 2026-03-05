@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@transc/ui/card";
 import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
+import * as m from "$lib/paraglide/messages";
 import type { User } from "$lib/server/db-services";
 import type { UserNoPass } from "../../app";
 
@@ -29,14 +30,16 @@ const {
   class="container mx-auto max-w-4xl p-4 md:p-6 h-full flex flex-col gap-6 mt-11"
 >
   <header class="text-center sm:text-left">
-    <h2 class="text-3xl font-bold tracking-tight">Leaderboard</h2>
-    <p class="text-muted-foreground">Top players ranked by their ELO.</p>
+    <h2 class="text-3xl font-bold tracking-tight">
+      {m.leaderboard_page_title()}
+    </h2>
+    <p class="text-muted-foreground">{m.leaderboard_page_description()}</p>
   </header>
 
   <Card class="flex-1 overflow-hidden flex flex-col shadow-sm">
     <CardHeader>
-      <CardTitle>Global Ranking</CardTitle>
-      <CardDescription>The best of the best across the server.</CardDescription>
+      <CardTitle>{m.leaderboard_page_card_title()}</CardTitle>
+      <CardDescription>{m.leaderboard_page_card_description()}</CardDescription>
     </CardHeader>
 
     <CardContent class="overflow-y-auto flex-1 p-0 sm:p-6">
@@ -101,7 +104,7 @@ const {
         <div
           class="flex flex-col items-center justify-center py-16 text-muted-foreground"
         >
-          <p>No players found yet.</p>
+          <p>{m.leaderboard_page_empty()}</p>
         </div>
       {/if}
     </CardContent>

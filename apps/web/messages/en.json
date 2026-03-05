@@ -138,6 +138,72 @@
   "win_ratio_card_draws": "[i18n] D",
   "win_ratio_card_losses": "[i18n] L",
 
+  "play_page_connecting": "[i18n] Connecting to server...",
+  "play_page_inqueue_title": "[i18n] Looking for an opponent...",
+  "play_page_inqueue_mode": "[i18n] Mode:",
+  "play_page_inqueue_position_title": "[i18n] Queue position:",
+  "play_page_inqueue_button_cancel": "[i18n] Cancel",
+
+  "play_page_gameselect_title": "[i18n] Play a game",
+  "play_page_gameselect_description": "[i18n] Choose your game mode",
+  "play_page_mode_blitz": "[i18n] Blitz",
+  "play_page_mode_rapid": "[i18n] Rapid",
+  "play_page_mode_casual": "[i18n] Casual",
+  "play_page_minutes_and_increment": "[i18n] {minutes}min + {increment}sec/move",
+
+  "game_page_title": "[i18n] Current game",
+  "game_page_disconnected": "[i18n] Disconnected",
+
+  "game_page_turn_title": "[i18n] Current turn",
+  "game_page_turn_user": "[i18n] Your turn",
+  "game_page_turn_opponent": "[i18n] Opponent's turn",
+
+  "game_page_status_check": "[i18n] Check!",
+  "game_page_status_game_over": "[i18n] Game Over",
+  "game_page_status_winner": "[i18n] Winner: {winner}",
+  "game_page_status_draw": "[i18n] Draw",
+
+  "game_page_color_title": "[i18n] You play",
+
+  "game_page_button_draw": "[i18n] Offer Draw",
+  "game_page_button_resign": "[i18n] Resign",
+  "game_page_button_leave": "[i18n] Back to lobby",
+  "game_page_button_leave_spectator": "[i18n] Leave spectator mode",
+
+  "game_page_move_history_title": "[i18n] Move History",
+  "game_page_move_history_empty": "[i18n] No moves yet",
+
+  "game_page_spectator_title": "[i18n] Spectator mode",
+  "game_page_spectator_description": "[i18n] You are now spectating this game.",
+  "game_page_spectator_info": "[i18n] Watch only",
+
+  "game_page_reason_checkmate": "[i18n] By Checkmate",
+  "game_page_reason_stalemate": "[i18n] By Stalemate",
+  "game_page_reason_draw": "[i18n] By Draw",
+  "game_page_reason_timeout": "[i18n] By Time out",
+  "game_page_reason_agreement": "[i18n] By Agreement",
+  "game_page_reason_resignation": "[i18n] By Resignation",
+
+  "game_page_popup_draw_offer_title": "[i18n] Draw offer",
+  "game_page_popup_draw_offer_description": "[i18n] Do you want to accept this draw offer?",
+  "game_page_popup_draw_offer_button_accept": "[i18n] Accept",
+  "game_page_popup_draw_offer_button_decline": "[i18n] Decline",
+
+  "game_page_popup_resign_title": "[i18n] Resignation",
+  "game_page_popup_resign_description": "[i18n] Do you want to resign?",
+  "game_page_popup_resign_button_accept": "[i18n] Resign",
+  "game_page_popup_resign_button_decline": "[i18n] close",
+
+  "game_page_popup_gameover_title_victory": "[i18n] Victory!",
+  "game_page_popup_gameover_title_draw": "[i18n] Draw",
+  "game_page_popup_gameover_title_defeat": "[i18n] Defeat",
+  "game_page_popup_gameover_title_spectator": "[i18n] Game Over",
+  "game_page_popup_gameover_description_winner": "[i18n] {winner} wins!",
+  "game_page_popup_gameover_description_draw": "[i18n] Game drawn!",
+
+  "game_page_white": "[i18n] White",
+  "game_page_black": "[i18n] Black",
+
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
   "settings_page_button_saving": "[i18n] Saving...",
@@ -147,6 +213,7 @@
   "settings_page_profile_description": "[i18n] This is how others will see you on the site.",
   "settings_page_profile_label_username": "[i18n] Username",
   "settings_page_profile_label_bio": "[i18n] Biography",
+  "settings_page_profile_action_default_fail": "Could not update profile.",
 
   "settings_page_account_title": "[i18n] Account",
   "settings_page_account_description": "[i18n] Manage your credentials and connected services.",
@@ -156,6 +223,13 @@
   "settings_page_account_not_connected": "[i18n] Not Connected",
   "settings_page_account_button_connect": "[i18n] Connect",
   "settings_page_account_button_disconnect": "[i18n] Disconnect",
+  "settings_page_account_action_updatepassword_password_required": "Current password is required.",
+  "settings_page_account_action_updatepassword_password_invalid": "Incorrect current password.",
+  "settings_page_account_action_updatepassword_success": "Password updated successfully.",
+  "settings_page_account_action_updatepassword_fail": "Failed to update password.",
+  "settings_page_account_action_unlink_no_provider": "Provider required.",
+  "settings_page_account_action_unlink_password_required": "You must set a password before disconnecting your last login method.",
+  "settings_page_account_action_unlink_fail": "Could not unlink account.",
 
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
@@ -167,5 +241,68 @@
   "settings_page_gameplay_title": "[i18n] Gameplay",
   "settings_page_sound_title": "[i18n] Sound",
   "settings_page_display_title": "[i18n] Display",
-  "settings_page_privacy_title": "[i18n] Privacy"
+  "settings_page_privacy_title": "[i18n] Privacy",
+
+  "user_profile_link_loading": "[i18n] Loading...",
+  "user_profile_link_bio_empty": "[i18n] This user does not have a bio.",
+  "user_profile_link_joined": "[i18n] Joined {date}",
+  "user_profile_link_fail": "[i18n] Failed to load user info.",
+
+  "profile_page_action_add_username_required": "[i18n] Username is required",
+  "profile_page_action_add_add_yourself": "[i18n] You cannot add yourself",
+  "profile_page_action_add_user_not_found": "[i18n] User not found",
+  "profile_page_action_add_success": "[i18n] Sent friend request",
+  "profile_page_action_add_fail": "[i18n] You are already friends or an invite is pending",
+  "profile_page_action_add_internal_error": "[i18n] Failed to send friend request",
+
+  "profile_page_action_accept_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_accept_success": "[i18n] Accepted friend request",
+  "profile_page_action_accept_internal_error": "[i18n] Failed to accept friend request",
+
+  "profile_page_action_reject_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_reject_success": "[i18n] Declined friend request",
+  "profile_page_action_reject_internal_error": "[i18n] Failed to decline friend request",
+
+  "profile_page_action_remove_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_remove_success": "[i18n] Removed friend",
+  "profile_page_action_remove_internal_error": "[i18n] Failed to remove friend",
+
+  "profile_page_fecth_user_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_fecth_user_not_found": "[i18n] User not found",
+
+  "login_action_default_fail": "[i18n] Invalid email or password, or an associated account uses OAuth.",
+
+  "oauth_invalid_state_or_code": "[i18n] Invalid state or code",
+  "oauth_failed_to_get_access_token": "[i18n] Failed to get access token",
+  "oauth_failed_to_fetch_user": "[i18n] Failed to fetch user data",
+  "oauth_discord_other_account_connected": "[i18n] This Discord account is already connected to another user.",
+  "oauth_error": "[i18n] OAuth Error: ",
+  "oauth_internal_error": "[i18n] Authentication failed",
+
+  "register_email_taken": "[i18n] Email already registered.",
+  "register_username_taken": "[i18n] Username already taken.",
+
+  "api_users_id_unauthorized": "[i18n] Unauthorized",
+  "api_users_id_invalid_userid": "[i18n] Invalid user ID",
+  "api_users_id_user_not_found": "[i18n] User not found",
+  "api_users_id_fetch_user_internal_error": "[i18n] Failed to fetch user profile for HoverCard:",
+
+  "zod_schema_username_min_length": "[i18n] Username must be at least 3 characters.",
+  "zod_schema_username_max_length": "[i18n] Username must be at most 20 characters.",
+  "zod_schema_username_char_allowed": "[i18n] Only letters, numbers, and underscores allowed.",
+  "zod_schema_email_invalid": "[i18n] Please enter a valid email address.",
+  "zod_schema_password_required": "[i18n] Password is required.",
+  "zod_schema_password_min_length": "[i18n] Password must be at least 8 characters.",
+  "zod_schema_password_max_length": "[i18n] Password must be at most 64 characters.",
+  "zod_schema_password_uppercase": "[i18n] Password must contain at least one uppercase letter.",
+  "zod_schema_password_lowercase": "[i18n] Password must contain at least one lowercase letter.",
+  "zod_schema_password_digit": "[i18n] Password must contain at least one digit.",
+  "zod_schema_password_special": "[i18n] Password must contain at least one special character.",
+  "zod_schema_password_match": "[i18n] Passwords do not match.",
+  "zod_schema_bio_max_length": "[i18n] Biography must be at most 255 characters.",
+  "zod_schema_avatar_type": "[i18n] Avatar must be a file",
+  "zod_schema_avatar_size": "[i18n] Avatar must be less than 1MB",
+
+  "unkown_db_error": "[i18n] Unknown database error",
+  "internal_server_error": "[i18n] Internal server error"
 }

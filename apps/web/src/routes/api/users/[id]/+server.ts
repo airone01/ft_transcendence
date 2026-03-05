@@ -1,4 +1,5 @@
 import { json } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
 import {
   DBUserNotFoundError,
   dbGetStats,
@@ -9,10 +10,11 @@ import type { RequestHandler } from "./$types";
 export const GET: RequestHandler = async ({ params, locals }) => {
   const userId = parseInt(params.id, 10);
 
-  if (!locals.user) return json({ error: "Unauthorized" }, { status: 401 });
+  if (!locals.user)
+    return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
 
   if (Number.isNaN(userId))
-    return json({ error: "Invalid user ID" }, { status: 400 });
+    return json({ error: m.api_users_id_invalid_userid() }, { status: 400 });
 
   try {
     const [user, stats] = await Promise.all([
@@ -29,10 +31,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     });
   } catch (error) {
     if (error instanceof DBUserNotFoundError) {
-      return json({ error: "User not found" }, { status: 404 });
+      return json({ error: m.api_users_id_user_not_found() }, { status: 404 });
     }
 
-    console.error("Failed to fetch user profile for HoverCard:", error);
-    return json({ error: "Internal Server Error" }, { status: 500 });
+    console.error(m.api_users_id_fetch_user_internal_error(), error);
+    return json({ error: m.internal_server_error() }, { status: 500 });
   }
 };
