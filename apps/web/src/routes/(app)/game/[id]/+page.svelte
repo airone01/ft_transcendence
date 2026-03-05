@@ -345,4 +345,52 @@ const movePairs = $derived(() => {
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
+
+      <!-- Game Over dialog -->
+      <Dialog.Root open={$gameState.gameOver}>
+        <Dialog.Content showCloseButton={false} class="max-w-md">
+          <Dialog.Header>
+            <Dialog.Title class="text-2xl text-center">
+              {#if $gameState.winner}
+                {#if $gameState.winner === $gameState.myColor}
+                  Victory!
+                {:else if $gameState.isSpectator}
+                  Game Over
+                {:else}
+                  Defeat
+                {/if}
+              {:else}
+                Draw
+              {/if}
+            </Dialog.Title>
+            <Dialog.Description class="text-center space-y-2">
+              {#if $gameState.winner}
+                <p class="text-lg font-semibold">
+                  {$gameState.winnerName || $gameState.winner} wins!
+                </p>
+              {:else}
+                <p class="text-lg font-semibold">Game drawn</p>
+              {/if}
+              {#if $gameState.reason}
+                <p class="text-sm text-muted-foreground capitalize">
+                  {$gameState.reason === "timeout" ? "by timeout" : 
+                   $gameState.reason === "checkmate" ? "by checkmate" :
+                   $gameState.reason === "resignation" ? "by resignation" :
+                   $gameState.reason === "agreement" ? "by agreement" :
+                   $gameState.reason}
+                </p>
+              {/if}
+            </Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Footer class="flex gap-2">
+            <Button
+              variant="outline"
+              class="flex-1"
+              onclick={() => window.history.back()}
+            >
+              Back to lobby
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
 </main>
