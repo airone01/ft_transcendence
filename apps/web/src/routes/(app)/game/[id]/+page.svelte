@@ -14,6 +14,7 @@ import {
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
+  import { m } from "$lib/paraglide/messages";
 
 let gameId: string = page.params.id ?? "0";
 
@@ -62,9 +63,9 @@ const movePairs = $derived(() => {
     >
       <!-- Header -->
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Current game</h2>
+        <h2 class="text-lg font-semibold">{m.game_page_title()}</h2>
         {#if !$socketConnected}
-          <span class="text-xs text-destructive">Disconnected</span>
+          <span class="text-xs text-destructive">{m.game_page_disconnected()}</span>
         {/if}
       </div>
 
@@ -72,24 +73,24 @@ const movePairs = $derived(() => {
 
       <!-- Current turn -->
       <div class="space-y-1">
-        <span class="text-sm text-muted-foreground">Current turn</span>
+        <span class="text-sm text-muted-foreground">{m.game_page_turn_title()}</span>
         <div class="flex items-center gap-2">
           {#if $gameState.turn === "w"}
             <div
               class="w-3 h-3 rounded-full bg-white border border-zinc-300"
             ></div>
-            <span class="font-medium text-sm">White</span>
+            <span class="font-medium text-sm">{m.game_page_white()}</span>
           {:else}
             <div
               class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"
             ></div>
-            <span class="font-medium text-sm">Black</span>
+            <span class="font-medium text-sm">{m.game_page_black()}</span>
           {/if}
         </div>
         {#if $isMyTurn}
-          <span class="text-xs text-primary font-medium">Your turn</span>
+          <span class="text-xs text-primary font-medium">{m.game_page_turn_user()}</span>
         {:else if !$gameState.gameOver}
-          <span class="text-xs text-muted-foreground">Opponent's turn</span>
+          <span class="text-xs text-muted-foreground">{m.game_page_turn_opponent()}</span>
         {/if}
       </div>
 
@@ -101,7 +102,7 @@ const movePairs = $derived(() => {
           <div
             class="bg-amber-500/15 text-amber-700 dark:text-amber-400 text-xs font-medium px-3 py-1.5 rounded-md"
           >
-            Check!
+            {m.game_page_status_check()}
           </div>
         {/if}
 
@@ -109,13 +110,14 @@ const movePairs = $derived(() => {
           <div
             class="bg-primary/15 text-primary text-sm font-medium px-3 py-2 rounded-md space-y-1"
           >
-            <p class="font-semibold">Game over</p>
+            <p class="font-semibold">{m.game_page_status_game_over()}</p>
             {#if $gameState.winner}
-              <p>Winner: {$gameState.winner}</p>
+              <p>{m.game_page_status_winner({winner: $gameState.winner})}</p>
             {:else}
-              <p>Draw</p>
+              <p>{m.game_page_status_draw()}</p>
             {/if}
             {#if $gameState.reason}
+              <!-- TODO: i18n -->
               <p class="text-xs opacity-75">{$gameState.reason}</p>
             {/if}
           </div>
@@ -125,18 +127,18 @@ const movePairs = $derived(() => {
       <!-- My color -->
       {#if $gameState.myColor}
         <div class="mt-4 space-y-1">
-          <span class="text-sm text-muted-foreground">You play</span>
+          <span class="text-sm text-muted-foreground">{m.game_page_color_title()}</span>
           <div class="flex items-center gap-2">
             {#if $gameState.myColor === "white"}
               <div
                 class="w-3 h-3 rounded-full bg-white border border-zinc-300"
               ></div>
-              <span class="font-medium text-sm">White</span>
+              <span class="font-medium text-sm">{m.game_page_white()}</span>
             {:else}
               <div
                 class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"
               ></div>
-              <span class="font-medium text-sm">Black</span>
+              <span class="font-medium text-sm">{m.game_page_black()}</span>
             {/if}
           </div>
         </div>
@@ -153,7 +155,7 @@ const movePairs = $derived(() => {
             onclick={handleOfferDraw}
           >
             <HandshakeIcon class="w-4 h-4 mr-2" />
-            Offer draw
+            {m.game_page_button_draw()}
           </Button>
           <Button
             variant="outline"
@@ -161,7 +163,7 @@ const movePairs = $derived(() => {
             onclick={() => (resignDialogOpen = true)}
           >
             <FlagIcon class="w-4 h-4 mr-2" />
-            Resign
+            {m.game_page_button_resign()}
           </Button>
         {:else}
           <Button
@@ -169,7 +171,7 @@ const movePairs = $derived(() => {
             class="w-full"
             onclick={() => window.history.back()}
           >
-            Back to lobby
+            {m.game_page_button_leave()}
           </Button>
         {/if}
       </div>
@@ -185,13 +187,13 @@ const movePairs = $derived(() => {
       class="w-72 shrink-0 flex flex-col border rounded-lg p-5 overflow-hidden"
     >
       <!-- Header -->
-      <h2 class="text-lg font-semibold">Move history</h2>
+      <h2 class="text-lg font-semibold">{m.game_page_move_history_title()}</h2>
 
       <!-- Move history -->
       <div class="flex-1 mt-4 rounded-lg bg-muted/50 overflow-y-auto min-h-0">
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center">
-            <span class="text-sm text-muted-foreground">No moves yet</span>
+            <span class="text-sm text-muted-foreground">{m.game_page_move_history_empty()}</span>
           </div>
         {:else}
           <div class="p-2 space-y-0.5">
@@ -239,7 +241,7 @@ const movePairs = $derived(() => {
         >
           <div class="flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full bg-white"></div>
-            <span class="text-xs font-medium">White</span>
+            <span class="text-xs font-medium">{m.game_page_white()}</span>
           </div>
           <div class="flex items-center gap-1 ml-auto">
             <ClockIcon class="w-3.5 h-3.5 opacity-70" />
@@ -258,7 +260,7 @@ const movePairs = $derived(() => {
         >
           <div class="flex items-center gap-1.5">
             <div class="w-2 h-2 rounded-full bg-zinc-400"></div>
-            <span class="text-xs font-medium">Black</span>
+            <span class="text-xs font-medium">{m.game_page_black()}</span>
           </div>
           <div class="flex items-center gap-1 ml-auto">
             <ClockIcon class="w-3.5 h-3.5 opacity-70" />
@@ -278,9 +280,9 @@ const movePairs = $derived(() => {
   <Dialog.Root open={$gameState.drawOffered && !$gameState.gameOver}>
     <Dialog.Content showCloseButton={false}>
       <Dialog.Header>
-        <Dialog.Title>Draw offer</Dialog.Title>
+        <Dialog.Title>{m.game_page_popup_draw_offer_title()}</Dialog.Title>
         <Dialog.Description>
-          Your opponent is offering a draw. Do you accept?
+          {m.game_page_popup_draw_offer_description()}
         </Dialog.Description>
       </Dialog.Header>
       <Dialog.Footer>
@@ -288,11 +290,11 @@ const movePairs = $derived(() => {
           variant="outline"
           onclick={() => gameState.update((s) => ({ ...s, drawOffered: false }))}
         >
-          Decline
+          {m.game_page_popup_draw_offer_button_decline()}
         </Button>
         <Button onclick={acceptDraw}>
           <HandshakeIcon class="w-4 h-4 mr-2" />
-          Accept
+          {m.game_page_popup_draw_offer_button_accept()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>
@@ -302,21 +304,21 @@ const movePairs = $derived(() => {
   <Dialog.Root bind:open={resignDialogOpen}>
     <Dialog.Content showCloseButton={false}>
       <Dialog.Header>
-        <Dialog.Title>Resign the game?</Dialog.Title>
+        <Dialog.Title>{m.game_page_popup_resign_title()}</Dialog.Title>
         <Dialog.Description>
-          Your opponent will be declared the winner. This cannot be undone.
+          {m.game_page_popup_resign_description()}
         </Dialog.Description>
       </Dialog.Header>
       <Dialog.Footer>
         <Dialog.Close>
-          <Button variant="outline" class="w-full">Cancel</Button>
+          <Button variant="outline" class="w-full">{m.game_page_popup_resign_button_decline()}</Button>
         </Dialog.Close>
         <Button
           class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
           onclick={confirmResign}
         >
           <FlagIcon class="w-4 h-4 mr-2" />
-          Resign
+          {m.game_page_popup_resign_button_accept()}
         </Button>
       </Dialog.Footer>
     </Dialog.Content>

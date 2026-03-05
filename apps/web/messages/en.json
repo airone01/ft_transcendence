@@ -151,6 +151,40 @@
   "play_page_mode_casual": "[i18n] Casual",
   "play_page_minutes_and_increment": "[i18n] {minutes}min + {increment}sec/move",
 
+  "game_page_title": "[i18n] Current game",
+  "game_page_disconnected": "[i18n] Disconnected",
+  
+  "game_page_turn_title": "[i18n] Current turn",
+  "game_page_turn_user": "[i18n] Your turn",
+  "game_page_turn_opponent": "[i18n] Opponent's turn",
+ 
+  "game_page_status_check": "[i18n] Check!",
+  "game_page_status_game_over": "[i18n] Game Over",
+  "game_page_status_winner": "[i18n] Winner: {winner}",
+  "game_page_status_draw": "[i18n] Draw",
+
+  "game_page_color_title": "[i18n] You play",
+  
+  "game_page_button_draw": "[i18n] Offer Draw",
+  "game_page_button_resign": "[i18n] Resign",
+  "game_page_button_leave": "[i18n] Back to lobby",
+
+  "game_page_move_history_title": "[i18n] Move History",
+  "game_page_move_history_empty": "[i18n] No moves yet",
+
+  "game_page_popup_draw_offer_title": "[i18n] Draw offer",
+  "game_page_popup_draw_offer_description": "[i18n] Do you want to accept this draw offer?",
+  "game_page_popup_draw_offer_button_accept": "[i18n] Accept",
+  "game_page_popup_draw_offer_button_decline": "[i18n] Decline",
+
+  "game_page_popup_resign_title": "[i18n] Resignation",
+  "game_page_popup_resign_description": "[i18n] Do you want to resign?",
+  "game_page_popup_resign_button_accept": "[i18n] Resign",
+  "game_page_popup_resign_button_decline": "[i18n] close",
+
+  "game_page_white": "[i18n] White",
+  "game_page_black": "[i18n] Black",
+
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
   "settings_page_button_saving": "[i18n] Saving...",
