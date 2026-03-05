@@ -13,6 +13,7 @@ import { cn } from "@transc/ui/utils";
 import type { Component } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages";
 import { useMediaQuery } from "$lib/utils/media-query.svelte";
 
 const { children } = $props();
@@ -35,10 +36,8 @@ const sidebarNavItems: {
 
 <main class="flex flex-col gap-4 pb-16 w-full h-full">
   <header>
-    <h2 class="text-2xl font-bold tracking-tight">Settings</h2>
-    <p class="text-muted-foreground">
-      Manage your account settings and preferences.
-    </p>
+    <h2 class="text-2xl font-bold tracking-tight">{m.settings_page_title()}</h2>
+    <p class="text-muted-foreground">{m.settings_page_description()}</p>
   </header>
   <div class="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
     {#if isMobile.current}

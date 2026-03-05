@@ -6,10 +6,7 @@ import { registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
-import {
-  restoreSessionOnReconnect,
-  saveSessionOnDisconnect,
-} from "./utils/reconnection";
+import { saveSessionOnDisconnect } from "./utils/reconnection";
 
 let io: Server;
 
@@ -34,15 +31,12 @@ export function initSocketServer(httpServer: HTTPServer) {
   // Run heartbeat
   startHeartbeat(io);
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
     // Join personal room
     socket.join(`user:${userId}`);
-
-    // Try to restore a previous session
-    restoreSessionOnReconnect(socket);
 
     // Register handlers
     registerGameHandlers(io, socket);

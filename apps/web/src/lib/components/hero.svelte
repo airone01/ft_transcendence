@@ -1,5 +1,6 @@
 <script>
 import { Button } from "@transc/ui/button";
+import * as m from "$lib/paraglide/messages.js";
 </script>
 
 <section
@@ -10,7 +11,7 @@ import { Button } from "@transc/ui/button";
     <h1
       class="text-4xl sm:text-5xl lg:text-7xl uppercase font-semibold text-center"
     >
-      Play Chess Now
+      {m.hero_page_title()}
     </h1>
   </div>
   <!-- Chess board -->
@@ -28,10 +29,10 @@ import { Button } from "@transc/ui/button";
     <Button
       variant="outline"
       href="/play"
-      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
       aria-label="Start new game"
     >
-      New game
+      {m.hero_page_button()}
     </Button>
   </div>
 </section>

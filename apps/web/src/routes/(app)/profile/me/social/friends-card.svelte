@@ -26,6 +26,7 @@ import {
 import { enhance } from "$app/forms";
 import UserAvatar from "$lib/components/user-avatar.svelte";
 import UserProfileLink from "$lib/components/user-profile-link.svelte";
+import * as m from "$lib/paraglide/messages";
 
 const {
   friends,
@@ -47,12 +48,12 @@ const {
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
       <ContactRoundIcon />
-      Friends ({friends.length})
+      {m.friends_card_title()}({friends.length})
     </CardTitle>
-    <CardDescription>All your friends are here!</CardDescription>
+    <CardDescription>{m.friends_card_description()}</CardDescription>
   </CardHeader>
   <CardContent
-    class={`overflow-y-scroll flex flex-col gap-2 ${friends.length === 0 ? 'justify-center items-center h-full' : ''}`}
+    class={`overflow-y-scroll flex flex-col gap-2 ${friends.length === 0 ? "justify-center items-center h-full" : ""}`}
   >
     {#if friends.length !== 0}
       {#each friends as friend (friend.userId)}
@@ -83,6 +84,7 @@ const {
                 class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
               >
                 <MessageSquareIcon class="h-4 w-4" />
+                <!-- TODO: maybe i18n or delete? -->
                 <span class="sr-only">Chat</span>
               </Button>
 
@@ -92,6 +94,7 @@ const {
                 class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
               >
                 <SwordsIcon class="h-4 w-4" />
+                <!-- TODO: maybe i18n or delete? -->
                 <span class="sr-only">Fight</span>
               </Button>
 
@@ -101,9 +104,10 @@ const {
                   type="submit"
                   variant="ghost"
                   size="icon"
-                  class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive cursor-pointer"
+                  class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive"
                 >
                   <UserMinusIcon class="h-4 w-4" />
+                  <!-- TODO: maybe i18n or delete? -->
                   <span class="sr-only">Remove</span>
                 </Button>
               </form>
@@ -117,9 +121,9 @@ const {
           <EmptyMedia variant="icon">
             <FrownIcon />
           </EmptyMedia>
-          <EmptyTitle>No friends yet</EmptyTitle>
+          <EmptyTitle>{m.friends_card_empty_title()}</EmptyTitle>
           <EmptyDescription>
-            Search for a username above to start building your list.
+            {m.friends_card_empty_description()}
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
