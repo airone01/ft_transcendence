@@ -4,6 +4,7 @@ import {
   dbCreateGame,
   dbStartGame,
 } from "$lib/server/db-services";
+import { activeGames } from "./game";
 
 // Matchmaking queues
 const queues = new Map<string, Socket[]>();
@@ -21,7 +22,23 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
 
     const queue = queues.get(mode);
     if (!queue) return socket.emit("matchmaking:error, undifined queue");
-    // Check if already in a queue
+
+      for (const [gameId, gameRoom] of activeGames.entries()) {
+          if (!gameRoom.isGameOver()) {
+            const isPlayer = (
+              gameRoom.getWhiteId() === userId || 
+              gameRoom.getBlackId() === userId
+            );
+            
+            if (isPlayer) {
+              console.log(`[Matchmaking] User ${userId} already has active game ${gameId}`);
+              return socket.emit("matchmaking:error", { 
+                message: "You already have a game in progress" 
+              });
+            }
+          }
+        }
+    
     const alreadyQueued = Array.from(queues.values()).some((q) =>
       q.some((s) => s.data.userId === userId),
     );
@@ -38,6 +55,37 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       const player2 = queue.shift();
       if (!player1 || !player2)
         return socket.emit("matchmaking:error, undifined player");
+
+      if (player1.data.userId === player2.data.userId) {
+        console.log(`[Matchmaking] Same user ${player1.data.userId} tried to match with themselves`);
+        
+        player1.emit("matchmaking:error", { 
+          message: "Cannot match with yourself" 
+        });
+        player2.emit("matchmaking:error", { 
+          message: "Cannot match with yourself" 
+        });
+        
+        return;
+      }
+
+      for (const [_, gameRoom] of activeGames.entries()) {
+    if (!gameRoom.isGameOver()) {
+      if (gameRoom.getWhiteId() === player1.data.userId || gameRoom.getBlackId() === player1.data.userId) {
+        player1.emit("matchmaking:error", { message: "You already have a game in progress" });
+        player2.emit("matchmaking:error", { message: "Match failed, opponent already in game" });
+        queue.push(player2);
+        return;
+      }
+      
+      if (gameRoom.getWhiteId() === player2.data.userId || gameRoom.getBlackId() === player2.data.userId) {
+        player2.emit("matchmaking:error", { message: "You already have a game in progress" });
+        player1.emit("matchmaking:error", { message: "Match failed, opponent already in game" });
+        queue.push(player1);
+        return;
+      }
+    }
+  }
       try {
         const gameInput: CreateGameInput = {
           whiteUserId: parseInt(player1.data.userId, 10),
@@ -48,6 +96,9 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
 
         const gameId = await dbCreateGame(gameInput);
         await dbStartGame(gameId);
+
+        player1.data.currentGameId = String(gameId);
+        player2.data.currentGameId = String(gameId);
 
         // Notify the two players
         player1.emit("matchmaking:matched", {

@@ -1,6 +1,7 @@
 import { type Writable, writable } from "svelte/store";
 import { goto } from "$app/navigation";
 import { gameState } from "$lib/stores/game.store";
+import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -74,6 +75,6 @@ export function setupMatchmakingListeners() {
   socketManager.on("matchmaking:error", ((data: { message: string }) => {
     console.error("Matchmaking error:", data.message);
     matchmakingState.set({ inQueue: false, mode: null, position: null });
-    alert(`Error:·${data.message}`);
+    toast(`Error:·${data.message}`);
   }) as unknown as (...args: unknown[]) => void);
 }
