@@ -193,7 +193,7 @@ function toggleMode() {
           <FormFieldErrors />
         </FormField>
 
-        <Button type="submit" class="w-full cursor-pointer">
+        <Button type="submit" class="w-full">
           {m.landing_page_auth_dialog_button_register()}
         </Button>
       </form>
@@ -222,7 +222,7 @@ function toggleMode() {
           : m.landing_page_auth_dialog_register_to_login()}
         <button
           onclick={toggleMode}
-          class="underline underline-offset-4 hover:text-primary ml-1 font-medium cursor-pointer"
+          class="underline underline-offset-4 hover:text-primary ml-1 font-medium"
         >
           {authDialogState.mode === "login"
             ? m.landing_page_auth_dialog_text_register()

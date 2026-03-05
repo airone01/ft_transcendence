@@ -25,7 +25,7 @@ import * as m from "$lib/paraglide/messages.js";
     <Button
       variant="outline"
       href="/play"
-      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 cursor-pointer"
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
       aria-label="Start new game"
     >
       {m.hero_page_button()}
