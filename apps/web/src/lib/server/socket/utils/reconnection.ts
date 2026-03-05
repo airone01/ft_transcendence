@@ -56,7 +56,6 @@ export async function restoreSessionOnReconnect(
   const userId = socket.data.userId;
   if (!userId) return { restored: false, gameId: null };
 
-  // ✅ D'abord, vérifier si le user a une partie active en cours
   for (const [gameId, gameRoom] of activeGames.entries()) {
     if (!gameRoom.isGameOver()) {
       const isPlayer =
@@ -122,6 +121,10 @@ export async function restoreSessionOnReconnect(
       });
       console.log(
         `[Reconnection] Game state sent from memory for game ${session.gameId}`,
+      );
+    } else {
+      console.log(
+        `[Reconnection] GameRoom ${session.gameId} not found in memory`,
       );
     }
   }

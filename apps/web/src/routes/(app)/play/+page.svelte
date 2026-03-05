@@ -67,7 +67,7 @@ function handleCancelQueue() {
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <button
-          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
           onclick={() => joinQueue('blitz')}
         >
           <ZapIcon class="w-10 h-10 text-amber-500" />
@@ -78,7 +78,7 @@ function handleCancelQueue() {
         </button>
 
         <button
-          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
           onclick={() => joinQueue('rapid')}
         >
           <ClockIcon class="w-10 h-10 text-blue-500" />
@@ -89,7 +89,7 @@ function handleCancelQueue() {
         </button>
 
         <button
-          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
           onclick={() => joinQueue('casual')}
         >
           <TargetIcon class="w-10 h-10 text-green-500" />

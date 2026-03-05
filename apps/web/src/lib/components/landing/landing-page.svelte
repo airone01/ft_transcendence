@@ -3,6 +3,7 @@ import { ChessPawnIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { authState } from "$lib/auth";
 import Hero from "$lib/components/hero.svelte";
+import * as m from "$lib/paraglide/messages.js";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 </script>
 
@@ -14,42 +15,29 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
       <div class="flex items-center gap-2 select-none">
         <ChessPawnIcon class="w-7 h-7" />
         <span class="text-xl font-semibold tracking-tight">
-          Transcendence
+          {m.project_name()}
         </span>
       </div>
-      <nav class="hidden items-center gap-6 md:flex">
-        <!-- . -->
-      </nav>
+      <nav class="hidden items-center gap-6 md:flex"><!-- . --></nav>
       <div class="flex items-center gap-3">
         {#if authState.isAuthenticated}
+          <!-- TODO: wtf? -->
           <form action="/logout" method="POST">
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              class="cursor-pointer"
-            >
-              Log out
+            <Button type="submit" variant="ghost" size="sm">
+              {m.landing_page_button_logout()}
             </Button>
           </form>
-          <Button href="/home" size="sm" class="cursor-pointer">
-            Dashboard
-          </Button>
+          <Button href="/home" size="sm">Dashboard </Button>
         {:else}
           <Button
             onclick={() => openAuthDialog("login")}
             variant="ghost"
             size="sm"
-            class="cursor-pointer"
           >
-            Log in
+            {m.landing_page_button_login()}
           </Button>
-          <Button
-            onclick={() => openAuthDialog("register")}
-            size="sm"
-            class="cursor-pointer"
-          >
-            Sign up
+          <Button onclick={() => openAuthDialog("register")} size="sm">
+            {m.landing_page_button_register()}
           </Button>
         {/if}
       </div>

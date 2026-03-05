@@ -9,9 +9,13 @@ import { page } from "$app/state";
 import favicon from "$lib/assets/favicon.svg";
 import AuthDialog from "$lib/components/auth-dialog.svelte";
 import AppShell from "$lib/components/layout/app-shell.svelte";
+import * as m from "$lib/paraglide/messages";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { initializeSocketListeners } from "$lib/socket-init";
 import { socketManager } from "$lib/stores/socket.svelte";
+import "@fontsource-variable/merriweather";
+import "@fontsource-variable/montserrat";
+import "@fontsource-variable/source-code-pro";
 
 const { children, data } = $props();
 
@@ -53,7 +57,7 @@ onMount(() => {
 
 <svelte:head>
   <link rel="icon" href={favicon}>
-  <title>transc</title>
+  <title>{m.project_name()}</title>
 </svelte:head>
 
 <Toaster />

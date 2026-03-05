@@ -12,7 +12,11 @@
     "db:setup": "bun run --cwd packages/db db:generate --name=init && bun run --cwd packages/db db:migrate && bun run --cwd packages/db db:seed",
     "db:down": "bun run --cwd packages/db db:down",
     "db:seed": "bun run --cwd apps/web src/lib/server/db-services/internal/db.seed.ts",
-    "db:studio": "bun run --cwd packages/db db:studio"
+    "db:studio": "bun run --cwd packages/db db:studio",
+    "paraglide": "bun run --cwd apps/web paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
+    "paraglide:watch": "bun run --cwd apps/web paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide --watch",
+    "i18n:init-fr": "sed '/\\$schema/!s/: \"[^\"]*\"/: \"[i18n] TODO\"/g' apps/web/messages/en.json > apps/web/messages/fr.json",
+    "i18n:init-es": "sed '/\\$schema/!s/: \"[^\"]*\"/: \"[i18n] TODO\"/g' apps/web/messages/en.json > apps/web/messages/es.json"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",
@@ -23,6 +27,9 @@
     "apps/*"
   ],
   "dependencies": {
+    "@fontsource-variable/merriweather": "^5.2.6",
+    "@fontsource-variable/montserrat": "^5.2.8",
+    "@fontsource-variable/source-code-pro": "^5.2.7",
     "pg": "^8.18.0",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3"

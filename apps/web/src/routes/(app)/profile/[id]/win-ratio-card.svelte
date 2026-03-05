@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@transc/ui/card";
+import * as m from "$lib/paraglide/messages";
 import type { UserStats } from "$lib/server/db-services";
 
 const { stats }: { stats: UserStats } = $props();
@@ -20,13 +21,14 @@ if (stats.wins + stats.losses + stats.draws === 0) stats.gamesPlayed = 0; // edg
 >
   <CardHeader class="pb-2">
     <CardTitle class="flex items-center gap-2 text-base">
-      <ChartPieIcon class="w-5 h-5 text-primary" /> Win Ratio
+      <ChartPieIcon class="w-5 h-5 text-primary" />
+      {m.win_ratio_card_title()}
     </CardTitle>
     <CardDescription>
       {#if stats.gamesPlayed === 0}
-        Play more to see your stats!
+        {m.win_ratio_card_empty_description()}
       {:else}
-        Total games played: {stats.gamesPlayed}
+        {m.win_ratio_card_description()}: {stats.gamesPlayed}
       {/if}
     </CardDescription>
   </CardHeader>
@@ -42,17 +44,20 @@ if (stats.wins + stats.losses + stats.draws === 0) stats.gamesPlayed = 0; // edg
       <div class="flex w-full text-sm font-medium">
         {#if stats.wins > 0}
           <span style="flex: {stats.wins}" class="text-center text-emerald-600"
-            >{stats.wins} W</span
+            >{stats.wins}
+            {m.win_ratio_card_wins()}</span
           >
         {/if}
         {#if stats.draws > 0}
           <span style="flex: {stats.draws}" class="text-center text-slate-500"
-            >{stats.draws} D</span
+            >{stats.draws}
+            {m.win_ratio_card_draws()}</span
           >
         {/if}
         {#if stats.losses > 0}
           <span style="flex: {stats.losses}" class="text-center text-rose-600"
-            >{stats.losses} L</span
+            >{stats.losses}
+            {m.win_ratio_card_losses()}</span
           >
         {/if}
       </div>

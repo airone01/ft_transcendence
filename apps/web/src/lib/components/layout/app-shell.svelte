@@ -17,6 +17,7 @@ import { goto, invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
 import AppSidebar from "$lib/components/app-sidebar.svelte";
 import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
+import * as m from "$lib/paraglide/messages.js";
 
 const { children } = $props();
 
@@ -46,10 +47,10 @@ function runCommand(url: string) {
 const logoutFunc: SubmitFunction = () => {
   return async ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
-      toast.success("You logged out. See you soon!");
+      toast.success(m.app_shell_popup_success_logout());
       await invalidateAll(); // invalidates data to redraw interface
     } else {
-      toast.error("Failed to log out");
+      toast.error(m.app_shell_popup_fail_logout());
     }
   };
 };
@@ -64,7 +65,10 @@ $effect(() => {
 const commandGroups: ShellGroup[] = [
   ...sidebarGroups
     .map(({ label, items }) => ({
-      heading: label === "My Content" ? "Quick navigation" : naturalCap(label),
+      heading:
+        label === m.app_shell_heading_content()
+          ? m.app_shell_heading_quick_nav()
+          : naturalCap(label),
       items: items.map((e) => {
         const { href, label, ...el } = e;
         return {
@@ -76,22 +80,26 @@ const commandGroups: ShellGroup[] = [
     }))
     .filter((e) => e.heading !== "Chess"),
   {
-    heading: "Start a game",
+    heading: m.app_shell_heading_chess(),
     items: [
-      { label: "Start ranked match making", navUrl: "/play", icon: ZapIcon },
-      { label: "Start a game against AI", navUrl: "/play/bot", icon: BotIcon },
+      { label: m.app_shell_item_play(), navUrl: "/play", icon: ZapIcon },
+      {
+        label: m.app_shell_item_play_vs_bot(),
+        navUrl: "/play/bot",
+        icon: BotIcon,
+      },
     ],
   },
   {
-    heading: "Account",
+    heading: m.app_shell_heading_account(),
     items: [
       {
-        label: "Settings",
+        label: m.app_shell_item_settings(),
         navUrl: "/settings",
         icon: SettingsIcon,
       },
       {
-        label: "Log out",
+        label: m.app_shell_item_logout(),
         icon: LogOutIcon,
         onClick: () => logoutForm?.requestSubmit(),
       },
@@ -116,12 +124,16 @@ const commandGroups: ShellGroup[] = [
   />
   <CommandList>
     <CommandEmpty>No results found.</CommandEmpty>
-    {#each commandGroups as {items, heading}, i (heading)}
+    {#each commandGroups as { items, heading }, i (heading)}
       <CommandGroup {heading}>
-        {#each items as {navUrl, label, onClick, icon: Icon} (label)}
+        {#each items as { navUrl, label, onClick, icon: Icon } (label)}
           <CommandItem
-            onSelect={onClick ? onClick : (navUrl ? (() => runCommand(navUrl)) : undefined)}
-            class="cursor-pointer aria-selected:bg-accent group"
+            onSelect={onClick
+              ? onClick
+              : navUrl
+                ? () => runCommand(navUrl)
+                : undefined}
+            class="aria-selected:bg-accent group"
           >
             <Icon
               class="me-2 size-4 group-data-selected:text-accent-foreground text-foreground"
@@ -130,7 +142,7 @@ const commandGroups: ShellGroup[] = [
           </CommandItem>
         {/each}
       </CommandGroup>
-      {#if i+1 > commandGroups.length}
+      {#if i + 1 > commandGroups.length}
         <CommandSeparator />
       {/if}
     {/each}
@@ -143,7 +155,7 @@ const commandGroups: ShellGroup[] = [
     <header
       class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
     >
-      <SidebarTrigger class="cursor-pointer" />
+      <SidebarTrigger />
     </header>
     {@render children?.()}
   </div>

@@ -14,9 +14,9 @@ import {
   DBAddFriendWrongFriendshipError,
   DBCreateChatChannelError,
   DBUserNotFoundError,
-  type FriendInfo,
   UnknownError,
-} from "$lib/server/db-services";
+} from "../db.errors";
+import type { FriendInfo } from "../schema/db.users.schema";
 
 /**
  * Requests a friendship from a user to another user.
