@@ -17,7 +17,13 @@ import { page } from "$app/state";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import { sidebarGroups } from "$lib/navigation";
 
-const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
+const {
+  logoutForm,
+  collapsible = "icon",
+}: {
+  logoutForm: HTMLFormElement | undefined;
+  collapsible?: "icon" | "offcanvas" | "none";
+} = $props();
 
 function getIsActive(href: string, exact?: boolean): boolean {
   const currentPath = page.url.pathname;
@@ -27,7 +33,7 @@ function getIsActive(href: string, exact?: boolean): boolean {
 }
 </script>
 
-<Sidebar collapsible="icon">
+<Sidebar {collapsible}>
   <a href="/">
     <SidebarHeader
       class="border-b flex flex-row gap-2 select-none p-2 items-center h-11"
