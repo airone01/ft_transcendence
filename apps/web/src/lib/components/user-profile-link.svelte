@@ -7,6 +7,7 @@ import {
   HoverCardTrigger,
 } from "@transc/ui/hover-card";
 import type { Snippet } from "svelte";
+import * as m from "$lib/paraglide/messages";
 
 let {
   userId,
@@ -54,7 +55,7 @@ let userPromise = $derived(
         <div class="space-y-1">
           <h4 class="text-sm font-semibold">@{fallbackUsername}</h4>
           <p class="text-xs text-muted-foreground animate-pulse">
-            Loading info...
+            {m.user_profile_link_loading()}
           </p>
         </div>
       </div>
@@ -69,7 +70,7 @@ let userPromise = $derived(
         <div class="space-y-1 flex flex-col">
           <h4 class="text-sm font-semibold">@{fullUser.username}</h4>
           <p class="text-sm mt-1">
-            {fullUser.bio || "This user does not have a bio."}
+            {fullUser.bio || m.user_profile_link_bio_empty()}
           </p>
           <div class="text-xs text-muted-foreground"></div>
           <div class="flex items-center text-xs text-muted-foreground gap-2">
@@ -79,13 +80,13 @@ let userPromise = $derived(
             {/if}
             <CalendarIcon class="w-3 h-3" />
             <span
-              >Joined {new Date(fullUser.createdAt).toLocaleDateString()}</span
+              >{m.user_profile_link_joined({date: new Date(fullUser.createdAt).toLocaleDateString()})}</span
             >
           </div>
         </div>
       </div>
     {:catch _e}
-      <p class="text-sm text-destructive">Failed to load user info.</p>
+      <p class="text-sm text-destructive">{m.user_profile_link_fail()}</p>
     {/await}
   </HoverCardContent>
 </HoverCard>

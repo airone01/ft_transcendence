@@ -216,6 +216,11 @@
   "settings_page_display_title": "[i18n] Display",
   "settings_page_privacy_title": "[i18n] Privacy",
 
+  "user_profile_link_loading": "[i18n] Loading...",
+  "user_profile_link_bio_empty": "[i18n] This user does not have a bio.",
+  "user_profile_link_joined": "[i18n] Joined {date}",
+  "user_profile_link_fail": "[i18n] Failed to load user info.",
+
   "profile_page_action_add_username_required": "[i18n] Username is required",
   "profile_page_action_add_add_yourself": "[i18n] You cannot add yourself",
   "profile_page_action_add_user_not_found": "[i18n] User not found",
