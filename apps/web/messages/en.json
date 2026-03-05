@@ -233,5 +233,8 @@
 
   "profile_page_action_remove_invalid_userid": "[i18n] Invalid user ID",
   "profile_page_action_remove_success": "[i18n] Removed friend",
-  "profile_page_action_remove_internal_error": "[i18n] Failed to remove friend"
+  "profile_page_action_remove_internal_error": "[i18n] Failed to remove friend",
+
+  "profile_page_fecth_user_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_fecth_user_not_found": "[i18n] User not found"
 }

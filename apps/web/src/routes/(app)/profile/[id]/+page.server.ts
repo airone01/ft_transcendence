@@ -9,6 +9,7 @@ import {
 } from "$lib/server/db-services";
 import type { UserNoPass } from "../../../../app";
 import type { PageServerLoad } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   if (locals.user == null) throw redirect(301, "/");
@@ -27,9 +28,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     }
 
     if (Number.isNaN(userId) || userId == null)
-      throw error(400, "Invalid user ID");
+      throw error(400, m.profile_page_fecth_user_invalid_userid());
 
-    if (!user) throw error(404, "User not found");
+    if (!user) throw error(404, m.profile_page_fecth_user_not_found());
 
     const [stats, games, rawEloHistory, achievements, peakElo] =
       await Promise.all([
