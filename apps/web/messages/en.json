@@ -250,6 +250,11 @@
   "register_email_taken": "[i18n] Email already registered.",
   "register_username_taken": "[i18n] Username already taken.",
   
+  "api_users_id_unauthorized": "[i18n] Unauthorized",
+  "api_users_id_invalid_userid": "[i18n] Invalid user ID",
+  "api_users_id_user_not_found": "[i18n] User not found",
+  "api_users_id_fetch_user_internal_error": "[i18n] Failed to fetch user profile for HoverCard:",
+
   "unkown_db_error": "[i18n] Unknown database error",
   "internal_server_error": "[i18n] Internal server error"
 }
