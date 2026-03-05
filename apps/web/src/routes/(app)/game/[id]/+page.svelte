@@ -8,8 +8,8 @@ import {
   acceptDraw,
   gameState,
   isMyTurn,
-  type MoveRecord,
   leaveGame,
+  type MoveRecord,
   offerDraw,
   resign,
 } from "$lib/stores/game.store";
@@ -138,10 +138,14 @@ const movePairs = $derived(() => {
           <span class="text-sm text-muted-foreground">You play</span>
           <div class="flex items-center gap-2">
             {#if $gameState.myColor === "white"}
-              <div class="w-3 h-3 rounded-full bg-white border border-zinc-300"></div>
+              <div
+                class="w-3 h-3 rounded-full bg-white border border-zinc-300"
+              ></div>
               <span class="font-medium text-sm">White</span>
             {:else}
-              <div class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"></div>
+              <div
+                class="w-3 h-3 rounded-full bg-zinc-800 dark:bg-zinc-300"
+              ></div>
               <span class="font-medium text-sm">Black</span>
             {/if}
           </div>
@@ -152,21 +156,25 @@ const movePairs = $derived(() => {
 
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
-      {#if $gameState.isSpectator}
-        <!-- Bouton pour quitter le spectate -->
-        <Button
-          variant="outline"
-          class="w-full"
-          onclick={() => {
+        {#if $gameState.isSpectator}
+          <!-- Bouton pour quitter le spectate -->
+          <Button
+            variant="outline"
+            class="w-full"
+            onclick={() => {
             leaveGame();
             window.history.back();
           }}
-        >
-          Leave spectator mode
-        </Button>
+          >
+            Leave spectator mode
+          </Button>
         {:else if !$gameState.gameOver}
           <!-- Code joueur existant - inchangé -->
-          <Button variant="outline" class="w-full justify-start" onclick={handleOfferDraw}>
+          <Button
+            variant="outline"
+            class="w-full justify-start"
+            onclick={handleOfferDraw}
+          >
             <HandshakeIcon class="w-4 h-4 mr-2" />
             Offer draw
           </Button>
@@ -180,7 +188,11 @@ const movePairs = $derived(() => {
           </Button>
         {:else}
           <!-- Code game over existant - inchangé -->
-          <Button variant="outline" class="w-full" onclick={() => window.history.back()}>
+          <Button
+            variant="outline"
+            class="w-full"
+            onclick={() => window.history.back()}
+          >
             Back to lobby
           </Button>
         {/if}
