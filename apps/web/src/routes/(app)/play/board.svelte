@@ -440,8 +440,6 @@ function confirmPromotion() {
     </div>
   {/if}
 
-  
-
   <!-- File labels (bottom) -->
   <div class="flex pl-6">
     {#each displayFiles as file}

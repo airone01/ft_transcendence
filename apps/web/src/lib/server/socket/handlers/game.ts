@@ -151,33 +151,38 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         });
 
         if (result.gameOver) {
-        const players = await dbGetPlayers(parseInt(gameId, 10));
-        let winnerName: string | null = null;
-        let winnerColor: "white" | "black" | null = null;
-              
-        if (result.winner) {
-          const sockets = await io.in(`game:${gameId}`).fetchSockets();
-          const winnerSocket = sockets.find(s => s.data.userId === result.winner);
-          
-          winnerName = winnerSocket?.data.username || null;
-          winnerColor = String(players.whitePlayerId) === result.winner ? "white" : "black";
-        }
-        
-        io.to(`game:${gameId}`).emit("game:over", {
-          winner: winnerColor,
-          winnerName: winnerName,
-          reason: result.reason,
-        });
-      
-        const socketsToClean = await io.in(`game:${gameId}`).fetchSockets();
-        for (const s of socketsToClean) {
-          if (!s.data.isSpectator) {
-            s.data.currentGameId = null;
+          const players = await dbGetPlayers(parseInt(gameId, 10));
+          let winnerName: string | null = null;
+          let winnerColor: "white" | "black" | null = null;
+
+          if (result.winner) {
+            const sockets = await io.in(`game:${gameId}`).fetchSockets();
+            const winnerSocket = sockets.find(
+              (s) => s.data.userId === result.winner,
+            );
+
+            winnerName = winnerSocket?.data.username || null;
+            winnerColor =
+              String(players.whitePlayerId) === result.winner
+                ? "white"
+                : "black";
           }
+
+          io.to(`game:${gameId}`).emit("game:over", {
+            winner: winnerColor,
+            winnerName: winnerName,
+            reason: result.reason,
+          });
+
+          const socketsToClean = await io.in(`game:${gameId}`).fetchSockets();
+          for (const s of socketsToClean) {
+            if (!s.data.isSpectator) {
+              s.data.currentGameId = null;
+            }
+          }
+
+          activeGames.delete(gameId);
         }
-      
-        activeGames.delete(gameId);
-      }
       } catch (error) {
         console.error("Move error:", error);
         socket.emit("game:error", { message: "Invalid move" });
@@ -223,38 +228,39 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
   // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
-  if (socket.data.isSpectator) {
-    return socket.emit("game:error", { message: "Spectators cannot resign" });
-  }
-  const gameRoom = activeGames.get(data.gameId);
-  if (gameRoom) {
-    const winnerUserId = gameRoom.getOpponent(userId);
-    
-    const players = await dbGetPlayers(parseInt(data.gameId, 10));
-    const winnerColor = String(players.whitePlayerId) === winnerUserId ? "white" : "black";
-    
-    // Récupérer le username du gagnant
-    const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-    const winnerSocket = sockets.find(s => s.data.userId === winnerUserId);
-    const winnerName = winnerSocket?.data.username || null;
-    
-    await gameRoom.endGame("resignation", winnerUserId);
-    io.to(`game:${data.gameId}`).emit("game:over", {
-      winner: winnerColor,
-      winnerName: winnerName,
-      reason: "resignation",
-    });
-
-    const socketsToClean = await io.in(`game:${data.gameId}`).fetchSockets();
-    for (const s of socketsToClean) {
-      if (!s.data.isSpectator) {
-        s.data.currentGameId = null;
-      }
+    if (socket.data.isSpectator) {
+      return socket.emit("game:error", { message: "Spectators cannot resign" });
     }
+    const gameRoom = activeGames.get(data.gameId);
+    if (gameRoom) {
+      const winnerUserId = gameRoom.getOpponent(userId);
 
-    activeGames.delete(data.gameId);
-  }
-});
+      const players = await dbGetPlayers(parseInt(data.gameId, 10));
+      const winnerColor =
+        String(players.whitePlayerId) === winnerUserId ? "white" : "black";
+
+      // Récupérer le username du gagnant
+      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+      const winnerSocket = sockets.find((s) => s.data.userId === winnerUserId);
+      const winnerName = winnerSocket?.data.username || null;
+
+      await gameRoom.endGame("resignation", winnerUserId);
+      io.to(`game:${data.gameId}`).emit("game:over", {
+        winner: winnerColor,
+        winnerName: winnerName,
+        reason: "resignation",
+      });
+
+      const socketsToClean = await io.in(`game:${data.gameId}`).fetchSockets();
+      for (const s of socketsToClean) {
+        if (!s.data.isSpectator) {
+          s.data.currentGameId = null;
+        }
+      }
+
+      activeGames.delete(data.gameId);
+    }
+  });
 
   // Leave game
   socket.on("game:leave", (data: { gameId: string }) => {
