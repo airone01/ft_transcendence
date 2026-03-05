@@ -87,7 +87,7 @@ const {
               <Button
                 type="submit"
                 variant="secondary"
-                class="w-full cursor-pointer bg-accent/50 hover:bg-primary hover:text-primary-foreground"
+                class="w-full bg-accent/50 hover:bg-primary hover:text-primary-foreground"
               >
                 <UserPlusIcon class="w-4 h-4 mr-2" />
                 {m.suggested_players_card_button_request()}

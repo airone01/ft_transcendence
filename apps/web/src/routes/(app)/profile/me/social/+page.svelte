@@ -94,12 +94,7 @@ const formEnhance: SubmitFunction = () => {
           autocomplete="off"
         />
       </div>
-      <Button
-        type="submit"
-        size="icon"
-        variant="secondary"
-        class="cursor-pointer"
-      >
+      <Button type="submit" size="icon" variant="secondary">
         <UserPlusIcon class="h-4 w-4" />
         <!-- TODO: maybe i18n or delete? -->
         <span class="sr-only">Add</span>

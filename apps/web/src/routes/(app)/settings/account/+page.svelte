@@ -88,12 +88,7 @@ const unlinkEnhance: SubmitFunction = () => {
       {#if data.connectedProviders.includes("discord")}
         <form action="?/unlink" method="POST" use:enhance={unlinkEnhance}>
           <input type="hidden" name="provider" value="discord">
-          <Button
-            variant="destructive"
-            size="sm"
-            type="submit"
-            class="cursor-pointer"
-          >
+          <Button variant="destructive" size="sm" type="submit">
             <Unplug class="mr-2 h-4 w-4" />
             {m.settings_page_account_button_disconnect()}
           </Button>
