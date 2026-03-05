@@ -66,8 +66,13 @@ let dragFromIndex: number | null = $state(null);
 let isDragging = false;
 let rebuildScheduled = false;
 let showPromotionDialog = $state(false);
-let promotionMove = $state<{ fromRow: number; fromCol: number; toRow: number; toCol: number } | null>(null);
-let selectedPromotion = $state<'q' | 'r' | 'b' | 'n'>('q');
+let promotionMove = $state<{
+  fromRow: number;
+  fromCol: number;
+  toRow: number;
+  toCol: number;
+} | null>(null);
+let selectedPromotion = $state<"q" | "r" | "b" | "n">("q");
 
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
@@ -219,7 +224,8 @@ function handleDndFinalize(
     const [toRow, toCol] = indexToBoard(squareIndex);
 
     const piece = localState.board[fromRow][fromCol];
-    const isPromotion = piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
+    const isPromotion =
+      piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
 
     if (isPromotion) {
       // ✅ Afficher la popup
@@ -282,7 +288,7 @@ function confirmPromotion() {
   const { fromRow, fromCol, toRow, toCol } = promotionMove;
   const fromAlgebraic = files[fromCol] + ranks[fromRow];
   const toAlgebraic = files[toCol] + ranks[toRow];
-  
+
   makeMove(fromAlgebraic, toAlgebraic, selectedPromotion);
 
   try {
@@ -296,7 +302,7 @@ function confirmPromotion() {
 
   showPromotionDialog = false;
   promotionMove = null;
-  selectedPromotion = 'q';
+  selectedPromotion = "q";
 }
 </script>
 
@@ -371,10 +377,12 @@ function confirmPromotion() {
   </div>
 
   {#if showPromotionDialog}
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
       <div class="bg-background border rounded-lg p-6 space-y-4 max-w-md">
         <h3 class="text-lg font-semibold text-center">Choose promotion</h3>
-      
+
         <div class="grid grid-cols-4 gap-3">
           <button
             class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
@@ -383,10 +391,12 @@ function confirmPromotion() {
               confirmPromotion();
             }}
           >
-            <ChessQueenIcon class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}" />
+            <ChessQueenIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
             <p class="text-xs mt-1">Queen</p>
           </button>
-          
+
           <button
             class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
             onclick={() => {
@@ -394,10 +404,12 @@ function confirmPromotion() {
               confirmPromotion();
             }}
           >
-            <ChessRookIcon class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}" />
+            <ChessRookIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
             <p class="text-xs mt-1">Rook</p>
           </button>
-          
+
           <button
             class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
             onclick={() => {
@@ -405,10 +417,12 @@ function confirmPromotion() {
               confirmPromotion();
             }}
           >
-            <ChessBishopIcon class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}" />
+            <ChessBishopIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
             <p class="text-xs mt-1">Bishop</p>
           </button>
-          
+
           <button
             class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
             onclick={() => {
@@ -416,7 +430,9 @@ function confirmPromotion() {
               confirmPromotion();
             }}
           >
-            <ChessKnightIcon class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}" />
+            <ChessKnightIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
             <p class="text-xs mt-1">Knight</p>
           </button>
         </div>
