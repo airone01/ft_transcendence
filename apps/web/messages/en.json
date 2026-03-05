@@ -140,7 +140,7 @@
 
   "play_page_connecting": "[i18n] Connecting to server...",
   "play_page_inqueue_title": "[i18n] Looking for an opponent...",
-  "play_page_inqueue_mode": "[i18n] Mode",
+  "play_page_inqueue_mode": "[i18n] Mode:",
   "play_page_inqueue_position_title": "[i18n] Queue position:",
   "play_page_inqueue_button_cancel": "[i18n] Cancel",
 

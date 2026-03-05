@@ -27,6 +27,20 @@ function handleCancelQueue() {
     leaveQueue(state.mode);
   }
 }
+
+let resolveModeTranslation = (mode: string | null) =>
+{
+  if (!mode) return "";
+  switch (mode) {
+    case "blitz":
+      return m.play_page_mode_blitz();
+    case "rapid":
+      return m.play_page_mode_rapid();
+    default:
+      return mode;
+  }
+}
+
 </script>
 
 <main class="h-full flex items-center justify-center p-6">
@@ -43,14 +57,12 @@ function handleCancelQueue() {
         <h2 class="text-xl font-semibold">{m.play_page_inqueue_title()}</h2>
         <p class="text-muted-foreground">
           {m.play_page_inqueue_mode()}
-          <!-- TODO: i18n -->
           <span class="font-medium text-foreground"
-            >{$matchmakingState.mode}</span
+            >{resolveModeTranslation($matchmakingState.mode)}</span
           >
         </p>
         {#if $matchmakingState.position}
           <p class="text-sm text-muted-foreground">
-            <!-- TODO: i18n -->
             {m.play_page_inqueue_position_title()}
             {$matchmakingState.position}
           </p>
