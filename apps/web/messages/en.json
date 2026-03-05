@@ -255,6 +255,22 @@
   "api_users_id_user_not_found": "[i18n] User not found",
   "api_users_id_fetch_user_internal_error": "[i18n] Failed to fetch user profile for HoverCard:",
 
+  "zod_schema_username_min_length": "[i18n] Username must be at least 3 characters.",
+  "zod_schema_username_max_length": "[i18n] Username must be at most 20 characters.",
+  "zod_schema_username_char_allowed": "[i18n] Only letters, numbers, and underscores allowed.",
+  "zod_schema_email_invalid": "[i18n] Please enter a valid email address.",
+  "zod_schema_password_required": "[i18n] Password is required.",
+  "zod_schema_password_min_length": "[i18n] Password must be at least 8 characters.",
+  "zod_schema_password_max_length": "[i18n] Password must be at most 64 characters.",
+  "zod_schema_password_uppercase": "[i18n] Password must contain at least one uppercase letter.",
+  "zod_schema_password_lowercase": "[i18n] Password must contain at least one lowercase letter.",
+  "zod_schema_password_digit": "[i18n] Password must contain at least one digit.",
+  "zod_schema_password_special": "[i18n] Password must contain at least one special character.",
+  "zod_schema_password_match": "[i18n] Passwords do not match.",
+  "zod_schema_bio_max_length": "[i18n] Biography must be at most 255 characters.",
+  "zod_schema_avatar_type": "[i18n] Avatar must be a file",
+  "zod_schema_avatar_size": "[i18n] Avatar must be less than 1MB",
+
   "unkown_db_error": "[i18n] Unknown database error",
   "internal_server_error": "[i18n] Internal server error"
 }
