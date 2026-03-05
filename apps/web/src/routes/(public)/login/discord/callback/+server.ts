@@ -1,5 +1,6 @@
 import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
+import * as m from "$lib/paraglide/messages";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import {
   dbCreateOAuthAccount,
@@ -8,7 +9,6 @@ import {
   dbGetUserByOauthId,
 } from "$lib/server/db-services";
 import type { RequestEvent } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 // helper interface for discord response typing
 interface DiscordUser {

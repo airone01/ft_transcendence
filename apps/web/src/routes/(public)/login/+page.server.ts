@@ -1,11 +1,11 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
 import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
 import { dbGetUserByEmail } from "$lib/server/db-services";
 import type { Actions } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const actions = {
   default: async ({ request, cookies }) => {
@@ -35,11 +35,7 @@ export const actions = {
         !user.password ||
         !(await verifyPassword(user.password, form.data.password))
       )
-        return message(
-          form,
-           m.login_action_default_fail(),
-          { status: 400 },
-        );
+        return message(form, m.login_action_default_fail(), { status: 400 });
 
       const { token, expiresAt } = await auth.createSession(user.id);
 

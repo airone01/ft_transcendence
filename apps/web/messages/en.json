@@ -153,18 +153,18 @@
 
   "game_page_title": "[i18n] Current game",
   "game_page_disconnected": "[i18n] Disconnected",
-  
+
   "game_page_turn_title": "[i18n] Current turn",
   "game_page_turn_user": "[i18n] Your turn",
   "game_page_turn_opponent": "[i18n] Opponent's turn",
- 
+
   "game_page_status_check": "[i18n] Check!",
   "game_page_status_game_over": "[i18n] Game Over",
   "game_page_status_winner": "[i18n] Winner: {winner}",
   "game_page_status_draw": "[i18n] Draw",
 
   "game_page_color_title": "[i18n] You play",
-  
+
   "game_page_button_draw": "[i18n] Offer Draw",
   "game_page_button_resign": "[i18n] Resign",
   "game_page_button_leave": "[i18n] Back to lobby",
@@ -244,7 +244,7 @@
   "profile_page_fecth_user_not_found": "[i18n] User not found",
 
   "login_action_default_fail": "[i18n] Invalid email or password, or an associated account uses OAuth.",
-  
+
   "oauth_invalid_state_or_code": "[i18n] Invalid state or code",
   "oauth_failed_to_get_access_token": "[i18n] Failed to get access token",
   "oauth_failed_to_fetch_user": "[i18n] Failed to fetch user data",
@@ -254,7 +254,7 @@
 
   "register_email_taken": "[i18n] Email already registered.",
   "register_username_taken": "[i18n] Username already taken.",
-  
+
   "api_users_id_unauthorized": "[i18n] Unauthorized",
   "api_users_id_invalid_userid": "[i18n] Invalid user ID",
   "api_users_id_user_not_found": "[i18n] User not found",

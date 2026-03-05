@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
 import { page } from "$app/state";
+import { m } from "$lib/paraglide/messages";
 import {
   acceptDraw,
   gameState,
@@ -14,7 +15,6 @@ import {
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
-  import { m } from "$lib/paraglide/messages";
 
 let gameId: string = page.params.id ?? "0";
 
@@ -65,7 +65,9 @@ const movePairs = $derived(() => {
       <div class="flex items-center justify-between">
         <h2 class="text-lg font-semibold">{m.game_page_title()}</h2>
         {#if !$socketConnected}
-          <span class="text-xs text-destructive">{m.game_page_disconnected()}</span>
+          <span class="text-xs text-destructive"
+            >{m.game_page_disconnected()}</span
+          >
         {/if}
       </div>
 
@@ -73,7 +75,9 @@ const movePairs = $derived(() => {
 
       <!-- Current turn -->
       <div class="space-y-1">
-        <span class="text-sm text-muted-foreground">{m.game_page_turn_title()}</span>
+        <span class="text-sm text-muted-foreground"
+          >{m.game_page_turn_title()}</span
+        >
         <div class="flex items-center gap-2">
           {#if $gameState.turn === "w"}
             <div
@@ -88,9 +92,13 @@ const movePairs = $derived(() => {
           {/if}
         </div>
         {#if $isMyTurn}
-          <span class="text-xs text-primary font-medium">{m.game_page_turn_user()}</span>
+          <span class="text-xs text-primary font-medium"
+            >{m.game_page_turn_user()}</span
+          >
         {:else if !$gameState.gameOver}
-          <span class="text-xs text-muted-foreground">{m.game_page_turn_opponent()}</span>
+          <span class="text-xs text-muted-foreground"
+            >{m.game_page_turn_opponent()}</span
+          >
         {/if}
       </div>
 
@@ -127,7 +135,9 @@ const movePairs = $derived(() => {
       <!-- My color -->
       {#if $gameState.myColor}
         <div class="mt-4 space-y-1">
-          <span class="text-sm text-muted-foreground">{m.game_page_color_title()}</span>
+          <span class="text-sm text-muted-foreground"
+            >{m.game_page_color_title()}</span
+          >
           <div class="flex items-center gap-2">
             {#if $gameState.myColor === "white"}
               <div
@@ -193,7 +203,9 @@ const movePairs = $derived(() => {
       <div class="flex-1 mt-4 rounded-lg bg-muted/50 overflow-y-auto min-h-0">
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center">
-            <span class="text-sm text-muted-foreground">{m.game_page_move_history_empty()}</span>
+            <span class="text-sm text-muted-foreground"
+              >{m.game_page_move_history_empty()}</span
+            >
           </div>
         {:else}
           <div class="p-2 space-y-0.5">
@@ -311,7 +323,9 @@ const movePairs = $derived(() => {
       </Dialog.Header>
       <Dialog.Footer>
         <Dialog.Close>
-          <Button variant="outline" class="w-full">{m.game_page_popup_resign_button_decline()}</Button>
+          <Button variant="outline" class="w-full">
+            {m.game_page_popup_resign_button_decline()}
+          </Button>
         </Dialog.Close>
         <Button
           class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"

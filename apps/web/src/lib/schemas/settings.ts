@@ -1,7 +1,7 @@
 // yes, the fact that zod is on v3 is important.
 import { z } from "zod/v3";
-import { zPassword, zUsername } from "./auth";
 import * as m from "$lib/paraglide/messages";
+import { zPassword, zUsername } from "./auth";
 
 export const profileFormSchema = z.object({
   username: zUsername.optional(),

@@ -1,16 +1,17 @@
 import { json } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
 import {
   DBUserNotFoundError,
   dbGetStats,
   dbGetUser,
 } from "$lib/server/db-services";
 import type { RequestHandler } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const userId = parseInt(params.id, 10);
 
-  if (!locals.user) return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
+  if (!locals.user)
+    return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
 
   if (Number.isNaN(userId))
     return json({ error: m.api_users_id_invalid_userid() }, { status: 400 });

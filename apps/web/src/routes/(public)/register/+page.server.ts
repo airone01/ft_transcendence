@@ -1,6 +1,7 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
 import { registerSchema } from "$lib/schemas/auth";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import {
@@ -10,7 +11,6 @@ import {
   dbIsEmailTaken,
 } from "$lib/server/db-services";
 import type { Actions } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const actions = {
   default: async ({ request, cookies }) => {

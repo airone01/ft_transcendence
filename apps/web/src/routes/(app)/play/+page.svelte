@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import {
   joinQueue,
@@ -11,7 +12,6 @@ import {
   matchmakingState,
 } from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
-import { m } from "$lib/paraglide/messages";
 
 onMount(() => {
   return gameState.subscribe((state) => {
@@ -51,7 +51,8 @@ function handleCancelQueue() {
         {#if $matchmakingState.position}
           <p class="text-sm text-muted-foreground">
             <!-- TODO: i18n -->
-            {m.play_page_inqueue_position_title()} {$matchmakingState.position}
+            {m.play_page_inqueue_position_title()}
+            {$matchmakingState.position}
           </p>
         {/if}
       </div>
@@ -91,7 +92,9 @@ function handleCancelQueue() {
           <ClockIcon class="w-10 h-10 text-blue-500" />
           <div class="text-center">
             <h3 class="font-semibold text-lg">{m.play_page_mode_rapid()}</h3>
-            <p class="text-sm text-muted-foreground">{m.play_page_minutes_and_increment({ minutes: 15, increment: 10 })}</p>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({ minutes: 15, increment: 10 })}
+            </p>
           </div>
         </button>
 
@@ -102,7 +105,9 @@ function handleCancelQueue() {
           <TargetIcon class="w-10 h-10 text-green-500" />
           <div class="text-center">
             <h3 class="font-semibold text-lg">{m.play_page_mode_casual()}</h3>
-            <p class="text-sm text-muted-foreground">{m.play_page_minutes_and_increment({ minutes: 10, increment: 5 })}</p>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({ minutes: 10, increment: 5 })}
+            </p>
           </div>
         </button>
       </div>

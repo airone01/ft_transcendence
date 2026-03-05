@@ -1,4 +1,5 @@
 import { fail } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
 import {
   DBAddFriendFriendshipAlreadyExistsError,
   dbAddFriend,
@@ -11,7 +12,6 @@ import {
   dbRequestFriendship,
 } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user)

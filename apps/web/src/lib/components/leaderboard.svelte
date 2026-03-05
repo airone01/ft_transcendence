@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from "@transc/ui/card";
 import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
+import * as m from "$lib/paraglide/messages";
 import type { User } from "$lib/server/db-services";
 import type { UserNoPass } from "../../app";
-import * as m from "$lib/paraglide/messages";
 
 const {
   data,
@@ -30,7 +30,9 @@ const {
   class="container mx-auto max-w-4xl p-4 md:p-6 h-full flex flex-col gap-6 mt-11"
 >
   <header class="text-center sm:text-left">
-    <h2 class="text-3xl font-bold tracking-tight">{m.leaderboard_page_title()}</h2>
+    <h2 class="text-3xl font-bold tracking-tight">
+      {m.leaderboard_page_title()}
+    </h2>
     <p class="text-muted-foreground">{m.leaderboard_page_description()}</p>
   </header>
 

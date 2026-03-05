@@ -1,4 +1,5 @@
 import { error, redirect } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
 import {
   dbGetAchievements,
   dbGetEloHistory,
@@ -9,7 +10,6 @@ import {
 } from "$lib/server/db-services";
 import type { UserNoPass } from "../../../../app";
 import type { PageServerLoad } from "./$types";
-import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   if (locals.user == null) throw redirect(301, "/");
