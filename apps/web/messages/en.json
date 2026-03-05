@@ -214,5 +214,24 @@
   "settings_page_gameplay_title": "[i18n] Gameplay",
   "settings_page_sound_title": "[i18n] Sound",
   "settings_page_display_title": "[i18n] Display",
-  "settings_page_privacy_title": "[i18n] Privacy"
+  "settings_page_privacy_title": "[i18n] Privacy",
+
+  "profile_page_action_add_username_required": "[i18n] Username is required",
+  "profile_page_action_add_add_yourself": "[i18n] You cannot add yourself",
+  "profile_page_action_add_user_not_found": "[i18n] User not found",
+  "profile_page_action_add_success": "[i18n] Sent friend request",
+  "profile_page_action_add_fail": "[i18n] You are already friends or an invite is pending",
+  "profile_page_action_add_internal_error": "[i18n] Failed to send friend request",
+
+  "profile_page_action_accept_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_accept_success": "[i18n] Accepted friend request",
+  "profile_page_action_accept_internal_error": "[i18n] Failed to accept friend request",
+
+  "profile_page_action_reject_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_reject_success": "[i18n] Declined friend request",
+  "profile_page_action_reject_internal_error": "[i18n] Failed to decline friend request",
+
+  "profile_page_action_remove_invalid_userid": "[i18n] Invalid user ID",
+  "profile_page_action_remove_success": "[i18n] Removed friend",
+  "profile_page_action_remove_internal_error": "[i18n] Failed to remove friend"
 }
