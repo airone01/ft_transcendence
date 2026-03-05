@@ -18,6 +18,7 @@ import { page } from "$app/state";
 import AppSidebar from "$lib/components/app-sidebar.svelte";
 import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
 import * as m from "$lib/paraglide/messages.js";
+import { useMediaQuery } from "$lib/utils/media-query.svelte";
 
 const { children } = $props();
 
@@ -25,6 +26,8 @@ let logoutForm: HTMLFormElement | undefined = $state();
 let commandInput: string = $state("");
 let sidebarOpen: boolean = $state(page.data.sidebarOpen);
 let commandOpen: boolean = $state(false);
+
+const isMobile = useMediaQuery("(max-width: 639px)");
 
 $effect(() => {
   // set cookie when bar state changes
@@ -150,7 +153,10 @@ const commandGroups: ShellGroup[] = [
 </CommandDialog>
 
 <SidebarProvider bind:open={sidebarOpen}>
-  <AppSidebar {logoutForm} />
+  <AppSidebar
+    {logoutForm}
+    collapsible={isMobile.current ? "offcanvas" : "icon"}
+  />
   <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
     <header
       class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"

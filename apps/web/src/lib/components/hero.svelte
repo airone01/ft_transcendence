@@ -3,10 +3,14 @@ import { Button } from "@transc/ui/button";
 import * as m from "$lib/paraglide/messages.js";
 </script>
 
-<section class="flex gap-4 container">
+<section
+  class="flex flex-col-reverse sm:flex-row gap-6 sm:gap-4 container px-4"
+>
   <!-- Main title -->
   <div class="flex flex-col justify-center items-center w-full">
-    <h1 class="text-7xl uppercase font-semibold text-center">
+    <h1
+      class="text-4xl sm:text-5xl lg:text-7xl uppercase font-semibold text-center"
+    >
       {m.hero_page_title()}
     </h1>
   </div>
