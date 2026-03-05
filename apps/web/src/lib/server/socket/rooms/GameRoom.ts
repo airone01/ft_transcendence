@@ -355,6 +355,14 @@ export class GameRoom extends EventEmitter {
     return userId === this.whiteId ? this.blackId : this.whiteId;
   }
 
+  public getWhiteId(): string {
+    return this.whiteId;
+  }
+
+  public getBlackId(): string {
+    return this.blackId;
+  }
+
   isGameOver(): boolean {
     return this.isGameOverFlag;
   }

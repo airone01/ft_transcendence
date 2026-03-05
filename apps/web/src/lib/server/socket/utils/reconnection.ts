@@ -56,27 +56,60 @@ export async function restoreSessionOnReconnect(
   const userId = socket.data.userId;
   if (!userId) return { restored: false, gameId: null };
 
+  // ✅ D'abord, vérifier si le user a une partie active en cours
+  for (const [gameId, gameRoom] of activeGames.entries()) {
+    if (!gameRoom.isGameOver()) {
+      const isPlayer =
+        gameRoom.getWhiteId() === userId || gameRoom.getBlackId() === userId;
+
+      if (isPlayer) {
+        console.log(`[Reconnection] User ${userId} has active game ${gameId}`);
+
+        socket.join(`game:${gameId}`);
+        socket.data.currentGameId = gameId;
+        socket.data.isSpectator = false;
+
+        const myColor = gameRoom.getWhiteId() === userId ? "white" : "black";
+
+        socket.emit("game:state", {
+          ...gameRoom.getState(),
+          myColor,
+        });
+
+        socket.emit("game:reconnected", {
+          gameId,
+          isSpectator: false,
+        });
+
+        console.log(
+          `[Reconnection] Restored active game ${gameId} for user ${userId}`,
+        );
+
+        const session = disconnectedSessions.get(userId);
+        if (session) disconnectedSessions.delete(userId);
+
+        return { restored: true, gameId };
+      }
+    }
+  }
+
   const session = disconnectedSessions.get(userId);
   if (!session) return { restored: false, gameId: null };
 
-  // Vérifier le délai
   if (Date.now() - session.disconnectedAt > MAX_DISCONNECTION_DURATION) {
     disconnectedSessions.delete(userId);
     console.log(`[Reconnection] Session expired for user ${userId}`);
     return { restored: false, gameId: null };
   }
 
-  // Restaurer les rooms
   for (const room of session.rooms) {
     socket.join(room);
   }
 
-  //  Si gameId, rejoindre la game room et envoyer l'état depuis la GameRoom
   if (session.gameId) {
     socket.join(`game:${session.gameId}`);
-    socket.data.currentGameId = session.gameId; // Restaurer dans socket.data
+    socket.data.currentGameId = session.gameId;
 
-    // Récupérer l'état depuis la GameRoom en mémoire
     const gameRoom = activeGames.get(session.gameId);
     if (gameRoom) {
       socket.emit("game:state", {
@@ -89,10 +122,6 @@ export async function restoreSessionOnReconnect(
       });
       console.log(
         `[Reconnection] Game state sent from memory for game ${session.gameId}`,
-      );
-    } else {
-      console.log(
-        `[Reconnection] GameRoom ${session.gameId} not found in memory`,
       );
     }
   }
@@ -113,4 +142,4 @@ setInterval(() => {
       console.log(`[Reconnection] Cleaned expired session for user ${userId}`);
     }
   }
-}, 30000); // Toutes les 30s
+}, 30000);
