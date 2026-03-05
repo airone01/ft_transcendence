@@ -16,6 +16,7 @@ import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
 import {
   gameState as gameStore,
   joinGame,
+  leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
@@ -56,6 +57,7 @@ const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
 let myColor: "white" | "black" | null = $state(null);
 let gameOver = $state(false);
+let isSpectator = $state(false);
 const initialState = startGame();
 let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
@@ -67,6 +69,7 @@ let rebuildScheduled = false;
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
   gameOver = store.gameOver;
+  isSpectator = store.isSpectator;
   if (store.fen) {
     localState = parseFEN(store.fen);
     if (!isDragging) {
@@ -84,6 +87,11 @@ onMount(() => {
 });
 
 onDestroy(() => {
+  if (isSpectator) {
+    console.log("[Board] Leaving game (spectator mode)");
+    leaveGame();
+  }
+
   unsubSocket?.();
   unsubscribe();
 });
@@ -239,6 +247,7 @@ function isLightSquare(index: number): boolean {
 }
 
 function isDragDisabled(index: number): boolean {
+  if (isSpectator) return true;
   if (gameOver) return true;
   const [row, col] = indexToBoard(index);
   const piece = localState.board[row][col];

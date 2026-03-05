@@ -1,4 +1,5 @@
 import { derived, type Writable, writable } from "svelte/store";
+import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -27,6 +28,7 @@ export interface GameState {
   blackTimeLeft: number;
   moves: MoveRecord[];
   drawOffered: boolean;
+  isSpectator: boolean;
 }
 
 export interface GameMove {
@@ -58,6 +60,7 @@ export const gameState: Writable<GameState> = writable({
   blackTimeLeft: DEFAULT_TIME,
   moves: [],
   drawOffered: false,
+  isSpectator: false,
 });
 
 export const isMyTurn = derived(gameState, ($state) => {
@@ -149,6 +152,7 @@ export function leaveGame() {
     blackTimeLeft: DEFAULT_TIME,
     moves: [],
     drawOffered: false,
+    isSpectator: false,
   });
 }
 
@@ -160,6 +164,7 @@ export function setupGameListeners() {
       myColor?: "white" | "black";
       whiteTimeLeft?: number;
       blackTimeLeft?: number;
+      isSpectator?: boolean;
     },
   ) => {
     gameState.update((state) => ({
@@ -168,6 +173,7 @@ export function setupGameListeners() {
       fen: data.fen,
       turn: data.turn,
       myColor: data.myColor ?? state.myColor,
+      isSpectator: data.isSpectator ?? false,
       isCheckmate: data.isCheckmate,
       isDraw: data.isDraw,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
@@ -237,7 +243,7 @@ export function setupGameListeners() {
 
   socketManager.on("game:error", ((data: { message: string }) => {
     console.error("Game error:", data.message);
-    alert(`Error:·${data.message}`);
+    toast(`Error:·${data.message}`);
   }) as unknown as (...args: unknown[]) => void);
 
   socketManager.on("player:joined", ((data: {
