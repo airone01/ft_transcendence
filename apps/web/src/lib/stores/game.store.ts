@@ -23,6 +23,7 @@ export interface GameState {
   check: boolean;
   gameOver: boolean;
   winner: string | null;
+  winnerName: string | null;
   reason: string | null;
   whiteTimeLeft: number;
   blackTimeLeft: number;
@@ -55,6 +56,7 @@ export const gameState: Writable<GameState> = writable({
   check: false,
   gameOver: false,
   winner: null,
+  winnerName: null,
   reason: null,
   whiteTimeLeft: DEFAULT_TIME,
   blackTimeLeft: DEFAULT_TIME,
@@ -171,6 +173,7 @@ export function leaveGame() {
     check: false,
     gameOver: false,
     winner: null,
+    winnerName: null,
     reason: null,
     whiteTimeLeft: DEFAULT_TIME,
     blackTimeLeft: DEFAULT_TIME,
@@ -250,12 +253,14 @@ export function setupGameListeners() {
 
   socketManager.on("game:over", ((data: {
     winner: string | null;
+    winnerName: string | null;
     reason: string;
   }) => {
     gameState.update((state) => ({
       ...state,
       gameOver: true,
       winner: data.winner,
+      winnerName: data.winnerName,
       reason: data.reason,
       drawOffered: false,
     }));
