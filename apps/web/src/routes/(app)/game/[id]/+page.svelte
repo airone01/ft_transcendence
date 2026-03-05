@@ -56,11 +56,11 @@ const movePairs = $derived(() => {
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
   <div
-    class="w-full max-w-[1424px] flex flex-col lg:flex-row items-stretch gap-3 lg:gap-6"
+    class="w-full max-w-[1424px] flex flex-col md:flex-row items-stretch gap-3 lg:gap-6"
   >
     <!-- Left Panel: Game Info — hidden on mobile/tablet, shown on desktop -->
     <div
-      class="hidden lg:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden"
+      class="hidden xl:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden"
     >
       <!-- Header -->
       <div class="flex items-center justify-between">
@@ -178,9 +178,9 @@ const movePairs = $derived(() => {
     </div>
 
     <!-- Center: Board + mobile status bar -->
-    <div class="flex flex-col flex-1 min-w-0 gap-3">
+    <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3">
       <!-- Mobile/Tablet status bar -->
-      <div class="flex lg:hidden items-center justify-between gap-2 flex-wrap">
+      <div class="flex md:hidden items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-2">
           {#if !$socketConnected}
             <span class="text-xs text-destructive font-medium"
@@ -248,15 +248,17 @@ const movePairs = $derived(() => {
         {/if}
       </div>
 
-      <Board {gameId} />
+      <div class="aspect-square w-full">
+        <Board {gameId} />
+      </div>
     </div>
 
     <!-- Right Panel: History + Timers -->
     <div
-      class="lg:w-72 lg:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
     >
       <!-- Header — only on desktop -->
-      <h2 class="hidden lg:block text-lg font-semibold mb-4">Move history</h2>
+      <h2 class="hidden md:block text-lg font-semibold mb-4">Move history</h2>
 
       <!-- Timers — always visible, at top on mobile -->
       <div class="grid grid-cols-2 gap-2 lg:order-last lg:mt-4">
@@ -301,7 +303,7 @@ const movePairs = $derived(() => {
       </div>
 
       <!-- Move history — collapsible on mobile, always shown on desktop -->
-      <details class="mt-3 lg:hidden" open>
+      <details class="mt-3 md:hidden" open>
         <summary class="text-sm font-semibold cursor-pointer select-none py-1">
           Move history
         </summary>
@@ -340,7 +342,7 @@ const movePairs = $derived(() => {
 
       <!-- Move history desktop -->
       <div
-        class="hidden lg:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
+        class="hidden md:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
       >
         {#if movePairs().length === 0}
           <div class="h-full flex items-center justify-center w-full">
