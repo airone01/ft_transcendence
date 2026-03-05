@@ -194,6 +194,7 @@
   "settings_page_profile_description": "[i18n] This is how others will see you on the site.",
   "settings_page_profile_label_username": "[i18n] Username",
   "settings_page_profile_label_bio": "[i18n] Biography",
+  "settings_page_profile_action_default_fail": "Could not update profile.",
 
   "settings_page_account_title": "[i18n] Account",
   "settings_page_account_description": "[i18n] Manage your credentials and connected services.",

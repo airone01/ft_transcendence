@@ -5,6 +5,7 @@ import { zod } from "sveltekit-superforms/adapters";
 import { profileFormSchema } from "$lib/schemas/settings";
 import { dbUpdateUser } from "$lib/server/db-services";
 import type { Actions, PageServerLoad } from "./$types";
+import * as m from "$lib/paraglide/messages";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
@@ -55,7 +56,7 @@ export const actions: Actions = {
     } catch (_error) {
       return fail(500, {
         form,
-        message: "Could not update profile." /* i18n */,
+        message: m.settings_page_profile_action_default_fail(),
       });
     }
 
