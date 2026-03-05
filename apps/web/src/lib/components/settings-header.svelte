@@ -4,11 +4,15 @@ import type { Snippet } from "svelte";
 import type { Readable } from "svelte/store";
 import * as m from "$lib/paraglide/messages.js";
 
-export let title: string;
-export let description: string;
-export let children: Snippet<[]> | undefined;
-export let delayed: Readable<boolean>;
-export let formId: string;
+type Props = {
+  title: string;
+  description: string;
+  children?: Snippet<[]>;
+  delayed: Readable<boolean>;
+  formId: string;
+};
+
+const { title, description, children, delayed, formId }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-4 min-h-0 flex-1">
