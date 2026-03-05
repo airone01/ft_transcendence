@@ -26,7 +26,7 @@ let commandInput: string = $state("");
 let sidebarOpen: boolean = $state(page.data.sidebarOpen);
 let commandOpen: boolean = $state(false);
 
-const isMobile = useMediaQuery("(max-width: 1023px)");
+const isMobile = useMediaQuery("(max-width: 639px)");
 
 $effect(() => {
   // set cookie when bar state changes

@@ -180,7 +180,7 @@ const movePairs = $derived(() => {
     <!-- Center: Board + mobile status bar -->
     <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3">
       <!-- Mobile/Tablet status bar -->
-      <div class="flex md:hidden items-center justify-between gap-2 flex-wrap">
+      <div class="flex xl:hidden items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-2">
           {#if !$socketConnected}
             <span class="text-xs text-destructive font-medium"
@@ -261,7 +261,7 @@ const movePairs = $derived(() => {
       <h2 class="hidden md:block text-lg font-semibold mb-4">Move history</h2>
 
       <!-- Timers — always visible, at top on mobile -->
-      <div class="grid grid-cols-2 gap-2 lg:order-last lg:mt-4">
+      <div class="grid grid-cols-2 gap-2 md:order-last md:mt-4">
         <div
           class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive
             ? 'bg-[#b58863] text-white'
