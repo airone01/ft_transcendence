@@ -65,6 +65,14 @@ let legalTargets: Set<number> = $state(new Set());
 let dragFromIndex: number | null = $state(null);
 let isDragging = false;
 let rebuildScheduled = false;
+let showPromotionDialog = $state(false);
+let promotionMove = $state<{
+  fromRow: number;
+  fromCol: number;
+  toRow: number;
+  toCol: number;
+} | null>(null);
+let selectedPromotion = $state<"q" | "r" | "b" | "n">("q");
 
 const unsubscribe = gameStore.subscribe((store) => {
   myColor = store.myColor;
@@ -204,10 +212,8 @@ function handleDndFinalize(
   e: CustomEvent<DndEvent<DndPiece>>,
 ) {
   board[squareIndex].pieces = e.detail.items;
-
   const { info } = e.detail;
 
-  // Only process valid moves
   if (
     info.trigger === TRIGGERS.DROPPED_INTO_ZONE &&
     dragFromIndex !== null &&
@@ -220,17 +226,24 @@ function handleDndFinalize(
     const piece = localState.board[fromRow][fromCol];
     const isPromotion =
       piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
-    const promotion = isPromotion ? "q" : undefined;
 
+    if (isPromotion) {
+      // ✅ Afficher la popup
+      promotionMove = { fromRow, fromCol, toRow, toCol };
+      showPromotionDialog = true;
+      scheduleRebuild();
+      return;
+    }
+
+    // Coup normal
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
-    makeMove(fromAlgebraic, toAlgebraic, promotion);
+    makeMove(fromAlgebraic, toAlgebraic);
 
     try {
       const move: Move = {
         from: [fromRow, fromCol],
         to: [toRow, toCol],
-        promotion: isPromotion ? ("Q" as ChessPiece) : undefined,
       };
       localState = playMove(localState, move);
     } catch {}
@@ -268,6 +281,29 @@ const displayFiles = $derived(
 const displayRanks = $derived(
   myColor === "black" ? [...ranks].reverse() : ranks,
 );
+
+function confirmPromotion() {
+  if (!promotionMove) return;
+
+  const { fromRow, fromCol, toRow, toCol } = promotionMove;
+  const fromAlgebraic = files[fromCol] + ranks[fromRow];
+  const toAlgebraic = files[toCol] + ranks[toRow];
+
+  makeMove(fromAlgebraic, toAlgebraic, selectedPromotion);
+
+  try {
+    const move: Move = {
+      from: [fromRow, fromCol],
+      to: [toRow, toCol],
+      promotion: selectedPromotion.toUpperCase() as ChessPiece,
+    };
+    localState = playMove(localState, move);
+  } catch {}
+
+  showPromotionDialog = false;
+  promotionMove = null;
+  selectedPromotion = "q";
+}
 </script>
 
 <!-- Board -->
@@ -339,6 +375,70 @@ const displayRanks = $derived(
       {/each}
     </div>
   </div>
+
+  {#if showPromotionDialog}
+    <div
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div class="bg-background border rounded-lg p-6 space-y-4 max-w-md">
+        <h3 class="text-lg font-semibold text-center">Choose promotion</h3>
+
+        <div class="grid grid-cols-4 gap-3">
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'q';
+              confirmPromotion();
+            }}
+          >
+            <ChessQueenIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Queen</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'r';
+              confirmPromotion();
+            }}
+          >
+            <ChessRookIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Rook</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'b';
+              confirmPromotion();
+            }}
+          >
+            <ChessBishopIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Bishop</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'n';
+              confirmPromotion();
+            }}
+          >
+            <ChessKnightIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Knight</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
 
   <!-- File labels (bottom) -->
   <div class="flex pl-6">

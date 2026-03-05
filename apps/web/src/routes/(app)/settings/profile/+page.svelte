@@ -73,7 +73,7 @@ function handleCroppedImage(file: File) {
         </Avatar>
 
         <div
-          class="absolute inset-0 flex items-center justify-center bg-neutral-900/50 text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+          class="absolute inset-0 flex items-center justify-center bg-neutral-900/50 text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <CameraIcon class="h-6 w-6" />
         </div>
