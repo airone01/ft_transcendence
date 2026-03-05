@@ -133,7 +133,7 @@ const commandGroups: ShellGroup[] = [
               : navUrl
                 ? () => runCommand(navUrl)
                 : undefined}
-            class="cursor-pointer aria-selected:bg-accent group"
+            class="aria-selected:bg-accent group"
           >
             <Icon
               class="me-2 size-4 group-data-selected:text-accent-foreground text-foreground"
@@ -155,7 +155,7 @@ const commandGroups: ShellGroup[] = [
     <header
       class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
     >
-      <SidebarTrigger class="cursor-pointer" />
+      <SidebarTrigger />
     </header>
     {@render children?.()}
   </div>

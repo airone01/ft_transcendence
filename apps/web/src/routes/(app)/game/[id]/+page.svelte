@@ -9,6 +9,7 @@ import {
   acceptDraw,
   gameState,
   isMyTurn,
+  leaveGame,
   type MoveRecord,
   offerDraw,
   resign,
@@ -133,7 +134,16 @@ const movePairs = $derived(() => {
       </div>
 
       <!-- My color -->
-      {#if $gameState.myColor}
+      {#if $gameState.isSpectator}
+        <div class="mt-4 space-y-1">
+          <span class="text-sm text-muted-foreground">Mode</span>
+          <div class="flex items-center gap-2">
+            <span class="font-medium text-sm">Spectator</span>
+          </div>
+          <span class="text-xs text-muted-foreground">Watch only</span>
+        </div>
+      {:else if $gameState.myColor}
+        <!-- Code joueur existant -->
         <div class="mt-4 space-y-1">
           <span class="text-sm text-muted-foreground"
             >{m.game_page_color_title()}</span
@@ -158,7 +168,20 @@ const movePairs = $derived(() => {
 
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
-        {#if !$gameState.gameOver}
+        {#if $gameState.isSpectator}
+          <!-- Bouton pour quitter le spectate -->
+          <Button
+            variant="outline"
+            class="w-full"
+            onclick={() => {
+            leaveGame();
+            window.history.back();
+          }}
+          >
+            Leave spectator mode
+          </Button>
+        {:else if !$gameState.gameOver}
+          <!-- Code joueur existant - inchangé -->
           <Button
             variant="outline"
             class="w-full justify-start"
@@ -176,6 +199,7 @@ const movePairs = $derived(() => {
             {m.game_page_button_resign()}
           </Button>
         {:else}
+          <!-- Code game over existant - inchangé -->
           <Button
             variant="outline"
             class="w-full"

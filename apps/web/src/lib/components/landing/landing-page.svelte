@@ -18,39 +18,25 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
           {m.project_name()}
         </span>
       </div>
-      <nav class="hidden items-center gap-6 md:flex">
-        <!-- . -->
-      </nav>
+      <nav class="hidden items-center gap-6 md:flex"><!-- . --></nav>
       <div class="flex items-center gap-3">
         {#if authState.isAuthenticated}
           <!-- TODO: wtf? -->
           <form action="/logout" method="POST">
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              class="cursor-pointer"
-            >
+            <Button type="submit" variant="ghost" size="sm">
               {m.landing_page_button_logout()}
             </Button>
           </form>
-          <Button href="/home" size="sm" class="cursor-pointer">
-            Dashboard
-          </Button>
+          <Button href="/home" size="sm">Dashboard </Button>
         {:else}
           <Button
             onclick={() => openAuthDialog("login")}
             variant="ghost"
             size="sm"
-            class="cursor-pointer"
           >
             {m.landing_page_button_login()}
           </Button>
-          <Button
-            onclick={() => openAuthDialog("register")}
-            size="sm"
-            class="cursor-pointer"
-          >
+          <Button onclick={() => openAuthDialog("register")} size="sm">
             {m.landing_page_button_register()}
           </Button>
         {/if}

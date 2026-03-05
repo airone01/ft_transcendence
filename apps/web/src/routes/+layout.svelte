@@ -23,11 +23,10 @@ $effect(() => {
   if (data.user) {
     socketManager.connect(String(data.user.id), data.user.username);
   }
+  initializeSocketListeners();
 });
 
 onMount(() => {
-  initializeSocketListeners();
-
   socketManager.on("game:reconnected", (eventData: unknown) => {
     const { gameId, isSpectator = false } = eventData as {
       gameId: string;

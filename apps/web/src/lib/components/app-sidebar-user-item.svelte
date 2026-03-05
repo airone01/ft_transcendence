@@ -46,20 +46,17 @@ const stats = $derived(page.data.stats);
         <Button
           variant="outline"
           size="icon"
-          class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30 p-0"
+          class="group-hover:bg-accent/10 hover:bg-accent/30 p-0"
         >
           <EllipsisIcon class="aspect-square" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
-        <DropdownMenuItem
-          onclick={() => logoutForm?.requestSubmit()}
-          class="cursor-pointer"
-        >
+        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>
           {m.app_sidebar_user_item_logout()}
         </DropdownMenuItem>
         <a href="/settings/profile"
-          ><DropdownMenuItem class="cursor-pointer">
+          ><DropdownMenuItem>
             {m.app_sidebar_user_item_settings()}
           </DropdownMenuItem></a
         >

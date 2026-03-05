@@ -48,7 +48,7 @@ const {
   <CardHeader>
     <CardTitle class="inline-flex gap-2 items-end">
       <ContactRoundIcon />
-      {m.friends_card_title()} ({friends.length})
+      {m.friends_card_title()}({friends.length})
     </CardTitle>
     <CardDescription>{m.friends_card_description()}</CardDescription>
   </CardHeader>
@@ -104,7 +104,7 @@ const {
                   type="submit"
                   variant="ghost"
                   size="icon"
-                  class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive cursor-pointer"
+                  class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive"
                 >
                   <UserMinusIcon class="h-4 w-4" />
                   <!-- TODO: maybe i18n or delete? -->

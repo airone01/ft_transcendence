@@ -18,6 +18,7 @@
   "dependencies": {
     "@transc/db": "workspace:*",
     "@transc/ui": "workspace:*",
+    "argon2": "^0.44.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
     "drizzle-orm": "^0.45.1",

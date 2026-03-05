@@ -71,7 +71,7 @@ const {
                     type="submit"
                     variant="secondary"
                     size="sm"
-                    class="h-8 cursor-pointer"
+                    class="h-8"
                   >
                     {m.requests_card_received_button_accept()}
                   </Button>
@@ -82,7 +82,7 @@ const {
                     type="submit"
                     variant="ghost"
                     size="sm"
-                    class="h-8 text-muted-foreground hover:bg-destructive cursor-pointer px-2"
+                    class="h-8 text-muted-foreground hover:bg-destructive px-2"
                   >
                     {m.requests_card_received_button_reject()}
                   </Button>
