@@ -2,3 +2,6 @@ localhost:8443 {
   reverse_proxy web:3000
 }
 
+localhost:8080 {
+  redir https://localhost:8443{uri}
+}
