@@ -1,0 +1,15 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes: []
+    command: []
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/production_db
+    ports:
+      - "3000:3000"
+
+  db-setup:
+    profiles: ["donotstart"]

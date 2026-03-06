@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-setup:
+    image: oven/bun:1-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
+    command: >
+      sh -c "bun install &&
+             cd packages/db && bun run db:generate && bun run db:migrate && bun run src/seed.ts &&
+             cd ../../apps/web && bun run src/lib/server/db-services/internal/db.seed.ts"
+
+  web:
+    image: oven/bun:1-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/packages/db/node_modules
+    working_dir: /app
+    environment:
+      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
+    command: sh -c "bun install && bun run dev"
+
+volumes:
+  pgdata:

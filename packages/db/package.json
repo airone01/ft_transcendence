@@ -12,15 +12,11 @@
     "./drizzle-orm": "./src/drizzle-orm.ts"
   },
   "scripts": {
-    "dev": "docker compose up",
     "check": "tsc --noEmit",
     "db:push": "drizzle-kit push --config=./drizzle.config.ts",
     "db:generate": "drizzle-kit generate --config=./drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=./drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config=./drizzle.config.ts",
-    "db:seed": "bun run src/seed.ts",
-    "db:up": "docker compose up -d",
-    "db:down": "docker compose down -v"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"
