@@ -1,10 +1,8 @@
 .git
-.svelte-kit
-.turbo
-node_modules
-apps/**/node_modules
-packages/**/node_modules
-apps/**/build
-dist
+**/.svelte-kit
+**/.turbo
+**/node_modules
+**/build
+**/dist
 .env
 .DS_Store
