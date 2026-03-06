@@ -12,7 +12,7 @@ bun run dev
 bun db:seed
 ```
 
-The test users usernames after seed are our (devs) first names, and the password is always 'P@ssw0rd' (without the single quotes).
+The test users' usernames after seed are our (devs) first names, and the password is always 'P@ssw0rd' (without the single quotes).
 
 ## Visualizing the Database
 
