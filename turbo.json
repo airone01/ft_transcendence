@@ -7,8 +7,9 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["^paraglide:watch"]
     },
-    "check": {}
+    "paraglide:watch": {}
   }
 }

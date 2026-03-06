@@ -1,4 +1,4 @@
-localhost {
+localhost:8443 {
   reverse_proxy web:3000
 }
 

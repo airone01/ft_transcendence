@@ -10,11 +10,13 @@
     "check": "turbo run check",
     "prod": "docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build",
     "prod:down": "docker compose down",
-    "lint": "$(./biome.sh) check .",
-    "format": "$(./biome.sh) check . --fix",
+    "prod:nuke": "docker compose -f docker-compose.yml -f docker-compose.prod.yml down -v",
+    "lint": "$(./scripts/biome.sh) check .",
+    "format": "$(./scripts/biome.sh) check . --fix",
     "db:studio": "bun run --cwd packages/db db:studio",
-    "paraglide": "bun run --cwd apps/web paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
-    "paraglide:watch": "bun run --cwd apps/web paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide --watch"
+    "db:setup": "./scripts/deprec_db.sh",
+    "db:push": "./scripts/deprec_db.sh",
+    "db:seed": "./scripts/deprec_db.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.13",

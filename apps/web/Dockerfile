@@ -43,12 +43,12 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV ORIGIN=http://localhost:3000
 
-COPY --from=builder /app/apps/web/build ./apps/web/build
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/node_modules ./apps/web/node_modules
-
-RUN chown -R bun:bun /app
+COPY --from=builder --chown=bun:bun /app/apps/web/build ./apps/web/build
+COPY --from=builder --chown=bun:bun /app/apps/web/package.json ./apps/web/package.json
+COPY --from=builder --chown=bun:bun /app/node_modules ./node_modules
+COPY --from=builder --chown=bun:bun /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=builder --chown=bun:bun /app/packages/db ./packages/db
+COPY --from=builder --chown=bun:bun /app/package.json ./package.json
 
 USER bun
 EXPOSE 3000

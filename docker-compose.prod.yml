@@ -2,13 +2,24 @@ services:
   caddy:
     image: caddy:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:8080"
+      - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
     depends_on:
       - web
+
+  migrator:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    environment:
+      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
+    command: ["bun", "run", "--cwd", "packages/db", "db:migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
 
   web:
     build:
@@ -19,9 +30,28 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
-      - ORIGIN=https://localhost
+      - ORIGIN=https://localhost:8443
       - ADDRESS_HEADER=X-Forwarded-For
       - PROTOCOL_HEADER=X-Forwarded-Proto
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   db-setup:
     profiles: ["donotstart"]
