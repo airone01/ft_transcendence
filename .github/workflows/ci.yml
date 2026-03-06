@@ -39,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./apps/web/Dockerfile
           push: false
           tags: ft_transcendence:ci-test
           cache-from: type=gha
