@@ -41,7 +41,7 @@ import LanguageSwitcher from "../language-switcher.svelte";
             {m.landing_page_button_register()}
           </Button>
         {/if}
-    <LanguageSwitcher />
+        <LanguageSwitcher />
       </div>
     </div>
   </header>
