@@ -1,6 +1,9 @@
 # @transc/db
 
-## How to use
+This package exposes the DB through Drizzle ORM for easy manipulation in the app.
+It is defined here and not in the app for maintanability.
+
+## Usage
 
 Simply import the package in the SvelteKit project.
 
@@ -11,7 +14,7 @@ import { user } from '@transc/db/schema';
 
 ## Notes
 
-- Because SvelteKit's `$env` is dynamically generated at comptime (in `.svelte-kit/ambient.d.ts` within `@transc/web`) and does not exist on disk declaratively, we need to use `process.env` and statically check it against a custom zod schema. This is probably fine though.
+- Because SvelteKit's `$env` is dynamically generated at comptime (in `.svelte-kit/ambient.d.ts` within `@transc/web`) and does not exist on disk declaratively, we need to use `process.env` and statically check it against a custom zod schema.
 - Schemas of our database are defined in `schemas`.
 - Schemas are propagated to the database using `drizzle-kit` cli.
 
