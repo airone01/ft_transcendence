@@ -35,6 +35,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      db-setup:
+        condition: service_completed_successfully
     ports:
       - "5173:5173"
     volumes:
