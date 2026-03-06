@@ -25,8 +25,8 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
-    volumes: []
-    command: []
+    volumes: !reset []
+    command: !reset []
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
