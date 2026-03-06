@@ -1,0 +1,46 @@
+<script lang="ts">
+import { GlobeIcon } from "@lucide/svelte";
+import { Button } from "@transc/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@transc/ui/dropdown-menu";
+import { page } from "$app/state";
+
+import { getLocale, locales, localizeHref } from "$lib/paraglide/runtime";
+
+const languageNames: Record<string, string> = {
+  en: "English",
+  fr: "Français",
+  es: "Español",
+};
+</script>
+
+<DropdownMenu>
+  <DropdownMenuTrigger>
+    <Button variant="outline" size="sm" class="gap-2">
+      <GlobeIcon class="w-4 h-4" />
+      <span class="hidden sm:inline-block">
+        {languageNames[getLocale()] ?? getLocale().toUpperCase()}
+      </span>
+    </Button>
+  </DropdownMenuTrigger>
+
+  <DropdownMenuContent align="end" class="w-40">
+    {#each locales as lang}
+      <a
+        href={localizeHref(page.url.pathname + page.url.search, { locale: lang })}
+        hreflang={lang}
+        data-sveltekit-reload
+      >
+        <DropdownMenuItem
+          class={lang === getLocale() ? "font-medium" : "cursor-pointer"}
+        >
+          {languageNames[lang] ?? lang.toUpperCase()}
+        </DropdownMenuItem>
+      </a>
+    {/each}
+  </DropdownMenuContent>
+</DropdownMenu>

@@ -5,6 +5,7 @@ import { authState } from "$lib/auth";
 import Hero from "$lib/components/hero.svelte";
 import * as m from "$lib/paraglide/messages.js";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
+import LanguageSwitcher from "../language-switcher.svelte";
 </script>
 
 <div class="min-h-screen h-full flex flex-col">
@@ -40,6 +41,7 @@ import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
             {m.landing_page_button_register()}
           </Button>
         {/if}
+        <LanguageSwitcher />
       </div>
     </div>
   </header>
