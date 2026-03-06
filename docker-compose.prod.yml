@@ -1,15 +1,30 @@
 services:
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    depends_on:
+      - web
+
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./apps/web/Dockerfile
     volumes: []
     command: []
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/production_db
-    ports:
-      - "3000:3000"
+      - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
+      - ORIGIN=https://localhost
+      - ADDRESS_HEADER=X-Forwarded-For
+      - PROTOCOL_HEADER=X-Forwarded-Proto
 
   db-setup:
     profiles: ["donotstart"]
+
+volumes:
+  caddy_data:
