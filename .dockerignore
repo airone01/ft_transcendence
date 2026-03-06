@@ -6,3 +6,8 @@
 **/dist
 .env
 .DS_Store
+.vscode
+.idea
+*.log
+bun.lockb
+bun.lock
