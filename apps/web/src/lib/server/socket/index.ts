@@ -7,6 +7,7 @@ import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
+import { queues } from "./handlers/matchmaking"
 
 let io: Server;
 
@@ -52,11 +53,19 @@ export function initSocketServer(httpServer: HTTPServer) {
     // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
+  
+      if (userId) {
+        for (const [mode, queue] of queues.entries()) {
+          const index = queue.findIndex((s) => s.data.userId === userId);
+          if (index !== -1) {
+            queue.splice(index, 1);
+            console.log(`[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`);
+          }
+        }
+      }
 
-      // Save session for reconnection
       saveSessionOnDisconnect(socket);
 
-      // Delay before marking offline (allows quick reconnection)
       setTimeout(async () => {
         const userSockets = await io.in(`user:${userId}`).fetchSockets();
         if (userSockets.length === 0) {
