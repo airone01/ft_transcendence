@@ -1,5 +1,5 @@
+import process from "node:process";
 import { z } from "zod";
-import "dotenv/config";
 
 // In tests we may not have a real DATABASE_URL available.
 // Make the DATABASE_URL optional when running under NODE_ENV === 'test'

@@ -1,0 +1,11 @@
+.git
+**/.svelte-kit
+**/.turbo
+**/node_modules
+**/build
+**/dist
+**/.env
+.DS_Store
+.vscode
+.idea
+*.log
