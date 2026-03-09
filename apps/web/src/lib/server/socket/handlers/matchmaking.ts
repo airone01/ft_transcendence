@@ -7,7 +7,7 @@ import {
 import { activeGames } from "./game";
 
 // Matchmaking queues
-const queues = new Map<string, Socket[]>();
+export const queues = new Map<string, Socket[]>();
 
 export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
   const userId = socket.data.userId;
