@@ -5,12 +5,25 @@
     "build": {
       "dependsOn": ["^build"]
     },
-    "dev": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["paraglide:watch"]
+    "setup": {
+      "dependsOn": ["^setup"],
+      "cache": false
     },
-    "check": {},
-    "paraglide:watch": {}
+    "dev": {
+      "dependsOn": ["setup", "paraglide"],
+      "cache": false,
+      "persistent": true
+    },
+    "check": {
+      "dependsOn": ["^check"]
+    },
+    "paraglide": {
+      "dependsOn": ["^paraglide"]
+    },
+    "paraglide:watch": {
+      "dependsOn": ["^paraglide:watch"],
+      "cache": false,
+      "persistent": true
+    }
   }
 }

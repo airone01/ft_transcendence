@@ -9,5 +9,3 @@
 .vscode
 .idea
 *.log
-bun.lockb
-bun.lock

@@ -25,8 +25,6 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
-    volumes: !reset []
-    command: !reset []
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
@@ -46,15 +44,13 @@ services:
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_DB: local
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata_prod:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U root -d local"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  db-setup:
-    profiles: ["donotstart"]
-
 volumes:
+  pgdata_prod:
   caddy_data:

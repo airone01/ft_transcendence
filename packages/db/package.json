@@ -16,7 +16,8 @@
     "db:push": "drizzle-kit push --config=./drizzle.config.ts",
     "db:generate": "drizzle-kit generate --config=./drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=./drizzle.config.ts",
-    "db:studio": "drizzle-kit studio --config=./drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config=./drizzle.config.ts",
+    "setup": "bun run db:generate && bun run db:migrate && bun run src/seed.ts"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"
