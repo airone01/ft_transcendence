@@ -90,7 +90,7 @@ function getIsActive(href: string, exact?: boolean): boolean {
         <Button
           href="/play/bot"
           variant="outline"
-          class="overflow-clip group-hover:bg-accent/10 hover:bg-accent/30"
+          class="overflow-clip bg-transparent hover:bg-accent"
         >
           <BotIcon />
           {m.app_sidebar_group_button_bot()}

@@ -10,6 +10,7 @@ import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
 import * as m from "$lib/paraglide/messages";
 import type { User } from "$lib/server/db-services";
 import type { UserNoPass } from "../../app";
+import { CrownIcon } from "@lucide/svelte";
 
 const {
   data,
@@ -61,7 +62,7 @@ const {
                 class="flex flex-col items-center mb-3 z-10 transition-transform hover:-translate-y-1"
               >
                 <LeaderboardAvatar
-                  i={i}
+                  {i}
                   currentElo={player.elo}
                   userPromise={data.userPromises[player.userId] as Promise<User>}
                   fallbackText={player.username.slice(0, 2).toUpperCase()}

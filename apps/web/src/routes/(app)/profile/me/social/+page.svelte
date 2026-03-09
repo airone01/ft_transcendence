@@ -79,6 +79,7 @@ const formEnhance: SubmitFunction = () => {
     <form
       method="POST"
       action="?/add"
+      aria-label={m.social_page_search_placeholder()}
       use:enhance={formEnhance}
       class="flex w-full md:max-w-xs items-center gap-2"
     >
