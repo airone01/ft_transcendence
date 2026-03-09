@@ -1,7 +1,7 @@
 # ==========================================
 # Pruner
 # ==========================================
-FROM oven/bun:1-alpine AS pruner
+FROM oven/bun:1.3-alpine AS pruner
 USER root
 WORKDIR /app
 COPY . .
@@ -11,7 +11,7 @@ RUN bunx turbo prune @transc/web --docker
 # ==========================================
 # Installer
 # ==========================================
-FROM oven/bun:1-alpine AS installer
+FROM oven/bun:1.3-alpine AS installer
 USER root
 WORKDIR /app
 
@@ -24,7 +24,7 @@ COPY --from=pruner /app/out/full/ .
 # ==========================================
 # Builder
 # ==========================================
-FROM oven/bun:1-alpine AS builder
+FROM oven/bun:1.3-alpine AS builder
 USER root
 WORKDIR /app
 COPY --from=installer /app/ .
@@ -36,7 +36,7 @@ RUN bunx turbo run build --filter=@transc/web
 # ==========================================
 # Runner
 # ==========================================
-FROM oven/bun:1-alpine AS runner
+FROM oven/bun:1.3-alpine AS runner
 USER root
 WORKDIR /app
 
