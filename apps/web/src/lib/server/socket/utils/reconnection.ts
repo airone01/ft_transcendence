@@ -1,7 +1,7 @@
 import type { Socket } from "socket.io";
 import type { GameRoom } from "../rooms/GameRoom";
 
-// Track les sessions des users qui se sont déconnectés
+// Track the session users
 const disconnectedSessions = new Map<
   string,
   {
@@ -15,7 +15,7 @@ const disconnectedSessions = new Map<
 const MAX_DISCONNECTION_DURATION = 2 * 60 * 1000; // 2 minutes
 
 /**
- * Sauvegarde l'état de la session avant déconnexion
+ * save the state session before deconnection
  */
 export function saveSessionOnDisconnect(socket: Socket) {
   const userId = socket.data.userId;
@@ -46,8 +46,8 @@ export function saveSessionOnDisconnect(socket: Socket) {
 }
 
 /**
- * Restaure la session si le user reconnecte dans le délai
- * @param activeGames - Map des GameRooms actives pour récupérer l'état
+ * Restore the session
+ * @param activeGames - Gameroom map
  */
 export async function restoreSessionOnReconnect(
   socket: Socket,
@@ -135,7 +135,7 @@ export async function restoreSessionOnReconnect(
 }
 
 /**
- * Cleanup périodique des sessions expirées
+ * cleanup session expired
  */
 setInterval(() => {
   const now = Date.now();

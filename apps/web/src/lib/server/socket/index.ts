@@ -46,7 +46,6 @@ export function initSocketServer(httpServer: HTTPServer) {
 
     // Heartbeat pong
     socket.on("heartbeat:pong", () => {
-      // Client responded to ping, connection OK
     });
 
     // Disconnect
