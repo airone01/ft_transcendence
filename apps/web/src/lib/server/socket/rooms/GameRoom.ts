@@ -237,7 +237,6 @@ export class GameRoom extends EventEmitter {
 
       const move: Move = { from, to };
 
-      // Déterminer la couleur depuis la pièce qui bouge
       const piece = this.state.board[from[0]][from[1]];
       if (!piece) {
         this.startTimer();
@@ -296,10 +295,10 @@ export class GameRoom extends EventEmitter {
       if (gameOver) {
         await this.endGame(reason || "unknown", winner || undefined);
 
-        // Émettre événement
+        // event emmiter
         this.emit("game_over", { winner, reason, gameId: this.gameId });
       } else {
-        // Redémarrer le timer pour le joueur suivant
+        // Restart timer
         this.startTimer();
       }
 
@@ -376,7 +375,6 @@ export class GameRoom extends EventEmitter {
       reason !== "checkmate" &&
       reason !== "draw"
     ) {
-      // Éviter double-call sauf si vient de timeout/checkmate/draw
       console.log(
         `[GameRoom ${this.gameId}] Game already ended, skipping endGame()`,
       );

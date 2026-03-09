@@ -44,7 +44,7 @@ export interface GameMove {
 
 // ─── Stores ─────────────────────────────────────────────────────────────────
 
-const DEFAULT_TIME = 600_000; // 10 minutes in ms
+const DEFAULT_TIME = 600_000;
 
 export const gameState: Writable<GameState> = writable({
   gameId: null,

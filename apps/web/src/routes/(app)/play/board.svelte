@@ -228,14 +228,12 @@ function handleDndFinalize(
       piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
 
     if (isPromotion) {
-      // ✅ Afficher la popup
       promotionMove = { fromRow, fromCol, toRow, toCol };
       showPromotionDialog = true;
       scheduleRebuild();
       return;
     }
 
-    // Coup normal
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
     makeMove(fromAlgebraic, toAlgebraic);

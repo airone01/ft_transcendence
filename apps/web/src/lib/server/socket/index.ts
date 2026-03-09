@@ -45,9 +45,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     registerMatchmakingHandlers(io, socket);
 
     // Heartbeat pong
-    socket.on("heartbeat:pong", () => {
-      // Client responded to ping, connection OK
-    });
+    socket.on("heartbeat:pong", () => {});
 
     // Disconnect
     socket.on("disconnect", (reason) => {
