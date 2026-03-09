@@ -11,6 +11,7 @@ import {
   text,
   timestamp,
   unique,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -291,6 +292,11 @@ export const chatChannels = pgTable(
   (table) => [
     index("chat_channels_type_idx").on(table.type),
     index("chat_channels_game_id_idx").on(table.gameId),
+    uniqueIndex("chat_channels_global_unique_idx")
+      .on(table.type)
+      .where(
+        sql`${table.type} = 'global' AND ${table.gameId} IS NULL`,
+      ),
   ],
 );
 

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "chat_channels_global_unique_idx" ON "chat_channels" ("type") WHERE "type" = 'global' AND "game_id" IS NULL;
