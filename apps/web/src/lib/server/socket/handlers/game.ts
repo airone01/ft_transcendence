@@ -239,7 +239,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       const winnerColor =
         String(players.whitePlayerId) === winnerUserId ? "white" : "black";
 
-      // Récupérer le username du gagnant
       const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
       const winnerSocket = sockets.find((s) => s.data.userId === winnerUserId);
       const winnerName = winnerSocket?.data.username || null;

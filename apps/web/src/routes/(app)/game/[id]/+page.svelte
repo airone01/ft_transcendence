@@ -171,7 +171,7 @@ const resolveGameReason = (reason: string) => {
           >
         </div>
       {:else if $gameState.myColor}
-        <!-- Code joueur existant -->
+        <!-- players code already exist-->
         <div class="mt-4 space-y-1">
           <span class="text-sm text-muted-foreground"
             >{m.game_page_color_title()}</span
@@ -197,7 +197,7 @@ const resolveGameReason = (reason: string) => {
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
         {#if $gameState.isSpectator}
-          <!-- Bouton pour quitter le spectate -->
+          <!-- exit spectatate mode button-->
           <Button
             variant="outline"
             class="w-full"
@@ -209,7 +209,7 @@ const resolveGameReason = (reason: string) => {
             {m.game_page_button_leave_spectator()}
           </Button>
         {:else if !$gameState.gameOver}
-          <!-- Code joueur existant - inchangé -->
+          <!-- player code unchange -->
           <Button
             variant="outline"
             class="w-full justify-start"
@@ -228,7 +228,7 @@ const resolveGameReason = (reason: string) => {
             {m.game_page_button_resign()}
           </Button>
         {:else}
-          <!-- Code game over existant - inchangé -->
+          <!-- game over code -->
           <Button
             variant="outline"
             class="w-full"

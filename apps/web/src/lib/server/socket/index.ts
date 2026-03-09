@@ -2,7 +2,7 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
-import { registerMatchmakingHandlers } from "./handlers/matchmaking";
+import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
@@ -45,18 +45,26 @@ export function initSocketServer(httpServer: HTTPServer) {
     registerMatchmakingHandlers(io, socket);
 
     // Heartbeat pong
-    socket.on("heartbeat:pong", () => {
-      // Client responded to ping, connection OK
-    });
+    socket.on("heartbeat:pong", () => {});
 
     // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
-      // Save session for reconnection
+      if (userId) {
+        for (const [mode, queue] of queues.entries()) {
+          const index = queue.findIndex((s) => s.data.userId === userId);
+          if (index !== -1) {
+            queue.splice(index, 1);
+            console.log(
+              `[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`,
+            );
+          }
+        }
+      }
+
       saveSessionOnDisconnect(socket);
 
-      // Delay before marking offline (allows quick reconnection)
       setTimeout(async () => {
         const userSockets = await io.in(`user:${userId}`).fetchSockets();
         if (userSockets.length === 0) {
