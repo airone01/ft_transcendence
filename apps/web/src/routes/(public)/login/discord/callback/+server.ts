@@ -36,10 +36,10 @@ export const GET = async (event: RequestEvent) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
         grant_type: "authorization_code",
-        client_id: env.DISCORD_CLIENT_ID,
-        client_secret: env.DISCORD_CLIENT_SECRET,
+        client_id: env.DISCORD_CLIENT_ID as string,
+        client_secret: env.DISCORD_CLIENT_SECRET as string,
         code: code,
-        redirect_uri: env.DISCORD_REDIRECT_URI,
+        redirect_uri: env.DISCORD_REDIRECT_URI as string,
       }),
     });
 
