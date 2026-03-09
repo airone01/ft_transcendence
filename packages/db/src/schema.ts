@@ -294,9 +294,7 @@ export const chatChannels = pgTable(
     index("chat_channels_game_id_idx").on(table.gameId),
     uniqueIndex("chat_channels_global_unique_idx")
       .on(table.type)
-      .where(
-        sql`${table.type} = 'global' AND ${table.gameId} IS NULL`,
-      ),
+      .where(sql`${table.type} = 'global' AND ${table.gameId} IS NULL`),
   ],
 );
 
