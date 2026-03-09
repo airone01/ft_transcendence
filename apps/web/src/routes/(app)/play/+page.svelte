@@ -2,7 +2,7 @@
 import { ClockIcon, TargetIcon, XIcon, ZapIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
-import { onMount, onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
@@ -24,7 +24,7 @@ onMount(() => {
 onDestroy(() => {
   const state = $matchmakingState;
   if (state.inQueue && state.mode) {
-    console.log('[Play] Leaving queue on page unload');
+    console.log("[Play] Leaving queue on page unload");
     leaveQueue(state.mode);
   }
 });

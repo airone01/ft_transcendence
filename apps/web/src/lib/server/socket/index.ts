@@ -2,12 +2,11 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
-import { registerMatchmakingHandlers } from "./handlers/matchmaking";
+import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
-import { queues } from "./handlers/matchmaking"
 
 let io: Server;
 
@@ -53,13 +52,15 @@ export function initSocketServer(httpServer: HTTPServer) {
     // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
-  
+
       if (userId) {
         for (const [mode, queue] of queues.entries()) {
           const index = queue.findIndex((s) => s.data.userId === userId);
           if (index !== -1) {
             queue.splice(index, 1);
-            console.log(`[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`);
+            console.log(
+              `[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`,
+            );
           }
         }
       }
