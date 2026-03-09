@@ -24,7 +24,7 @@ jobs:
         run: bun install
 
       - name: Typecheck
-        run: bun run turbo check
+        run: bun run turbo run check
 
   build:
     name: Build Production Image
