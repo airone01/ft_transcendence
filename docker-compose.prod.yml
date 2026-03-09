@@ -31,8 +31,11 @@ services:
       - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
       - ORIGIN=https://localhost:8443
       - PUBLIC_WS_URL=http://localhost:3001
-      - WS_PORT=3001
       - ADDRESS_HEADER=X-Forwarded-For
+      - WS_PORT=3001
+      - DISCORD_CLIENT_ID=XXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - DISCORD_CLIENT_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - DISCORD_REDIRECT_URI=https://localhost:8443/login/discord/callback
       - PROTOCOL_HEADER=X-Forwarded-Proto
     depends_on:
       db:

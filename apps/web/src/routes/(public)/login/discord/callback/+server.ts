@@ -35,16 +35,23 @@ export const GET = async (event: RequestEvent) => {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        client_id: env.DISCORD_CLIENT_ID ?? "",
-        client_secret: env.DISCORD_CLIENT_SECRET ?? "",
         grant_type: "authorization_code",
+        client_id: env.DISCORD_CLIENT_ID,
+        client_secret: env.DISCORD_CLIENT_SECRET,
         code: code,
-        redirect_uri: env.DISCORD_REDIRECT_URI ?? "",
+        redirect_uri: env.DISCORD_REDIRECT_URI,
       }),
     });
 
-    if (!tokenResponse.ok)
+    if (!tokenResponse.ok) {
+      console.error({
+        msg: await tokenResponse.text(),
+        code,
+        clientId: env.DISCORD_CLIENT_ID,
+        redirectUri: env.DISCORD_REDIRECT_URI,
+      });
       throw error(400, m.oauth_failed_to_get_access_token());
+    }
     const tokens = await tokenResponse.json();
 
     const userResponse = await fetch("https://discord.com/api/users/@me", {
