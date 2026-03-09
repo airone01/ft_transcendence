@@ -29,6 +29,7 @@ export interface GameState {
   blackTimeLeft: number;
   moves: MoveRecord[];
   drawOffered: boolean;
+  drawOfferSent: boolean;
   isSpectator: boolean;
 }
 
@@ -62,6 +63,7 @@ export const gameState: Writable<GameState> = writable({
   blackTimeLeft: DEFAULT_TIME,
   moves: [],
   drawOffered: false,
+  drawOfferSent: false,
   isSpectator: false,
 });
 
@@ -130,6 +132,8 @@ export function offerDraw() {
     return;
   }
   if (!state.gameId) return;
+  if (state.drawOfferSent) return;
+  gameState.update((s) => ({ ...s, drawOfferSent: true }));
   socketManager.emit("game:offer_draw", { gameId: state.gameId });
 }
 
@@ -179,6 +183,7 @@ export function leaveGame() {
     blackTimeLeft: DEFAULT_TIME,
     moves: [],
     drawOffered: false,
+    drawOfferSent: false,
     isSpectator: false,
   });
 }
@@ -224,6 +229,7 @@ export function setupGameListeners() {
       isCheckmate: data.checkmate || false,
       isDraw: data.stalemate || false,
       drawOffered: false,
+      drawOfferSent: false,
       whiteTimeLeft: data.whiteTimeLeft ?? state.whiteTimeLeft,
       blackTimeLeft: data.blackTimeLeft ?? state.blackTimeLeft,
       moves: [
@@ -263,6 +269,7 @@ export function setupGameListeners() {
       winnerName: data.winnerName,
       reason: data.reason,
       drawOffered: false,
+      drawOfferSent: false,
     }));
   }) as unknown as (...args: unknown[]) => void);
 

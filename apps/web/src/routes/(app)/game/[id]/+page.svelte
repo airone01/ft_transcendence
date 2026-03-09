@@ -214,6 +214,7 @@ const resolveGameReason = (reason: string) => {
             variant="outline"
             class="w-full justify-start"
             onclick={handleOfferDraw}
+            disabled={$gameState.drawOfferSent}
           >
             <HandshakeIcon class="w-4 h-4 mr-2" />
             {m.game_page_button_draw()}
@@ -289,7 +290,7 @@ const resolveGameReason = (reason: string) => {
         <!-- Mobile controls -->
         {#if !$gameState.gameOver}
           <div class="flex gap-2">
-            <Button size="sm" variant="outline" onclick={handleOfferDraw}>
+            <Button size="sm" variant="outline" onclick={handleOfferDraw} disabled={$gameState.drawOfferSent}>
               <HandshakeIcon class="w-3.5 h-3.5" />
               <span class="hidden sm:inline ml-1"
                 >{m.game_page_button_draw()}</span

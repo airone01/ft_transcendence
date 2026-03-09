@@ -103,9 +103,12 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         }
       }
       try {
+        const [white, black] =
+          Math.random() < 0.5 ? [player1, player2] : [player2, player1];
+
         const gameInput: CreateGameInput = {
-          whiteUserId: parseInt(player1.data.userId, 10),
-          blackUserId: parseInt(player2.data.userId, 10),
+          whiteUserId: parseInt(white.data.userId, 10),
+          blackUserId: parseInt(black.data.userId, 10),
           timeControlSeconds: getTimeControlForMode(mode),
           incrementSeconds: getIncrementForMode(mode),
         };
@@ -113,15 +116,15 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         const gameId = await dbCreateGame(gameInput);
         await dbStartGame(gameId);
 
-        player1.data.currentGameId = String(gameId);
-        player2.data.currentGameId = String(gameId);
+        white.data.currentGameId = String(gameId);
+        black.data.currentGameId = String(gameId);
 
         // Notify the two players
-        player1.emit("matchmaking:matched", {
+        white.emit("matchmaking:matched", {
           gameId: String(gameId),
           color: "white",
         });
-        player2.emit("matchmaking:matched", {
+        black.emit("matchmaking:matched", {
           gameId: String(gameId),
           color: "black",
         });
