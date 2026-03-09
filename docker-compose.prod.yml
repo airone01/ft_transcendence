@@ -3,6 +3,7 @@ services:
     image: caddy:alpine
     ports:
       - "8080:8080"
+      - "3001:3001"
       - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
@@ -29,6 +30,8 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
       - ORIGIN=https://localhost:8443
+      - PUBLIC_WS_URL=http://localhost:3001
+      - WS_PORT=3001
       - ADDRESS_HEADER=X-Forwarded-For
       - PROTOCOL_HEADER=X-Forwarded-Proto
     depends_on:

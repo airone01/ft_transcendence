@@ -52,6 +52,7 @@ COPY --from=builder --chown=bun:bun /app/package.json ./package.json
 
 USER bun
 EXPOSE 3000
+EXPOSE 3001
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -kI http://localhost:3000
 CMD ["bun", "run", "apps/web/build/index.js"]
