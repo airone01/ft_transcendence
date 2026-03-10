@@ -21,7 +21,7 @@ const stats = $derived(page.data.stats);
 
 {#if user}
   <div
-    class="flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
+    class="flex items-center gap-3 p-4 w-full transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
   >
     <UserProfileLink
       userId={user.id}
@@ -43,11 +43,7 @@ const stats = $derived(page.data.stats);
     </UserProfileLink>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button
-          variant="outline"
-          size="icon"
-          class="group-hover:bg-accent/10 hover:bg-accent/30 p-0"
-        >
+        <Button variant="outline" size="icon" class="p-0">
           <EllipsisIcon class="aspect-square" />
         </Button>
       </DropdownMenuTrigger>

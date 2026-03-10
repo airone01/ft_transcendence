@@ -1,6 +1,10 @@
 <script lang="ts">
+import { toast } from "svelte-sonner";
+import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import LandingPage from "$lib/components/landing/landing-page.svelte";
 import Leaderboard from "$lib/components/leaderboard.svelte";
+import { m } from "$lib/paraglide/messages";
 import type { UserNoPass } from "../app";
 
 const {
@@ -18,6 +22,22 @@ const {
       | undefined;
   };
 } = $props();
+
+$effect(() => {
+  const errorType = page.url.searchParams.get("error");
+
+  if (errorType === "discord_auth") {
+    toast.error(m.oauth_error(), { description: m.oauth_internal_error() });
+
+    const cleanUrl = new URL(page.url);
+    cleanUrl.searchParams.delete("error");
+
+    goto(cleanUrl.pathname + cleanUrl.search, {
+      replaceState: true,
+      keepFocus: true,
+    });
+  }
+});
 
 type ValidData = {
   user: UserNoPass;

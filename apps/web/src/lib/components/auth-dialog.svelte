@@ -18,6 +18,7 @@ import { Input } from "@transc/ui/input";
 import { toast } from "svelte-sonner";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
+import { applyAction } from "$app/forms";
 import { page } from "$app/state";
 import * as m from "$lib/paraglide/messages.js";
 import { loginSchema, registerSchema } from "$lib/schemas/auth";
@@ -25,20 +26,24 @@ import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
 
 const loginForm = superForm(page.data.loginForm, {
   validators: zodClient(loginSchema),
-  onResult: ({ result }) => {
+  applyAction: false,
+  onResult: async ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
       toast.success(m.landing_page_auth_dialog_popup_success_login());
       authDialogState.isOpen = false;
+      await applyAction(result);
     }
   },
 });
 
 const registerForm = superForm(page.data.registerForm, {
   validators: zodClient(registerSchema),
-  onResult: ({ result }) => {
+  applyAction: false,
+  onResult: async ({ result }) => {
     if (result.type === "redirect" || result.type === "success") {
       toast.success(m.landing_page_auth_dialog_popup_success_register());
       authDialogState.isOpen = false;
+      await applyAction(result);
     }
   },
 });
