@@ -26,11 +26,10 @@ $effect(() => {
   if (data.user && !connectionInitialized) {
     connectionInitialized = true;
     socketManager.connect(String(data.user.id), data.user.username);
-    initializeSocketListeners(data.user.id);
   }
 
-  if ($socketConnected && !listenersInitialized) {
-    initializeSocketListeners();
+  if (data.user && $socketConnected && !listenersInitialized) {
+    initializeSocketListeners(data.user.id);
     listenersInitialized = true;
   }
 });
