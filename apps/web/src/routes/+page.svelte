@@ -27,7 +27,7 @@ $effect(() => {
   const errorType = page.url.searchParams.get("error");
 
   if (errorType === "discord_auth") {
-    toast.error(m.oauth_error(), {description: m.oauth_internal_error()});
+    toast.error(m.oauth_error(), { description: m.oauth_internal_error() });
 
     const cleanUrl = new URL(page.url);
     cleanUrl.searchParams.delete("error");
