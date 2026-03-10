@@ -1,4 +1,5 @@
 <script lang="ts">
+import { CrownIcon } from "@lucide/svelte";
 import {
   Card,
   CardContent,
@@ -10,7 +11,6 @@ import LeaderboardAvatar from "$lib/components/leaderboard-avatar.svelte";
 import * as m from "$lib/paraglide/messages";
 import type { User } from "$lib/server/db-services";
 import type { UserNoPass } from "../../app";
-import { CrownIcon } from "@lucide/svelte";
 
 const {
   data,

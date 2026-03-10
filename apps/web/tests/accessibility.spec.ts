@@ -1,5 +1,5 @@
-import { test, expect } from "@playwright/test";
 import { AxeBuilder } from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 
 const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 

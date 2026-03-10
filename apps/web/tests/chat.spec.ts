@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Global Chat", () => {
   test("should allow user to send a message", async ({ page }) => {
