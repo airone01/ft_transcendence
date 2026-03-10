@@ -199,7 +199,6 @@ const resolveGameReason = (reason: string) => {
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
         {#if $gameState.isBotGame && !$gameState.gameOver}
-          <!-- ✅ Bouton pour quitter la game bot -->
           <Button
             variant="outline"
             class="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"

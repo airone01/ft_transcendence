@@ -53,7 +53,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
-      const currentGameId = socket.data.currentGameId; // ✅ Ajouter cette ligne
+      const currentGameId = socket.data.currentGameId;
 
       if (userId) {
         for (const [mode, queue] of queues.entries()) {

@@ -49,14 +49,6 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
       socket.join(`game:${gameId}`);
       socket.data.currentGameId = gameId;
 
-      setTimeout(() => {
-        socket.emit("game:state", {
-          ...gameRoom.getState(),
-          myColor: "white",
-          isBotGame: true,
-        });
-      }, 500);
-
       console.log(`[Bot] Game ${gameId} created for user ${userId}`);
     } catch (error) {
       console.error("[Bot] Failed to create game:", error);
@@ -126,7 +118,6 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
           return;
         }
 
-        // Calcul du coup du bot (synchrone)
         const currentFen = gameRoom.getState().fen;
         const currentGameState = parseFEN(currentFen);
         const botMove = findBestMoveTimed(currentGameState);

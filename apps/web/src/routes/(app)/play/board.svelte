@@ -236,7 +236,6 @@ function handleDndFinalize(
       return;
     }
 
-    // Coup normal
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
 
