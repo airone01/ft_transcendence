@@ -10,18 +10,17 @@ import {
 import type { Component } from "svelte";
 import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
+import { get } from "svelte/store";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
 import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
-import { socketManager } from "$lib/stores/socket.svelte";
-import { get } from "svelte/store";
 import {
   gameState as gameStore,
   joinGame,
   leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
-import { socketConnected } from "$lib/stores/socket.svelte";
+import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 
 // Props
 const { gameId }: { gameId: string } = $props();
@@ -227,7 +226,8 @@ function handleDndFinalize(
     const [toRow, toCol] = indexToBoard(squareIndex);
 
     const piece = localState.board[fromRow][fromCol];
-    const isPromotion = piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
+    const isPromotion =
+      piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
 
     if (isPromotion) {
       promotionMove = { fromRow, fromCol, toRow, toCol };
@@ -239,12 +239,12 @@ function handleDndFinalize(
     // Coup normal
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
-    
+
     if (isBotGame) {
-      socketManager.emit("bot:move", { 
-        gameId, 
-        from: fromAlgebraic, 
-        to: toAlgebraic 
+      socketManager.emit("bot:move", {
+        gameId,
+        from: fromAlgebraic,
+        to: toAlgebraic,
       });
     } else {
       makeMove(fromAlgebraic, toAlgebraic);
@@ -298,7 +298,7 @@ function confirmPromotion() {
   const { fromRow, fromCol, toRow, toCol } = promotionMove;
   const fromAlgebraic = files[fromCol] + ranks[fromRow];
   const toAlgebraic = files[toCol] + ranks[toRow];
-  
+
   if (isBotGame) {
     socketManager.emit("bot:move", {
       gameId,
@@ -321,7 +321,7 @@ function confirmPromotion() {
 
   showPromotionDialog = false;
   promotionMove = null;
-  selectedPromotion = 'q';
+  selectedPromotion = "q";
 }
 </script>
 

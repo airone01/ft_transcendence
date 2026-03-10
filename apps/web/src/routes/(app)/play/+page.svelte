@@ -15,7 +15,12 @@ import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
   return gameState.subscribe((state) => {
-    if (state.gameId && !state.gameOver && !state.isSpectator && !state.isBotGame) {
+    if (
+      state.gameId &&
+      !state.gameOver &&
+      !state.isSpectator &&
+      !state.isBotGame
+    ) {
       goto(`/game/${state.gameId}`);
     }
   });
@@ -48,9 +53,8 @@ const resolveModeTranslation = (mode: string | null) => {
   }
 };
 
-
 function playVsBot() {
-  goto('/play/bot');
+  goto("/play/bot");
 }
 </script>
 

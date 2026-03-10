@@ -30,8 +30,8 @@ export function saveSessionOnDisconnect(socket: Socket) {
 
   if (socket.data.isBotGame) {
     console.log(
-      `[Reconnection] User ${userId} is in bot game, not saving session`  
-    )
+      `[Reconnection] User ${userId} is in bot game, not saving session`,
+    );
   }
 
   const gameId = socket.data.currentGameId || null;

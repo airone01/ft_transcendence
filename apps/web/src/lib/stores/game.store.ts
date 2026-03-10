@@ -1,7 +1,6 @@
-import { derived, type Writable, writable } from "svelte/store";
+import { derived, get, type Writable, writable } from "svelte/store";
 import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
-import { get } from "svelte/store";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -21,7 +20,7 @@ export interface GameState {
   myColor: "white" | "black" | null;
   isCheckmate: boolean;
   isDraw: boolean;
-  isBotGame: boolean,
+  isBotGame: boolean;
   check: boolean;
   gameOver: boolean;
   winner: string | null;
@@ -74,7 +73,7 @@ export function quitBotGame() {
   const state = get(gameState);
   if (state.isBotGame && state.gameId) {
     socketManager.emit("bot:quit", { gameId: state.gameId });
-    
+
     gameState.set({
       gameId: null,
       fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -103,7 +102,12 @@ if (typeof window !== "undefined") {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      if (parsed.gameId && !parsed.gameOver && !parsed.isSpectator && !parsed.isBotGame) {
+      if (
+        parsed.gameId &&
+        !parsed.gameOver &&
+        !parsed.isSpectator &&
+        !parsed.isBotGame
+      ) {
         gameState.set(parsed);
         console.log(
           "[GameStore] Restored game state from localStorage:",
@@ -119,9 +123,10 @@ if (typeof window !== "undefined") {
 gameState.subscribe((state) => {
   if (typeof window !== "undefined") {
     if (state.isBotGame) {
-      localStorage.removeItem('gameState');}
-    else {
-    localStorage.setItem("gameState", JSON.stringify(state));}
+      localStorage.removeItem("gameState");
+    } else {
+      localStorage.setItem("gameState", JSON.stringify(state));
+    }
   }
 });
 
@@ -206,7 +211,7 @@ export function leaveGame() {
     myColor: null,
     isCheckmate: false,
     isDraw: false,
-    isBotGame : false,
+    isBotGame: false,
     check: false,
     gameOver: false,
     winner: null,

@@ -1,12 +1,10 @@
 <script lang="ts">
-import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
+import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
-import { page } from "$app/state";
-import { quitBotGame } from "$lib/stores/game.store";
-import { XIcon } from "@lucide/svelte";
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
 import {
   acceptDraw,
@@ -15,6 +13,7 @@ import {
   leaveGame,
   type MoveRecord,
   offerDraw,
+  quitBotGame,
   resign,
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
@@ -76,7 +75,6 @@ const resolveGameReason = (reason: string) => {
       return "";
   }
 };
-
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
@@ -198,63 +196,63 @@ const resolveGameReason = (reason: string) => {
 
       <Separator class="my-4" />
 
-    <!-- Controls -->
-    <div class="space-y-2 mt-auto">
-      {#if $gameState.isBotGame && !$gameState.gameOver}
-        <!-- ✅ Bouton pour quitter la game bot -->
-        <Button
-          variant="outline"
-          class="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
-          onclick={() => {
+      <!-- Controls -->
+      <div class="space-y-2 mt-auto">
+        {#if $gameState.isBotGame && !$gameState.gameOver}
+          <!-- ✅ Bouton pour quitter la game bot -->
+          <Button
+            variant="outline"
+            class="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+            onclick={() => {
             quitBotGame();
             goto('/play');
           }}
-        >
-          <XIcon class="w-4 h-4 mr-2" />
-          Quit Bot Game
-        </Button>
-      {:else if $gameState.isSpectator}
-        <!-- exit spectate mode button -->
-        <Button
-          variant="outline"
-          class="w-full"
-          onclick={() => {
+          >
+            <XIcon class="w-4 h-4 mr-2" />
+            Quit Bot Game
+          </Button>
+        {:else if $gameState.isSpectator}
+          <!-- exit spectate mode button -->
+          <Button
+            variant="outline"
+            class="w-full"
+            onclick={() => {
             leaveGame();
             window.history.back();
           }}
-        >
-          {m.game_page_button_leave_spectator()}
-        </Button>
-      {:else if !$gameState.gameOver}
-        <!-- player code unchanged -->
-        <Button
-          variant="outline"
-          class="w-full justify-start"
-          onclick={handleOfferDraw}
-        >
-          <HandshakeIcon class="w-4 h-4 mr-2" />
-          {m.game_page_button_draw()}
-        </Button>
-        <Button
-          variant="outline"
-          class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
-          onclick={() => (resignDialogOpen = true)}
-        >
-          <FlagIcon class="w-4 h-4 mr-2" />
-          {m.game_page_button_resign()}
-        </Button>
-      {:else}
-        <!-- game over code -->
-        <Button
-          variant="outline"
-          class="w-full"
-          onclick={() => window.history.back()}
-        >
-          {m.game_page_button_leave()}
-        </Button>
-      {/if}
+          >
+            {m.game_page_button_leave_spectator()}
+          </Button>
+        {:else if !$gameState.gameOver}
+          <!-- player code unchanged -->
+          <Button
+            variant="outline"
+            class="w-full justify-start"
+            onclick={handleOfferDraw}
+          >
+            <HandshakeIcon class="w-4 h-4 mr-2" />
+            {m.game_page_button_draw()}
+          </Button>
+          <Button
+            variant="outline"
+            class="w-full justify-start bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+            onclick={() => (resignDialogOpen = true)}
+          >
+            <FlagIcon class="w-4 h-4 mr-2" />
+            {m.game_page_button_resign()}
+          </Button>
+        {:else}
+          <!-- game over code -->
+          <Button
+            variant="outline"
+            class="w-full"
+            onclick={() => window.history.back()}
+          >
+            {m.game_page_button_leave()}
+          </Button>
+        {/if}
+      </div>
     </div>
-  </div>
 
     <!-- Center: Board + mobile status bar -->
     <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3">

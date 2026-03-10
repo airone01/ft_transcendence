@@ -1,5 +1,6 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
+import { registerBotHandlers } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
 import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
@@ -7,7 +8,6 @@ import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
-import { registerBotHandlers } from "./handlers/bot";
 
 let io: Server;
 
@@ -49,8 +49,8 @@ export function initSocketServer(httpServer: HTTPServer) {
     // Heartbeat pong
     socket.on("heartbeat:pong", () => {});
 
-        // Disconnect
-      socket.on("disconnect", (reason) => {
+    // Disconnect
+    socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
       const currentGameId = socket.data.currentGameId; // ✅ Ajouter cette ligne
@@ -67,7 +67,7 @@ export function initSocketServer(httpServer: HTTPServer) {
         }
       }
 
-      if (currentGameId && currentGameId.startsWith("bot-")) {
+      if (currentGameId?.startsWith("bot-")) {
         const gameRoom = activeGames.get(currentGameId);
         if (gameRoom) {
           gameRoom.stopTimer();

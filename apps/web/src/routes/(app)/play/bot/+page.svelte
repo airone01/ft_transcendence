@@ -2,8 +2,8 @@
 import { BotIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { goto } from "$app/navigation";
-import { socketManager } from "$lib/stores/socket.svelte";
 import { gameState } from "$lib/stores/game.store";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 let isStarting = $state(false);
 
@@ -12,9 +12,13 @@ function startBotGame(difficulty: string) {
   socketManager.emit("bot:start", { difficulty });
 }
 
-socketManager.on("game:state", ((data: any) => {
+socketManager.on("game:state", ((data: {
+  gameId: string;
+  myColor?: "white" | "black";
+  isBotGame?: boolean;
+}) => {
   if (data.gameId && isStarting) {
-    gameState.update(state => ({ ...state, isBotGame: true }));
+    gameState.update((state) => ({ ...state, isBotGame: true }));
     goto(`/game/${data.gameId}`);
   }
 }) as unknown as (...args: unknown[]) => void);
@@ -68,7 +72,9 @@ socketManager.on("game:state", ((data: any) => {
       >
         <div class="flex flex-col items-center gap-1">
           <span class="font-semibold">Hard</span>
-          <span class="text-xs text-muted-foreground">For experienced players</span>
+          <span class="text-xs text-muted-foreground"
+            >For experienced players</span
+          >
         </div>
       </Button>
     </div>

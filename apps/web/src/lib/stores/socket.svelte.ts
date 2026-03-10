@@ -15,9 +15,9 @@ class SocketManager {
 
   connect(userId: string, username: string) {
     if (this.socket?.connected) {
-        socketConnected.set(true);
-        return;
-    } 
+      socketConnected.set(true);
+      return;
+    }
 
     this.socket?.disconnect();
 
