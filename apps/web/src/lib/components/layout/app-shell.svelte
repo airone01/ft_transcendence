@@ -120,7 +120,7 @@ const commandGroups: ShellGroup[] = [
   use:enhance={logoutFunc}
 ></form>
 
-<nav>
+<nav aria-label="Command Dialog">
   <CommandDialog bind:open={commandOpen}>
     <CommandInput
       bind:value={commandInput}
@@ -154,19 +154,17 @@ const commandGroups: ShellGroup[] = [
   </CommandDialog>
 </nav>
 
-<nav>
-  <SidebarProvider bind:open={sidebarOpen}>
-    <AppSidebar
-      {logoutForm}
-      collapsible={isMobile.current ? "offcanvas" : "icon"}
-    />
-    <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
-      <header
-        class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
-      >
-        <SidebarTrigger />
-      </header>
-      {@render children?.()}
-    </div>
-  </SidebarProvider>
-</nav>
+<SidebarProvider bind:open={sidebarOpen}>
+  <AppSidebar
+    {logoutForm}
+    collapsible={isMobile.current ? "offcanvas" : "icon"}
+  />
+  <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
+    <header
+      class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
+    >
+      <SidebarTrigger />
+    </header>
+    {@render children?.()}
+  </div>
+</SidebarProvider>

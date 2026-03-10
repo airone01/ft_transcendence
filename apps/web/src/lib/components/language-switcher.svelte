@@ -8,11 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
 
-import {
-  getLocale,
-  locales,
-  setLocale,
-} from "$lib/paraglide/runtime";
+import { getLocale, locales, setLocale } from "$lib/paraglide/runtime";
 
 const languageNames: Record<string, string> = {
   en: "English",

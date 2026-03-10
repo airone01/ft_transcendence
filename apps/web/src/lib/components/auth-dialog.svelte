@@ -62,7 +62,7 @@ function toggleMode() {
 }
 </script>
 
-<nav>
+<nav aria-label="Auth Dialog">
   <Dialog bind:open={authDialogState.isOpen}>
     <DialogContent class="sm:max-w-100">
       <DialogHeader>
