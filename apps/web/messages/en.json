@@ -43,6 +43,7 @@
   "navigation_label_chess": "[i18n] Chess",
   "navigation_item_profile": "[i18n] Profile",
   "navigation_item_social": "[i18n] Social",
+  "navigation_item_chat": "[i18n] Chat",
   "navigation_item_leaderboard": "[i18n] Leaderboard",
   "navigation_item_play": "[i18n] Play Now",
 
@@ -204,6 +205,13 @@
   "game_page_white": "[i18n] White",
   "game_page_black": "[i18n] Black",
 
+  "chat_no_msgs": "[i18n] No messages yet. Be the first to say hi!",
+  "chat_prompt_type_msg": "[i18n] Type a message...",
+  "chat_prompt_send": "[i18n] Send",
+  "chat_err_too_large": "[i18n] Your message was too long to be sent. It should be at most 250 characters long.",
+  "chat_title_global": "[i18n] Global Chat",
+  "chat_title_friend": "[i18n] Friend Chat",
+
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
   "settings_page_button_saving": "[i18n] Saving...",
@@ -277,7 +285,7 @@
   "oauth_failed_to_fetch_user": "[i18n] Failed to fetch user data",
   "oauth_discord_other_account_connected": "[i18n] This Discord account is already connected to another user.",
   "oauth_error": "[i18n] OAuth Error: ",
-  "oauth_internal_error": "[i18n] Authentication failed",
+  "oauth_internal_error": "[i18n] Authentication failed. Please try again.",
 
   "register_email_taken": "[i18n] Email already registered.",
   "register_username_taken": "[i18n] Username already taken.",

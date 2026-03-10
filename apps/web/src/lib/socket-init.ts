@@ -7,12 +7,12 @@ import { setupPresenceListeners } from "$lib/stores/presence.store";
 
 let initialized = false;
 
-export function initializeSocketListeners() {
+export function initializeSocketListeners(userId: number) {
   if (initialized) return;
 
   setupGameListeners();
   setupMatchmakingListeners();
-  setupChatListeners();
+  setupChatListeners(String(userId));
   setupPresenceListeners();
 
   initialized = true;
