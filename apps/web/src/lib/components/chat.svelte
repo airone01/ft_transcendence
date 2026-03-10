@@ -3,27 +3,32 @@ import { SendIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
 import { tick } from "svelte";
-import { toast } from "svelte-sonner";
 import * as m from "$lib/paraglide/messages.js";
 import {
-  gameMessages,
+  friendMessages,
   globalMessages,
-  sendGameMessage,
+  sendFriendMessage,
   sendGlobalMessage,
 } from "$lib/stores/chat.store";
 
 const {
   mode = "global",
-  gameId,
+  friendId,
 }: {
-  mode?: "global" | "game";
-  gameId?: string;
+  mode?: "global" | "friend";
+  friendId?: string;
 } = $props();
 
 let content = $state("");
 let messagesContainer: HTMLElement | null = $state(null);
 
-let messages = $derived(mode === "global" ? $globalMessages : $gameMessages);
+let messages = $derived.by(() => {
+  if (mode === "global") return $globalMessages;
+  if (mode === "friend" && friendId) {
+    return $friendMessages[friendId] || [];
+  }
+  return [];
+});
 
 $effect(() => {
   if (messages.length && messagesContainer) {
@@ -40,17 +45,11 @@ function handleSend(e: Event) {
   e.preventDefault();
   if (!content.trim()) return;
 
-  if (content.length > 250) {
-    toast.error(m.chat_err_too_large());
-    return;
-  }
-
   if (mode === "global") {
     sendGlobalMessage(content);
-  } else if (mode === "game" && gameId) {
-    sendGameMessage(gameId, content);
+  } else if (mode === "friend" && friendId) {
+    sendFriendMessage(friendId, content);
   }
-
   content = "";
 }
 </script>
@@ -58,7 +57,7 @@ function handleSend(e: Event) {
 <div class="flex flex-col h-full bg-background overflow-hidden">
   <div
     bind:this={messagesContainer}
-    class="flex-1 overflow-y-auto p-4 space-y-4 min-h-[200px]"
+    class="flex-1 overflow-y-auto p-4 space-y-4 min-h-50"
   >
     {#if messages.length === 0}
       <div
