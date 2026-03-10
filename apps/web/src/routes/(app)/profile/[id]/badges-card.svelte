@@ -60,7 +60,7 @@ const achs: Ach[] = [
 >
   <CardHeader class="pb-2">
     <CardTitle class="flex items-center gap-2 text-base">
-      <TrophyIcon class="w-5 h-5" />
+      <TrophyIcon class="w-5 h-5 text-primary" />
       {m.badges_card_title()}
     </CardTitle>
   </CardHeader>

@@ -72,7 +72,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 >
   <CardHeader class="shrink-0">
     <CardTitle class="flex items-center gap-2">
-      <HistoryIcon class="w-5 h-5" />
+      <HistoryIcon class="w-5 h-5 text-primary" />
       {m.recent_matches_card_title()}
     </CardTitle>
     <CardDescription></CardDescription>

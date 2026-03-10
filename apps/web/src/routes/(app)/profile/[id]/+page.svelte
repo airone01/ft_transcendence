@@ -53,7 +53,7 @@ const formEnhance: SubmitFunction = () => {
 };
 </script>
 
-<main class="w-full">
+<main>
   {#await data.userPromise}
     <div class="container mx-auto p-6 space-y-6">
       <div class="h-48 w-full rounded-xl bg-muted animate-pulse"></div>
@@ -63,15 +63,9 @@ const formEnhance: SubmitFunction = () => {
       </div>
     </div>
   {:then { user, stats, games: matches, eloHistory, achievements, peakElo }}
-    <div class="relative w-full">
-      <div
-        class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"
-      ></div>
-
+    <div class="w-full">
       <div class="container mx-auto px-6">
-        <div
-          class="relative -mt-16 flex flex-col md:flex-row md:items-center gap-4"
-        >
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
             <AvatarFallback
@@ -138,7 +132,7 @@ const formEnhance: SubmitFunction = () => {
       </div>
     </div>
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 pt-8 pb-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
         <CurrentEloCard {stats} {peakElo} />
 
