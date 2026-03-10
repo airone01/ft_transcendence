@@ -369,6 +369,11 @@ export class GameRoom extends EventEmitter {
   // Database Operations
 
   async endGame(reason: string, winnerId?: string) {
+    if (this.gameId.startsWith("bot-")) {
+        console.log(`[GameRoom ${this.gameId}] Bot game ended, skipping DB`);
+        return { whiteEloChange: 0, blackEloChange: 0 };
+    }
+    
     if (
       this.isGameOverFlag &&
       reason !== "timeout" &&

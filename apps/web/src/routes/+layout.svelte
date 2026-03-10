@@ -12,6 +12,8 @@ import AppShell from "$lib/components/layout/app-shell.svelte";
 import * as m from "$lib/paraglide/messages";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
 import { initializeSocketListeners } from "$lib/socket-init";
+
+import { socketConnected } from "$lib/stores/socket.svelte";
 import { socketManager } from "$lib/stores/socket.svelte";
 import "@fontsource-variable/merriweather";
 import "@fontsource-variable/montserrat";
@@ -19,11 +21,19 @@ import "@fontsource-variable/source-code-pro";
 
 const { children, data } = $props();
 
+let listenersInitialized = false;
+let connectionInitialized = false;
+
 $effect(() => {
-  if (data.user) {
+  if (data.user && !connectionInitialized) {
+    connectionInitialized = true;
     socketManager.connect(String(data.user.id), data.user.username);
   }
-  initializeSocketListeners();
+  
+  if ($socketConnected && !listenersInitialized) {
+    initializeSocketListeners();
+    listenersInitialized = true;
+  }
 });
 
 onMount(() => {

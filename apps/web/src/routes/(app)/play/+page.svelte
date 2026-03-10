@@ -15,7 +15,7 @@ import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
   return gameState.subscribe((state) => {
-    if (state.gameId && !state.gameOver && !state.isSpectator) {
+    if (state.gameId && !state.gameOver && !state.isSpectator && !state.isBotGame) {
       goto(`/game/${state.gameId}`);
     }
   });
@@ -47,6 +47,11 @@ const resolveModeTranslation = (mode: string | null) => {
       return m.play_page_mode_casual();
   }
 };
+
+
+function playVsBot() {
+  goto('/play/bot');
+}
 </script>
 
 <main class="h-full flex items-center justify-center p-6">
@@ -89,7 +94,7 @@ const resolveModeTranslation = (mode: string | null) => {
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button
           class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
           onclick={() => joinQueue('blitz')}
@@ -126,6 +131,17 @@ const resolveModeTranslation = (mode: string | null) => {
             <p class="text-sm text-muted-foreground">
               {m.play_page_minutes_and_increment({ minutes: 10, increment: 5 })}
             </p>
+          </div>
+        </button>
+
+        <button
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
+          onclick={playVsBot}
+        >
+          <TargetIcon class="w-10 h-10 text-purple-500" />
+          <div class="text-center">
+            <h3 class="font-semibold text-lg">VS Bot</h3>
+            <p class="text-sm text-muted-foreground">Practice offline</p>
           </div>
         </button>
       </div>
