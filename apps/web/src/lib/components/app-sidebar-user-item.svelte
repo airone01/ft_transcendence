@@ -43,11 +43,7 @@ const stats = $derived(page.data.stats);
     </UserProfileLink>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button
-          variant="outline"
-          size="icon"
-          class="p-0"
-        >
+        <Button variant="outline" size="icon" class="p-0">
           <EllipsisIcon class="aspect-square" />
         </Button>
       </DropdownMenuTrigger>
