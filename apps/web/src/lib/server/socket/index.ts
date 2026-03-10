@@ -21,7 +21,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     transports: ["websocket"],
     connectionStateRecovery: {
       maxDisconnectionDuration: 120000,
-      skipMiddlewares: true,
+      skipMiddlewares: false,
     },
   });
 
