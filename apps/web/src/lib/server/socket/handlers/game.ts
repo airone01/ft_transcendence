@@ -17,6 +17,12 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     try {
       const { gameId } = data;
 
+      if (gameId.startsWith("bot-")) {
+        return socket.emit("game:error", {
+          message: "Bot games don't use game:join",
+        });
+      }
+
       const game = await dbGetGame(parseInt(gameId, 10));
       const players = await dbGetPlayers(parseInt(gameId, 10));
 
