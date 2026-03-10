@@ -120,49 +120,53 @@ const commandGroups: ShellGroup[] = [
   use:enhance={logoutFunc}
 ></form>
 
-<CommandDialog bind:open={commandOpen}>
-  <CommandInput
-    bind:value={commandInput}
-    placeholder="Type a command or search.."
-  />
-  <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    {#each commandGroups as { items, heading }, i (heading)}
-      <CommandGroup {heading}>
-        {#each items as { navUrl, label, onClick, icon: Icon } (label)}
-          <CommandItem
-            onSelect={onClick
+<nav>
+  <CommandDialog bind:open={commandOpen}>
+    <CommandInput
+      bind:value={commandInput}
+      placeholder="Type a command or search.."
+    />
+    <CommandList>
+      <CommandEmpty>No results found.</CommandEmpty>
+      {#each commandGroups as { items, heading }, i (heading)}
+        <CommandGroup {heading}>
+          {#each items as { navUrl, label, onClick, icon: Icon } (label)}
+            <CommandItem
+              onSelect={onClick
               ? onClick
               : navUrl
                 ? () => runCommand(navUrl)
                 : undefined}
-            class="aria-selected:bg-accent group"
-          >
-            <Icon
-              class="me-2 size-4 group-data-selected:text-accent-foreground text-foreground"
-            />
-            <span>{label}</span>
-          </CommandItem>
-        {/each}
-      </CommandGroup>
-      {#if i + 1 > commandGroups.length}
-        <CommandSeparator />
-      {/if}
-    {/each}
-  </CommandList>
-</CommandDialog>
+              class="aria-selected:bg-accent group"
+            >
+              <Icon
+                class="me-2 size-4 group-data-selected:text-accent-foreground text-foreground"
+              />
+              <span>{label}</span>
+            </CommandItem>
+          {/each}
+        </CommandGroup>
+        {#if i + 1 > commandGroups.length}
+          <CommandSeparator />
+        {/if}
+      {/each}
+    </CommandList>
+  </CommandDialog>
+</nav>
 
-<SidebarProvider bind:open={sidebarOpen}>
-  <AppSidebar
-    {logoutForm}
-    collapsible={isMobile.current ? "offcanvas" : "icon"}
-  />
-  <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
-    <header
-      class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
-    >
-      <SidebarTrigger />
-    </header>
-    {@render children?.()}
-  </div>
-</SidebarProvider>
+<nav>
+  <SidebarProvider bind:open={sidebarOpen}>
+    <AppSidebar
+      {logoutForm}
+      collapsible={isMobile.current ? "offcanvas" : "icon"}
+    />
+    <div class="flex flex-col w-full [&>main]:p-4 [&>main]:mt-11">
+      <header
+        class="border-b w-full p-2 h-11 fixed bg-background/40 backdrop-blur-md z-10"
+      >
+        <SidebarTrigger />
+      </header>
+      {@render children?.()}
+    </div>
+  </SidebarProvider>
+</nav>
