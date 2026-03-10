@@ -50,14 +50,17 @@ export function setupChatListeners(currentUserId: string) {
   socketManager.on("chat:friend", ((msg: DirectMessage) => {
     friendMessages.update((allMsgs) => {
       const chatId =
-        msg.senderId === currentUserId ? msg.receiverId : msg.senderId;
+        String(msg.senderId) === String(currentUserId)
+          ? String(msg.receiverId)
+          : String(msg.senderId);
 
-      if (!allMsgs[chatId]) {
-        allMsgs[chatId] = [];
-      }
+      const newMsgs = { ...allMsgs };
 
-      allMsgs[chatId].push(msg);
-      return allMsgs;
+      if (!newMsgs[chatId]) newMsgs[chatId] = [];
+      else newMsgs[chatId] = [...newMsgs[chatId]];
+
+      newMsgs[chatId].push(msg);
+      return newMsgs;
     });
   }) as unknown as (...args: unknown[]) => void);
 

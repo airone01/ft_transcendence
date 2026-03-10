@@ -209,6 +209,8 @@
   "chat_prompt_type_msg": "[i18n] Type a message...",
   "chat_prompt_send": "[i18n] Send",
   "chat_err_too_large": "[i18n] Your message was too long to be sent. It should be at most 250 characters long.",
+  "chat_title_global": "[i18n] Global Chat",
+  "chat_title_friend": "[i18n] Friend Chat",
 
   "settings_page_title": "[i18n] Settings",
   "settings_page_description": "[i18n] Manage your account settings and preferences.",
