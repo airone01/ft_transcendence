@@ -5,12 +5,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --host",
+    "dev": "vite dev --host --clearScreen=false",
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "paraglide": "bun run paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
+    "paraglide:watch": "bun run paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide --watch",
+    "setup": "bun run src/lib/server/db-services/internal/db.seed.ts"
   },
   "peerDependencies": {
     "typescript": "~5.9.3"
@@ -30,6 +33,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@fontsource-variable/merriweather": "^5.2.6",
+    "@fontsource-variable/montserrat": "^5.2.8",
+    "@fontsource-variable/source-code-pro": "^5.2.7",
     "@inlang/paraglide-js": "^2.9.1",
     "@lucide/svelte": "^0.569.0",
     "@sveltejs/adapter-node": "^5.5.2",

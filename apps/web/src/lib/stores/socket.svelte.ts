@@ -1,5 +1,6 @@
 import { io, type Socket } from "socket.io-client";
 import { type Writable, writable } from "svelte/store";
+import { env } from "$env/dynamic/public";
 
 // ─── Reactive stores (accessible from any component) ───────────
 
@@ -17,7 +18,7 @@ class SocketManager {
 
     this.socket?.disconnect();
 
-    this.socket = io("http://localhost:3001", {
+    this.socket = io(env.PUBLIC_WS_URL, {
       auth: { userId, username },
       transports: ["websocket"],
       reconnection: true,

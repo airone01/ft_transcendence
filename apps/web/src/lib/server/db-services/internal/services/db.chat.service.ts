@@ -17,7 +17,7 @@ import type {
  * @param {number} userId - The ID of the user sending the message
  * @param {string} content - The content of the message
  * @throws {UnknownError} - If an unexpected error occurs
- * @returns {Promise<number>} - A promise that resolves with the ID of the global chat channel (which is always 1)
+ * @returns {Promise<number>} - A promise that resolves with the ID of the global chat channel
  */
 export async function dbSendToGlobal(
   userId: number,

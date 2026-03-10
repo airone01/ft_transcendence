@@ -15,7 +15,7 @@ function socketIOPlugin() {
       const mod = await server.ssrLoadModule("$lib/server/socket/index");
       const httpServer = createServer();
       mod.initSocketServer(httpServer);
-      httpServer.listen(3001, () => {
+      httpServer.listen(3001, "0.0.0.0", () => {
         console.log("[Vite] Socket.IO server listening on port 3001");
       });
     },
