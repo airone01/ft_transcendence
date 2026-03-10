@@ -71,8 +71,7 @@ export const GET = async (event: RequestEvent) => {
         throw redirect(302, "/settings/account");
       } else {
         // linked to a different user
-        // TODO: maybe show an error on the settings page
-        throw error(400, m.oauth_discord_other_account_connected());
+        throw redirect(303, "/settings/account?error=already_linked");
       }
     }
 

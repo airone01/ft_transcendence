@@ -283,7 +283,7 @@
   "oauth_failed_to_fetch_user": "[i18n] Failed to fetch user data",
   "oauth_discord_other_account_connected": "[i18n] This Discord account is already connected to another user.",
   "oauth_error": "[i18n] OAuth Error: ",
-  "oauth_internal_error": "[i18n] Authentication failed",
+  "oauth_internal_error": "[i18n] Authentication failed. Please try again.",
 
   "register_email_taken": "[i18n] Email already registered.",
   "register_username_taken": "[i18n] Username already taken.",

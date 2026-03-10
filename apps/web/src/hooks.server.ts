@@ -32,7 +32,7 @@ async function ensureGlobalChatExists() {
       .insert(chatChannels)
       .values({ type: "global" })
       .onConflictDoNothing();
-    console.log("🌍 Global chat channel successfully initialized!");
+    console.log("Global chat channel successfully initialized!");
   } catch (error) {
     console.error("Failed to initialize global chat:", error);
   }
