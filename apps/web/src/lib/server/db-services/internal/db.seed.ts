@@ -1,5 +1,11 @@
 import { db } from "@transc/db";
-import { chatChannels, chatMessages, games, users } from "@transc/db/schema";
+import {
+  chatChannelMembers,
+  chatChannels,
+  chatMessages,
+  games,
+  users,
+} from "@transc/db/schema";
 import {
   dbAddFriend,
   dbCreateGame,
@@ -34,6 +40,17 @@ async function seed() {
   // P@ssw0rd
   const dumbPass =
     "$argon2id$v=19$m=65536,t=2,p=1$hvTUZSfGd5ANiAKuXIJR6CrXk0HeKRQqeOAQkqHoSSM$mt5RlGqdvbh+w61sSW5ZQPMJ2rPANV+NcT1Dk4I/wUE";
+
+  async function seedPrivateChannel(user1Id: number, user2Id: number) {
+    const [channel] = await db
+      .insert(chatChannels)
+      .values({ type: "private" })
+      .returning();
+    await db.insert(chatChannelMembers).values([
+      { channelId: channel.id, userId: user1Id },
+      { channelId: channel.id, userId: user2Id },
+    ]);
+  }
 
   try {
     await db
@@ -73,6 +90,11 @@ async function seed() {
     await dbAddFriend(valentinId, enzoId);
     await dbAddFriend(valentinId, simonId);
     await dbAddFriend(erwannId, enzoId);
+
+    await seedPrivateChannel(valentinId, erwannId);
+    await seedPrivateChannel(valentinId, enzoId);
+    await seedPrivateChannel(valentinId, simonId);
+    await seedPrivateChannel(erwannId, enzoId);
 
     // seed games
     const game1 = await dbCreateGame({

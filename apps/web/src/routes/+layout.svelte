@@ -22,8 +22,8 @@ const { children, data } = $props();
 $effect(() => {
   if (data.user) {
     socketManager.connect(String(data.user.id), data.user.username);
+    initializeSocketListeners(data.user.id);
   }
-  initializeSocketListeners();
 });
 
 onMount(() => {

@@ -88,7 +88,7 @@ const commandGroups: ShellGroup[] = [
       { label: m.app_shell_item_play(), navUrl: "/play", icon: ZapIcon },
       {
         label: m.app_shell_item_play_vs_bot(),
-        navUrl: "/play/bot",
+        navUrl: "/play",
         icon: BotIcon,
       },
     ],

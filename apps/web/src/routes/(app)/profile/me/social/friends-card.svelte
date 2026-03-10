@@ -3,7 +3,6 @@ import {
   ContactRoundIcon,
   FrownIcon,
   MessageSquareIcon,
-  SwordsIcon,
   UserMinusIcon,
 } from "@lucide/svelte";
 import type { SubmitFunction } from "@sveltejs/kit";
@@ -86,16 +85,6 @@ const {
                 <MessageSquareIcon class="h-4 w-4" />
                 <!-- TODO: maybe i18n or delete? -->
                 <span class="sr-only">Chat</span>
-              </Button>
-
-              <Button
-                href="/play/against/{friend.userId}"
-                variant="ghost"
-                class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
-              >
-                <SwordsIcon class="h-4 w-4" />
-                <!-- TODO: maybe i18n or delete? -->
-                <span class="sr-only">Fight</span>
               </Button>
 
               <form method="POST" action="?/remove" use:enhance={formEnhance}>

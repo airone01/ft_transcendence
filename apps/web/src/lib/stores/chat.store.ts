@@ -10,10 +10,15 @@ export interface ChatMessage {
   timestamp: string;
 }
 
+export interface DirectMessage extends ChatMessage {
+  senderId: string;
+  receiverId: string;
+}
+
 // ─── Stores ─────────────────────────────────────────────────────────────────
 
 export const globalMessages: Writable<ChatMessage[]> = writable([]);
-export const gameMessages: Writable<ChatMessage[]> = writable([]);
+export const friendMessages = writable<Record<string, ChatMessage[]>>({});
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
@@ -22,32 +27,45 @@ export function sendGlobalMessage(content: string) {
   socketManager.emit("chat:global", { content: content.trim() });
 }
 
-export function sendGameMessage(gameId: string, content: string) {
+export function sendFriendMessage(friendId: string, content: string) {
   if (!content.trim()) return;
-  socketManager.emit("chat:game", { gameId, content: content.trim() });
+  socketManager.emit("chat:friend", { friendId, content });
 }
 
 export function clearGlobalMessages() {
   globalMessages.set([]);
 }
 
-export function clearGameMessages() {
-  gameMessages.set([]);
+export function clearFriendMessages() {
+  friendMessages.set({});
 }
 
 // ─── Event Listeners ────────────────────────────────────────────────────────
 
-export function setupChatListeners() {
+export function setupChatListeners(currentUserId: string) {
   socketManager.on("chat:global", ((data: ChatMessage) => {
     globalMessages.update((messages) => [...messages, data]);
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("chat:game", ((data: ChatMessage) => {
-    gameMessages.update((messages) => [...messages, data]);
+  socketManager.on("chat:friend", ((msg: DirectMessage) => {
+    friendMessages.update((allMsgs) => {
+      const chatId =
+        String(msg.senderId) === String(currentUserId)
+          ? String(msg.receiverId)
+          : String(msg.senderId);
+
+      const newMsgs = { ...allMsgs };
+
+      if (!newMsgs[chatId]) newMsgs[chatId] = [];
+      else newMsgs[chatId] = [...newMsgs[chatId]];
+
+      newMsgs[chatId].push(msg);
+      return newMsgs;
+    });
   }) as unknown as (...args: unknown[]) => void);
 
   socketManager.on("chat:error", ((data: { message: string }) => {
     console.error("Chat error:", data.message);
-    alert(`Chat·error:·${data.message}`);
+    alert(`Chat error: ${data.message}`);
   }) as unknown as (...args: unknown[]) => void);
 }

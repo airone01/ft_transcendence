@@ -78,20 +78,14 @@ function getIsActive(href: string, exact?: boolean): boolean {
   <SidebarFooter
     class="p-0 flex flex-col *:border-t gap-0 group-data-[collapsible=icon]:border-t"
   >
-    <div
-      class="p-4 pt-1 group-data-[collapsible=icon]:hidden hover:bg-accent/10 transition-all"
-    >
+    <div class="p-4 pt-1 group-data-[collapsible=icon]:hidden transition-all">
       <SidebarGroupLabel>{m.app_sidebar_group_label()}</SidebarGroupLabel>
       <div class="flex flex-col gap-2">
         <Button href="/play" class="overflow-clip">
           <ZapIcon />
           {m.app_sidebar_group_button_play()}
         </Button>
-        <Button
-          href="/play/bot"
-          variant="outline"
-          class="overflow-clip bg-transparent hover:bg-accent"
-        >
+        <Button href="/play/bot" variant="outline">
           <BotIcon />
           {m.app_sidebar_group_button_bot()}
         </Button>

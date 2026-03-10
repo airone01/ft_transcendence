@@ -68,7 +68,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on(
     "chat:friend",
-    async (data: { friendId: number; content: string }) => {
+    async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
 
       if (!rawContent || rawContent.trim().length === 0) {
@@ -77,12 +77,21 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
       const content = rawContent.trim();
 
+      const friendIdNum =
+        typeof friendId === "string" ? parseInt(friendId, 10) : friendId;
+      const userIdNum =
+        typeof userId === "string" ? parseInt(userId, 10) : (userId as number);
+
+      if (Number.isNaN(friendIdNum) || Number.isNaN(userIdNum)) {
+        return socket.emit("chat:error", { message: "Invalid user ID" });
+      }
+
       try {
-        await dbSendToFriend(userId, friendId, content);
+        await dbSendToFriend(userIdNum, friendIdNum, content);
 
         const messageData = {
-          userId,
-          friendId,
+          senderId: String(userIdNum),
+          receiverId: String(friendIdNum),
           username,
           content,
           timestamp: new Date().toISOString(),
