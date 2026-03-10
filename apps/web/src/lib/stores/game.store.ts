@@ -95,6 +95,7 @@ export function quitBotGame() {
       isSpectator: false,
       isBotGame: false,
       eloChange: null,
+      drawOfferSent: false,
     });
   }
 }
