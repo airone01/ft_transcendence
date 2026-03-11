@@ -3,9 +3,9 @@ import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
+import { onDestroy } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
-import { onDestroy } from "svelte";
 import { m } from "$lib/paraglide/messages";
 import {
   acceptDraw,
@@ -78,8 +78,12 @@ const resolveGameReason = (reason: string) => {
 
 onDestroy(() => {
   const currentGameId = $gameState.gameId;
-  
-  if (currentGameId?.startsWith("bot-") && $gameState.isBotGame && !$gameState.gameOver) {
+
+  if (
+    currentGameId?.startsWith("bot-") &&
+    $gameState.isBotGame &&
+    !$gameState.gameOver
+  ) {
     console.log("[Game] Page destroyed, emitting bot:quit for", currentGameId);
     socketManager.emit("bot:quit", { gameId: currentGameId });
   }

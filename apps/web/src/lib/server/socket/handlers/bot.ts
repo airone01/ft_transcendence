@@ -8,7 +8,8 @@ export const BOT_USER_ID = "0";
 export const MAX_BOT_GAMES = 2;
 
 let activeBotGamesCount = 0;
-const botQueue: Array<{ userId: string; socket: Socket; difficulty: string }> = [];
+const botQueue: Array<{ userId: string; socket: Socket; difficulty: string }> =
+  [];
 
 function coordsToAlgebraic(coords: [number, number]): string {
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -34,10 +35,12 @@ function startNextBotGame(io: Server) {
   const player = botQueue.shift();
   if (!player) return;
 
-  const { userId, socket, difficulty } = player;
+  const { userId, socket } = player;
 
   incrementBotGames();
-  console.log(`[Bot Queue] Starting game for user ${userId}, queue remaining: ${botQueue.length}`);
+  console.log(
+    `[Bot Queue] Starting game for user ${userId}, queue remaining: ${botQueue.length}`,
+  );
 
   const gameId = `bot-${userId}-${Date.now()}`;
 
@@ -52,9 +55,12 @@ function startNextBotGame(io: Server) {
 
     activeGames.set(gameId, gameRoom);
 
-    gameRoom.on("time_tick", (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
-      socket.emit("game:time", data);
-    });
+    gameRoom.on(
+      "time_tick",
+      (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+        socket.emit("game:time", data);
+      },
+    );
 
     gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
       socket.emit("game:over", {
@@ -63,7 +69,7 @@ function startNextBotGame(io: Server) {
         reason: "timeout",
         eloChange: null,
       });
-      
+
       activeGames.delete(data.gameId);
       decrementBotGames();
       startNextBotGame(io);
@@ -116,7 +122,9 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     }
 
     botQueue.push({ userId, socket, difficulty });
-    console.log(`[Bot Queue] User ${userId} added, total in queue: ${botQueue.length}`);
+    console.log(
+      `[Bot Queue] User ${userId} added, total in queue: ${botQueue.length}`,
+    );
 
     if (activeBotGamesCount < MAX_BOT_GAMES) {
       startNextBotGame(io);
@@ -131,7 +139,9 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     const index = botQueue.findIndex((p) => p.userId === userId);
     if (index !== -1) {
       botQueue.splice(index, 1);
-      console.log(`[Bot Queue] User ${userId} cancelled, remaining: ${botQueue.length}`);
+      console.log(
+        `[Bot Queue] User ${userId} cancelled, remaining: ${botQueue.length}`,
+      );
       socket.emit("bot:cancelled");
     }
   });
@@ -149,79 +159,87 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     socket.emit("bot:quit_success");
   });
 
-  socket.on("bot:move", async (data: { gameId: string; from: string; to: string; promotion?: string }) => {
-    try {
-      const { gameId, from, to, promotion } = data;
-      const gameRoom = activeGames.get(gameId);
+  socket.on(
+    "bot:move",
+    async (data: {
+      gameId: string;
+      from: string;
+      to: string;
+      promotion?: string;
+    }) => {
+      try {
+        const { gameId, from, to, promotion } = data;
+        const gameRoom = activeGames.get(gameId);
 
-      if (!gameRoom) {
-        return socket.emit("game:error", { message: "Game not found" });
-      }
+        if (!gameRoom) {
+          return socket.emit("game:error", { message: "Game not found" });
+        }
 
-      const result = await gameRoom.makeMove(userId, { from, to, promotion });
+        const result = await gameRoom.makeMove(userId, { from, to, promotion });
 
-      if (!result.valid) {
-        return socket.emit("game:error", { message: result.error });
-      }
-
-      socket.emit("game:move", {
-        from,
-        to,
-        promotion,
-        fen: result.fen,
-        checkmate: result.checkmate,
-        stalemate: result.stalemate,
-        whiteTimeLeft: result.whiteTimeLeft,
-        blackTimeLeft: result.blackTimeLeft,
-      });
-
-      if (result.gameOver) {
-        socket.emit("game:over", {
-          winner: result.winner === userId ? "white" : "black",
-          reason: result.reason,
-        });
-        
-        releaseBotGame(gameId, io);
-        return;
-      }
-
-      const currentFen = gameRoom.getState().fen;
-      const currentGameState = parseFEN(currentFen);
-      const botMove = findBestMoveTimed(currentGameState);
-
-      if (botMove) {
-        const fromAlgebraic = coordsToAlgebraic(botMove.from);
-        const toAlgebraic = coordsToAlgebraic(botMove.to);
-
-        const botResult = await gameRoom.makeMove(BOT_USER_ID, {
-          from: fromAlgebraic,
-          to: toAlgebraic,
-          promotion: botMove.promotion?.toLowerCase(),
-        });
+        if (!result.valid) {
+          return socket.emit("game:error", { message: result.error });
+        }
 
         socket.emit("game:move", {
-          from: fromAlgebraic,
-          to: toAlgebraic,
-          promotion: botMove.promotion?.toLowerCase(),
-          fen: botResult.fen,
-          checkmate: botResult.checkmate,
-          stalemate: botResult.stalemate,
-          whiteTimeLeft: botResult.whiteTimeLeft,
-          blackTimeLeft: botResult.blackTimeLeft,
+          from,
+          to,
+          promotion,
+          fen: result.fen,
+          checkmate: result.checkmate,
+          stalemate: result.stalemate,
+          whiteTimeLeft: result.whiteTimeLeft,
+          blackTimeLeft: result.blackTimeLeft,
         });
 
-        if (botResult.gameOver) {
+        if (result.gameOver) {
           socket.emit("game:over", {
-            winner: botResult.winner === userId ? "white" : "black",
-            reason: botResult.reason,
+            winner: result.winner === userId ? "white" : "black",
+            reason: result.reason,
           });
-          
+
           releaseBotGame(gameId, io);
+          return;
         }
+
+        const currentFen = gameRoom.getState().fen;
+        const currentGameState = parseFEN(currentFen);
+        const botMove = findBestMoveTimed(currentGameState);
+
+        if (botMove) {
+          const fromAlgebraic = coordsToAlgebraic(botMove.from);
+          const toAlgebraic = coordsToAlgebraic(botMove.to);
+
+          const botResult = await gameRoom.makeMove(BOT_USER_ID, {
+            from: fromAlgebraic,
+            to: toAlgebraic,
+            promotion: botMove.promotion?.toLowerCase(),
+          });
+
+          socket.emit("game:move", {
+            from: fromAlgebraic,
+            to: toAlgebraic,
+            promotion: botMove.promotion?.toLowerCase(),
+            fen: botResult.fen,
+            checkmate: botResult.checkmate,
+            stalemate: botResult.stalemate,
+            whiteTimeLeft: botResult.whiteTimeLeft,
+            blackTimeLeft: botResult.blackTimeLeft,
+          });
+
+          if (botResult.gameOver) {
+            socket.emit("game:over", {
+              winner: botResult.winner === userId ? "white" : "black",
+              reason: botResult.reason,
+            });
+
+            releaseBotGame(gameId, io);
+          }
+        }
+      } catch (error) {
+        console.error("[Bot] Move error:", error);
+        socket.emit("game:error", { message: "Invalid move" });
       }
-    } catch (error) {
-      console.error("[Bot] Move error:", error);
-      socket.emit("game:error", { message: "Invalid move" });
-    }
-  });
+    },
+  );
 }

@@ -2,10 +2,10 @@
 import { BotIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
+import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { gameState } from "$lib/stores/game.store";
 import { socketManager } from "$lib/stores/socket.svelte";
-import { onMount, onDestroy } from "svelte";
 
 let isWaiting = $state(false);
 
@@ -25,14 +25,32 @@ const handleCancelled = () => {
 };
 
 onMount(() => {
-  socketManager.on("game:state", handleGameState as unknown as (...args: unknown[]) => void);
-  socketManager.on("bot:waiting", handleWaiting as unknown as (...args: unknown[]) => void);
-  socketManager.on("bot:cancelled", handleCancelled as unknown as (...args: unknown[]) => void);
+  socketManager.on(
+    "game:state",
+    handleGameState as unknown as (...args: unknown[]) => void,
+  );
+  socketManager.on(
+    "bot:waiting",
+    handleWaiting as unknown as (...args: unknown[]) => void,
+  );
+  socketManager.on(
+    "bot:cancelled",
+    handleCancelled as unknown as (...args: unknown[]) => void,
+  );
 
   return () => {
-    socketManager.off("game:state", handleGameState as unknown as (...args: unknown[]) => void);
-    socketManager.off("bot:waiting", handleWaiting as unknown as (...args: unknown[]) => void);
-    socketManager.off("bot:cancelled", handleCancelled as unknown as (...args: unknown[]) => void);
+    socketManager.off(
+      "game:state",
+      handleGameState as unknown as (...args: unknown[]) => void,
+    );
+    socketManager.off(
+      "bot:waiting",
+      handleWaiting as unknown as (...args: unknown[]) => void,
+    );
+    socketManager.off(
+      "bot:cancelled",
+      handleCancelled as unknown as (...args: unknown[]) => void,
+    );
   };
 });
 
@@ -57,7 +75,9 @@ function cancelQueue() {
     <Spinner class="w-16 h-16" />
     <div class="text-center space-y-3">
       <h2 class="text-2xl font-semibold">Waiting for bot game...</h2>
-      <p class="text-sm text-muted-foreground">All bot slots are currently in use</p>
+      <p class="text-sm text-muted-foreground">
+        All bot slots are currently in use
+      </p>
     </div>
     <Button variant="outline" onclick={cancelQueue}>Cancel</Button>
   </main>
@@ -69,34 +89,59 @@ function cancelQueue() {
           <BotIcon class="w-12 h-12 text-purple-500" />
           <h1 class="text-3xl font-bold">Play vs Bot</h1>
         </div>
-        <p class="text-muted-foreground">Practice your chess skills against the computer</p>
+        <p class="text-muted-foreground">
+          Practice your chess skills against the computer
+        </p>
       </div>
 
       <div class="grid grid-cols-1 gap-4 max-w-md mx-auto">
-        <Button size="lg" variant="outline" class="h-20 text-lg" onclick={() => startBotGame('easy')}>
+        <Button
+          size="lg"
+          variant="outline"
+          class="h-20 text-lg"
+          onclick={() => startBotGame('easy')}
+        >
           <div class="flex flex-col items-center gap-1">
             <span class="font-semibold">Easy</span>
-            <span class="text-xs text-muted-foreground">Good for beginners</span>
+            <span class="text-xs text-muted-foreground"
+              >Good for beginners</span
+            >
           </div>
         </Button>
 
-        <Button size="lg" variant="outline" class="h-20 text-lg" onclick={() => startBotGame('medium')}>
+        <Button
+          size="lg"
+          variant="outline"
+          class="h-20 text-lg"
+          onclick={() => startBotGame('medium')}
+        >
           <div class="flex flex-col items-center gap-1">
             <span class="font-semibold">Medium</span>
-            <span class="text-xs text-muted-foreground">Balanced challenge</span>
+            <span class="text-xs text-muted-foreground"
+              >Balanced challenge</span
+            >
           </div>
         </Button>
 
-        <Button size="lg" variant="outline" class="h-20 text-lg" onclick={() => startBotGame('hard')}>
+        <Button
+          size="lg"
+          variant="outline"
+          class="h-20 text-lg"
+          onclick={() => startBotGame('hard')}
+        >
           <div class="flex flex-col items-center gap-1">
             <span class="font-semibold">Hard</span>
-            <span class="text-xs text-muted-foreground">For experienced players</span>
+            <span class="text-xs text-muted-foreground"
+              >For experienced players</span
+            >
           </div>
         </Button>
       </div>
 
       <div class="text-center">
-        <Button variant="ghost" onclick={() => goto('/play')}>Back to game modes</Button>
+        <Button variant="ghost" onclick={() => goto('/play')}>
+          Back to game modes
+        </Button>
       </div>
     </div>
   </main>
