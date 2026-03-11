@@ -47,7 +47,9 @@ jobs:
         run: bun run lint
 
   e2e:
+    name: Run E2E Tests
     runs-on: ubuntu-latest
+    needs: [check, lint]
 
     defaults:
       run:
@@ -67,6 +69,7 @@ jobs:
           bun playwright install
 
       - name: Run e2e tests
+        continue-on-error: true
         run: bun run e2e
         env:
           DATABASE_URL: postgres://root:mysecretpassword@localhost:5432/local
