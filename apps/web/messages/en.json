@@ -241,7 +241,7 @@
 
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
-  "settings_page_account_label_no_password_desc": "You haven't set a password yet. Set one to log in with email/password.",
+  "settings_page_account_label_no_password_desc": "[i18n] You haven't set a password yet. Set one to log in with email/password.",
   "settings_page_account_label_current_password": "[i18n] Current Password",
   "settings_page_account_label_new_password": "[i18n] New Password",
   "settings_page_account_label_confirm_password": "[i18n] Confirm Password",

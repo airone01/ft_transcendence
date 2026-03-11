@@ -54,7 +54,7 @@ const stats = $derived(page.data.stats);
         <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>
           {m.app_sidebar_user_item_logout()}
         </DropdownMenuItem>
-        <a href="/settings/profile"
+        <a href="/settings"
           ><DropdownMenuItem>
             {m.app_sidebar_user_item_settings()}
           </DropdownMenuItem></a
