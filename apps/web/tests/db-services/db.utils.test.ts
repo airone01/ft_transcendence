@@ -2,7 +2,10 @@ import { describe, expect, test } from "bun:test";
 import { db } from "@transc/db";
 import { users } from "@transc/db/schema";
 import { eq } from "drizzle-orm";
-import { dbGetLeaderboard, dbGetUserGameHistory } from "$lib/db-services";
+import {
+  dbGetLeaderboard,
+  dbGetUserGameHistory,
+} from "$lib/server/db-services";
 
 describe("Leaderboard", () => {
   test("getLeaderboard", async () => {

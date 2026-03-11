@@ -1,0 +1,12 @@
+localhost:8443 {
+  reverse_proxy web:3000
+}
+
+http://localhost:3001 {
+  # Caddy automatically upgrades HTTP to Ws
+  reverse_proxy web:3001
+}
+
+localhost:8080 {
+  redir https://localhost:8443{uri}
+}

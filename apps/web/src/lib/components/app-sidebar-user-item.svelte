@@ -1,56 +1,65 @@
 <script lang="ts">
 import { EllipsisIcon } from "@lucide/svelte";
-import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
+import { Badge } from "@transc/ui/badge";
 import { Button } from "@transc/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@transc/ui/tooltip";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "@transc/ui/dropdown-menu"
+  DropdownMenuTrigger,
+} from "@transc/ui/dropdown-menu";
 import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages.js";
+import UserAvatar from "./user-avatar.svelte";
+import UserProfileLink from "./user-profile-link.svelte";
 
 const { logoutForm }: { logoutForm: HTMLFormElement | undefined } = $props();
 
 const user = $derived(page.data.user);
-const initials = $derived(user?.username?.slice(0, 2).toUpperCase() ?? "??");
+const stats = $derived(page.data.stats);
 </script>
 
 {#if user}
-  <div class="group flex items-center gap-3 p-4 w-full hover:bg-accent/10 transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none">
-    <a href="/profile/me" class="shrink-0">
-      <Avatar class="ring ring-primary aspect-square w-full group-data-[state=collapsed]:w-full">
-        <AvatarImage src={user.avatar} alt={user.username} />
-        <AvatarFallback class="bg-linear-to-r from-blue-600 to-fuchsia-500 text-background">{initials}</AvatarFallback>
-      </Avatar>
-    </a>
-    <div class="flex flex-col justify-center shrink w-full min-w-0 h-full group-data-[state=collapsed]:hidden">
-      <Tooltip>
-        <TooltipTrigger class="h-4 flex justify-center w-fit max-w-full">
-          <a href="/profile/me" class="text-left hover:underline text-sm max-w-full w-fit truncate leading-none">
-            {user.username}
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{user.username}</p>
-        </TooltipContent>
-      </Tooltip>
-      <span class="font-mono bg-muted px-1 rounded-sm text-[10px] font-bold w-fit">
-        ELO ????
-      </span>
-    </div>
+  <footer
+    aria-label="Sidebar footer"
+    class="flex items-center gap-3 p-4 w-full transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
+  >
+    <UserProfileLink
+      userId={user.id}
+      fallbackUsername={user.username}
+      class="gap-3 w-full"
+    >
+      <UserAvatar
+        userId={user.id}
+        avatarUrl={user.avatar}
+        username={user.username}
+        class="h-10 w-10 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8"
+      />
+      <div class="flex flex-col group-data-[collapsible=icon]:hidden">
+        <span class="text-sm font-medium">{user.username}</span>
+        <Badge class="text-xs text-[0.6rem] py-px px-0.75">
+          ELO {stats?.currentElo ?? '???'}
+        </Badge>
+      </div>
+    </UserProfileLink>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button variant="outline" size="icon" class="cursor-pointer group-hover:bg-accent/10 hover:bg-accent/30 p-0">
-          <EllipsisIcon class="aspect-square" />
-        </Button>
+        {#snippet child({ props })}
+          <Button {...props} variant="outline" size="icon" class="p-0">
+            <EllipsisIcon class="aspect-square" />
+          </Button>
+        {/snippet}
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
-        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()} class="cursor-pointer">Log out</DropdownMenuItem>
-        <DropdownMenuItem><a href="/settings/profile">Settings</a></DropdownMenuItem>
+        <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>
+          {m.app_sidebar_user_item_logout()}
+        </DropdownMenuItem>
+        <a href="/settings"
+          ><DropdownMenuItem>
+            {m.app_sidebar_user_item_settings()}
+          </DropdownMenuItem></a
+        >
       </DropdownMenuContent>
     </DropdownMenu>
-  </div>
+  </footer>
 {/if}
-

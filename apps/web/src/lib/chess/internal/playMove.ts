@@ -18,9 +18,70 @@ export function playMove(state: GameState, move: Move): GameState {
 
   const moves = getLegalMoves(state, move.from);
 
-  if (!moves.find((m) => m.to[0] === move.to[0] && m.to[1] === move.to[1]))
-    throw new InvalidMove();
+  const matchedMove = moves.find(
+    (m) => m.to[0] === move.to[0] && m.to[1] === move.to[1],
+  );
+  if (!matchedMove) throw new InvalidMove();
 
+  // Use the matched legal move (which carries castle/capture metadata),
+  // but keep the user-supplied promotion choice.
+  const effectiveMove: Move = { ...matchedMove, promotion: move.promotion };
+
+  const newState: GameState = applyMoveCopy(state, effectiveMove);
+
+  const [fr, fc] = move.from;
+  // const [tr, _tc] = move.to;
+  const piece: Piece | null = state.board[fr][fc];
+
+  newState.turn = state.turn === "w" ? "b" : "w";
+
+  // TODO: did this cause an issue?
+  // if (piece?.toLowerCase() === "k") {
+  //   if (state.turn === "w") {
+  //     newState.castling.whiteKingSide = false;
+  //     newState.castling.whiteQueenSide = false;
+  //   } else {
+  //     newState.castling.blackKingSide = false;
+  //     newState.castling.blackQueenSide = false;
+  //   }
+  // }
+
+  // if (piece?.toLowerCase() === "r") {
+  //   if (state.turn === "w") {
+  //     if (fr === 7 && fc === 0) newState.castling.whiteQueenSide = false;
+  //     else if (fr === 7 && fc === 7) newState.castling.whiteKingSide = false;
+  //   } else {
+  //     if (fr === 0 && fc === 0) newState.castling.blackQueenSide = false;
+  //     else if (fr === 0 && fc === 7) newState.castling.blackKingSide = false;
+  //   }
+  // }
+
+  // if (piece?.toLowerCase() === "p" && Math.abs(tr - fr) === 2)
+  //   newState.enPassant = [(fr + tr) / 2, fc];
+  // else newState.enPassant = null;
+
+  if (piece?.toLowerCase() === "p" || move?.capture) newState.halfMoveCount = 0;
+  else newState.halfMoveCount++;
+
+  if (newState.turn === "w") newState.fullMoveCount++;
+
+  newState.historyFEN.push(boardToFEN(newState));
+
+  return newState;
+}
+
+/**
+ * Applies a move to a GameState object, for the purpose of searching through
+ * possible moves. (same as playMove, but no checks for checkmate or draw, and
+ * no updating FEN history)
+ *
+ * @param state The GameState object to apply the move to.
+ * @param move The Move object to apply to the GameState.
+ * @throws {EndGame} If the game is over (checkmate or draw).
+ * @throws {InvalidMove} If the move is invalid.
+ * @returns The new GameState object after the move has been applied.
+ */
+export function applyMoveForSearch(state: GameState, move: Move): GameState {
   const newState: GameState = applyMoveCopy(state, move);
 
   const [fr, fc] = move.from;

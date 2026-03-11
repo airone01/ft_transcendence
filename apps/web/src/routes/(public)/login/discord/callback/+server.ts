@@ -1,12 +1,13 @@
 import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
+import * as m from "$lib/paraglide/messages";
+import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import {
   dbCreateOAuthAccount,
   dbCreateUser,
   dbGetUserByEmail,
   dbGetUserByOauthId,
-} from "$lib/db-services";
-import { auth, setSessionTokenCookie } from "$lib/server/auth";
+} from "$lib/server/db-services";
 import type { RequestEvent } from "./$types";
 
 // helper interface for discord response typing
@@ -26,100 +27,97 @@ export const GET = async (event: RequestEvent) => {
 
   // validate state
   if (!code || !state || !storedState || state !== storedState) {
-    throw error(400, "Invalid state or code" /* i18n */);
+    throw error(400, m.oauth_invalid_state_or_code());
   }
 
-  try {
-    const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_id: env.DISCORD_CLIENT_ID ?? "",
-        client_secret: env.DISCORD_CLIENT_SECRET ?? "",
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: env.DISCORD_REDIRECT_URI ?? "",
-      }),
+  const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      client_id: env.DISCORD_CLIENT_ID as string,
+      client_secret: env.DISCORD_CLIENT_SECRET as string,
+      code: code,
+      redirect_uri: env.DISCORD_REDIRECT_URI as string,
+    }),
+  });
+
+  if (!tokenResponse.ok) {
+    console.error({
+      msg: await tokenResponse.text(),
+      code,
+      clientId: env.DISCORD_CLIENT_ID,
+      redirectUri: env.DISCORD_REDIRECT_URI,
     });
+    throw redirect(302, "/?error=discord_auth");
+  }
+  const tokens = await tokenResponse.json();
 
-    if (!tokenResponse.ok)
-      throw error(400, "Failed to get access token" /* i18n */);
-    const tokens = await tokenResponse.json();
+  const userResponse = await fetch("https://discord.com/api/users/@me", {
+    headers: { Authorization: `Bearer ${tokens.access_token}` },
+  });
 
-    const userResponse = await fetch("https://discord.com/api/users/@me", {
-      headers: { Authorization: `Bearer ${tokens.access_token}` },
-    });
+  if (!userResponse.ok) throw redirect(302, "/?error=discord_auth");
+  const discordUser: DiscordUser = await userResponse.json();
 
-    if (!userResponse.ok)
-      throw error(400, "Failed to fetch user data" /* i18n */);
-    const discordUser: DiscordUser = await userResponse.json();
+  // check if this discord ID is already linked
+  const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
 
-    // check if this discord ID is already linked
-    const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
-
-    // user is already logged in (link)
-    if (locals.user) {
-      if (existingAccount) {
-        if (existingAccount.id === locals.user.id) {
-          // already linked to this user, just redirect back
-          throw redirect(302, "/settings/account");
-        } else {
-          // linked to a different user
-          // TODO: maybe show an error on the settings page
-          throw error(
-            400,
-            "This Discord account is already connected to another user." /* i18n */,
-          );
-        }
-      }
-
-      // link new discord account to current user
-      await dbCreateOAuthAccount({
-        userId: locals.user.id,
-        provider: "discord",
-        providerUserId: discordUser.id,
-      });
-
-      throw redirect(302, "/settings/account");
-    }
-
-    // user is not logged in (login/register)
-    let userId: number;
+  // user is already logged in (link)
+  if (locals.user) {
     if (existingAccount) {
-      // account exists: login
-      userId = existingAccount.id;
-    } else {
-      // check email collision
-      const existingEmailUser = await dbGetUserByEmail(discordUser.email);
-
-      if (existingEmailUser) {
-        // email match: link accs automatically
-        userId = existingEmailUser.id;
+      if (existingAccount.id === locals.user.id) {
+        // already linked to this user, just redirect back
+        throw redirect(302, "/settings");
       } else {
-        // brand new user
-        userId = await dbCreateUser({
-          email: discordUser.email,
-          username: discordUser.username,
-          avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
-          password: null,
-        });
+        // linked to a different user
+        throw redirect(303, "/settings?error=already_linked");
       }
+    }
 
-      // create link
-      await dbCreateOAuthAccount({
-        userId,
-        provider: "discord",
-        providerUserId: discordUser.id,
+    // link new discord account to current user
+    await dbCreateOAuthAccount({
+      userId: locals.user.id,
+      provider: "discord",
+      providerUserId: discordUser.id,
+    });
+
+    throw redirect(302, "/settings");
+  }
+
+  // user is not logged in (login/register)
+  let userId: number;
+  if (existingAccount) {
+    // account exists: login
+    userId = existingAccount.id;
+  } else {
+    // check email collision
+    const existingEmailUser = await dbGetUserByEmail(discordUser.email);
+
+    if (existingEmailUser) {
+      // email match: link accs automatically
+      userId = existingEmailUser.id;
+    } else {
+      // brand new user
+      userId = await dbCreateUser({
+        email: discordUser.email,
+        username: discordUser.username,
+        avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
+        password: null,
       });
     }
 
-    // then session and cookie
-    const { token, expiresAt } = await auth.createSession(userId);
-    setSessionTokenCookie(event, token, expiresAt);
-  } catch (e) {
-    console.error("OAuth Error:" /* i18n */, e);
-    return error(500, "Authentication failed" /* i18n */);
+    // create link
+    await dbCreateOAuthAccount({
+      userId,
+      provider: "discord",
+      providerUserId: discordUser.id,
+    });
   }
+
+  // then session and cookie
+  const { token, expiresAt } = await auth.createSession(userId);
+  setSessionTokenCookie(event, token, expiresAt);
 
   throw redirect(302, "/");
 };

@@ -1,21 +1,58 @@
-import { error } from "@sveltejs/kit";
-import { dbGetUser } from "$lib/db-services";
+import { error, redirect } from "@sveltejs/kit";
+import * as m from "$lib/paraglide/messages";
+import {
+  dbGetAchievements,
+  dbGetEloHistory,
+  dbGetPeakElo,
+  dbGetStats,
+  dbGetUser,
+  dbGetUserGameHistory,
+} from "$lib/server/db-services";
+import type { UserNoPass } from "../../../../app";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-  const userId = params.id;
+  if (locals.user == null) throw redirect(301, "/");
 
   const fetchUser = async () => {
-    if (!userId || userId === "me") return locals.user;
-    const id = parseInt(userId, 10);
-    if (Number.isNaN(id)) throw error(400, "Invalid user ID");
-    const user = await dbGetUser(id);
-    if (!user) throw error(404, "User not found");
-    return user;
+    let userId: number | undefined;
+    let user: UserNoPass | undefined;
+
+    if (params.id === "me") {
+      userId = (locals.user as UserNoPass).id;
+      user = locals.user ?? undefined;
+    } else if (params.id != null) {
+      userId = parseInt(params.id, 10);
+      const { password, ...dbUser } = await dbGetUser(userId);
+      user = { ...dbUser, password: null };
+    }
+
+    if (Number.isNaN(userId) || userId == null)
+      throw error(400, m.profile_page_fecth_user_invalid_userid());
+
+    if (!user) throw error(404, m.profile_page_fecth_user_not_found());
+
+    const [stats, games, rawEloHistory, achievements, peakElo] =
+      await Promise.all([
+        dbGetStats(userId),
+        dbGetUserGameHistory(userId),
+        dbGetEloHistory(userId),
+        dbGetAchievements(userId),
+        dbGetPeakElo(userId),
+      ]);
+
+    const eloHistory = rawEloHistory
+      // DB returns descending order; we need ascending for chronological
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+      .map((entry) => ({
+        date: entry.createdAt,
+        elo: entry.elo,
+      }));
+
+    return { user, stats, games, eloHistory, achievements, peakElo };
   };
 
   return {
-    // pass promise so ui can show loading state
     userPromise: fetchUser(),
   };
 };

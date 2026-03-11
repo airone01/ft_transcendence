@@ -1,6 +1,6 @@
 import { type RequestEvent, redirect } from "@sveltejs/kit";
-import { dbDeleteAuthSession } from "$lib/db-services";
 import { deleteSessionTokenCookie } from "$lib/server/auth";
+import { dbDeleteAuthSession } from "$lib/server/db-services";
 import type { Actions } from "./$types";
 
 export const actions = {

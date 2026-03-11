@@ -10,6 +10,9 @@ import {
   DBUserNotFoundError,
   dbCreateUser,
   dbDeleteUser,
+  dbGetAchievements,
+  dbGetEloHistory,
+  dbGetRandomUsers,
   dbGetStats,
   dbGetUser,
   dbGetUserByEmail,
@@ -17,7 +20,7 @@ import {
   dbIsUsernameTaken,
   dbUpdateUser,
   type UpdateUserInput,
-} from "$lib/db-services";
+} from "$lib/server/db-services";
 
 describe("users.service.ts tests", () => {
   let userId: number;
@@ -115,6 +118,15 @@ describe("users.service.ts tests", () => {
     }
   });
 
+  test.only("getRandomUsers", async () => {
+    try {
+      const random = await dbGetRandomUsers(2);
+
+      expect(random).toBeDefined();
+      console.log(random);
+    } catch (_err) {}
+  });
+
   const updatedUser: UpdateUserInput = {
     email: "hellooo@test.com",
     avatar: "",
@@ -142,6 +154,24 @@ describe("users.service.ts tests", () => {
 
       expect(stats).toBeDefined();
       console.table(stats);
+    } catch (_err) {}
+  });
+
+  test("getEloHistory", async () => {
+    try {
+      const elo_history = await dbGetEloHistory(userId);
+
+      expect(elo_history).toBeDefined();
+      console.table(elo_history);
+    } catch (_err) {}
+  });
+
+  test("getAchievements", async () => {
+    try {
+      const achievements = await dbGetAchievements(userId);
+
+      expect(achievements).toBeDefined();
+      console.table(achievements);
     } catch (_err) {}
   });
 

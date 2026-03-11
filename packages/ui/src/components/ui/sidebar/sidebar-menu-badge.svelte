@@ -11,10 +11,10 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="sidebar-menu-badge"
-	data-sidebar="menu-badge"
-	class={cn(
+  bind:this={ref}
+  data-slot="sidebar-menu-badge"
+  data-sidebar="menu-badge"
+  class={cn(
 		"text-sidebar-foreground pointer-events-none absolute end-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none",
 		"peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
 		"peer-data-[size=sm]/menu-button:top-1",
@@ -23,7 +23,7 @@ let {
 		"group-data-[collapsible=icon]:hidden",
 		className
 	)}
-	{...restProps}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

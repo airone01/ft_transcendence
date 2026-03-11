@@ -10,7 +10,7 @@ let {
 </script>
 
 <FormPrimitive.Legend
-	bind:ref
-	class={cn("data-[fs-error]:text-destructive text-sm leading-none font-medium", className)}
-	{...restProps}
+  bind:ref
+  class={cn("data-[fs-error]:text-destructive text-sm leading-none font-medium", className)}
+  {...restProps}
 />

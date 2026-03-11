@@ -1,15 +1,13 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
+import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
+import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
-import { registerMatchmakingHandlers } from "./handlers/matchmaking";
+import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
-//import { registerChatHandlers } from "./handlers/chat";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
-import {
-  restoreSessionOnReconnect,
-  saveSessionOnDisconnect,
-} from "./utils/reconnection";
+import { saveSessionOnDisconnect } from "./utils/reconnection";
 
 let io: Server;
 
@@ -28,41 +26,47 @@ export function initSocketServer(httpServer: HTTPServer) {
     },
   });
 
-  // Auth middleware
   io.use(authMiddleware);
-
-  // Run heartbeat
   startHeartbeat(io);
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
-    // Join personal room
     socket.join(`user:${userId}`);
 
-    // Try to restore a previous session
-    restoreSessionOnReconnect(socket);
-
-    // Register handlers
     registerGameHandlers(io, socket);
-    //registerChatHandlers(io, socket);
+    registerChatHandlers(io, socket);
     registerPresenceHandlers(io, socket);
     registerMatchmakingHandlers(io, socket);
+    registerBotHandlers(io, socket);
 
-    // Heartbeat pong
-    socket.on("heartbeat:pong", () => {
-      // Client responded to ping, connection OK
-    });
+    socket.on("heartbeat:pong", () => {});
 
-    // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
-      // Save session for reconnection
+      const currentGameId = socket.data.currentGameId;
+
+      if (userId) {
+        for (const [mode, queue] of queues.entries()) {
+          const index = queue.findIndex((s) => s.data.userId === userId);
+          if (index !== -1) {
+            queue.splice(index, 1);
+            console.log(
+              `[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`,
+            );
+          }
+        }
+      }
+
+      if (currentGameId?.startsWith("bot-")) {
+        releaseBotGame(currentGameId, io);
+        socket.data.currentGameId = null;
+      }
+
       saveSessionOnDisconnect(socket);
 
-      // Delay before marking offline (allows quick reconnection)
       setTimeout(async () => {
         const userSockets = await io.in(`user:${userId}`).fetchSockets();
         if (userSockets.length === 0) {
@@ -72,7 +76,6 @@ export function initSocketServer(httpServer: HTTPServer) {
       }, 5000);
     });
 
-    // Errors
     socket.on("error", (error) => {
       console.error(`[Socket] Error for user ${userId}:`, error);
     });

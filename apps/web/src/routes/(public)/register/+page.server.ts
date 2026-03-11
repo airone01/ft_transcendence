@@ -1,14 +1,16 @@
 import { fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
+import * as m from "$lib/paraglide/messages";
+import { registerSchema } from "$lib/schemas/auth";
+import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
+import { generateDefaultAvatar } from "$lib/server/avatar";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   dbCreateUser,
   dbIsEmailTaken,
-} from "$lib/db-services";
-import { registerSchema } from "$lib/schemas/auth";
-import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
+} from "$lib/server/db-services";
 import type { Actions } from "./$types";
 
 export const actions = {
@@ -20,17 +22,19 @@ export const actions = {
     }
 
     if (await dbIsEmailTaken(form.data.email))
-      return message(form, "Email already registered." /* i18n */, {
+      return message(form, m.register_email_taken(), {
         status: 400,
       });
 
     try {
       const passwordHash = await hashPassword(form.data.password);
+      const defaultAvatar = generateDefaultAvatar(form.data.username);
 
       const userId = await dbCreateUser({
         email: form.data.email,
         password: passwordHash,
         username: form.data.username,
+        avatar: defaultAvatar,
       });
 
       const { token, expiresAt } = await auth.createSession(userId);
@@ -46,7 +50,7 @@ export const actions = {
             ...form,
             errors: {
               ...form.errors,
-              username: ["Username already taken." /* i18n */],
+              username: [m.register_username_taken()],
             },
           },
         });
@@ -56,12 +60,12 @@ export const actions = {
             ...form,
             errors: {
               ...form.errors,
-              email: ["Email already registered." /* i18n */],
+              email: [m.register_email_taken()],
             },
           },
         });
       console.error(e);
-      return message(form, "Unknown database error." /* i18n */, {
+      return message(form, m.unkown_db_error(), {
         status: 500,
       });
     }

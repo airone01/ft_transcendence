@@ -3,15 +3,17 @@
 import { setupChatListeners } from "$lib/stores/chat.store";
 import { setupGameListeners } from "$lib/stores/game.store";
 import { setupMatchmakingListeners } from "$lib/stores/matchmaking.store";
+import { setupPresenceListeners } from "$lib/stores/presence.store";
 
 let initialized = false;
 
-export function initializeSocketListeners() {
+export function initializeSocketListeners(userId: number) {
   if (initialized) return;
 
   setupGameListeners();
   setupMatchmakingListeners();
-  setupChatListeners();
+  setupChatListeners(String(userId));
+  setupPresenceListeners();
 
   initialized = true;
   console.log("Socket listeners initialized");

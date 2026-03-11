@@ -3,10 +3,9 @@ import type { Server } from "socket.io";
 let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
 export function startHeartbeat(io: Server, intervalMs = 30000) {
-  if (heartbeatInterval) return; // Déjà lancé
+  if (heartbeatInterval) return;
 
   heartbeatInterval = setInterval(() => {
-    // Broadcast un ping à tous les clients
     io.emit("heartbeat:ping", { timestamp: Date.now() });
   }, intervalMs);
 

@@ -1,54 +1,59 @@
 <script lang="ts">
-import { page } from "$app/state";
-import { Avatar, AvatarFallback, AvatarImage } from '@transc/ui/avatar';
-import { Button } from '@transc/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@transc/ui/card';
+import {
+  CalendarIcon,
+  MegaphoneIcon,
+  SwordsIcon,
+  TriangleAlertIcon,
+  UserPlusIcon,
+} from "@lucide/svelte";
+import type { SubmitFunction } from "@sveltejs/kit";
+import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Badge } from "@transc/ui/badge";
+import { Button } from "@transc/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@transc/ui/card";
 import { Skeleton } from "@transc/ui/skeleton";
-import { 
-  TriangleAlert, 
-  Swords, 
-  UserPlus, 
-  Trophy, 
-  TrendingUp, 
-  History, 
-  Calendar, 
-  Medal,
-  Target
-} from '@lucide/svelte';
+import { toast } from "svelte-sonner";
+import { enhance } from "$app/forms";
+import { page } from "$app/state";
+import * as m from "$lib/paraglide/messages";
+import { onlineUsersStore } from "$lib/stores/presence.store";
+import BadgesCard from "./badges-card.svelte";
+import CurrentEloCard from "./current-elo-card.svelte";
+import EloHistoryCard from "./elo-history-card.svelte";
+import RecentMatchesCard from "./recent-matches-card.svelte";
+import WinRatioCard from "./win-ratio-card.svelte";
 
-let { data } = $props();
-
-const mockStats = {
-  bullet: 1200,
-  blitz: 1450,
-  rapid: 1680,
-  puzzle: 2100,
-  totalGames: 432,
-  wins: 210,
-  losses: 180,
-  draws: 42,
-  winRate: 48.6
-};
-
-const mockHistory = [
-  { id: 1, opponent: "MagnusC", result: "win", eloChange: "+12", mode: "Blitz", date: "2h ago", opening: "Sicilian Defense" },
-  { id: 2, opponent: "HikaruN", result: "loss", eloChange: "-8", mode: "Blitz", date: "5h ago", opening: "King's Indian" },
-  { id: 3, opponent: "GothamChess", result: "draw", eloChange: "+1", mode: "Rapid", date: "1d ago", opening: "London System" },
-  { id: 4, opponent: "BotezLive", result: "win", eloChange: "+15", mode: "Bullet", date: "2d ago", opening: "French Defense" },
-];
-
-const mockAchievements = [
-  { name: "Speed Demon", icon: Target, desc: "Won in under 30s" },
-  { name: "Tactician", icon: Swords, desc: "Win streak of 5" },
-  { name: "Veteran", icon: Medal, desc: "Played 100+ games" },
-];
+const { data } = $props();
 
 const isMe = (userId: number) => page.data.user?.id === userId;
+
+const userStatus = (userId: number) =>
+  $onlineUsersStore.get(String(userId)) ?? "offline";
+
+const resolveUserStatusTranslation = (userId: number) => {
+  switch (userStatus(userId)) {
+    case "online":
+      return m.online();
+    case "offline":
+      return m.offline();
+    case "ingame":
+      return m.ingame();
+  }
+};
+
+const formEnhance: SubmitFunction = () => {
+  return async ({ result, update }) => {
+    // TODO: i18n maybe needed around here
+    if (result.type === "failure")
+      toast.error(result.data?.error ?? "An error occurred");
+    else if (result.type === "success")
+      toast.success(result.data?.message ?? "Success");
+    await update();
+  };
+};
 </script>
 
-<main class="flex flex-col flex-1 min-h-0 min-w-0 w-full gap-6">
-
+<main>
   {#await data.userPromise}
     <div class="container mx-auto p-6 space-y-6">
       <div class="h-48 w-full rounded-xl bg-muted animate-pulse"></div>
@@ -57,173 +62,103 @@ const isMe = (userId: number) => page.data.user?.id === userId;
         <Skeleton class="h-64 w-full md:col-span-2" />
       </div>
     </div>
-
-  {:then user} 
-    <div class="relative w-full">
-      <div class="h-20 w-full bg-linear-to-r from-violet-600 via-indigo-600 to-blue-600 opacity-90 blur-3xl"></div>
-      
+  {:then { user, stats, games: matches, eloHistory, achievements, peakElo }}
+    <div class="w-full">
       <div class="container mx-auto px-6">
-        <div class="relative -mt-16 flex flex-col md:flex-row items-end md:items-center gap-6">
-          
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
             <AvatarImage src={user?.avatar} />
-            <AvatarFallback class="bg-linear-to-br from-neutral-800 to-neutral-900 text-white">
+            <AvatarFallback
+              class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white"
+            >
               {user?.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
           <div class="flex-1 space-y-1 mt-2 md:mt-0">
             <div class="flex items-center gap-3">
-              <h1 class="text-3xl font-bold tracking-tight">{user?.username}</h1>
-              <Badge variant={user?.status === 'online' ? 'default' : 'secondary'} class="uppercase text-[10px]">
-                {user?.status}
+              <h1 class="text-3xl font-bold tracking-tight">
+                {user?.username}
+              </h1>
+              <Badge
+                variant={(userStatus(user?.id) === "online")
+                  ? "default"
+                  : "secondary"}
+                class="uppercase text-[10px]"
+              >
+                {resolveUserStatusTranslation(user?.id)}
               </Badge>
             </div>
             <p class="text-muted-foreground flex items-center gap-2 text-sm">
-              <Calendar class="w-3 h-3" /> 
-              Member since {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}
+              <CalendarIcon class="w-3 h-3" />
+              {m.profile_page_user_joined_on()}
+              {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+              })}
+            </p>
+            <!-- TODO: fix Icon size and "div" align with the previous one -->
+            <p class="text-muted-foreground flex items-center gap-2 text-sm">
+              <MegaphoneIcon class="w-3 h-3" />
+              {#if user?.bio === ''}
+                {m.user_profile_link_bio_empty()}
+              {:else}
+                {m.profile_page_user_bio()}:{user?.bio}
+              {/if}
             </p>
           </div>
 
           {#if !isMe(user?.id ?? 0)}
             <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-              <Button href={`/play/challenge/${user?.id}`} class="flex-1 md:flex-none gap-2">
-                <Swords class="w-4 h-4" /> Challenge
-              </Button>
-              <form method="POST" action="/profile/me/social?/add">
-                 <input type="hidden" name="username" value={user?.username} />
-                 <Button type="submit" variant="outline" class="flex-1 md:flex-none gap-2">
-                   <UserPlus class="w-4 h-4" /> Add Friend
-                 </Button>
+              <form
+                method="POST"
+                action="/profile/me/social?/add"
+                use:enhance={formEnhance}
+                class="w-full"
+              >
+                <input type="hidden" name="username" value={user?.username}>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  class="flex-1 md:flex-none gap-2"
+                >
+                  <UserPlusIcon class="w-4 h-4" />
+                  {m.profile_page_button_add()}
+                </Button>
               </form>
             </div>
           {:else}
-             <Button href="/settings/profile" variant="secondary">Edit Profile</Button>
+            <Button href="/settings" variant="secondary">
+              {m.profile_page_button_edit_profile()}
+            </Button>
           {/if}
         </div>
       </div>
     </div>
 
-    <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 h-full flex-1">
-      
-      <div class="lg:col-span-4 space-y-6 max-h-full">
-        
-        <!-- performance -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <TrendingUp class="w-5 h-5 text-primary" /> Performance
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="grid grid-cols-2 gap-4">
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Rapid</span>
-              <span class="text-2xl font-bold">{mockStats.rapid}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Blitz</span>
-              <span class="text-2xl font-bold">{mockStats.blitz}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Bullet</span>
-              <span class="text-2xl font-bold">{mockStats.bullet}</span>
-            </div>
-            <div class="p-3 bg-accent/50 rounded-lg flex flex-col items-center justify-center">
-              <span class="text-xs text-muted-foreground uppercase font-bold">Puzzles</span>
-              <span class="text-2xl font-bold text-yellow-500">{mockStats.puzzle}</span>
-            </div>
-          </CardContent>
-        </Card>
+    <div class="container mx-auto px-4 pt-8 pb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4">
+        <CurrentEloCard {stats} {peakElo} />
 
-        <!-- win ratio -->
-        <Card>
-          <CardHeader>
-            <CardTitle class="text-base">Win Ratio</CardTitle>
-            <CardDescription>{mockStats.totalGames} Total games played</CardDescription>
-          </CardHeader>
-          <CardContent>
-             <div class="flex h-4 w-full rounded-full overflow-hidden mb-2">
-                <div style="width: 48%" class="bg-green-500 h-full"></div> <div style="width: 12%" class="bg-gray-400 h-full"></div> <div style="width: 40%" class="bg-red-500 h-full"></div> </div>
-             <div class="flex justify-between text-xs text-muted-foreground">
-                <span class="text-green-600 font-bold">{mockStats.wins} W</span>
-                <span>{mockStats.draws} D</span>
-                <span class="text-red-600 font-bold">{mockStats.losses} L</span>
-             </div>
-          </CardContent>
-        </Card>
+        <WinRatioCard {stats} />
 
-        <!-- recent badges -->
-        <Card class="flex-1">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2 text-base">
-              <Trophy class="w-4 h-4 text-yellow-500" /> Recent Badges
-            </CardTitle>
-          </CardHeader>
-          <CardContent class="space-y-4">
-            {#each mockAchievements as ach}
-              <div class="flex items-center gap-3">
-                <div class="p-2 bg-primary/10 rounded-full text-primary">
-                  <ach.icon class="w-4 h-4" />
-                </div>
-                <div>
-                  <p class="text-sm font-medium leading-none">{ach.name}</p>
-                  <p class="text-xs text-muted-foreground">{ach.desc}</p>
-                </div>
-              </div>
-            {/each}
-          </CardContent>
-        </Card>
-      </div>
+        <BadgesCard {achievements} />
 
-      <div class="lg:col-span-8 space-y-6">
-        
-        <Card class="h-full">
-          <CardHeader>
-            <CardTitle class="flex items-center gap-2">
-              <History class="w-5 h-5" /> Match History
-            </CardTitle>
-            <CardDescription>Recent games played across all modes.</CardDescription>
-          </CardHeader>
-          <CardContent class="p-0">
-            <div class="flex flex-col divide-y">
-              {#each mockHistory as game}
-                <div class="flex items-center justify-between p-4 hover:bg-accent/40 transition-colors">
-                  <div class="flex items-center gap-4">
-                    <div class={`w-1 h-12 rounded-full ${game.result === 'win' ? 'bg-green-500' : game.result === 'draw' ? 'bg-gray-400' : 'bg-red-500'}`}></div>
-                    <div>
-                      <div class="flex items-center gap-2">
-                         <span class="font-bold">{game.result === 'win' ? 'Won' : game.result === 'loss' ? 'Lost' : 'Draw'}</span>
-                         <span class="text-xs text-muted-foreground">vs {game.opponent}</span>
-                      </div>
-                      <p class="text-sm text-muted-foreground">{game.mode} • {game.opening}</p>
-                    </div>
-                  </div>
+        <EloHistoryCard {eloHistory} />
 
-                  <div class="text-right">
-                    <span class={`text-sm font-bold ${game.result === 'win' ? 'text-green-600' : game.result === 'loss' ? 'text-red-600' : 'text-gray-500'}`}>
-                      {game.eloChange}
-                    </span>
-                    <p class="text-xs text-muted-foreground">{game.date}</p>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          </CardContent>
-        </Card>
-
+        <RecentMatchesCard {matches} />
       </div>
     </div>
-
-  {:catch error}
+  {:catch _e}
     <div class="container mx-auto p-4 flex justify-center">
       <Card class="w-full max-w-md border-destructive/50 bg-destructive/5">
         <CardHeader>
           <div class="flex items-center gap-2 text-destructive font-bold">
-            <TriangleAlert class="h-5 w-5" />
-            <CardTitle>Profile Error</CardTitle>
+            <TriangleAlertIcon class="h-5 w-5" />
+            <CardTitle>{m.profile_page_error_title()}</CardTitle>
           </div>
           <CardDescription>
-            {error.body?.message || "Could not load user profile."}
+            {m.profile_page_error_description()}
           </CardDescription>
         </CardHeader>
       </Card>

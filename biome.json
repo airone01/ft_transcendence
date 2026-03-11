@@ -9,12 +9,18 @@
     "ignoreUnknown": false,
     "includes": [
       "**",
-      "!**/*.svelte",
       "!apps/web/project.inlang/settings.json",
       "!apps/web/static/swagger-ui",
       "!/nix",
       "!.direnv"
     ]
+  },
+  "html": {
+    "experimentalFullSupportEnabled": true,
+    "formatter": {
+      "enabled": true,
+      "indentScriptAndStyle": false
+    }
   },
   "formatter": {
     "enabled": true,
@@ -36,5 +42,22 @@
     "formatter": {
       "quoteStyle": "double"
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.svelte"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "off",
+            "noUnusedVariables": "off"
+          },
+          "style": {
+            "useConst": "off",
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ]
 }

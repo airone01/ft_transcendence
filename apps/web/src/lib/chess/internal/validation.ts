@@ -86,6 +86,7 @@ export function isCastleLegal(state: GameState, move: Move): boolean {
   return true;
 }
 
+/** @internal */
 function simulateKingStep(
   state: GameState,
   from: [number, number],
@@ -148,7 +149,7 @@ export function applyMoveCopy(state: GameState, move: Move): GameState {
     if (tr === 0 && tc === 0) newCastling.blackQueenSide = false;
   }
 
-  // En passant
+  // EIn passing
   if (piece.toLowerCase() === "p" && state.enPassant) {
     const [epr, epc] = state.enPassant;
     if (epr === tr && epc === tc) {

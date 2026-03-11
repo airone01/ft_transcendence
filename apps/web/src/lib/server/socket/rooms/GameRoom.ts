@@ -9,7 +9,7 @@ import {
   playMove, // [chess] Apply a move to the state and return the new state
   startGame, // [chess] Start a new game
 } from "$lib/chess";
-import { dbEndGame, type EndGameInput } from "$lib/db-services";
+import { dbEndGame, type EndGameInput } from "$lib/server/db-services";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Types
@@ -237,7 +237,6 @@ export class GameRoom extends EventEmitter {
 
       const move: Move = { from, to };
 
-      // Déterminer la couleur depuis la pièce qui bouge
       const piece = this.state.board[from[0]][from[1]];
       if (!piece) {
         this.startTimer();
@@ -296,10 +295,10 @@ export class GameRoom extends EventEmitter {
       if (gameOver) {
         await this.endGame(reason || "unknown", winner || undefined);
 
-        // Émettre événement
+        // event emmiter
         this.emit("game_over", { winner, reason, gameId: this.gameId });
       } else {
-        // Redémarrer le timer pour le joueur suivant
+        // Restart timer
         this.startTimer();
       }
 
@@ -355,6 +354,14 @@ export class GameRoom extends EventEmitter {
     return userId === this.whiteId ? this.blackId : this.whiteId;
   }
 
+  public getWhiteId(): string {
+    return this.whiteId;
+  }
+
+  public getBlackId(): string {
+    return this.blackId;
+  }
+
   isGameOver(): boolean {
     return this.isGameOverFlag;
   }
@@ -362,13 +369,17 @@ export class GameRoom extends EventEmitter {
   // Database Operations
 
   async endGame(reason: string, winnerId?: string) {
+    if (this.gameId.startsWith("bot-")) {
+      console.log(`[GameRoom ${this.gameId}] Bot game ended, skipping DB`);
+      return { whiteEloChange: 0, blackEloChange: 0 };
+    }
+
     if (
       this.isGameOverFlag &&
       reason !== "timeout" &&
       reason !== "checkmate" &&
       reason !== "draw"
     ) {
-      // Éviter double-call sauf si vient de timeout/checkmate/draw
       console.log(
         `[GameRoom ${this.gameId}] Game already ended, skipping endGame()`,
       );

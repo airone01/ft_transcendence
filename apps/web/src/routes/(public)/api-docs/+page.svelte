@@ -18,7 +18,7 @@ onMount(() => {
 </script>
 
 <svelte:head>
-  <link rel="stylesheet" href="/swagger-ui/swagger-ui.css" />
+  <link rel="stylesheet" href="/swagger-ui/swagger-ui.css">
 </svelte:head>
 
 <div id="swagger"></div>

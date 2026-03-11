@@ -1,17 +1,29 @@
 <script lang="ts">
-import { ChessBishopIcon, ChessKingIcon, ChessKnightIcon, ChessPawnIcon, ChessQueenIcon, ChessRookIcon } from "@lucide/svelte";
+import {
+  ChessBishopIcon,
+  ChessKingIcon,
+  ChessKnightIcon,
+  ChessPawnIcon,
+  ChessQueenIcon,
+  ChessRookIcon,
+} from "@lucide/svelte";
 import type { Component } from "svelte";
-import { onMount, onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
+import { get } from "svelte/store";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
-import { startGame, getLegalMoves, parseFEN, playMove } from "$lib/chess";
-import type { GameState, Piece as ChessPiece, Move } from "$lib/chess";
-import { gameState as gameStore, joinGame, makeMove, leaveGame } from "$lib/stores/game.store";
+import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
+import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
+import {
+  gameState as gameStore,
+  joinGame,
+  leaveGame,
+  makeMove,
+} from "$lib/stores/game.store";
+import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 
 // Props
-
-let { gameId }: { gameId: string } = $props();
-
+const { gameId }: { gameId: string } = $props();
 // Types
 
 type DndPiece = {
@@ -43,25 +55,54 @@ const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 // State — driven by websocket store
 
 let myColor: "white" | "black" | null = $state(null);
+let gameOver = $state(false);
+let isSpectator = $state(false);
+let isBotGame = $state(false);
 const initialState = startGame();
 let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
 let legalTargets: Set<number> = $state(new Set());
 let dragFromIndex: number | null = $state(null);
-
-// Subscribe to game store — rebuild board when FEN changes
+let isDragging = false;
+let rebuildScheduled = false;
+let showPromotionDialog = $state(false);
+let promotionMove = $state<{
+  fromRow: number;
+  fromCol: number;
+  toRow: number;
+  toCol: number;
+} | null>(null);
+let selectedPromotion = $state<"q" | "r" | "b" | "n">("q");
 
 const unsubscribe = gameStore.subscribe((store) => {
-  myColor = store.myColor;
+  myColor = store.isBotGame ? "white" : store.myColor;
+  gameOver = store.gameOver;
+  isSpectator = store.isSpectator;
+  isBotGame = store.isBotGame;
   if (store.fen) {
     localState = parseFEN(store.fen);
-    board = buildBoard(localState);
+    if (!isDragging) {
+      board = buildBoard(localState);
+    }
   }
 });
 
-onMount(() => joinGame(gameId));
+let unsubSocket: () => void;
+
+onMount(() => {
+  unsubSocket = socketConnected.subscribe((connected) => {
+    const state = get(gameStore);
+    if (connected && !gameOver && !state.isBotGame) joinGame(gameId);
+  });
+});
+
 onDestroy(() => {
-  leaveGame();
+  if (isSpectator) {
+    console.log("[Board] Leaving game (spectator mode)");
+    leaveGame();
+  }
+
+  unsubSocket?.();
   unsubscribe();
 });
 
@@ -142,6 +183,7 @@ function handleDndConsider(
             }),
           );
           dragFromIndex = squareIndex;
+          isDragging = true;
         } else {
           legalTargets = new Set();
           dragFromIndex = null;
@@ -150,17 +192,30 @@ function handleDndConsider(
     }
   }
 
-  board[squareIndex].pieces = e.detail.items;
-  board = [...board];
+  if (!isDragging || squareIndex === dragFromIndex) {
+    board[squareIndex].pieces = e.detail.items;
+  }
+}
+
+function scheduleRebuild() {
+  if (rebuildScheduled) return;
+  rebuildScheduled = true;
+  setTimeout(() => {
+    isDragging = false;
+    legalTargets = new Set();
+    dragFromIndex = null;
+    board = buildBoard(localState);
+    rebuildScheduled = false;
+  }, 0);
 }
 
 function handleDndFinalize(
   squareIndex: number,
   e: CustomEvent<DndEvent<DndPiece>>,
 ) {
+  board[squareIndex].pieces = e.detail.items;
   const { info } = e.detail;
 
-  // Only process valid moves
   if (
     info.trigger === TRIGGERS.DROPPED_INTO_ZONE &&
     dragFromIndex !== null &&
@@ -173,29 +228,36 @@ function handleDndFinalize(
     const piece = localState.board[fromRow][fromCol];
     const isPromotion =
       piece?.toLowerCase() === "p" && (toRow === 0 || toRow === 7);
-    const promotion = isPromotion ? "q" : undefined;
+
+    if (isPromotion) {
+      promotionMove = { fromRow, fromCol, toRow, toCol };
+      showPromotionDialog = true;
+      scheduleRebuild();
+      return;
+    }
 
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
-    makeMove(fromAlgebraic, toAlgebraic, promotion);
+
+    if (isBotGame) {
+      socketManager.emit("bot:move", {
+        gameId,
+        from: fromAlgebraic,
+        to: toAlgebraic,
+      });
+    } else {
+      makeMove(fromAlgebraic, toAlgebraic);
+    }
 
     try {
       const move: Move = {
         from: [fromRow, fromCol],
         to: [toRow, toCol],
-        promotion: isPromotion ? ("Q" as ChessPiece) : undefined,
       };
       localState = playMove(localState, move);
-      board = buildBoard(localState);
-    } catch {
-      board = buildBoard(localState);
-    }
-  } else {
-    board = buildBoard(localState);
+    } catch {}
   }
-
-  legalTargets = new Set();
-  dragFromIndex = null;
+  scheduleRebuild();
 }
 
 //  Helpers
@@ -207,18 +269,59 @@ function isLightSquare(index: number): boolean {
 }
 
 function isDragDisabled(index: number): boolean {
+  if (isSpectator) return true;
+  if (gameOver) return true;
   const [row, col] = indexToBoard(index);
   const piece = localState.board[row][col];
   if (!piece) return true;
   const isWhite = piece === piece.toUpperCase();
   if (myColor === "white" && !isWhite) return true;
   if (myColor === "black" && isWhite) return true;
-  return (isWhite && localState.turn !== "w") || (!isWhite && localState.turn !== "b");
+  return (
+    (isWhite && localState.turn !== "w") ||
+    (!isWhite && localState.turn !== "b")
+  );
 }
 
 // Labels (flipped if black)
-const displayFiles = $derived(myColor === "black" ? [...files].reverse() : files);
-const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks);
+const displayFiles = $derived(
+  myColor === "black" ? [...files].reverse() : files,
+);
+const displayRanks = $derived(
+  myColor === "black" ? [...ranks].reverse() : ranks,
+);
+
+function confirmPromotion() {
+  if (!promotionMove) return;
+
+  const { fromRow, fromCol, toRow, toCol } = promotionMove;
+  const fromAlgebraic = files[fromCol] + ranks[fromRow];
+  const toAlgebraic = files[toCol] + ranks[toRow];
+
+  if (isBotGame) {
+    socketManager.emit("bot:move", {
+      gameId,
+      from: fromAlgebraic,
+      to: toAlgebraic,
+      promotion: selectedPromotion,
+    });
+  } else {
+    makeMove(fromAlgebraic, toAlgebraic, selectedPromotion);
+  }
+
+  try {
+    const move: Move = {
+      from: [fromRow, fromCol],
+      to: [toRow, toCol],
+      promotion: selectedPromotion.toUpperCase() as ChessPiece,
+    };
+    localState = playMove(localState, move);
+  } catch {}
+
+  showPromotionDialog = false;
+  promotionMove = null;
+  selectedPromotion = "q";
+}
 </script>
 
 <!-- Board -->
@@ -226,7 +329,9 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
   <div class="flex">
     <div class="flex flex-col w-6 shrink-0">
       {#each displayRanks as rank}
-        <div class="flex-1 flex items-center justify-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70">
+        <div
+          class="flex-1 flex items-center justify-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70"
+        >
           {rank}
         </div>
       {/each}
@@ -262,9 +367,7 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
             <div
               class="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
             >
-              <div
-                class="w-1/4 h-1/4 rounded-full bg-black/25"
-              ></div>
+              <div class="w-1/4 h-1/4 rounded-full bg-black/25"></div>
             </div>
           {/if}
           {#if hasEnemyPiece}
@@ -291,10 +394,76 @@ const displayRanks = $derived(myColor === "black" ? [...ranks].reverse() : ranks
     </div>
   </div>
 
+  {#if showPromotionDialog}
+    <div
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+    >
+      <div class="bg-background border rounded-lg p-6 space-y-4 max-w-md">
+        <h3 class="text-lg font-semibold text-center">Choose promotion</h3>
+
+        <div class="grid grid-cols-4 gap-3">
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'q';
+              confirmPromotion();
+            }}
+          >
+            <ChessQueenIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Queen</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'r';
+              confirmPromotion();
+            }}
+          >
+            <ChessRookIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Rook</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'b';
+              confirmPromotion();
+            }}
+          >
+            <ChessBishopIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Bishop</p>
+          </button>
+
+          <button
+            class="p-4 border-2 rounded-lg hover:border-primary hover:bg-primary/10 transition-colors"
+            onclick={() => {
+              selectedPromotion = 'n';
+              confirmPromotion();
+            }}
+          >
+            <ChessKnightIcon
+              class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
+            />
+            <p class="text-xs mt-1">Knight</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+
   <!-- File labels (bottom) -->
   <div class="flex pl-6">
     {#each displayFiles as file}
-      <div class="flex-1 text-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70 pt-1">
+      <div
+        class="flex-1 text-center text-xs font-medium text-amber-800/70 dark:text-amber-200/70 pt-1"
+      >
         {file}
       </div>
     {/each}

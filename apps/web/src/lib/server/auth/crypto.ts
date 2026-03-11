@@ -1,7 +1,8 @@
 import { createHash, randomBytes } from "node:crypto";
+import { hash, verify } from "argon2";
 
 export async function hashPassword(password: string): Promise<string> {
-  return await Bun.password.hash(password);
+  return await hash(password);
 }
 
 // Need hash to be deterministic, hence can't use Bun's.
@@ -17,5 +18,5 @@ export async function verifyPassword(
   hash: string,
   plainPassword: string,
 ): Promise<boolean> {
-  return await Bun.password.verify(plainPassword, hash);
+  return await verify(hash, plainPassword);
 }

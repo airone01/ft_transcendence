@@ -11,10 +11,10 @@ let {
 </script>
 
 <div
-	bind:this={ref}
-	data-slot="item-content"
-	class={cn("flex flex-1 flex-col gap-1 [&+[data-slot=item-content]]:flex-none", className)}
-	{...restProps}
+  bind:this={ref}
+  data-slot="item-content"
+  class={cn("flex flex-1 flex-col gap-1 [&+[data-slot=item-content]]:flex-none", className)}
+  {...restProps}
 >
-	{@render children?.()}
+  {@render children?.()}
 </div>

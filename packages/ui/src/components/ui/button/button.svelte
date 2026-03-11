@@ -11,18 +11,18 @@ export const buttonVariants = tv({
   variants: {
     variant: {
       default:
-        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs",
+        "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs cursor-pointer",
       destructive:
-        "bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs",
+        "bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs cursor-pointer",
       outline:
-        "bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border shadow-xs",
+        "bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border shadow-xs cursor-pointer",
       secondary:
-        "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
+        "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs cursor-pointer",
       discord:
-        "bg-discord text-primary-foreground hover:bg-discord/80 shadow-xs",
+        "bg-discord text-primary-foreground hover:bg-discord/80 shadow-xs cursor-pointer",
       ghost:
-        "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-      link: "text-primary underline-offset-4 hover:underline",
+        "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 cursor-pointer",
+      link: "text-primary underline-offset-4 hover:underline cursor-pointer",
     },
     size: {
       default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -50,41 +50,41 @@ export type ButtonProps = WithElementRef<HTMLButtonAttributes> &
 </script>
 
 <script lang="ts">
-	let {
-		class: className,
-		variant = "default",
-		size = "default",
-		ref = $bindable(null),
-		href = undefined,
-		type = "button",
-		disabled,
-		children,
-		...restProps
-	}: ButtonProps = $props();
+let {
+  class: className,
+  variant = "default",
+  size = "default",
+  ref = $bindable(null),
+  href = undefined,
+  type = "button",
+  disabled,
+  children,
+  ...restProps
+}: ButtonProps = $props();
 </script>
 
 {#if href}
-	<a
-		bind:this={ref}
-		data-slot="button"
-		class={cn(buttonVariants({ variant, size }), className)}
-		href={disabled ? undefined : href}
-		aria-disabled={disabled}
-		role={disabled ? "link" : undefined}
-		tabindex={disabled ? -1 : undefined}
-		{...restProps}
-	>
-		{@render children?.()}
-	</a>
+  <a
+    bind:this={ref}
+    data-slot="button"
+    class={cn(buttonVariants({ variant, size }), className)}
+    href={disabled ? undefined : href}
+    aria-disabled={disabled}
+    role={disabled ? "link" : undefined}
+    tabindex={disabled ? -1 : undefined}
+    {...restProps}
+  >
+    {@render children?.()}
+  </a>
 {:else}
-	<button
-		bind:this={ref}
-		data-slot="button"
-		class={cn(buttonVariants({ variant, size }), className)}
-		{type}
-		{disabled}
-		{...restProps}
-	>
-		{@render children?.()}
-	</button>
+  <button
+    bind:this={ref}
+    data-slot="button"
+    class={cn(buttonVariants({ variant, size }), className)}
+    {type}
+    {disabled}
+    {...restProps}
+  >
+    {@render children?.()}
+  </button>
 {/if}
