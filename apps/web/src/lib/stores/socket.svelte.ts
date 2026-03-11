@@ -14,7 +14,10 @@ class SocketManager {
   private socket: Socket | null = null;
 
   connect(userId: string, username: string) {
-    if (this.socket?.connected) return;
+    if (this.socket?.connected) {
+      socketConnected.set(true);
+      return;
+    }
 
     this.socket?.disconnect();
 
