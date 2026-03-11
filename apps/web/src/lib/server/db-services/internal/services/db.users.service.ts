@@ -15,6 +15,7 @@ import {
   desc,
   eq,
   gte,
+  ilike,
   isNull,
   like,
   not,
@@ -46,7 +47,7 @@ export async function dbIsUsernameTaken(username: string): Promise<boolean> {
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.username, username));
+      .where(ilike(users.username, username));
 
     return !!user;
   } catch (err) {
