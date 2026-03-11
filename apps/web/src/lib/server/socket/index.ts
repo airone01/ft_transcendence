@@ -1,10 +1,13 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
-import { registerBotHandlers } from "./handlers/bot";
+import { releaseBotGame, registerBotHandlers } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
 import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
-import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
+import {
+  registerPresenceHandlers,
+  setUserOffline,
+} from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
@@ -26,30 +29,23 @@ export function initSocketServer(httpServer: HTTPServer) {
     },
   });
 
-  // Auth middleware
   io.use(authMiddleware);
-
-  // Run heartbeat
   startHeartbeat(io);
 
   io.on("connection", async (socket) => {
     const userId = socket.data.userId;
     console.log(`[Socket] User connected: ${userId}`);
 
-    // Join personal room
     socket.join(`user:${userId}`);
 
-    // Register handlers
     registerGameHandlers(io, socket);
     registerChatHandlers(io, socket);
     registerPresenceHandlers(io, socket);
     registerMatchmakingHandlers(io, socket);
     registerBotHandlers(io, socket);
 
-    // Heartbeat pong
     socket.on("heartbeat:pong", () => {});
 
-    // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
 
@@ -68,12 +64,8 @@ export function initSocketServer(httpServer: HTTPServer) {
       }
 
       if (currentGameId?.startsWith("bot-")) {
-        const gameRoom = activeGames.get(currentGameId);
-        if (gameRoom) {
-          gameRoom.stopTimer();
-          activeGames.delete(currentGameId);
-          console.log(`[Bot] Game ${currentGameId} destroyed on disconnect`);
-        }
+        releaseBotGame(currentGameId, io);
+        socket.data.currentGameId = null;
       }
 
       saveSessionOnDisconnect(socket);
@@ -87,7 +79,6 @@ export function initSocketServer(httpServer: HTTPServer) {
       }, 5000);
     });
 
-    // Errors
     socket.on("error", (error) => {
       console.error(`[Socket] Error for user ${userId}:`, error);
     });
