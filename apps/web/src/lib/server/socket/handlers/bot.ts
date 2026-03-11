@@ -153,6 +153,12 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       return socket.emit("game:error", { message: "Not a bot game" });
     }
 
+    // Verify the requesting user owns this bot game before releasing it.
+    // Bot game IDs follow the format "bot-{userId}-{timestamp}".
+    if (!gameId.startsWith(`bot-${userId}-`)) {
+      return socket.emit("game:error", { message: "Not your game" });
+    }
+
     releaseBotGame(gameId, io);
     socket.leave(`game:${gameId}`);
     socket.data.currentGameId = null;
