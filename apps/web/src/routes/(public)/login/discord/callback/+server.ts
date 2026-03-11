@@ -68,10 +68,10 @@ export const GET = async (event: RequestEvent) => {
     if (existingAccount) {
       if (existingAccount.id === locals.user.id) {
         // already linked to this user, just redirect back
-        throw redirect(302, "/settings/account");
+        throw redirect(302, "/settings");
       } else {
         // linked to a different user
-        throw redirect(303, "/settings/account?error=already_linked");
+        throw redirect(303, "/settings?error=already_linked");
       }
     }
 
@@ -82,7 +82,7 @@ export const GET = async (event: RequestEvent) => {
       providerUserId: discordUser.id,
     });
 
-    throw redirect(302, "/settings/account");
+    throw redirect(302, "/settings");
   }
 
   // user is not logged in (login/register)
