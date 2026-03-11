@@ -5,6 +5,7 @@ import * as m from "$lib/paraglide/messages";
 import { registerSchema } from "$lib/schemas/auth";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import { generateDefaultAvatar } from "$lib/server/avatar";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
@@ -14,7 +15,14 @@ import {
 import type { Actions } from "./$types";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, getClientAddress }) => {
+    if (!checkHttpRateLimit(getClientAddress()))
+      return message(
+        await superValidate(request, zod(registerSchema)),
+        m.internal_server_error(),
+        { status: 429 },
+      );
+
     const form = await superValidate(request, zod(registerSchema));
 
     if (!form.valid) {

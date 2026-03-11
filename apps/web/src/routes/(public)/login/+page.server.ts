@@ -4,11 +4,19 @@ import { zod } from "sveltekit-superforms/adapters";
 import * as m from "$lib/paraglide/messages";
 import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import { dbGetUserByEmail } from "$lib/server/db-services";
 import type { Actions } from "./$types";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, getClientAddress }) => {
+    if (!checkHttpRateLimit(getClientAddress()))
+      return message(
+        await superValidate(request, zod(loginSchema)),
+        m.internal_server_error(),
+        { status: 429 },
+      );
+
     const form = await superValidate(request, zod(loginSchema));
 
     if (!form.valid) return fail(400, { form });
