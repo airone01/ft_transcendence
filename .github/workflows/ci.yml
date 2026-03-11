@@ -20,7 +20,7 @@ jobs:
         with:
           bun-version: 1.3.6
 
-      - name: Install dependencies
+      - name: Install deps
         run: bun install
 
       - name: Generate Paraglide Files
@@ -40,11 +40,32 @@ jobs:
         with:
           bun-version: 1.3.6
 
-      - name: Install dependencies
+      - name: Install deps
         run: bun install
 
       - name: Lint
         run: bun run lint
+
+  e2e:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+
+      - name: Install deps
+        run: bun install
+
+      - name: Run e2e tests
+        run: bun run e2e
 
   build:
     name: Build Production Image
