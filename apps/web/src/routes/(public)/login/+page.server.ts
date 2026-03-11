@@ -4,8 +4,8 @@ import { zod } from "sveltekit-superforms/adapters";
 import * as m from "$lib/paraglide/messages";
 import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
-import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import { dbGetUserByEmail } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions } from "./$types";
 
 export const actions = {

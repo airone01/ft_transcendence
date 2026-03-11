@@ -162,7 +162,8 @@ export const actions: Actions = {
         if (!isJpeg && !isPng && !isGif && !isWebp) {
           return fail(400, {
             form,
-            message: "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+            message:
+              "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
           });
         }
 

@@ -5,13 +5,13 @@ import * as m from "$lib/paraglide/messages";
 import { registerSchema } from "$lib/schemas/auth";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
 import { generateDefaultAvatar } from "$lib/server/avatar";
-import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
   dbCreateUser,
   dbIsEmailTaken,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions } from "./$types";
 
 export const actions = {
