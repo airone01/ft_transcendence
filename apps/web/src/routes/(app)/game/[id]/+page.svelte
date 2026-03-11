@@ -315,66 +315,66 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-          {#if $gameState.isSpectator}
-            <Button
-              size="sm"
-              variant="outline"
-              onclick={() => {
+        {#if $gameState.isSpectator}
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => {
                 leaveGame();
                 window.history.back();
               }}
-            >
-              {m.game_page_button_leave_spectator()}
-            </Button>
-          {:else if !$gameState.gameOver}
-            <div class="flex gap-2">
-              {#if $gameState.isBotGame}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  class="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
-                  onclick={() => {
+          >
+            {m.game_page_button_leave_spectator()}
+          </Button>
+        {:else if !$gameState.gameOver}
+          <div class="flex gap-2">
+            {#if $gameState.isBotGame}
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+                onclick={() => {
                     quitBotGame();
                     goto('/play');
                   }}
+              >
+                <XIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1">Quit Bot Game</span>
+              </Button>
+            {:else}
+              <Button
+                size="sm"
+                variant="outline"
+                onclick={handleOfferDraw}
+                disabled={$gameState.drawOfferSent}
+              >
+                <HandshakeIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_draw()}</span
                 >
-                  <XIcon class="w-3.5 h-3.5" />
-                  <span class="hidden sm:inline ml-1">Quit Bot Game</span>
-                </Button>
-              {:else}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onclick={handleOfferDraw}
-                  disabled={$gameState.drawOfferSent}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+                onclick={() => (resignDialogOpen = true)}
+              >
+                <FlagIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_resign()}</span
                 >
-                  <HandshakeIcon class="w-3.5 h-3.5" />
-                  <span class="hidden sm:inline ml-1"
-                    >{m.game_page_button_draw()}</span
-                  >
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
-                  onclick={() => (resignDialogOpen = true)}
-                >
-                  <FlagIcon class="w-3.5 h-3.5" />
-                  <span class="hidden sm:inline ml-1"
-                    >{m.game_page_button_resign()}</span
-                  >
-                </Button>
-              {/if}
-            </div>
-          {:else}
-            <Button
-              size="sm"
-              variant="outline"
-              onclick={() => window.history.back()}
-            >
-              {m.game_page_button_leave()}
-            </Button>
-          {/if}
+              </Button>
+            {/if}
+          </div>
+        {:else}
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => window.history.back()}
+          >
+            {m.game_page_button_leave()}
+          </Button>
+        {/if}
       </div>
 
       <div class="aspect-square w-full">
@@ -402,7 +402,9 @@ onDestroy(() => {
             >
           </div>
         {:else}
-          <div class="p-2 space-y-0.5 w-full overflow-y-scroll min-h-0 shrink-1">
+          <div
+            class="p-2 space-y-0.5 w-full overflow-y-scroll min-h-0 shrink-1"
+          >
             {#each movePairs() as [white, black], i}
               <div
                 class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
@@ -512,7 +514,6 @@ onDestroy(() => {
           {/if}
         </div>
       </details>
-
     </div>
   </div>
 
