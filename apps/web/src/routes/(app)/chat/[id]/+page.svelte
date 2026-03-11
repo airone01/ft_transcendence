@@ -3,7 +3,8 @@ import { page } from "$app/state";
 import Chat from "$lib/components/chat.svelte";
 import { m } from "$lib/paraglide/messages";
 
-let friendId: string = page.params.id ?? "0";
+const { data } = $props();
+let friendId: string = $derived(page.params.id ?? "0");
 </script>
 
 <main
@@ -16,6 +17,6 @@ let friendId: string = page.params.id ?? "0";
   <div
     class="flex-1 flex flex-col border rounded-xl overflow-hidden shadow-sm bg-card"
   >
-    <Chat mode="friend" {friendId} />
+    <Chat mode="friend" {friendId} initialMessages={data.initialMessages} />
   </div>
 </main>
