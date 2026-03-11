@@ -1,6 +1,8 @@
 <script lang="ts">
 import Chat from "$lib/components/chat.svelte";
 import { m } from "$lib/paraglide/messages";
+
+const { data } = $props();
 </script>
 
 <main
@@ -13,6 +15,6 @@ import { m } from "$lib/paraglide/messages";
   <div
     class="flex-1 flex flex-col border rounded-xl overflow-hidden shadow-sm bg-card"
   >
-    <Chat mode="global" />
+    <Chat mode="global" initialMessages={data.initialMessages} />
   </div>
 </main>

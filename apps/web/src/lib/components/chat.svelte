@@ -2,9 +2,10 @@
 import { SendIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
-import { tick } from "svelte";
+import { tick, untrack } from "svelte";
 import * as m from "$lib/paraglide/messages.js";
 import {
+  type ChatMessage,
   friendMessages,
   globalMessages,
   sendFriendMessage,
@@ -14,13 +15,60 @@ import {
 const {
   mode = "global",
   friendId,
+  initialMessages = [],
 }: {
   mode?: "global" | "friend";
   friendId?: string;
+  initialMessages?: ChatMessage[];
 } = $props();
 
 let content = $state("");
 let messagesContainer: HTMLElement | null = $state(null);
+
+let usernameCache = $state<Record<string, string>>({});
+
+$effect(() => {
+  untrack(() => {
+    if (
+      mode === "global" &&
+      $globalMessages.length === 0 &&
+      initialMessages.length > 0
+    ) {
+      globalMessages.set(initialMessages);
+    } else if (mode === "friend" && friendId) {
+      if (
+        !$friendMessages[friendId] ||
+        $friendMessages[friendId].length === 0
+      ) {
+        if (initialMessages.length > 0) {
+          friendMessages.update((m) => ({ ...m, [friendId]: initialMessages }));
+        }
+      }
+    }
+  });
+});
+
+// auto fetch users on the fly
+$effect(() => {
+  const missingIds = [...new Set(messages.map((m) => m.userId))].filter(
+    (id) => !usernameCache[id],
+  );
+
+  missingIds.forEach(async (id) => {
+    usernameCache[id] = m.loading().toLowerCase();
+    try {
+      const res = await fetch(`/api/users/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        usernameCache[id] = data.username;
+      } else {
+        usernameCache[id] = m.unknown();
+      }
+    } catch {
+      usernameCache[id] = m.unknown();
+    }
+  });
+});
 
 let messages = $derived.by(() => {
   if (mode === "global") return $globalMessages;
@@ -66,10 +114,15 @@ function handleSend(e: Event) {
         {m.chat_no_msgs()}
       </div>
     {/if}
+
     {#each messages as msg}
       <div class="flex flex-col">
         <div class="flex items-baseline gap-2">
-          <span class="font-bold text-sm text-primary">{msg.username}</span>
+          <span class="font-bold text-sm text-primary">
+            {usernameCache[msg.userId] && usernameCache[msg.userId] !== 'loading'
+              ? usernameCache[msg.userId]
+              : msg.username}
+          </span>
           <span class="text-xs text-muted-foreground">
             {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
