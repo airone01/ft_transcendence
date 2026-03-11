@@ -25,6 +25,7 @@ import { loginSchema, registerSchema } from "$lib/schemas/auth";
 import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
 
 const loginForm = superForm(page.data.loginForm, {
+  id: "login-form",
   validators: zodClient(loginSchema),
   applyAction: false,
   onResult: async ({ result }) => {
@@ -37,6 +38,7 @@ const loginForm = superForm(page.data.loginForm, {
 });
 
 const registerForm = superForm(page.data.registerForm, {
+  id: "register-form",
   validators: zodClient(registerSchema),
   applyAction: false,
   onResult: async ({ result }) => {

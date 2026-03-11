@@ -19,12 +19,14 @@ const languageNames: Record<string, string> = {
 
 <DropdownMenu>
   <DropdownMenuTrigger>
-    <Button variant="outline" size="sm" class="gap-2">
-      <GlobeIcon class="w-4 h-4" />
-      <span class="hidden sm:inline-block">
-        {languageNames[getLocale()] ?? getLocale().toUpperCase()}
-      </span>
-    </Button>
+    {#snippet child({props})}
+      <Button {...props} variant="outline" size="sm" class="gap-2">
+        <GlobeIcon class="w-4 h-4" />
+        <span class="hidden sm:inline-block">
+          {languageNames[getLocale()] ?? getLocale().toUpperCase()}
+        </span>
+      </Button>
+    {/snippet}
   </DropdownMenuTrigger>
 
   <DropdownMenuContent align="end" class="w-40">
