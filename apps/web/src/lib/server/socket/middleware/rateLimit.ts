@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io";
+import { m } from "$lib/paraglide/messages";
 
 interface RateLimitEntry {
   count: number;
@@ -25,7 +26,7 @@ export function checkRateLimit(socket: Socket): boolean {
   entry.count++;
 
   if (entry.count > RATE_LIMIT_MAX) {
-    socket.emit("error", { message: "Rate limit exceeded" });
+    socket.emit("error", { message: m.socket_middleware_rate_limit_error() });
     return false; // Blocked
   }
 

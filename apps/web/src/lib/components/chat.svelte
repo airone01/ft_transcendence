@@ -11,6 +11,7 @@ import {
   sendFriendMessage,
   sendGlobalMessage,
 } from "$lib/stores/chat.store";
+import { getLocale } from "$lib/paraglide/runtime";
 
 const {
   mode = "global",
@@ -123,8 +124,8 @@ function handleSend(e: Event) {
               ? usernameCache[msg.userId]
               : msg.username}
           </span>
-          <span class="text-xs text-muted-foreground">
-            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          <span class="text-xs text-muted-foreground capitalize">
+            {new Date(msg.timestamp).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
         <p class="text-sm mt-0.5 wrap-break-word">{msg.content}</p>

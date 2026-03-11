@@ -8,6 +8,7 @@ import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
+import {m } from "$lib/paraglide/messages";
 
 let io: Server;
 
@@ -85,6 +86,6 @@ export function initSocketServer(httpServer: HTTPServer) {
 }
 
 export function getIO(): Server {
-  if (!io) throw new Error("Socket.io not initialized");
+  if (!io) throw new Error(m.socket_index_error());
   return io;
 }

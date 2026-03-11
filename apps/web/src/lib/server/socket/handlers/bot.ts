@@ -3,6 +3,7 @@ import { parseFEN } from "$lib/chess";
 import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
+import { m } from "$lib/paraglide/messages"; 
 
 export const BOT_USER_ID = "0";
 export const MAX_BOT_GAMES = 2;
@@ -150,7 +151,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     const { gameId } = data;
 
     if (!gameId.startsWith("bot-")) {
-      return socket.emit("game:error", { message: "Not a bot game" });
+      return socket.emit("game:error", { message:  m.socket_bot_quit_error() });
     }
 
     releaseBotGame(gameId, io);
@@ -172,7 +173,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         const gameRoom = activeGames.get(gameId);
 
         if (!gameRoom) {
-          return socket.emit("game:error", { message: "Game not found" });
+          return socket.emit("game:error", { message: m.socket_bot_move_game_error() });
         }
 
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
@@ -238,7 +239,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         }
       } catch (error) {
         console.error("[Bot] Move error:", error);
-        socket.emit("game:error", { message: "Invalid move" });
+        socket.emit("game:error", { message: m.socket_bot_move_error() });
       }
     },
   );

@@ -221,10 +221,9 @@ onDestroy(() => {
           }}
           >
             <XIcon class="w-4 h-4 mr-2" />
-            Quit Bot Game
+            {m.game_page_button_leave_gamebot()}
           </Button>
         {:else if $gameState.isSpectator}
-          <!-- exit spectate mode button -->
           <Button
             variant="outline"
             class="w-full"

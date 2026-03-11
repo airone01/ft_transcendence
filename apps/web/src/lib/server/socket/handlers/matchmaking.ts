@@ -5,6 +5,7 @@ import {
   dbStartGame,
 } from "$lib/server/db-services";
 import { activeGames } from "./game";
+import { m } from "$lib/paraglide/messages";
 
 // Matchmaking queues
 export const queues = new Map<string, Socket[]>();
@@ -33,7 +34,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             `[Matchmaking] User ${userId} already has active game ${gameId}`,
           );
           return socket.emit("matchmaking:error", {
-            message: "You already have a game in progress",
+            message: m.socket_matchmaking_join_active_game_error(),
           });
         }
       }
@@ -43,7 +44,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       q.some((s) => s.data.userId === userId),
     );
     if (alreadyQueued) {
-      return socket.emit("matchmaking:error", { message: "Already in queue" });
+      return socket.emit("matchmaking:error", { message: m.socket_matchmaking_join_already_queued_error() });
     }
 
     socket.emit("matchmaking:waiting", { mode, position: queue.length + 1 });
@@ -62,10 +63,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         );
 
         player1.emit("matchmaking:error", {
-          message: "Cannot match with yourself",
+          message: m.socket_matchmaking_join_match_yourself_error(),
         });
         player2.emit("matchmaking:error", {
-          message: "Cannot match with yourself",
+          message: m.socket_matchmaking_join_match_yourself_error(),
         });
 
         return;
@@ -78,10 +79,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             gameRoom.getBlackId() === player1.data.userId
           ) {
             player1.emit("matchmaking:error", {
-              message: "You already have a game in progress",
+              message: m.socket_matchmaking_join_active_game_error(),
             });
             player2.emit("matchmaking:error", {
-              message: "Match failed, opponent already in game",
+              message: m.socket_matchmaking_join_oppenent_already_queued_error()
             });
             queue.push(player2);
             return;
@@ -92,10 +93,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             gameRoom.getBlackId() === player2.data.userId
           ) {
             player2.emit("matchmaking:error", {
-              message: "You already have a game in progress",
+              message: m.socket_matchmaking_join_active_game_error(),
             });
             player1.emit("matchmaking:error", {
-              message: "Match failed, opponent already in game",
+              message: m.socket_matchmaking_join_oppenent_already_queued_error()
             });
             queue.push(player1);
             return;
@@ -130,8 +131,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         });
       } catch (error) {
         console.error("Failed to create game:", error);
-        player1.emit("matchmaking:error", { message: "Failed to create game" });
-        player2.emit("matchmaking:error", { message: "Failed to create game" });
+        player1.emit("matchmaking:error", { message: m.socket_matchmaking_join_failed_to_create_error() });
+        player2.emit("matchmaking:error", { message: m.socket_matchmaking_join_failed_to_create_error() });
       }
     }
   });
