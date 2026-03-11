@@ -141,7 +141,31 @@ export const actions: Actions = {
       if (form.data.bio !== locals.user.bio) updateData.bio = form.data.bio;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {
-        const buffer = await form.data.avatar.arrayBuffer();
+        const buffer = Buffer.from(await form.data.avatar.arrayBuffer());
+
+        // Validate magic bytes before passing to the native sharp/libvips decoder.
+        const b = buffer.subarray(0, 12);
+        const isJpeg = b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+        const isPng =
+          b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
+        const isGif = b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46;
+        const isWebp =
+          b[0] === 0x52 &&
+          b[1] === 0x49 &&
+          b[2] === 0x46 &&
+          b[3] === 0x46 &&
+          b[8] === 0x57 &&
+          b[9] === 0x45 &&
+          b[10] === 0x42 &&
+          b[11] === 0x50;
+
+        if (!isJpeg && !isPng && !isGif && !isWebp) {
+          return fail(400, {
+            form,
+            message: "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+          });
+        }
+
         const processedImageBuffer = await sharp(buffer)
           .resize(256, 256, { fit: "cover" })
           .webp({ quality: 80 })
