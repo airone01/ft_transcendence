@@ -119,9 +119,7 @@ const unlinkEnhance: SubmitFunction = () => {
   <div class="space-y-4 mb-2">
     <div class="flex items-center justify-between">
       <div>
-        <h4 class="text-sm font-medium">
-          {m.settings_page_profile_title()}
-        </h4>
+        <h4 class="text-sm font-medium">{m.settings_page_profile_title()}</h4>
         <p class="text-xs text-muted-foreground">
           {m.settings_page_profile_description()}
         </p>
@@ -216,7 +214,9 @@ const unlinkEnhance: SubmitFunction = () => {
       </div>
     </div>
 
-    <div class="border rounded-lg p-4 flex items-center justify-between max-w-lg">
+    <div
+      class="border rounded-lg p-4 flex items-center justify-between max-w-lg"
+    >
       <div class="flex items-center gap-3">
         <div class="bg-[#5865F2] p-2 rounded-md text-white">
           <Plug class="h-5 w-5" />
