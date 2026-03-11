@@ -105,7 +105,7 @@ const board = [
         {#each board as row, rowIndex}
           {#each row as piece, colIndex}
             <div
-              class="flex select-none items-center justify-center text-3xl sm:text-4xl {(rowIndex%2 ^ colIndex%2) ? 'bg-secondary/60' : 'bg-primary/80'}"
+              class="flex select-none items-center justify-center text-3xl sm:text-4xl {(rowIndex%2 ^ colIndex%2) ? 'bg-[#b58863]' : 'bg-[#f0d9b5]'}"
             >
               {#if piece}
                 <span

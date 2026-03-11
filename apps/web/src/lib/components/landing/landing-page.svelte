@@ -11,6 +11,7 @@ import Hero from "$lib/components/hero.svelte";
 import * as m from "$lib/paraglide/messages.js";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 import LanguageSwitcher from "../language-switcher.svelte";
+import ModeToggle from "../mode-toggle.svelte";
 
 const features = [
   {
@@ -83,9 +84,10 @@ const features = [
         {/if}
 
         <div
-          class="ml-1 flex items-center border-l border-border/50 pl-3 sm:ml-2 sm:pl-4"
+          class="ml-1 flex items-center border-l border-border/50 pl-3 sm:ml-2 sm:pl-4 gap-2"
         >
           <LanguageSwitcher />
+          <ModeToggle />
         </div>
       </div>
     </div>

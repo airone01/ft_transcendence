@@ -3,6 +3,7 @@ import "./layout.css";
 import "@transc/ui/app.css";
 import { Toaster } from "@transc/ui/sonner";
 import { TooltipProvider } from "@transc/ui/tooltip";
+import { ModeWatcher } from "mode-watcher";
 import { onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
@@ -69,6 +70,7 @@ onMount(() => {
 
 <Toaster />
 <AuthDialog />
+<ModeWatcher />
 
 <TooltipProvider>
   {#if data.user}
