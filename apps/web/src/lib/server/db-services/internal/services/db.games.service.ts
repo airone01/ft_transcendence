@@ -24,6 +24,39 @@ import type { CreateGameInput, EndGameInput } from "../schema/db.games.schema";
 import type { Game } from "../schema/db.schema";
 
 /**
+ * Retrieves the active ongoing game IDs for a list of users.
+ */
+export async function dbGetUsersActiveGames(
+  userIds: number[],
+): Promise<Record<number, number>> {
+  if (userIds.length === 0) return {};
+
+  try {
+    const active = await db
+      .select({
+        userId: gamesPlayers.userId,
+        gameId: games.id,
+      })
+      .from(games)
+      .innerJoin(gamesPlayers, eq(games.id, gamesPlayers.gameId))
+      .where(
+        and(inArray(gamesPlayers.userId, userIds), eq(games.status, "ongoing")),
+      );
+
+    return active.reduce(
+      (acc, curr) => {
+        acc[curr.userId] = curr.gameId;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
+/**
  * Creates a new game in the database.
  * @param {CreateGameInput} gameInput - The input to create a new game, including the IDs of the white and black players, and the time control and increment in seconds.
  * @throws {DBPlayersNotFoundError} - If either of the players is not found in the database

@@ -34,24 +34,35 @@ $effect(() => {
   const currentOnline = $onlineUsersStore;
   const serverFriends = data.friends;
   const serverSuggestedUsers = data.suggestedUsers;
+  const activeGames = data.activeGames;
 
   untrack(() => {
     friends = serverFriends.map((f) => {
-      // check global store for rt status, fallback to offline
       const rtStatus = (currentOnline.get(String(f.userId)) ?? "offline") as
         | "online"
         | "offline"
         | "ingame";
-      return { ...f, status: rtStatus || "offline" };
+      const dbGameId = activeGames[f.userId];
+
+      return {
+        ...f,
+        status: dbGameId ? "ingame" : rtStatus,
+        gameId: dbGameId,
+      };
     });
 
     suggestedUsers = serverSuggestedUsers.map((u) => {
-      // check global store for rt status, fallback to offline
       const rtStatus = (currentOnline.get(String(u.userId)) ?? "offline") as
         | "online"
         | "offline"
         | "ingame";
-      return { ...u, status: rtStatus || "offline" };
+      const dbGameId = activeGames[u.userId];
+
+      return {
+        ...u,
+        status: dbGameId ? "ingame" : rtStatus,
+        gameId: dbGameId,
+      };
     });
   });
 });

@@ -7,6 +7,7 @@ import {
   dbGetInvitations,
   dbGetRandomUsers,
   dbGetUserByUsername,
+  dbGetUsersActiveGames,
   dbRejectFriendship,
   dbRemoveFriend,
   dbRequestFriendship,
@@ -19,16 +20,21 @@ export const load: PageServerLoad = async ({ locals }) => {
       friends: [],
       suggestedUsers: [],
       invitations: [],
+      activeGames: {},
     };
 
   const friends = await dbGetFriendsInfo(locals.user.id);
   const suggestedUsers = await dbGetRandomUsers(locals.user.id);
   const invitations = await dbGetInvitations(locals.user.id);
 
+  const allUserIds = [...friends, ...suggestedUsers].map((u) => u.userId);
+  const activeGames = await dbGetUsersActiveGames(allUserIds);
+
   return {
     friends,
     suggestedUsers,
     invitations,
+    activeGames,
   };
 };
 
