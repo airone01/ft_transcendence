@@ -21,7 +21,7 @@ jobs:
           bun-version: 1.3.6
 
       - name: Install deps
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Generate Paraglide Files
         run: bun run --cwd=apps/web paraglide
@@ -41,7 +41,7 @@ jobs:
           bun-version: 1.3.6
 
       - name: Install deps
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Lint
         run: bun run lint
@@ -62,13 +62,17 @@ jobs:
           bun-version: 1.3.6
 
       - name: Install deps
-        run: bun install
-
-      - name: Create env
-        run: cp .env.example .env
+        run: bun install --frozen-lockfile
 
       - name: Run e2e tests
         run: bun run e2e
+        env:
+          DATABASE_URL: postgres://root:mysecretpassword@localhost:5432/local
+          DISCORD_CLIENT_ID: 123456789123456789
+          DISCORD_CLIENT_SECRET: AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          DISCORD_REDIRECT_URI: http://localhost:5173/login/discord/callback
+          PUBLIC_WS_URL: http://localhost:3001
+          WS_PORT: 3001
 
   build:
     name: Build Production Image
