@@ -279,8 +279,8 @@ onDestroy(() => {
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
               {m.game_page_status_game_over()} —
-              {#if $gameState.winner}
-                {m.game_page_status_winner({ winner: $gameState.winner })}
+              {#if $gameState.winnerName}
+                {m.game_page_status_winner({ winner: $gameState.winnerName })}
               {:else}
                 {m.game_page_status_draw()}
               {/if}
