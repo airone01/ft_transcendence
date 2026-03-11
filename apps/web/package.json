@@ -13,6 +13,9 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "paraglide": "bun run paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide",
     "paraglide:watch": "bun run paraglide-js compile --project ./project.inlang --outdir ./src/lib/paraglide --watch",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report",
     "setup": "bun run src/lib/server/db-services/internal/db.seed.ts"
   },
   "peerDependencies": {
@@ -33,11 +36,13 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@fontsource-variable/merriweather": "^5.2.6",
     "@fontsource-variable/montserrat": "^5.2.8",
     "@fontsource-variable/source-code-pro": "^5.2.7",
     "@inlang/paraglide-js": "^2.9.1",
     "@lucide/svelte": "^0.569.0",
+    "@playwright/test": "1.57.0",
     "@sveltejs/adapter-node": "^5.5.2",
     "@sveltejs/kit": "^2.50.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
@@ -55,5 +60,15 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"
+  },
+  "overrides": {
+    "playwright": "1.57.0",
+    "@playwright/test": "1.57.0",
+    "playwright-core": "1.57.0"
+  },
+  "resolutions": {
+    "playwright": "1.57.0",
+    "@playwright/test": "1.57.0",
+    "playwright-core": "1.57.0"
   }
 }

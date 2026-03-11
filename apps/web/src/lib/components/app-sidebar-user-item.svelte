@@ -20,7 +20,8 @@ const stats = $derived(page.data.stats);
 </script>
 
 {#if user}
-  <div
+  <footer
+    aria-label="Sidebar footer"
     class="flex items-center gap-3 p-4 w-full transition-all group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:border-none"
   >
     <UserProfileLink
@@ -58,5 +59,5 @@ const stats = $derived(page.data.stats);
         >
       </DropdownMenuContent>
     </DropdownMenu>
-  </div>
+  </footer>
 {/if}

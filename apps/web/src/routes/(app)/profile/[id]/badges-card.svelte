@@ -60,19 +60,19 @@ const achs: Ach[] = [
 >
   <CardHeader class="pb-2">
     <CardTitle class="flex items-center gap-2 text-base">
-      <TrophyIcon class="w-5 h-5" />
+      <TrophyIcon class="w-5 h-5 text-primary" />
       {m.badges_card_title()}
     </CardTitle>
   </CardHeader>
-  <CardContent class="flex-1 flex flex-col justify-center gap-3">
+  <CardContent class="flex-1 flex flex-col justify-center gap-3 text-primary">
     {#each achs as { icon: Icon, description, label, id } (id)}
       <div class="flex items-center gap-3">
         <div
-          class={`p-2 rounded-full bg-muted/40 text-muted-foreground/30 ${oachs[id] && "bg-primary/10 text-primary"}`}
+          class={`p-2 rounded-full bg-muted/40  ${oachs[id] && "bg-primary/10 text-primary"}`}
         >
           <Icon class="w-4 h-4" />
         </div>
-        <div class={`${!oachs[id] && "*:text-muted-foreground/50"}`}>
+        <div class={`${!oachs[id] && "*:line-through text-muted-foreground"}`}>
           <p class="text-sm font-semibold leading-none">{label}</p>
           <p class="text-xs text-muted-foreground mt-1">{description}</p>
         </div>

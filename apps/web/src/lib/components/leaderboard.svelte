@@ -1,4 +1,5 @@
 <script lang="ts">
+import { CrownIcon } from "@lucide/svelte";
 import {
   Card,
   CardContent,
@@ -61,7 +62,7 @@ const {
                 class="flex flex-col items-center mb-3 z-10 transition-transform hover:-translate-y-1"
               >
                 <LeaderboardAvatar
-                  i={i}
+                  {i}
                   currentElo={player.elo}
                   userPromise={data.userPromises[player.userId] as Promise<User>}
                   fallbackText={player.username.slice(0, 2).toUpperCase()}

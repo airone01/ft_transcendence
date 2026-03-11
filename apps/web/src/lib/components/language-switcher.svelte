@@ -7,9 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
-import { page } from "$app/state";
 
-import { getLocale, locales, localizeHref } from "$lib/paraglide/runtime";
+import { getLocale, locales, setLocale } from "$lib/paraglide/runtime";
 
 const languageNames: Record<string, string> = {
   en: "English",
@@ -30,17 +29,13 @@ const languageNames: Record<string, string> = {
 
   <DropdownMenuContent align="end" class="w-40">
     {#each locales as lang}
-      <a
-        href={localizeHref(page.url.pathname + page.url.search, { locale: lang })}
-        hreflang={lang}
+      <DropdownMenuItem
+        class={lang === getLocale() ? "font-medium" : "cursor-pointer"}
+        onclick={() => setLocale(lang)}
         data-sveltekit-reload
       >
-        <DropdownMenuItem
-          class={lang === getLocale() ? "font-medium" : "cursor-pointer"}
-        >
-          {languageNames[lang] ?? lang.toUpperCase()}
-        </DropdownMenuItem>
-      </a>
+        {languageNames[lang] ?? lang.toUpperCase()}
+      </DropdownMenuItem>
     {/each}
   </DropdownMenuContent>
 </DropdownMenu>

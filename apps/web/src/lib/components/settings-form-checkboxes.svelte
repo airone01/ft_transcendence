@@ -33,7 +33,7 @@ const { form: formData, enhance } = form;
       <FormControl>
         {#snippet children({ props })}
           <FormLabel
-            class="hover:bg-accent/10 flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-accent has-aria-checked:bg-accent/20 transition-all mb-0 max-w-md"
+            class="flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-accent has-aria-checked:bg-accent/10 transition-all mb-0 max-w-md"
           >
             <Checkbox
               {...props}
