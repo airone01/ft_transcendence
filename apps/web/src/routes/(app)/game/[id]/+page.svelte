@@ -315,7 +315,18 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-          {#if !$gameState.gameOver}
+          {#if $gameState.isSpectator}
+            <Button
+              size="sm"
+              variant="outline"
+              onclick={() => {
+                leaveGame();
+                window.history.back();
+              }}
+            >
+              {m.game_page_button_leave_spectator()}
+            </Button>
+          {:else if !$gameState.gameOver}
             <div class="flex gap-2">
               {#if $gameState.isBotGame}
                 <Button
@@ -419,7 +430,6 @@ onDestroy(() => {
         {/if}
       </div>
 
-      <!-- Timers — toujours en bas -->
       <div class="flex flex-col gap-2 mt-auto pt-4">
         <div
           class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive
