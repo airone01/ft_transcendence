@@ -57,11 +57,10 @@
 
 ```
 Subject:
-The “Description” section should also contain a clear name for the project and its
-key features.
+The “Description” section should also contain a clear name for the project and its key features.
 ```
 
-***INSERT PROJECT NAME HERE*** is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
+Our implementation of ***ft_transcendence*** is a full-stack real-time web application that allows users to play chess online against other players (or optionally an AI opponent).
 
 #### Key Features
 
@@ -69,14 +68,11 @@ key features.
 - User authentication & profile management
 - Friends system with online status
 
-
 ## Instructions
 
 ```
 Subject:
-The “Instructions” section should mention all the needed prerequisites (software,
-tools, versions, configuration like .env setup, etc.), and step-by-step instructions to
-run the project.
+The “Instructions” section should mention all the needed prerequisites (software, tools, versions, configuration like .env setup, etc.), and step-by-step instructions to run the project.
 ```
 
 ### Software
@@ -169,16 +165,15 @@ Subject:
 ◦ Justification for major technical choices.
 ```
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![i18next](https://img.shields.io/badge/i18next-26A69A?style=for-the-badge&logo=i18next&logoColor=white) |
-| Backend | ![SvelteKit](https://img.shields.io/badge/Svelte--Kit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white) |
-| Database | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black) |
-| Security | ![.env](https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black) ![Let's Encrypt](https://img.shields.io/badge/Let's_Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white) |
-| Infrastructure | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
+| Layer          | Technology                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Frontend       | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![paraglide](https://img.shields.io/badge/paraglide-FFF000?style=for-the-badge&logo=i18next&logoColor=black) |
+| Backend        | ![SvelteKit](https://img.shields.io/badge/Svelte--Kit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)                                                                                                                                  |
+| Database       | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)                                                                                                                                                                                                                               |
+| Security       | ![.env](https://img.shields.io/badge/.env-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black) ![Let's Encrypt](https://img.shields.io/badge/Let's_Encrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white)                                                                                                                                                                                                                                   |
+| Infrastructure | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)                                                                                                                                                                                                                                                                                                                                                        |
 
-We choose ... because ...
-
+We chose this stack as it is a good combinasion of entry-level technologies for us learning students, as well as stable ones that gained us time in the long run.
 
 ## Database Schema
 
@@ -193,7 +188,7 @@ Subject:
 
 Take a snapshot [here]("https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9")
 
-![DB](./assets/ft_transcendence_db.jpg)
+![DB](./github/assets/ft_transcendence_db.jpg)
 *This image have been generated thanks to [dbdiagram.io](https://dbdiagram.io/)*
 
 **------------------------- CENTER DESCRIPTION ?? -------------------------**
@@ -211,66 +206,64 @@ Subject:
 
 ### 1. User Authentication
 - Secure signup/login
-- JWT-based session
+- Cookie-based session
 - OAuth login (Google)
-- Password hashing (bcrypt)
-- **Developed by:** <login1>
+- Password hashing (Argon2)
+- **Developed by:** `elagouch`
 
 ### 2. Profile System
 - Avatar upload
 - Editable username
-- Online status
 - Profile page
-- **Developed by:** <login1>
+- **Developed by:** `elagouch`, `enpassel`
 
 ### 3. Friends System
 - Send/remove friend requests
 - Online status display
 - Friend list
-- **Developed by:** <login2>
+- **Developed by:** `vblanc`, `elagouch`, `enpassel`
 
 ### 4. Real-time Chess Game
 - WebSocket-based live gameplay
 - Move validation
 - Game state synchronization
 - Reconnection handling
-- **Developed by:** <login3>
+- **Developed by:** `scottene`, `enpassel`
 
 ### 5. AI Opponent
 - Minimax with depth limitation
 - Randomized evaluation for human-like behavior
 - Adjustable difficulty
-- **Developed by:** <login4>
+- **Developed by:** `vblanc`, `enpassel`
 
 ### 6. Spectator Mode
 - Watch ongoing games
 - Real-time board updates
-- **Developed by:** <login2>
+- **Developed by:** `enpassel`
 
 ### 7. Chat System
 - Private messaging
 - Real-time message updates
-- **Developed by:** <login2>
+- **Developed by:** `enpassel`, `vblanc`, `elagouch`
 
 ### 8. Game Statistics & Leaderboard
 - Win/loss tracking
 - Match history
 - Player ranking
-- **Developed by:** <login4>
+- **Developed by:** `vblanc`, `elagouch`
 
 ### 9. Accessibility (WCAG 2.1 AA)
 - Full keyboard navigation
-- Screen reader support (ARIA labels)
-- Color contrast compliance
+- WCAG 2.1 AA compliance
 - Focus management
-- **Developed by:** <login4>
+- **Developed by:** `elagouch`, `scottene`
 
 ### 10. Internationalization
 - English
 - French
 - Spanish
 - Language switcher
-- **Developed by:** <login1>
+- **Developed by:** `enpassel`, `vblanc`, `scottene`, `elagouch`
 
 
 ## Modules
@@ -288,19 +281,19 @@ choice".
 ### Web
 
 #### Major: Use a framework for both the frontend and backend
-- **Team member(s) that worked on this module:** /
-- **Module choice:** ...
-- **Module implementation:** /
+- **Team member(s) that worked on this module:** `enassel`, `elagouch`, `scottene`, `vblanc`
+- **Module choice:** We chose this module as using framework gains us time during development and makes DX easier. We would have used a framework even if there wasn't this module.
+- **Module implementation:** We are using SvelteKit, as it's a battle-tested framework with a straightforward syntax, without as many side effects or peculiarities as React would have.
 
 #### Major: Implement real-time features using WebSockets or similar technology
-- **Team member(s) that worked on this module:** [enpassel]("")
-- **Module choice:** ...
-- **Module implementation:** ...
+- **Team member(s) that worked on this module:** `enpassel`
+- **Module choice:** Using real-time technologies makes the game much more responsive and alive. It enables real-time multiplayer.
+- **Module implementation:** Custom websocket engine, functions, subscribers and emmiters, using "Socket.io".
 
 #### Major: Allow users to interact with other users
-- **Team member(s) that worked on this module:** [elagouch]("") (UX), [enpassel]("") (WebSockets), [vblanc]("") (DB)
-- **Module choice:** ...
-- **Module implementation:** ...
+- **Team member(s) that worked on this module:** `elagouch` (UX), `enpassel` (WebSockets), `vblanc` (DB)
+- **Module choice:** Implemented because it was interesting, and it adds real value to the app
+- **Module implementation:** Friend system, real-time status of players
 
 #### Minor: Use an ORM for the database
 - **Team member(s) that worked on this module:** [vblanc]("")
@@ -383,28 +376,28 @@ choice".
 
 ### Points
 
-| Category | Modules | Points |
-|----------|:-------:|:------:|
-| Web | 3 Majors(s) and 3 Minor(s) | 9 pts |
-| Accessibility and Internationalization | 1 Major(s) and 2 Minor(s) | 4 pts |
-| User Management | 1 Major(s) and 2 Minor(s) | 4 pts | 
-| Gaming and user experience | 2 Major(s) and 2 Minor(s) | 6 pts |
-| **Total** | **7 Major(s) and 9 Minor(s)** | **23 pts** |
+| Category                               |            Modules            |   Points   |
+| -------------------------------------- | :---------------------------: | :--------: |
+| Web                                    |  3 Majors(s) and 3 Minor(s)   |   9 pts    |
+| Accessibility and Internationalization |   1 Major(s) and 2 Minor(s)   |   4 pts    |
+| User Management                        |   1 Major(s) and 2 Minor(s)   |   4 pts    |
+| Gaming and user experience             |   2 Major(s) and 2 Minor(s)   |   6 pts    |
+| **Total**                              | **7 Major(s) and 9 Minor(s)** | **23 pts** |
 
 **-------------------------------------- OR - AI GENERATED --------------------------------------**
 
 ## Major Modules (2 pts each)
 
-| Module | Points | Implementation | Team Member(s) |
-|--------|--------|---------------|----------------|
-| Frontend & Backend Framework | 2 | Next.js + NestJS | <login3> |
-| Real-time WebSockets | 2 | Socket.io | <login2> |
-| User Interaction System | 2 | Chat + Friends + Profiles | <login1>, <login2> |
-| Standard User Management | 2 | Profile + Avatar + Friends | <login1> |
-| AI Opponent | 2 | Minimax + evaluation | <login4> |
-| Complete Multiplayer Game | 2 | Chess engine + validation | <login3> |
-| Remote Players | 2 | Reconnection logic | <login2> |
-| Accessibility WCAG 2.1 AA | 2 | Full compliance audit | <login4> |
+| Module                       | Points | Implementation             | Team Member(s)     |
+| ---------------------------- | ------ | -------------------------- | ------------------ |
+| Frontend & Backend Framework | 2      | Next.js + NestJS           | <login3>           |
+| Real-time WebSockets         | 2      | Socket.io                  | <login2>           |
+| User Interaction System      | 2      | Chat + Friends + Profiles  | <login1>, <login2> |
+| Standard User Management     | 2      | Profile + Avatar + Friends | <login1>           |
+| AI Opponent                  | 2      | Minimax + evaluation       | <login4>           |
+| Complete Multiplayer Game    | 2      | Chess engine + validation  | <login3>           |
+| Remote Players               | 2      | Reconnection logic         | <login2>           |
+| Accessibility WCAG 2.1 AA    | 2      | Full compliance audit      | <login4>           |
 
 **Total Major Points: 16**
 
@@ -412,16 +405,16 @@ choice".
 
 ## Minor Modules (1 pt each)
 
-| Module | Points | Implementation | Team Member(s) |
-|--------|--------| ---------------|----------------|
-| ORM (Prisma) | 1 | ... | <login2> |
-| SSR | 1 |
-| Custom Design System | 1 |
-| Multi-language (3 languages) | 1 |
-| Additional Browser Support | 1 |
-| Game Statistics | 1 |
-| OAuth 2.0 | 1 |
-| Spectator Mode | 1 |
+| Module                       | Points | Implementation | Team Member(s) |
+| ---------------------------- | ------ | -------------- | -------------- |
+| ORM (Prisma)                 | 1      | ...            | <login2>       |
+| SSR                          | 1      |
+| Custom Design System         | 1      |
+| Multi-language (3 languages) | 1      |
+| Additional Browser Support   | 1      |
+| Game Statistics              | 1      |
+| OAuth 2.0                    | 1      |
+| Spectator Mode               | 1      |
 
 **Total Minor Points: 8**
 
