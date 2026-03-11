@@ -60,5 +60,15 @@
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"
+  },
+  "overrides": {
+    "playwright": "1.57.0",
+    "@playwright/test": "1.57.0",
+    "playwright-core": "1.57.0"
+  },
+  "resolutions": {
+    "playwright": "1.57.0",
+    "@playwright/test": "1.57.0",
+    "playwright-core": "1.57.0"
   }
 }
