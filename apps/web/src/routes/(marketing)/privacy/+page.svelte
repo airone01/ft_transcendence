@@ -1,5 +1,4 @@
 <script lang="ts">
-import * as m from "$lib/paraglide/messages.js";
 import {
   CheckCircle2,
   Database,
@@ -15,19 +14,24 @@ import {
   Trash2,
   User,
 } from "@lucide/svelte";
+import * as m from "$lib/paraglide/messages.js";
 </script>
 
 <svelte:head>
   <title>{m.privacy_page_title()}</title>
-  <meta name="description" content={m.privacy_page_hero_subtitle()} />
+  <meta name="description" content={m.privacy_page_hero_subtitle()}>
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-b from-background to-muted/20">
   <!-- Hero Section -->
-  <div class="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b">
+  <div
+    class="bg-gradient-to-r from-primary/10 via-primary/5 to-background border-b"
+  >
     <div class="max-w-4xl mx-auto px-6 py-16 sm:py-24">
       <div class="text-center space-y-4">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4"
+        >
           <Shield class="w-8 h-8 text-primary" />
         </div>
         <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
@@ -49,7 +53,6 @@ import {
   <!-- Content -->
   <div class="max-w-4xl mx-auto px-6 py-12 sm:py-16">
     <div class="prose prose-zinc dark:prose-invert max-w-none">
-      
       <!-- Quick Summary -->
       <div class="not-prose bg-card border rounded-lg p-6 mb-12 shadow-sm">
         <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -108,7 +111,9 @@ import {
               <Gamepad2 class="w-5 h-5 text-blue-500" />
               {m.privacy_page_section_1_2_title()}
             </h3>
-            <p class="text-muted-foreground mb-3">{m.privacy_page_section_1_2_desc()}</p>
+            <p class="text-muted-foreground mb-3">
+              {m.privacy_page_section_1_2_desc()}
+            </p>
             <ul class="space-y-2 text-sm">
               <li class="flex items-center gap-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
@@ -168,37 +173,53 @@ import {
           {m.privacy_page_section_2_title()}
         </h2>
         <div class="grid sm:grid-cols-2 gap-4 mt-6">
-          <div class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow">
+          <div
+            class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow"
+          >
             <div class="flex items-center gap-3 mb-2">
               <Gamepad2 class="w-5 h-5 text-primary" />
-              <h3 class="font-semibold">{m.privacy_page_section_2_card_1_title()}</h3>
+              <h3 class="font-semibold">
+                {m.privacy_page_section_2_card_1_title()}
+              </h3>
             </div>
             <p class="text-sm text-muted-foreground">
               {m.privacy_page_section_2_card_1_desc()}
             </p>
           </div>
-          <div class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow">
+          <div
+            class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow"
+          >
             <div class="flex items-center gap-3 mb-2">
               <Database class="w-5 h-5 text-primary" />
-              <h3 class="font-semibold">{m.privacy_page_section_2_card_2_title()}</h3>
+              <h3 class="font-semibold">
+                {m.privacy_page_section_2_card_2_title()}
+              </h3>
             </div>
             <p class="text-sm text-muted-foreground">
               {m.privacy_page_section_2_card_2_desc()}
             </p>
           </div>
-          <div class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow">
+          <div
+            class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow"
+          >
             <div class="flex items-center gap-3 mb-2">
               <Lock class="w-5 h-5 text-primary" />
-              <h3 class="font-semibold">{m.privacy_page_section_2_card_3_title()}</h3>
+              <h3 class="font-semibold">
+                {m.privacy_page_section_2_card_3_title()}
+              </h3>
             </div>
             <p class="text-sm text-muted-foreground">
               {m.privacy_page_section_2_card_3_desc()}
             </p>
           </div>
-          <div class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow">
+          <div
+            class="bg-card border rounded-lg p-5 hover:shadow-md transition-shadow"
+          >
             <div class="flex items-center gap-3 mb-2">
               <MessageSquare class="w-5 h-5 text-primary" />
-              <h3 class="font-semibold">{m.privacy_page_section_2_card_4_title()}</h3>
+              <h3 class="font-semibold">
+                {m.privacy_page_section_2_card_4_title()}
+              </h3>
             </div>
             <p class="text-sm text-muted-foreground">
               {m.privacy_page_section_2_card_4_desc()}
@@ -209,11 +230,15 @@ import {
 
       <!-- Section 3 -->
       <section class="mb-12">
-        <h2 class="text-2xl font-semibold mb-4 pb-2 border-b flex items-center gap-2">
+        <h2
+          class="text-2xl font-semibold mb-4 pb-2 border-b flex items-center gap-2"
+        >
           <Share2 class="w-6 h-6" />
           {m.privacy_page_section_3_title()}
         </h2>
-        <div class="bg-destructive/10 border-l-4 border-destructive rounded-lg p-5 mb-6">
+        <div
+          class="bg-destructive/10 border-l-4 border-destructive rounded-lg p-5 mb-6"
+        >
           <p class="font-semibold text-lg mb-2 flex items-center gap-2">
             <Shield class="w-5 h-5 text-destructive" />
             {m.privacy_page_section_3_no_sell()}
@@ -227,7 +252,9 @@ import {
           <div class="flex gap-3 items-start">
             <CheckCircle2 class="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div>
-              <p class="font-semibold">{m.privacy_page_section_3_case_1_title()}</p>
+              <p class="font-semibold">
+                {m.privacy_page_section_3_case_1_title()}
+              </p>
               <p class="text-sm text-muted-foreground">
                 {m.privacy_page_section_3_case_1_desc()}
               </p>
@@ -236,7 +263,9 @@ import {
           <div class="flex gap-3 items-start">
             <CheckCircle2 class="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div>
-              <p class="font-semibold">{m.privacy_page_section_3_case_2_title()}</p>
+              <p class="font-semibold">
+                {m.privacy_page_section_3_case_2_title()}
+              </p>
               <p class="text-sm text-muted-foreground">
                 {m.privacy_page_section_3_case_2_desc()}
               </p>
@@ -247,7 +276,9 @@ import {
 
       <!-- Section 4 -->
       <section class="mb-12">
-        <h2 class="text-2xl font-semibold mb-4 pb-2 border-b flex items-center gap-2">
+        <h2
+          class="text-2xl font-semibold mb-4 pb-2 border-b flex items-center gap-2"
+        >
           <Lock class="w-6 h-6" />
           {m.privacy_page_section_4_title()}
         </h2>
@@ -256,7 +287,9 @@ import {
             <div class="flex items-start gap-3">
               <Database class="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <h3 class="font-medium text-sm mb-1">{m.privacy_page_section_4_database()}</h3>
+                <h3 class="font-medium text-sm mb-1">
+                  {m.privacy_page_section_4_database()}
+                </h3>
                 <p class="text-sm text-muted-foreground">
                   {m.privacy_page_section_4_database_desc()}
                 </p>
@@ -265,7 +298,9 @@ import {
             <div class="flex items-start gap-3">
               <Shield class="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <h3 class="font-medium text-sm mb-1">{m.privacy_page_section_4_sessions()}</h3>
+                <h3 class="font-medium text-sm mb-1">
+                  {m.privacy_page_section_4_sessions()}
+                </h3>
                 <p class="text-sm text-muted-foreground">
                   {m.privacy_page_section_4_sessions_desc()}
                 </p>
@@ -276,7 +311,9 @@ import {
             <div class="flex items-start gap-3">
               <Package class="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <h3 class="font-medium text-sm mb-1">{m.privacy_page_section_4_storage()}</h3>
+                <h3 class="font-medium text-sm mb-1">
+                  {m.privacy_page_section_4_storage()}
+                </h3>
                 <p class="text-sm text-muted-foreground">
                   {m.privacy_page_section_4_storage_desc()}
                 </p>
@@ -285,7 +322,9 @@ import {
             <div class="flex items-start gap-3">
               <Database class="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <h3 class="font-medium text-sm mb-1">{m.privacy_page_section_4_retention()}</h3>
+                <h3 class="font-medium text-sm mb-1">
+                  {m.privacy_page_section_4_retention()}
+                </h3>
                 <p class="text-sm text-muted-foreground">
                   {m.privacy_page_section_4_retention_desc()}
                 </p>
@@ -301,7 +340,10 @@ import {
           <p class="text-sm flex items-center gap-2">
             <Mail class="w-4 h-4 text-primary" />
             {m.privacy_page_contact_intro()}
-            <a href="mailto:privacy@chess.io" class="font-semibold text-primary hover:underline">
+            <a
+              href="mailto:privacy@chess.io"
+              class="font-semibold text-primary hover:underline"
+            >
               privacy@chess.io
             </a>
           </p>
@@ -311,26 +353,30 @@ import {
       <!-- Contact -->
       <section class="bg-card border rounded-lg p-8 text-center">
         <Mail class="w-12 h-12 text-primary mx-auto mb-4" />
-        <h2 class="text-2xl font-semibold mb-4">{m.privacy_page_contact_questions()}</h2>
+        <h2 class="text-2xl font-semibold mb-4">
+          {m.privacy_page_contact_questions()}
+        </h2>
         <p class="text-muted-foreground mb-6">
           {m.privacy_page_contact_description()}
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-          
-            <a href="mailto:privacy@chess.io"
-            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors">
+          <a
+            href="mailto:privacy@chess.io"
+            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
+          >
             <Mail class="w-4 h-4" />
             {m.privacy_page_contact_button_email()}
           </a>
-          
-            <a href="/terms"
-            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 border rounded-lg font-medium hover:bg-muted transition-colors">
+
+          <a
+            href="/terms"
+            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 border rounded-lg font-medium hover:bg-muted transition-colors"
+          >
             <Shield class="w-4 h-4" />
             {m.privacy_page_contact_button_terms()}
           </a>
         </div>
       </section>
-
     </div>
   </div>
 </div>

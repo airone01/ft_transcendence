@@ -191,29 +191,29 @@
   "privacy_page_tldr_1": "[i18n] TODO",
   "privacy_page_tldr_2": "[i18n] TODO",
   "privacy_page_tldr_3": "[i18n] TODO",
-  
+
   "privacy_page_section_1_title": "[i18n] TODO",
   "privacy_page_section_1_1_title": "[i18n] TODO",
   "privacy_page_section_1_1_desc": "[i18n] TODO",
   "privacy_page_section_1_1_item_1": "[i18n] TODO",
   "privacy_page_section_1_1_item_2": "[i18n] TODO",
   "privacy_page_section_1_1_item_3": "[i18n] TODO",
-  
+
   "privacy_page_section_1_2_title": "[i18n] TODO",
   "privacy_page_section_1_2_desc": "[i18n] TODO",
   "privacy_page_section_1_2_item_1": "[i18n] TODO",
   "privacy_page_section_1_2_item_2": "[i18n] TODO",
   "privacy_page_section_1_2_item_3": "[i18n] TODO",
   "privacy_page_section_1_2_item_4": "[i18n] TODO",
-  
+
   "privacy_page_section_1_3_title": "[i18n] TODO",
   "privacy_page_section_1_3_desc": "[i18n] TODO",
-  
+
   "privacy_page_section_1_4_title": "[i18n] TODO",
   "privacy_page_section_1_4_item_1": "[i18n] TODO",
   "privacy_page_section_1_4_item_2": "[i18n] TODO",
   "privacy_page_section_1_4_item_3": "[i18n] TODO",
-  
+
   "privacy_page_section_2_title": "[i18n] TODO",
   "privacy_page_section_2_card_1_title": "[i18n] TODO",
   "privacy_page_section_2_card_1_desc": "[i18n] TODO",
@@ -223,7 +223,7 @@
   "privacy_page_section_2_card_3_desc": "[i18n] TODO",
   "privacy_page_section_2_card_4_title": "[i18n] TODO",
   "privacy_page_section_2_card_4_desc": "[i18n] TODO",
-  
+
   "privacy_page_section_3_title": "[i18n] TODO",
   "privacy_page_section_3_no_sell": "[i18n] TODO",
   "privacy_page_section_3_no_sell_desc": "[i18n] TODO",
@@ -232,7 +232,7 @@
   "privacy_page_section_3_case_1_desc": "[i18n] TODO",
   "privacy_page_section_3_case_2_title": "[i18n] TODO",
   "privacy_page_section_3_case_2_desc": "[i18n] TODO",
-  
+
   "privacy_page_section_4_title": "[i18n] TODO",
   "privacy_page_section_4_database": "[i18n] TODO",
   "privacy_page_section_4_database_desc": "[i18n] TODO",
@@ -242,36 +242,36 @@
   "privacy_page_section_4_storage_desc": "[i18n] TODO",
   "privacy_page_section_4_retention": "[i18n] TODO",
   "privacy_page_section_4_retention_desc": "[i18n] TODO",
-  
+
   "privacy_page_contact_intro": "[i18n] TODO",
   "privacy_page_contact_questions": "[i18n] TODO",
   "privacy_page_contact_description": "[i18n] TODO",
   "privacy_page_contact_button_email": "[i18n] TODO",
   "privacy_page_contact_button_terms": "[i18n] TODO",
-  
+
   "terms_page_title": "[i18n] TODO",
   "terms_page_hero_subtitle": "[i18n] TODO",
-  
+
   "terms_page_golden_rules_title": "[i18n] TODO",
   "terms_page_golden_rule_1": "[i18n] TODO",
   "terms_page_golden_rule_2": "[i18n] TODO",
   "terms_page_golden_rule_3": "[i18n] TODO",
   "terms_page_golden_rule_4": "[i18n] TODO",
-  
+
   "terms_page_section_1_title": "[i18n] TODO",
   "terms_page_section_1_desc": "[i18n] TODO",
-  
+
   "terms_page_section_2_title": "[i18n] TODO",
   "terms_page_section_2_item_1": "[i18n] TODO",
   "terms_page_section_2_item_2": "[i18n] TODO",
   "terms_page_section_2_item_3": "[i18n] TODO",
-  
+
   "terms_page_section_3_title": "[i18n] TODO",
   "terms_page_section_3_intro": "[i18n] TODO",
   "terms_page_section_3_item_1": "[i18n] TODO",
   "terms_page_section_3_item_2": "[i18n] TODO",
   "terms_page_section_3_item_3": "[i18n] TODO",
-  
+
   "terms_page_section_4_title": "[i18n] TODO",
   "terms_page_section_4_not_allowed": "[i18n] TODO",
   "terms_page_section_4_cheat_title": "[i18n] TODO",
@@ -284,7 +284,7 @@
   "terms_page_section_4_spam_desc": "[i18n] TODO",
   "terms_page_section_4_manipulate_title": "[i18n] TODO",
   "terms_page_section_4_manipulate_desc": "[i18n] TODO",
-  
+
   "terms_page_section_5_title": "[i18n] TODO",
   "terms_page_section_5_fair_play": "[i18n] TODO",
   "terms_page_section_5_fair_play_desc": "[i18n] TODO",
@@ -294,7 +294,7 @@
   "terms_page_section_5_time_controls_desc": "[i18n] TODO",
   "terms_page_section_5_disconnections": "[i18n] TODO",
   "terms_page_section_5_disconnections_desc": "[i18n] TODO",
-  
+
   "terms_page_section_6_title": "[i18n] TODO",
   "terms_page_section_6_intro": "[i18n] TODO",
   "terms_page_section_6_item_1": "[i18n] TODO",
@@ -302,22 +302,22 @@
   "terms_page_section_6_item_3": "[i18n] TODO",
   "terms_page_section_6_item_4": "[i18n] TODO",
   "terms_page_section_6_delete": "[i18n] TODO",
-  
+
   "terms_page_section_7_title": "[i18n] TODO",
   "terms_page_section_7_as_is": "[i18n] TODO",
   "terms_page_section_7_item_1": "[i18n] TODO",
   "terms_page_section_7_item_2": "[i18n] TODO",
   "terms_page_section_7_item_3": "[i18n] TODO",
   "terms_page_section_7_item_4": "[i18n] TODO",
-  
+
   "terms_page_section_8_title": "[i18n] TODO",
   "terms_page_section_8_desc": "[i18n] TODO",
-  
+
   "terms_page_contact_title": "[i18n] TODO",
   "terms_page_contact_description": "[i18n] TODO",
   "terms_page_contact_button_support": "[i18n] TODO",
   "terms_page_contact_button_privacy": "[i18n] TODO",
-  
+
   "legal_last_updated": "[i18n] TODO",
 
   "settings_page_title": "[i18n] TODO",
