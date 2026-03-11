@@ -127,7 +127,7 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
 
             <div class="text-right">
               <span
-                class={`text-sm font-bold ${eloDiff > 0 ? "text-emerald-600" : eloDiff < 0 ? "text-rose-600" : "text-slate-500"}`}
+                class={`text-sm font-bold ${eloDiff > 0 ? "text-emerald-700" : eloDiff < 0 ? "text-rose-700" : "text-slate-600"}`}
               >
                 {#if eloDiff > 0}
                   +

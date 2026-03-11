@@ -43,19 +43,19 @@ if (stats.wins + stats.losses + stats.draws === 0) stats.gamesPlayed = 0; // edg
       </div>
       <div class="flex w-full text-sm font-medium">
         {#if stats.wins > 0}
-          <span style="flex: {stats.wins}" class="text-center text-emerald-600"
+          <span style="flex: {stats.wins}" class="text-center text-emerald-700"
             >{stats.wins}
             {m.win_ratio_card_wins()}</span
           >
         {/if}
         {#if stats.draws > 0}
-          <span style="flex: {stats.draws}" class="text-center text-slate-500"
+          <span style="flex: {stats.draws}" class="text-center text-slate-600"
             >{stats.draws}
             {m.win_ratio_card_draws()}</span
           >
         {/if}
         {#if stats.losses > 0}
-          <span style="flex: {stats.losses}" class="text-center text-rose-600"
+          <span style="flex: {stats.losses}" class="text-center text-rose-700"
             >{stats.losses}
             {m.win_ratio_card_losses()}</span
           >
