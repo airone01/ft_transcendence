@@ -60,6 +60,11 @@ export const GET = async (event: RequestEvent) => {
   if (!userResponse.ok) throw redirect(302, "/?error=discord_auth");
   const discordUser: DiscordUser = await userResponse.json();
 
+  // reject unverified Discord accounts to prevent email-collision account takeover
+  if (!discordUser.verified) {
+    throw redirect(302, "/?error=unverified_discord_email");
+  }
+
   // check if this discord ID is already linked
   const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
 
