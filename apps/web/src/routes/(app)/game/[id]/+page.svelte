@@ -92,11 +92,11 @@ onDestroy(() => {
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">
   <div
-    class="w-full max-w-[1424px] flex flex-col md:flex-row items-stretch gap-3 lg:gap-6"
+    class="w-full max-w-[1424px] flex flex-col md:flex-row items-stretch gap-3 lg:gap-6 min-h-0"
   >
     <!-- Left Panel: Game Info — hidden on mobile/tablet, shown on desktop -->
     <div
-      class="hidden xl:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden"
+      class="hidden xl:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden min-h-0"
     >
       <!-- Header -->
       <div class="flex items-center justify-between">
@@ -268,7 +268,7 @@ onDestroy(() => {
     </div>
 
     <!-- Center: Board + mobile status bar -->
-    <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3">
+    <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3 min-h-0">
       <!-- Mobile/Tablet status bar -->
       <div class="flex xl:hidden items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-2">
@@ -315,30 +315,56 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-        {#if !$gameState.gameOver}
+        {#if $gameState.isSpectator}
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => {
+                leaveGame();
+                window.history.back();
+              }}
+          >
+            {m.game_page_button_leave_spectator()}
+          </Button>
+        {:else if !$gameState.gameOver}
           <div class="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onclick={handleOfferDraw}
-              disabled={$gameState.drawOfferSent}
-            >
-              <HandshakeIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1"
-                >{m.game_page_button_draw()}</span
+            {#if $gameState.isBotGame}
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+                onclick={() => {
+                    quitBotGame();
+                    goto('/play');
+                  }}
               >
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
-              onclick={() => (resignDialogOpen = true)}
-            >
-              <FlagIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1"
-                >{m.game_page_button_resign()}</span
+                <XIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1">Quit Bot Game</span>
+              </Button>
+            {:else}
+              <Button
+                size="sm"
+                variant="outline"
+                onclick={handleOfferDraw}
+                disabled={$gameState.drawOfferSent}
               >
-            </Button>
+                <HandshakeIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_draw()}</span
+                >
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+                onclick={() => (resignDialogOpen = true)}
+              >
+                <FlagIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_resign()}</span
+                >
+              </Button>
+            {/if}
           </div>
         {:else}
           <Button
@@ -358,15 +384,55 @@ onDestroy(() => {
 
     <!-- Right Panel: History + Timers -->
     <div
-      class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      class="md:w-64 lg:w-72 md:shrink-0 min-h-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
     >
       <!-- Header — only on desktop -->
       <h2 class="hidden md:block text-lg font-semibold mb-4">
         {m.game_page_move_history_title()}
       </h2>
 
-      <!-- Timers — always visible, at top on mobile -->
-      <div class="flex flex-col gap-2 md:order-last md:mt-4">
+      <!-- Move history desktop -->
+      <div
+        class="hidden md:flex flex-col flex-1 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
+      >
+        {#if movePairs().length === 0}
+          <div class="h-full flex items-center justify-center w-full min-h-0">
+            <span class="text-sm text-muted-foreground"
+              >{m.game_page_move_history_empty()}</span
+            >
+          </div>
+        {:else}
+          <div
+            class="p-2 space-y-0.5 w-full overflow-y-scroll min-h-0 shrink-1"
+          >
+            {#each movePairs() as [white, black], i}
+              <div
+                class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
+              >
+                <span class="text-muted-foreground text-xs font-mono"
+                  >{i + 1}.</span
+                >
+                <span class="font-mono"
+                  >{white.from}-{white.to}
+                  {white.promotion ?? ""}
+                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
+                >
+                {#if black}
+                  <span class="font-mono"
+                    >{black.from}-{black.to}
+                    {black.promotion ?? ""}
+                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
+                  >
+                {:else}
+                  <span></span>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <div class="flex flex-col gap-2 mt-auto pt-4">
         <div
           class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive
             ? 'bg-[#b58863] text-white'
@@ -448,45 +514,6 @@ onDestroy(() => {
           {/if}
         </div>
       </details>
-
-      <!-- Move history desktop -->
-      <div
-        class="hidden md:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
-      >
-        {#if movePairs().length === 0}
-          <div class="h-full flex items-center justify-center w-full">
-            <span class="text-sm text-muted-foreground"
-              >{m.game_page_move_history_empty()}</span
-            >
-          </div>
-        {:else}
-          <div class="p-2 space-y-0.5 w-full">
-            {#each movePairs() as [white, black], i}
-              <div
-                class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
-              >
-                <span class="text-muted-foreground text-xs font-mono"
-                  >{i + 1}.</span
-                >
-                <span class="font-mono"
-                  >{white.from}-{white.to}
-                  {white.promotion ?? ""}
-                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
-                >
-                {#if black}
-                  <span class="font-mono"
-                    >{black.from}-{black.to}
-                    {black.promotion ?? ""}
-                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
-                  >
-                {:else}
-                  <span></span>
-                {/if}
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
     </div>
   </div>
 
