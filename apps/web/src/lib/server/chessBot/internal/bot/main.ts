@@ -1,5 +1,5 @@
-import { applyMoveForSearch, type GameState, type Move } from "$lib/chess";
-import { getAllLegalMoves } from "$lib/chess/internal/gameEndChecks";
+import { applyMoveForSearch, type GameState, type Move } from "../../../../../lib/chess/index.ts";
+import { getAllLegalMoves } from "../../../../chess/internal/gameEndChecks";
 import { orderMoves } from "./order";
 import { negamax } from "./search";
 

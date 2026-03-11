@@ -1,10 +1,14 @@
 import type { Server, Socket } from "socket.io";
 import { parseFEN } from "$lib/chess";
-import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
+import { getBotMove } from "../../chessBot/index";
 
-const BOT_USER_ID = "0";
+export const BOT_USER_ID = "0";
+export const MAX_BOT_GAMES = 10;
+
+let activeBotGamesCount = 0;
+const botQueue: Array<{ userId: string; socket: Socket; difficulty: string }> = [];
 
 function coordsToAlgebraic(coords: [number, number]): string {
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -12,56 +16,105 @@ function coordsToAlgebraic(coords: [number, number]): string {
   return files[coords[1]] + ranks[coords[0]];
 }
 
-export function registerBotHandlers(_io: Server, socket: Socket) {
+export function startBotGameFromQueue() {
+  if (activeBotGamesCount >= MAX_BOT_GAMES || botQueue.length === 0) {
+    return;
+  }
+
+  const player = botQueue.shift();
+  if (!player) return;
+
+  const { userId, socket, difficulty } = player;
+
+  activeBotGamesCount++;
+  console.log(`[Bot Queue] Starting game for user ${userId}, active: ${activeBotGamesCount}/${MAX_BOT_GAMES}, queue: ${botQueue.length}`);
+
+  const gameId = `bot-${userId}-${Date.now()}`;
+
+  try {
+    const gameRoom = new GameRoom(gameId, {
+      whiteId: userId,
+      blackId: BOT_USER_ID, 
+      timeControlSeconds: 600,
+      incrementSeconds: 5,
+      startedAt: new Date(),
+    });
+
+    activeGames.set(gameId, gameRoom);
+
+    gameRoom.on(
+      "time_tick",
+      (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+        socket.emit("game:time", data);
+      },
+    );
+
+    gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
+      socket.emit("game:over", {
+        winner: data.winner === userId ? "white" : "black",
+        winnerName: data.winner === userId ? socket.data.username : "Bot",
+        reason: "timeout",
+        eloChange: null,
+      });
+      activeGames.delete(data.gameId);
+      activeBotGamesCount--;
+      console.log(`[Bot] Game timeout, active: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+      startBotGameFromQueue();
+    });
+
+    socket.join(`game:${gameId}`);
+    socket.data.currentGameId = gameId;
+
+    setTimeout(() => {
+      socket.emit("game:state", {
+        ...gameRoom.getState(),
+        myColor: "white",
+        isBotGame: true,
+      });
+    }, 800);
+
+    console.log(`[Bot] Game ${gameId} created for user ${userId}`);
+  } catch (error) {
+    activeBotGamesCount--;
+    console.error("[Bot] Failed to create game:", error);
+    socket.emit("game:error", { message: "Failed to start bot game" });
+    startBotGameFromQueue();
+  }
+}
+
+export function registerBotHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  socket.on("bot:start", async (_data: { difficulty: string }) => {
-    try {
-      const gameId = `bot-${userId}-${Date.now()}`;
+  socket.on("bot:start", async (data: { difficulty: string }) => {
+    const { difficulty } = data;
 
-      const gameRoom = new GameRoom(gameId, {
-        whiteId: userId,
-        blackId: BOT_USER_ID,
-        timeControlSeconds: 600,
-        incrementSeconds: 5,
-        startedAt: new Date(),
+    const alreadyInQueue = botQueue.some((p) => p.userId === userId);
+    if (alreadyInQueue) {
+      return socket.emit("game:error", { message: "You are already in the bot queue" });
+    }
+
+    if (activeBotGamesCount < MAX_BOT_GAMES) {
+      botQueue.push({ userId, socket, difficulty });
+      startBotGameFromQueue();
+    } else {
+
+      botQueue.push({ userId, socket, difficulty });
+      console.log(`[Bot Queue] User ${userId} added to queue, position: ${botQueue.length}`);
+      
+      socket.emit("bot:queue", {
+        position: botQueue.length,
+        activeGames: activeBotGamesCount,
+        maxGames: MAX_BOT_GAMES,
       });
+    }
+  });
 
-      activeGames.set(gameId, gameRoom);
-
-      gameRoom.on(
-        "time_tick",
-        (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
-          socket.emit("game:time", data);
-        },
-      );
-
-      gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
-        socket.emit("game:over", {
-          winner: data.winner === userId ? "white" : "black",
-          winnerName: data.winner === userId ? socket.data.username : "Bot",
-          reason: "timeout",
-          eloChange: null,
-        });
-        activeGames.delete(data.gameId);
-      });
-
-      socket.join(`game:${gameId}`);
-      socket.data.currentGameId = gameId;
-
-      setTimeout(() => {
-        console.log(`[Bot] Emitting game:state for ${gameId}`);
-        socket.emit("game:state", {
-          ...gameRoom.getState(),
-          myColor: "white",
-          isBotGame: true,
-        });
-      }, 200);
-
-      console.log(`[Bot] Game ${gameId} created for user ${userId}`);
-    } catch (error) {
-      console.error("[Bot] Failed to create game:", error);
-      socket.emit("game:error", { message: "Failed to start bot game" });
+  socket.on("bot:cancel", () => {
+    const index = botQueue.findIndex((p) => p.userId === userId);
+    if (index !== -1) {
+      botQueue.splice(index, 1);
+      console.log(`[Bot Queue] User ${userId} left queue, remaining: ${botQueue.length}`);
+      socket.emit("bot:queue_left");
     }
   });
 
@@ -76,7 +129,9 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
     if (gameRoom) {
       gameRoom.stopTimer();
       activeGames.delete(gameId);
-      console.log(`[Bot] Game ${gameId} quit by user ${userId}`);
+      activeBotGamesCount--;
+      console.log(`[Bot] Game ${gameId} quit, active: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+      startBotGameFromQueue();
     }
 
     socket.leave(`game:${gameId}`);
@@ -124,12 +179,15 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
             reason: result.reason,
           });
           activeGames.delete(gameId);
+          activeBotGamesCount--;
+          console.log(`[Bot] Game over, active: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+          startBotGameFromQueue();
           return;
         }
 
         const currentFen = gameRoom.getState().fen;
         const currentGameState = parseFEN(currentFen);
-        const botMove = findBestMoveTimed(currentGameState);
+        const botMove = await getBotMove(currentGameState);
 
         if (botMove) {
           const fromAlgebraic = coordsToAlgebraic(botMove.from);
@@ -158,6 +216,9 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
               reason: botResult.reason,
             });
             activeGames.delete(gameId);
+            activeBotGamesCount--;
+            console.log(`[Bot] Game over, active: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+            startBotGameFromQueue();
           }
         }
       } catch (error) {
@@ -166,4 +227,12 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
       }
     },
   );
+
+  socket.on("disconnect", () => {
+    const index = botQueue.findIndex((p) => p.userId === userId);
+    if (index !== -1) {
+      botQueue.splice(index, 1);
+      console.log(`[Bot Queue] User ${userId} disconnected from queue`);
+    }
+  });
 }
