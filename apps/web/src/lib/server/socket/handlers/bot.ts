@@ -3,7 +3,7 @@ import { parseFEN } from "$lib/chess";
 import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
-import { m } from "$lib/paraglide/messages"; 
+import { m } from "$lib/paraglide/messages";
 
 export const BOT_USER_ID = "0";
 export const MAX_BOT_GAMES = 2;

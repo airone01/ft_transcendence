@@ -20,7 +20,7 @@ import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
 import { applyAction } from "$app/forms";
 import { page } from "$app/state";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { loginSchema, registerSchema } from "$lib/schemas/auth";
 import { authDialogState } from "$lib/stores/auth-dialog.svelte.js";
 

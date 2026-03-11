@@ -2,7 +2,7 @@
 import { ChevronRightIcon, PlayIcon, TrophyIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { authState } from "$lib/auth";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 
 // A standard 8x8 starting chess board using Unicode characters

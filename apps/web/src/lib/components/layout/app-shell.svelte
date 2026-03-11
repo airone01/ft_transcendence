@@ -17,7 +17,7 @@ import { goto, invalidateAll } from "$app/navigation";
 import { page } from "$app/state";
 import AppSidebar from "$lib/components/app-sidebar.svelte";
 import { naturalCap, type ShellGroup, sidebarGroups } from "$lib/navigation";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { useMediaQuery } from "$lib/utils/media-query.svelte";
 
 const { children } = $props();

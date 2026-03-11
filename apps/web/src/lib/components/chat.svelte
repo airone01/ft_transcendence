@@ -3,7 +3,7 @@ import { SendIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
 import { tick, untrack } from "svelte";
-import * as m from "$lib/paraglide/messages.js";
+import * as m from "$lib/paraglide/messages";
 import {
   type ChatMessage,
   friendMessages,
@@ -51,7 +51,7 @@ $effect(() => {
 
 // auto fetch users on the fly
 $effect(() => {
-  const missingIds = [...new Set(messages.map((m) => m.userId))].filter(
+  const missingIds = [...new Set(messages.map((message) => message.userId))].filter(
     (id) => !usernameCache[id],
   );
 
