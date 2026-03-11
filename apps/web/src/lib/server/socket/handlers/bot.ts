@@ -49,6 +49,15 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
       socket.join(`game:${gameId}`);
       socket.data.currentGameId = gameId;
 
+      setTimeout(() => {
+      console.log(`[Bot] Emitting game:state for ${gameId}`);
+      socket.emit("game:state", {
+        ...gameRoom.getState(),
+        myColor: "white",
+        isBotGame: true,
+      });
+    }, 200);
+
       console.log(`[Bot] Game ${gameId} created for user ${userId}`);
     } catch (error) {
       console.error("[Bot] Failed to create game:", error);
