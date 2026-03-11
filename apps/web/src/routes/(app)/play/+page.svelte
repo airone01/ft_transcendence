@@ -120,6 +120,23 @@ const resolveModeTranslation = (mode: string | null) => {
             </p>
           </div>
         </button>
+<<<<<<< Updated upstream
+=======
+
+        <button
+          class="flex flex-col items-center gap-3 p-6 border-2 rounded-xl hover:border-primary hover:bg-primary/5 transition-all"
+          onclick={playVsBot}
+        >
+          <TargetIcon class="w-10 h-10 text-purple-500" />
+          <div class="text-center">
+            <h3 class="font-semibold text-lg">{m.play_page_mode_bot()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({minutes: 10, increment: 5})}
+              <br>
+              {m.play_page_mode_bot_unranked()}</p>
+          </div>
+        </button>
+>>>>>>> Stashed changes
       </div>
     </div>
   {/if}

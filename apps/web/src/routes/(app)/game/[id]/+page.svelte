@@ -196,8 +196,25 @@ const resolveGameReason = (reason: string) => {
 
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
+<<<<<<< Updated upstream
         {#if $gameState.isSpectator}
           <!-- Bouton pour quitter le spectate -->
+=======
+        {#if $gameState.isBotGame && !$gameState.gameOver}
+          <Button
+            variant="outline"
+            class="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+            onclick={() => {
+            quitBotGame();
+            goto('/play');
+          }}
+          >
+            <XIcon class="w-4 h-4 mr-2" />
+            {m.game_page_button_leave_gamebot()}
+          </Button>
+        {:else if $gameState.isSpectator}
+          <!-- exit spectate mode button -->
+>>>>>>> Stashed changes
           <Button
             variant="outline"
             class="w-full"

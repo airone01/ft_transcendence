@@ -64,6 +64,7 @@
       "version": "0.1.0",
       "dependencies": {
         "dotenv": "^17.2.3",
+        "drizzle-kit": "^0.31.8",
         "drizzle-orm": "^0.45.1",
         "pg": "^8.18.0",
         "postgres": "^3.4.8",

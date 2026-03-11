@@ -1,6 +1,7 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
 
+<<<<<<< Updated upstream
   "project_name": "[i18n] Chess.io",
   "online": "[i18n] Online",
   "offline": "[i18n] Offline",
@@ -213,16 +214,253 @@
   "settings_page_profile_description": "[i18n] This is how others will see you on the site.",
   "settings_page_profile_label_username": "[i18n] Username",
   "settings_page_profile_label_bio": "[i18n] Biography",
+=======
+  "project_name": "Chess.io",
+  "online": "Online",
+  "offline": "Offline",
+  "ingame": "In Game",
+
+  "hero_page_title": "Play Chess Now!",
+  "hero_page_button": "New Game",
+
+  "landing_page_button_login": "Log in",
+  "landing_page_button_register": "Sign up",
+  "landing_page_button_logout": "Log out",
+
+  "landing_page_auth_dialog_title_login": "Welcome back",
+  "landing_page_auth_dialog_title_register": "Create an Account",
+  "landing_page_auth_dialog_description_login": "Enter your credentials to sign in.",
+  "landing_page_auth_dialog_description_register": "Enter your details to create a new account.",
+
+  "landing_page_auth_dialog_username": "Username",
+  "landing_page_auth_dialog_username_placeholder": "johndoe",
+  "landing_page_auth_dialog_email": "Email",
+  "landing_page_auth_dialog_email_placeholder": "name@example.com",
+  "landing_page_auth_dialog_password": "Password",
+  "landing_page_auth_dialog_confirm_password": "Confirm Password",
+
+  "landing_page_auth_dialog_button_login": "Login",
+  "landing_page_auth_dialog_button_register": "Create Account",
+
+  "landing_page_auth_dialog_middle_span": "Or continue with",
+  "landing_page_auth_dialog_discord": "Discord",
+
+  "landing_page_auth_dialog_login_to_register": "Don't have an account?",
+  "landing_page_auth_dialog_register_to_login": "Already have an account?",
+  "landing_page_auth_dialog_text_register": "Sign up",
+  "landing_page_auth_dialog_text_login": "Login",
+
+  "landing_page_auth_dialog_popup_success_login": "Welcome back!",
+  "landing_page_auth_dialog_popup_success_register": "Account created successfully. Welcome!",
+
+  "navigation_label_content": "My Content",
+  "navigation_label_chess": "Chess",
+  "navigation_item_profile": "Profile",
+  "navigation_item_social": "Social",
+  "navigation_item_chat": "Chat",
+  "navigation_item_leaderboard": "Leaderboard",
+  "navigation_item_play": "Play Now",
+
+  "app_sidebar_group_label": "Quick Play",
+  "app_sidebar_group_button_play": "Matchmaking",
+  "app_sidebar_group_button_bot": "Play vs AI",
+
+  "app_sidebar_user_item_logout": "Log out",
+  "app_sidebar_user_item_settings": "Settings",
+
+  "app_shell_heading_content": "My Content",
+  "app_shell_heading_quick_nav": "Quick Navigation",
+  "app_shell_heading_chess": "Start a game",
+  "app_shell_item_play": "Start ranked match making",
+  "app_shell_item_play_vs_bot": "Start a game against AI",
+  "app_shell_heading_account": "Account",
+  "app_shell_item_settings": "Settings",
+  "app_shell_item_logout": "Log out",
+
+  "app_shell_popup_success_logout": "You logged out. See you soon!",
+  "app_shell_popup_fail_logout": "Failed to log out",
+
+  "leaderboard_page_title": "Leaderboard",
+  "leaderboard_page_description": "Top players ranked by their ELO.",
+  "leaderboard_page_card_title": "Global Ranking",
+  "leaderboard_page_card_description": "The best of the best across the server.",
+  "leaderboard_page_empty": "No players found yet.",
+
+  "social_page_title": "Social",
+  "social_page_description": "Manage your friends list and see who is online.",
+  "social_page_search_placeholder": "Add by username...",
+
+  "friends_card_title": "Friends",
+  "friends_card_description": "All your friends are here!",
+  "friends_card_empty_title": "No friends yet",
+  "friends_card_empty_description": "Search for a username above to start building your list.",
+
+  "requests_card_title": "Friend Requests",
+  "requests_card_description": "People who want to connect with you.",
+  "requests_card_sent_description": "Awaiting friend request approval",
+  "requests_card_received_button_accept": "Accept",
+  "requests_card_received_button_reject": "Reject",
+  "requests_card_empty_title": "No pending requests",
+  "requests_card_empty_description": "We'll show your friend requests here.",
+
+  "suggested_players_card_title": "Suggested Players",
+  "suggested_players_card_description": "Make some friends and some enemies!",
+  "suggested_players_card_button_request": "Request",
+  "suggested_players_card_empty_title": "No recommendations",
+  "suggested_players_card_empty_description": "We will soon recommend users here!",
+
+  "profile_page_user_joined_on": "Member since",
+  "profile_page_user_bio": "Bio",
+  "profile_page_button_challange": "Challenge",
+  "profile_page_button_add": "Add Friend",
+  "profile_page_button_edit_profile": "Edit Profile",
+  "profile_page_error_title": "Profile Error",
+  "profile_page_error_description": "Could not load user profile.",
+
+  "badges_card_title": "Badges",
+  "badges_card_ach_label_update_profile": "True Beauty",
+  "badges_card_ach_desc_update_profile": "Edit your player profile",
+  "badges_card_ach_label_first_game": "Baby Steps",
+  "badges_card_ach_desc_first_game": "Play your first game",
+  "badges_card_ach_label_first_win": "For The Win!",
+  "badges_card_ach_desc_first_win": "Win your first match",
+  "badges_card_ach_label_five_wins": "Hold Up, They're Cooking!",
+  "badges_card_ach_desc_five_wins": "Win five matches",
+  "badges_card_ach_label_reach_high_elo": "Peak Performance",
+  "badges_card_ach_desc_reach_high_elo": "Reach 2k ELO",
+
+  "current_elo_card_title": "Performances",
+  "current_elo_card_peak_elo": "Peak ELO",
+  "current_elo_card_current_elo": "Current ELO",
+
+  "elo_history_card_title": "ELO Progression",
+  "elo_history_card_description": "Your rating evolution over the last 7 days.",
+  "elo_history_card_empty_title": "No Significant Data",
+  "elo_history_card_empty_description": "Play more ranked matches to display ELO progression.",
+
+  "recent_matches_card_title": "Match History",
+  "recent_matches_card_description": "Recent games played across all modes",
+  "recent_matches_card_empty_title": "No Recent Matches",
+  "recent_matches_card_empty_description": "Play a few matches to see your statistics with details here.",
+  "recent_matches_card_won": "Won",
+  "recent_matches_card_draw": "Draw",
+  "recent_matches_card_lost": "Lost",
+
+  "win_ratio_card_title": "Win Ratio",
+  "win_ratio_card_description": "Total games played",
+  "win_ratio_card_empty_description": "Play more to see your stats!",
+  "win_ratio_card_wins": "W",
+  "win_ratio_card_draws": "D",
+  "win_ratio_card_losses": "L",
+
+  "play_page_connecting": "Connecting to server...",
+  "play_page_inqueue_title": "Looking for an opponent...",
+  "play_page_inqueue_mode": "Mode:",
+  "play_page_inqueue_position_title": "Queue position:",
+  "play_page_inqueue_button_cancel": "Cancel",
+
+  "play_page_gameselect_title": "Play a game",
+  "play_page_gameselect_description": "Choose your game mode",
+  "play_page_mode_blitz": "Blitz",
+  "play_page_mode_rapid": "Rapid",
+  "play_page_mode_casual": "Casual",
+  "play_page_mode_bot": "Play VS Bot",
+  "play_page_minutes_and_increment": "{minutes}min + {increment}sec/move",
+
+  "play_page_mode_bot_description": "Practice your chess skills against the computer",
+  "play_page_mode_bot_unranked": "(Unranked)",
+  "play_page_mode_bot_easy": "Easy",
+  "play_page_mode_bot_medium": "Medium",
+  "play_page_mode_bot_hard": "Hard",
+  "play_page_mode_bot_button_back": "Back to game modes",
+
+  "game_page_title": "Current game",
+  "game_page_disconnected": "Disconnected",
+
+  "game_page_turn_title": "Current turn",
+  "game_page_turn_user": "Your turn",
+  "game_page_turn_opponent": "Opponent's turn",
+
+  "game_page_status_check": "Check!",
+  "game_page_status_game_over": "Game Over",
+  "game_page_status_winner": "Winner: {winner}",
+  "game_page_status_draw": "Draw",
+
+  "game_page_color_title": "You play",
+
+  "game_page_button_draw": "Offer Draw",
+  "game_page_button_resign": "Resign",
+  "game_page_button_leave": "Back to lobby",
+  "game_page_button_leave_spectator": "Leave spectator mode",
+  "game_page_button_leave_gamebot": "Leave Bot Game",
+
+  "game_page_move_history_title": "Move History",
+  "game_page_move_history_empty": "No moves yet",
+
+  "game_page_spectator_title": "Spectator mode",
+  "game_page_spectator_description": "You are now spectating this game.",
+  "game_page_spectator_info": "Watch only",
+
+  "game_page_promotion_title": "Choose promotion",
+  "game_page_promotion_queen": "Queen",
+  "game_page_promotion_rook": "Rook",
+  "game_page_promotion_bishop": "Bishop",
+  "game_page_promotion_knight": "Knight",
+
+  "game_page_reason_checkmate": "By Checkmate",
+  "game_page_reason_stalemate": "By Stalemate",
+  "game_page_reason_draw": "By Draw",
+  "game_page_reason_timeout": "By Time out",
+  "game_page_reason_agreement": "By Agreement",
+  "game_page_reason_resignation": "By Resignation",
+
+  "game_page_popup_draw_offer_title": "Draw offer",
+  "game_page_popup_draw_offer_description": "Do you want to accept this draw offer?",
+  "game_page_popup_draw_offer_button_accept": "Accept",
+  "game_page_popup_draw_offer_button_decline": "Decline",
+
+  "game_page_popup_resign_title": "Resignation",
+  "game_page_popup_resign_description": "Do you want to resign?",
+  "game_page_popup_resign_button_accept": "Resign",
+  "game_page_popup_resign_button_decline": "close",
+
+  "game_page_popup_gameover_title_victory": "Victory!",
+  "game_page_popup_gameover_title_draw": "Draw",
+  "game_page_popup_gameover_title_defeat": "Defeat",
+  "game_page_popup_gameover_title_spectator": "Game Over",
+  "game_page_popup_gameover_description_winner": "{winner} wins!",
+  "game_page_popup_gameover_description_draw": "Game drawn!",
+
+  "game_page_white": "White",
+  "game_page_black": "Black",
+
+  "chat_no_msgs": "No messages yet. Be the first to say hi!",
+  "chat_prompt_type_msg": "Type a message...",
+  "chat_prompt_send": "Send",
+  "chat_err_too_large": "Your message was too long to be sent. It should be at most 250 characters long.",
+  "chat_title_global": "Global Chat",
+  "chat_title_friend": "Friend Chat",
+
+  "settings_page_title": "Settings",
+  "settings_page_description": "Manage your account settings and preferences.",
+  "settings_page_button_saving": "Saving...",
+  "settings_page_button_saved": "Save Changes",
+
+  "settings_page_profile_title": "Profile",
+  "settings_page_profile_description": "This is how others will see you on the site.",
+  "settings_page_profile_label_username": "Username",
+  "settings_page_profile_label_bio": "Biography",
+>>>>>>> Stashed changes
   "settings_page_profile_action_default_fail": "Could not update profile.",
 
-  "settings_page_account_title": "[i18n] Account",
-  "settings_page_account_description": "[i18n] Manage your credentials and connected services.",
-  "settings_page_account_header_accounts": "[i18n] Connected Accounts",
-  "settings_page_account_header_accounts_desc": "[i18n] Log in faster with these services.",
-  "settings_page_account_connected": "[i18n] Connected",
-  "settings_page_account_not_connected": "[i18n] Not Connected",
-  "settings_page_account_button_connect": "[i18n] Connect",
-  "settings_page_account_button_disconnect": "[i18n] Disconnect",
+  "settings_page_account_title": "Account",
+  "settings_page_account_description": "Manage your credentials and connected services.",
+  "settings_page_account_header_accounts": "Connected Accounts",
+  "settings_page_account_header_accounts_desc": "Log in faster with these services.",
+  "settings_page_account_connected": "Connected",
+  "settings_page_account_not_connected": "Not Connected",
+  "settings_page_account_button_connect": "Connect",
+  "settings_page_account_button_disconnect": "Disconnect",
   "settings_page_account_action_updatepassword_password_required": "Current password is required.",
   "settings_page_account_action_updatepassword_password_invalid": "Incorrect current password.",
   "settings_page_account_action_updatepassword_success": "Password updated successfully.",
@@ -231,9 +469,10 @@
   "settings_page_account_action_unlink_password_required": "You must set a password before disconnecting your last login method.",
   "settings_page_account_action_unlink_fail": "Could not unlink account.",
 
-  "settings_page_account_label_password": "[i18n] Password",
-  "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
+  "settings_page_account_label_password": "Password",
+  "settings_page_account_label_password_desc": "Change your password to keep your account secure.",
   "settings_page_account_label_no_password_desc": "You haven't set a password yet. Set one to log in with email/password.",
+<<<<<<< Updated upstream
   "settings_page_account_label_current_password": "[i18n] Current Password",
   "settings_page_account_label_new_password": "[i18n] New Password",
   "settings_page_account_label_confirm_password": "[i18n] Confirm Password",
@@ -305,4 +544,120 @@
 
   "unkown_db_error": "[i18n] Unknown database error",
   "internal_server_error": "[i18n] Internal server error"
+=======
+  "settings_page_account_label_current_password": "Current Password",
+  "settings_page_account_label_new_password": "New Password",
+  "settings_page_account_label_confirm_password": "Confirm Password",
+
+  "settings_page_gameplay_title": "Gameplay",
+  "settings_page_sound_title": "Sound",
+  "settings_page_display_title": "Display",
+  "settings_page_privacy_title": "Privacy",
+
+  "user_profile_link_loading": "Loading...",
+  "user_profile_link_bio_empty": "This user does not have a bio.",
+  "user_profile_link_joined": "Joined {date}",
+  "user_profile_link_fail": "Failed to load user info.",
+
+  "profile_page_action_add_username_required": "Username is required",
+  "profile_page_action_add_add_yourself": "You cannot add yourself",
+  "profile_page_action_add_user_not_found": "User not found",
+  "profile_page_action_add_success": "Sent friend request",
+  "profile_page_action_add_fail": "You are already friends or an invite is pending",
+  "profile_page_action_add_internal_error": "Failed to send friend request",
+
+  "profile_page_action_accept_invalid_userid": "Invalid user ID",
+  "profile_page_action_accept_success": "Accepted friend request",
+  "profile_page_action_accept_internal_error": "Failed to accept friend request",
+
+  "profile_page_action_reject_invalid_userid": "Invalid user ID",
+  "profile_page_action_reject_success": "Declined friend request",
+  "profile_page_action_reject_internal_error": "Failed to decline friend request",
+
+  "profile_page_action_remove_invalid_userid": "Invalid user ID",
+  "profile_page_action_remove_success": "Removed friend",
+  "profile_page_action_remove_internal_error": "Failed to remove friend",
+
+  "profile_page_fecth_user_invalid_userid": "Invalid user ID",
+  "profile_page_fecth_user_not_found": "User not found",
+
+  "login_action_default_fail": "Invalid email or password, or an associated account uses OAuth.",
+
+  "oauth_invalid_state_or_code": "Invalid state or code",
+  "oauth_failed_to_get_access_token": "Failed to get access token",
+  "oauth_failed_to_fetch_user": "Failed to fetch user data",
+  "oauth_discord_other_account_connected": "This Discord account is already connected to another user.",
+  "oauth_error": "OAuth Error: ",
+  "oauth_internal_error": "Authentication failed. Please try again.",
+
+  "register_email_taken": "Email already registered.",
+  "register_username_taken": "Username already taken.",
+
+  "api_users_id_unauthorized": "Unauthorized",
+  "api_users_id_invalid_userid": "Invalid user ID",
+  "api_users_id_user_not_found": "User not found",
+  "api_users_id_fetch_user_internal_error": "Failed to fetch user profile for HoverCard:",
+
+  "zod_schema_username_min_length": "Username must be at least 3 characters.",
+  "zod_schema_username_max_length": "Username must be at most 20 characters.",
+  "zod_schema_username_char_allowed": "Only letters, numbers, and underscores allowed.",
+  "zod_schema_email_invalid": "Please enter a valid email address.",
+  "zod_schema_password_required": "Password is required.",
+  "zod_schema_password_min_length": "Password must be at least 8 characters.",
+  "zod_schema_password_max_length": "Password must be at most 64 characters.",
+  "zod_schema_password_uppercase": "Password must contain at least one uppercase letter.",
+  "zod_schema_password_lowercase": "Password must contain at least one lowercase letter.",
+  "zod_schema_password_digit": "Password must contain at least one digit.",
+  "zod_schema_password_special": "Password must contain at least one special character.",
+  "zod_schema_password_match": "Passwords do not match.",
+  "zod_schema_bio_max_length": "Biography must be at most 255 characters.",
+  "zod_schema_avatar_type": "Avatar must be a file",
+  "zod_schema_avatar_size": "Avatar must be less than 1MB",
+
+  "socket_bot_start_error": "Failed to start bot game",
+  "socket_bot_quit_error": "Not a bot game",
+  "socket_bot_move_game_error": "Game not found",
+  "socket_bot_move_error": "Invalid move",
+
+  "socket_chat_fail_send_error": "Failed to send message",
+  "socket_chat_empty_error": "Empty message",
+  "socket_chat_game_invalid_error": "Invalid game ID",
+  "socket_chat_user_invalid_error": "Invalid user ID",
+
+  "socket_game_join_bot_error": "Bot games don't use game:join",
+  "socket_game_join_game_not_found_error": "Game not found",
+  "socket_game_join_user_not_found_error": "Players not found",
+  "socket_game_join_fail_join_error": "Failed to join game",
+  "socket_game_move_spectator_error": "Spectators cannot move pawn",
+  "socket_game_move_game_not_found_error": "Game not found",
+  "socket_game_move_not_your_turn_error": "Not your turn",
+  "socket_game_move_invalid_move_error": "Invalid move",
+  "socket_game_offer_draw_specator_error": "Spectators cannot offer draw",
+  "socket_game_accept_draw_specator_error": "Spectators cannot accept draw",
+  "socket_game_resign_spectator_error": "Spectators cannot resign",
+  
+  "socket_matchmaking_join_active_game_error": "You already have a game in progress",
+  "socket_matchmaking_join_already_queued_error": "Already in queue",
+  "socket_matchmaking_join_match_yourself_error": "Cannot match with yourself",
+  "socket_matchmaking_join_oppenent_already_queued_error": "Match failed, opponent already in game",
+  "socket_matchmaking_join_failed_to_create_error": "Failed to create game",
+
+  "socket_middleware_auth_required_error": "Authentication required",
+  "socket_middleware_rate_limit_error": "Rate limit exceeded",
+  "socket_rooms_no_pieces_error": "No piece at source square",
+  "socket_rooms_invalid_move_error": "Invalid move",
+  "socket_index_error": "Socket.io not initialized",
+
+  "form_factory_error": "Could not update settings.",
+  
+  "unkown_db_error": "Unknown database error",
+  "internal_server_error": "Internal server error",
+
+  "toast_success": "Success",
+  "toast_error": "An error occurred",
+
+  "span_add": "Add",
+  "span_chat": "Chat",
+  "span_remove": "Remove"
+>>>>>>> Stashed changes
 }

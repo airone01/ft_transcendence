@@ -19,7 +19,13 @@ import {
   leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
+<<<<<<< Updated upstream
 import { socketConnected } from "$lib/stores/socket.svelte";
+=======
+import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
+import { m } from "$lib/paraglide/messages";
+
+>>>>>>> Stashed changes
 
 // Props
 
@@ -174,9 +180,9 @@ function handleDndConsider(
         if (isMyPiece && isCorrectTurn) {
           const moves = getLegalMoves(localState, [row, col]);
           legalTargets = new Set(
-            moves.map((m) => {
-              const r = myColor === "black" ? 7 - m.to[0] : m.to[0];
-              const c = myColor === "black" ? 7 - m.to[1] : m.to[1];
+            moves.map((move) => {
+              const r = myColor === "black" ? 7 - move.to[0] : move.to[0];
+              const c = myColor === "black" ? 7 - move.to[1] : move.to[1];
               return coordsToIndex(r, c);
             }),
           );
@@ -381,7 +387,7 @@ function confirmPromotion() {
       class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
       <div class="bg-background border rounded-lg p-6 space-y-4 max-w-md">
-        <h3 class="text-lg font-semibold text-center">Choose promotion</h3>
+        <h3 class="text-lg font-semibold text-center">{m.game_page_promotion_title()}</h3>
 
         <div class="grid grid-cols-4 gap-3">
           <button
@@ -394,7 +400,7 @@ function confirmPromotion() {
             <ChessQueenIcon
               class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
             />
-            <p class="text-xs mt-1">Queen</p>
+            <p class="text-xs mt-1">{m.game_page_promotion_queen()}</p>
           </button>
 
           <button
@@ -407,7 +413,7 @@ function confirmPromotion() {
             <ChessRookIcon
               class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
             />
-            <p class="text-xs mt-1">Rook</p>
+            <p class="text-xs mt-1">{m.game_page_promotion_rook()}</p>
           </button>
 
           <button
@@ -420,7 +426,7 @@ function confirmPromotion() {
             <ChessBishopIcon
               class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
             />
-            <p class="text-xs mt-1">Bishop</p>
+            <p class="text-xs mt-1">{m.game_page_promotion_bishop()}</p>
           </button>
 
           <button
@@ -433,7 +439,7 @@ function confirmPromotion() {
             <ChessKnightIcon
               class="w-12 h-12 mx-auto {myColor === 'white' ? 'stroke-white fill-white/20' : 'stroke-zinc-900 fill-zinc-900/20'}"
             />
-            <p class="text-xs mt-1">Knight</p>
+            <p class="text-xs mt-1">{m.game_page_promotion_knight()}</p>
           </button>
         </div>
       </div>
