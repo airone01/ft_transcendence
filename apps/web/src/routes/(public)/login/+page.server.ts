@@ -45,6 +45,7 @@ export const actions = {
       )
         return message(form, m.login_action_default_fail(), { status: 400 });
 
+      await auth.deleteUserSessions(user.id);
       const { token, expiresAt } = await auth.createSession(user.id);
 
       setSessionTokenCookie(

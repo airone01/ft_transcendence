@@ -116,6 +116,7 @@ export const GET = async (event: RequestEvent) => {
   }
 
   // then session and cookie
+  await auth.deleteUserSessions(userId);
   const { token, expiresAt } = await auth.createSession(userId);
   setSessionTokenCookie(event, token, expiresAt);
 
