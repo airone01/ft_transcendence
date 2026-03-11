@@ -7,11 +7,28 @@
   "ingame": "[i18n] In Game",
 
   "hero_page_title": "[i18n] Play Chess Now!",
-  "hero_page_button": "[i18n] New Game",
+  "hero_page_desc": "[i18n] The ultimate platform for chess lovers. Climb the Elo ladder, challenge your friends, and spectate live matches in real time.",
+  "hero_page_button": "[i18n] Dashboard",
 
   "landing_page_button_login": "[i18n] Log in",
   "landing_page_button_register": "[i18n] Sign up",
   "landing_page_button_logout": "[i18n] Log out",
+
+  "landing_page_cta_more": "[i18n] Learn more",
+  "landing_page_cta_welcome": "[i18n] Welcome to the arena",
+  "landing_page_cta_everything_needed": "[i18n] Everything you need to master the game",
+  "landing_page_cta_flex": "[i18n] Built from the ground up for performance, fairness, and community.",
+  "landing_page_cta_challenge": "[i18n] Ready to make your move?",
+  "landing_page_cta_players": "[i18n] Join thousands of players already battling on the board. Registration takes less than a minute seconds.",
+  "landing_page_cta_join_elite": "[i18n] Join the Elite",
+  "landing_page_cta_compete": "[i18n] Compete for the #1 spot",
+
+  "landing_page_feats_multiplayer_title": "[i18n] Real-time Multiplayer",
+  "landing_page_feats_multiplayer_desc": "[i18n] Experience ultra-low latency matches against players worldwide, powered by our custom WebSocket engine.",
+  "landing_page_feats_elo_title": "[i18n] Competitive Elo Rating",
+  "landing_page_feats_elo_desc": "[i18n] Climb the ranks. Our robust matchmaking system ensures you always play against opponents of your skill level.",
+  "landing_page_feats_social_title": "[i18n] Social Ecosystem",
+  "landing_page_feats_social_desc": "[i18n] Add friends, spectate their live games, and chat in real time. Chess is better together.",
 
   "landing_page_auth_dialog_title_login": "[i18n] Welcome back",
   "landing_page_auth_dialog_title_register": "[i18n] Create an Account",
