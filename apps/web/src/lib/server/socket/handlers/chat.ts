@@ -1,5 +1,6 @@
 import type { Server, Socket } from "socket.io";
 import {
+  dbGetPlayers,
   dbSendToFriend,
   dbSendToGame,
   dbSendToGlobal,
@@ -58,6 +59,15 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
     if (Number.isNaN(gameIdNum)) {
       return socket.emit("chat:error", { message: "Invalid game ID" });
+    }
+
+    try {
+      const players = await dbGetPlayers(gameIdNum);
+      if (players.whitePlayerId !== userId && players.blackPlayerId !== userId) {
+        return socket.emit("chat:error", { message: "Not your game" });
+      }
+    } catch {
+      return socket.emit("chat:error", { message: "Game not found" });
     }
 
     try {
