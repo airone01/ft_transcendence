@@ -1,4 +1,5 @@
 import type { Server, Socket } from "socket.io";
+import { dbGetFriendsInfo } from "$lib/server/db-services";
 
 // In-memory map to track online users
 const onlineUsers = new Map<number, { username: string; status: string }>();
@@ -10,26 +11,29 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
   // mark user as online
   onlineUsers.set(userId, { username, status: "online" });
 
-  // broadcast to all that this user is online
-  io.emit("presence:online", { userId, username });
+  // broadcast only to friends that this user is online
+  const friends = await dbGetFriendsInfo(userId);
+  for (const friend of friends) {
+    io.to(`user:${friend.userId}`).emit("presence:online", { userId, username });
+  }
 
-  // send list of online users to the newly connected user
-  socket.emit(
-    "presence:list",
-    Array.from(onlineUsers.entries()).map(([id, data]) => ({
-      userId: id,
-      ...data,
-    })),
-  );
+  // send list of online friends to the newly connected user
+  const onlineFriends = friends
+    .filter((f) => onlineUsers.has(f.userId))
+    .map((f) => ({ userId: f.userId, ...onlineUsers.get(f.userId)! }));
+  socket.emit("presence:list", onlineFriends);
 
   // user change status
   socket.on(
     "presence:status",
-    (data: { status: "online" | "away" | "ingame" }) => {
+    async (data: { status: "online" | "away" | "ingame" }) => {
       const user = onlineUsers.get(userId);
       if (user) {
         user.status = data.status;
-        io.emit("presence:status", { userId, status: data.status });
+        const updatedFriends = await dbGetFriendsInfo(userId);
+        for (const friend of updatedFriends) {
+          io.to(`user:${friend.userId}`).emit("presence:status", { userId, status: data.status });
+        }
       }
     },
   );
