@@ -22,6 +22,8 @@
     "typescript": "~5.9.3"
   },
   "dependencies": {
+    "@dicebear/collection": "^9.4.0",
+    "@dicebear/core": "^9.4.0",
     "@transc/db": "workspace:*",
     "@transc/ui": "workspace:*",
     "argon2": "^0.44.0",

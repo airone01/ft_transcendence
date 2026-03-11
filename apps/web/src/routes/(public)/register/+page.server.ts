@@ -4,6 +4,7 @@ import { zod } from "sveltekit-superforms/adapters";
 import * as m from "$lib/paraglide/messages";
 import { registerSchema } from "$lib/schemas/auth";
 import { auth, hashPassword, setSessionTokenCookie } from "$lib/server/auth";
+import { generateDefaultAvatar } from "$lib/server/avatar";
 import {
   DBCreateUserEmailAlreadyExistsError,
   DBCreateUserUsernameAlreadyExistsError,
@@ -27,11 +28,13 @@ export const actions = {
 
     try {
       const passwordHash = await hashPassword(form.data.password);
+      const defaultAvatar = generateDefaultAvatar(form.data.username);
 
       const userId = await dbCreateUser({
         email: form.data.email,
         password: passwordHash,
         username: form.data.username,
+        avatar: defaultAvatar,
       });
 
       const { token, expiresAt } = await auth.createSession(userId);
