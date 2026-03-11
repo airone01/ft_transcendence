@@ -13,7 +13,7 @@ export const socketError: Writable<string | null> = writable(null);
 class SocketManager {
   private socket: Socket | null = null;
 
-  connect(userId: string, username: string) {
+  connect() {
     if (this.socket?.connected) {
       socketConnected.set(true);
       return;
@@ -22,7 +22,7 @@ class SocketManager {
     this.socket?.disconnect();
 
     this.socket = io(env.PUBLIC_WS_URL, {
-      auth: { userId, username },
+      withCredentials: true,
       transports: ["websocket"],
       reconnection: true,
       reconnectionDelay: 1000,

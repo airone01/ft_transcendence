@@ -1,18 +1,39 @@
 import type { Socket } from "socket.io";
+import { auth } from "$lib/server/auth";
+
+const SESSION_COOKIE_NAME = "session_token";
+
+function parseSessionCookie(cookieHeader: string): string | undefined {
+  for (const part of cookieHeader.split(";")) {
+    const eqIdx = part.indexOf("=");
+    if (eqIdx === -1) continue;
+    const key = part.slice(0, eqIdx).trim();
+    if (key === SESSION_COOKIE_NAME) {
+      return decodeURIComponent(part.slice(eqIdx + 1).trim());
+    }
+  }
+  return undefined;
+}
 
 export async function authMiddleware(
   socket: Socket,
   next: (err?: Error) => void,
 ) {
-  const userId = socket.handshake.auth?.userId;
-  const username = socket.handshake.auth?.username;
+  const cookieHeader = socket.handshake.headers.cookie ?? "";
+  const token = parseSessionCookie(cookieHeader);
 
-  if (!userId) {
+  if (!token) {
     return next(new Error("Authentication required"));
   }
 
-  socket.data.userId = String(userId);
-  socket.data.username = username || `Player_${String(userId).slice(0, 4)}`;
+  const { user } = await auth.validateSession(token);
+
+  if (!user) {
+    return next(new Error("Invalid or expired session"));
+  }
+
+  socket.data.userId = String(user.id);
+  socket.data.username = user.username;
 
   next();
 }

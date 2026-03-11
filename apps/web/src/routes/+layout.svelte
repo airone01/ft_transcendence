@@ -26,7 +26,7 @@ let connectionInitialized = false;
 $effect(() => {
   if (data.user && !connectionInitialized) {
     connectionInitialized = true;
-    socketManager.connect(String(data.user.id), data.user.username);
+    socketManager.connect();
   }
 
   if (data.user && $socketConnected && !listenersInitialized) {
