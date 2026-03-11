@@ -24,6 +24,8 @@ import { zodClient } from "sveltekit-superforms/adapters";
 import { enhance } from "$app/forms";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
+import LanguageSwitcher from "$lib/components/language-switcher.svelte";
+import ModeToggle from "$lib/components/mode-toggle.svelte";
 import * as m from "$lib/paraglide/messages";
 import {
   accountSettingsSchema,
@@ -73,15 +75,10 @@ const profileForm = superForm(data.profileForm, {
   },
 });
 
-const {
-  form: accountFormData,
-  enhance: accountFormEnhance,
-  delayed: accountDelayed,
-} = accountForm;
+const { form: accountFormData, enhance: accountFormEnhance } = accountForm;
 const {
   form: profileFormData,
   enhance: profileEnhance,
-  delayed: profileDelayed,
   errors: profileErrors,
 } = profileForm;
 
@@ -323,5 +320,10 @@ const unlinkEnhance: SubmitFunction = () => {
         {m.settings_page_button_saved()}
       </Button>
     </form>
+
+    <h4 class="text-sm font-medium">{m.settings_page_other_title()}</h4>
+
+    <ModeToggle />
+    <LanguageSwitcher />
   </div>
 </main>
