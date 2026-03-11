@@ -1,8 +1,9 @@
 <script lang="ts">
-import { ClockIcon, FlagIcon, HandshakeIcon } from "@lucide/svelte";
+import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
+import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
 import {
@@ -12,6 +13,7 @@ import {
   leaveGame,
   type MoveRecord,
   offerDraw,
+  quitBotGame,
   resign,
 } from "$lib/stores/game.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
@@ -196,24 +198,37 @@ const resolveGameReason = (reason: string) => {
 
       <!-- Controls -->
       <div class="space-y-2 mt-auto">
-        {#if $gameState.isSpectator}
-          <!-- exit spectatate mode button-->
+        {#if $gameState.isBotGame && !$gameState.gameOver}
+          <Button
+            variant="outline"
+            class="w-full justify-start bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+            onclick={() => {
+            quitBotGame();
+            goto('/play');
+          }}
+          >
+            <XIcon class="w-4 h-4 mr-2" />
+            Quit Bot Game
+          </Button>
+        {:else if $gameState.isSpectator}
+          <!-- exit spectate mode button -->
           <Button
             variant="outline"
             class="w-full"
             onclick={() => {
-              leaveGame();
-              window.history.back();
-            }}
+            leaveGame();
+            window.history.back();
+          }}
           >
             {m.game_page_button_leave_spectator()}
           </Button>
         {:else if !$gameState.gameOver}
-          <!-- player code unchange -->
+          <!-- player code unchanged -->
           <Button
             variant="outline"
             class="w-full justify-start"
             onclick={handleOfferDraw}
+            disabled={$gameState.drawOfferSent}
           >
             <HandshakeIcon class="w-4 h-4 mr-2" />
             {m.game_page_button_draw()}
@@ -289,7 +304,12 @@ const resolveGameReason = (reason: string) => {
         <!-- Mobile controls -->
         {#if !$gameState.gameOver}
           <div class="flex gap-2">
-            <Button size="sm" variant="outline" onclick={handleOfferDraw}>
+            <Button
+              size="sm"
+              variant="outline"
+              onclick={handleOfferDraw}
+              disabled={$gameState.drawOfferSent}
+            >
               <HandshakeIcon class="w-3.5 h-3.5" />
               <span class="hidden sm:inline ml-1"
                 >{m.game_page_button_draw()}</span

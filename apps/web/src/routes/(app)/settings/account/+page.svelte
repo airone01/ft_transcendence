@@ -13,9 +13,27 @@ import { toast } from "svelte-sonner";
 import { superForm } from "sveltekit-superforms";
 import { zodClient } from "sveltekit-superforms/adapters";
 import { enhance } from "$app/forms";
+import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import SettingsHeader from "$lib/components/settings-header.svelte";
 import * as m from "$lib/paraglide/messages";
 import { accountSettingsSchema } from "$lib/schemas/settings";
+
+$effect(() => {
+  if (page.url.searchParams.get("error") === "already_linked") {
+    toast.error(m.oauth_error(), {
+      description: m.oauth_discord_other_account_connected(),
+    });
+
+    const cleanUrl = new URL(page.url);
+    cleanUrl.searchParams.delete("error");
+
+    goto(cleanUrl.pathname + cleanUrl.search, {
+      replaceState: true,
+      keepFocus: true,
+    });
+  }
+});
 
 const { data } = $props();
 

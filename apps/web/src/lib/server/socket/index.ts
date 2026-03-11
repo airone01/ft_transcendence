@@ -1,7 +1,8 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
+import { registerBotHandlers } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
-import { registerGameHandlers } from "./handlers/game";
+import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
@@ -43,6 +44,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     registerChatHandlers(io, socket);
     registerPresenceHandlers(io, socket);
     registerMatchmakingHandlers(io, socket);
+    registerBotHandlers(io, socket);
 
     // Heartbeat pong
     socket.on("heartbeat:pong", () => {});
@@ -50,6 +52,8 @@ export function initSocketServer(httpServer: HTTPServer) {
     // Disconnect
     socket.on("disconnect", (reason) => {
       console.log(`[Socket] User disconnected: ${userId}, reason: ${reason}`);
+
+      const currentGameId = socket.data.currentGameId;
 
       if (userId) {
         for (const [mode, queue] of queues.entries()) {
@@ -60,6 +64,15 @@ export function initSocketServer(httpServer: HTTPServer) {
               `[Matchmaking] Removed user ${userId} from ${mode} queue on disconnect`,
             );
           }
+        }
+      }
+
+      if (currentGameId?.startsWith("bot-")) {
+        const gameRoom = activeGames.get(currentGameId);
+        if (gameRoom) {
+          gameRoom.stopTimer();
+          activeGames.delete(currentGameId);
+          console.log(`[Bot] Game ${currentGameId} destroyed on disconnect`);
         }
       }
 

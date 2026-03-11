@@ -10,6 +10,7 @@ import {
 import type { Component } from "svelte";
 import { onDestroy, onMount } from "svelte";
 import { flip } from "svelte/animate";
+import { get } from "svelte/store";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
 import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
@@ -19,12 +20,10 @@ import {
   leaveGame,
   makeMove,
 } from "$lib/stores/game.store";
-import { socketConnected } from "$lib/stores/socket.svelte";
+import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 
 // Props
-
 const { gameId }: { gameId: string } = $props();
-
 // Types
 
 type DndPiece = {
@@ -58,6 +57,7 @@ const ranks = ["8", "7", "6", "5", "4", "3", "2", "1"];
 let myColor: "white" | "black" | null = $state(null);
 let gameOver = $state(false);
 let isSpectator = $state(false);
+let isBotGame = $state(false);
 const initialState = startGame();
 let localState: GameState = $state(initialState);
 let board: Square[] = $state(buildBoard(initialState));
@@ -75,9 +75,10 @@ let promotionMove = $state<{
 let selectedPromotion = $state<"q" | "r" | "b" | "n">("q");
 
 const unsubscribe = gameStore.subscribe((store) => {
-  myColor = store.myColor;
+  myColor = store.isBotGame ? "white" : store.myColor;
   gameOver = store.gameOver;
   isSpectator = store.isSpectator;
+  isBotGame = store.isBotGame;
   if (store.fen) {
     localState = parseFEN(store.fen);
     if (!isDragging) {
@@ -90,7 +91,8 @@ let unsubSocket: () => void;
 
 onMount(() => {
   unsubSocket = socketConnected.subscribe((connected) => {
-    if (connected && !gameOver) joinGame(gameId);
+    const state = get(gameStore);
+    if (connected && !gameOver && !state.isBotGame) joinGame(gameId);
   });
 });
 
@@ -236,7 +238,16 @@ function handleDndFinalize(
 
     const fromAlgebraic = files[fromCol] + ranks[fromRow];
     const toAlgebraic = files[toCol] + ranks[toRow];
-    makeMove(fromAlgebraic, toAlgebraic);
+
+    if (isBotGame) {
+      socketManager.emit("bot:move", {
+        gameId,
+        from: fromAlgebraic,
+        to: toAlgebraic,
+      });
+    } else {
+      makeMove(fromAlgebraic, toAlgebraic);
+    }
 
     try {
       const move: Move = {
@@ -287,7 +298,16 @@ function confirmPromotion() {
   const fromAlgebraic = files[fromCol] + ranks[fromRow];
   const toAlgebraic = files[toCol] + ranks[toRow];
 
-  makeMove(fromAlgebraic, toAlgebraic, selectedPromotion);
+  if (isBotGame) {
+    socketManager.emit("bot:move", {
+      gameId,
+      from: fromAlgebraic,
+      to: toAlgebraic,
+      promotion: selectedPromotion,
+    });
+  } else {
+    makeMove(fromAlgebraic, toAlgebraic, selectedPromotion);
+  }
 
   try {
     const move: Move = {

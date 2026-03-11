@@ -1,4 +1,10 @@
-import { HandshakeIcon, TrophyIcon, UserIcon, ZapIcon } from "@lucide/svelte";
+import {
+  HandshakeIcon,
+  MessagesSquareIcon,
+  TrophyIcon,
+  UserIcon,
+  ZapIcon,
+} from "@lucide/svelte";
 import type { Component } from "svelte";
 import * as m from "$lib/paraglide/messages";
 
@@ -31,6 +37,11 @@ export const sidebarGroups: SidebarGroup[] = [
         href: "/profile/me",
         icon: UserIcon,
         exact: true,
+      },
+      {
+        label: m.navigation_item_chat(),
+        href: "/chat",
+        icon: MessagesSquareIcon,
       },
       {
         label: m.navigation_item_social(),

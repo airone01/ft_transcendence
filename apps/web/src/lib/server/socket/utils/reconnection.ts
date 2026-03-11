@@ -28,6 +28,12 @@ export function saveSessionOnDisconnect(socket: Socket) {
     return;
   }
 
+  if (socket.data.isBotGame) {
+    console.log(
+      `[Reconnection] User ${userId} is in bot game, not saving session`,
+    );
+  }
+
   const gameId = socket.data.currentGameId || null;
 
   const rooms = new Set(socket.rooms);

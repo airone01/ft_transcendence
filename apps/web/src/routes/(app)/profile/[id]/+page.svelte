@@ -112,13 +112,6 @@ const formEnhance: SubmitFunction = () => {
 
           {#if !isMe(user?.id ?? 0)}
             <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-              <Button
-                href={`/play/challenge/${user?.id}`}
-                class="flex-1 md:flex-none gap-2"
-              >
-                <SwordsIcon class="w-4 h-4" />
-                {m.profile_page_button_challange()}
-              </Button>
               <form
                 method="POST"
                 action="/profile/me/social?/add"

@@ -56,6 +56,7 @@ export async function dbSendToGlobal(
  * @param {number} friendId - The ID of the friend to send the message to
  * @param {string} content - The content of the message
  * @throws {UnknownError} - If an unexpected error occurs
+ * @throws {DBChatChannelNotFoundError} - When trying to talk to a user there is no chat channel for
  * @returns {Promise<number>} - A promise that resolves with the ID of the private chat channel
  */
 export async function dbSendToFriend(
@@ -87,6 +88,8 @@ export async function dbSendToFriend(
         )
         .where(eq(chatChannels.type, "private"))
         .limit(1);
+
+      if (!channel) throw new DBChatChannelNotFoundError();
 
       const [_chatMessage] = await tx
         .insert(chatMessages)
