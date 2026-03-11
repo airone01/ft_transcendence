@@ -7,6 +7,8 @@ import { goto } from "$app/navigation";
 import { gameState } from "$lib/stores/game.store";
 import { socketManager } from "$lib/stores/socket.svelte";
 
+// TODO: i18n this page
+
 let isWaiting = $state(false);
 
 const handleGameState = (data: { gameId: string; isBotGame?: boolean }) => {
