@@ -3,6 +3,7 @@ import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
+import { onDestroy } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
@@ -16,7 +17,7 @@ import {
   quitBotGame,
   resign,
 } from "$lib/stores/game.store";
-import { socketConnected } from "$lib/stores/socket.svelte";
+import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 import Board from "../../play/board.svelte";
 
 let gameId: string = page.params.id ?? "0";
@@ -47,7 +48,6 @@ const blackIsLow = $derived($gameState.blackTimeLeft < 30_000);
 const whiteIsActive = $derived($gameState.turn === "w" && !$gameState.gameOver);
 const blackIsActive = $derived($gameState.turn === "b" && !$gameState.gameOver);
 
-// Group moves by pairs: [[white, black?], ...]
 const movePairs = $derived(() => {
   const pairs: [MoveRecord, MoveRecord | null][] = [];
   const moves = $gameState.moves;
@@ -75,6 +75,19 @@ const resolveGameReason = (reason: string) => {
       return "";
   }
 };
+
+onDestroy(() => {
+  const currentGameId = $gameState.gameId;
+
+  if (
+    currentGameId?.startsWith("bot-") &&
+    $gameState.isBotGame &&
+    !$gameState.gameOver
+  ) {
+    console.log("[Game] Page destroyed, emitting bot:quit for", currentGameId);
+    socketManager.emit("bot:quit", { gameId: currentGameId });
+  }
+});
 </script>
 
 <main class="h-full flex items-center justify-center p-2 sm:p-4 lg:p-6">

@@ -4,7 +4,12 @@ import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
 
-const BOT_USER_ID = "0";
+export const BOT_USER_ID = "0";
+export const MAX_BOT_GAMES = 2;
+
+let activeBotGamesCount = 0;
+const botQueue: Array<{ userId: string; socket: Socket; difficulty: string }> =
+  [];
 
 function coordsToAlgebraic(coords: [number, number]): string {
   const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -12,56 +17,132 @@ function coordsToAlgebraic(coords: [number, number]): string {
   return files[coords[1]] + ranks[coords[0]];
 }
 
-export function registerBotHandlers(_io: Server, socket: Socket) {
+function decrementBotGames() {
+  activeBotGamesCount--;
+  console.log(`[Bot] Active games: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+}
+
+function incrementBotGames() {
+  activeBotGamesCount++;
+  console.log(`[Bot] Active games: ${activeBotGamesCount}/${MAX_BOT_GAMES}`);
+}
+
+function startNextBotGame(io: Server) {
+  if (activeBotGamesCount >= MAX_BOT_GAMES || botQueue.length === 0) {
+    return;
+  }
+
+  const player = botQueue.shift();
+  if (!player) return;
+
+  const { userId, socket } = player;
+
+  incrementBotGames();
+  console.log(
+    `[Bot Queue] Starting game for user ${userId}, queue remaining: ${botQueue.length}`,
+  );
+
+  const gameId = `bot-${userId}-${Date.now()}`;
+
+  try {
+    const gameRoom = new GameRoom(gameId, {
+      whiteId: userId,
+      blackId: BOT_USER_ID,
+      timeControlSeconds: 600,
+      incrementSeconds: 5,
+      startedAt: new Date(),
+    });
+
+    activeGames.set(gameId, gameRoom);
+
+    gameRoom.on(
+      "time_tick",
+      (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
+        socket.emit("game:time", data);
+      },
+    );
+
+    gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
+      socket.emit("game:over", {
+        winner: data.winner === userId ? "white" : "black",
+        winnerName: data.winner === userId ? socket.data.username : "Bot",
+        reason: "timeout",
+        eloChange: null,
+      });
+
+      activeGames.delete(data.gameId);
+      decrementBotGames();
+      startNextBotGame(io);
+    });
+
+    socket.join(`game:${gameId}`);
+    socket.data.currentGameId = gameId;
+
+    setTimeout(() => {
+      socket.emit("game:state", {
+        ...gameRoom.getState(),
+        myColor: "white",
+        isBotGame: true,
+      });
+    }, 200);
+
+    console.log(`[Bot] Game ${gameId} created for user ${userId}`);
+  } catch (error) {
+    decrementBotGames();
+    console.error("[Bot] Failed to create game:", error);
+    socket.emit("game:error", { message: "Failed to start bot game" });
+    startNextBotGame(io);
+  }
+}
+
+export function releaseBotGame(gameId: string, io: Server) {
+  const gameRoom = activeGames.get(gameId);
+  if (gameRoom) {
+    gameRoom.stopTimer();
+    activeGames.delete(gameId);
+    decrementBotGames();
+    console.log(`[Bot] Game ${gameId} released`);
+    startNextBotGame(io);
+  }
+}
+
+export function registerBotHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  socket.on("bot:start", async (_data: { difficulty: string }) => {
-    try {
-      const gameId = `bot-${userId}-${Date.now()}`;
+  socket.on("bot:start", async (data: { difficulty: string }) => {
+    const { difficulty } = data;
 
-      const gameRoom = new GameRoom(gameId, {
-        whiteId: userId,
-        blackId: BOT_USER_ID,
-        timeControlSeconds: 600,
-        incrementSeconds: 5,
-        startedAt: new Date(),
+    const alreadyInQueue = botQueue.some((p) => p.userId === userId);
+    if (alreadyInQueue) {
+      return socket.emit("game:error", { message: "Already in bot queue" });
+    }
+
+    if (socket.data.currentGameId?.startsWith("bot-")) {
+      return socket.emit("game:error", { message: "Already in a bot game" });
+    }
+
+    botQueue.push({ userId, socket, difficulty });
+    console.log(
+      `[Bot Queue] User ${userId} added, total in queue: ${botQueue.length}`,
+    );
+
+    if (activeBotGamesCount < MAX_BOT_GAMES) {
+      startNextBotGame(io);
+    } else {
+      socket.emit("bot:waiting", {
+        message: "Waiting for available slot...",
       });
+    }
+  });
 
-      activeGames.set(gameId, gameRoom);
-
-      gameRoom.on(
-        "time_tick",
-        (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
-          socket.emit("game:time", data);
-        },
+  socket.on("bot:cancel", () => {
+    const index = botQueue.findIndex((p) => p.userId === userId);
+    if (index !== -1) {
+      botQueue.splice(index, 1);
+      console.log(
+        `[Bot Queue] User ${userId} cancelled, remaining: ${botQueue.length}`,
       );
-
-      gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
-        socket.emit("game:over", {
-          winner: data.winner === userId ? "white" : "black",
-          winnerName: data.winner === userId ? socket.data.username : "Bot",
-          reason: "timeout",
-          eloChange: null,
-        });
-        activeGames.delete(data.gameId);
-      });
-
-      socket.join(`game:${gameId}`);
-      socket.data.currentGameId = gameId;
-
-      setTimeout(() => {
-        console.log(`[Bot] Emitting game:state for ${gameId}`);
-        socket.emit("game:state", {
-          ...gameRoom.getState(),
-          myColor: "white",
-          isBotGame: true,
-        });
-      }, 200);
-
-      console.log(`[Bot] Game ${gameId} created for user ${userId}`);
-    } catch (error) {
-      console.error("[Bot] Failed to create game:", error);
-      socket.emit("game:error", { message: "Failed to start bot game" });
+      socket.emit("bot:cancelled");
     }
   });
 
@@ -72,16 +153,9 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
       return socket.emit("game:error", { message: "Not a bot game" });
     }
 
-    const gameRoom = activeGames.get(gameId);
-    if (gameRoom) {
-      gameRoom.stopTimer();
-      activeGames.delete(gameId);
-      console.log(`[Bot] Game ${gameId} quit by user ${userId}`);
-    }
-
+    releaseBotGame(gameId, io);
     socket.leave(`game:${gameId}`);
     socket.data.currentGameId = null;
-
     socket.emit("bot:quit_success");
   });
 
@@ -123,7 +197,8 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
             winner: result.winner === userId ? "white" : "black",
             reason: result.reason,
           });
-          activeGames.delete(gameId);
+
+          releaseBotGame(gameId, io);
           return;
         }
 
@@ -157,7 +232,8 @@ export function registerBotHandlers(_io: Server, socket: Socket) {
               winner: botResult.winner === userId ? "white" : "black",
               reason: botResult.reason,
             });
-            activeGames.delete(gameId);
+
+            releaseBotGame(gameId, io);
           }
         }
       } catch (error) {
