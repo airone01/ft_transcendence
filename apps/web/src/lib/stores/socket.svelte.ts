@@ -38,14 +38,14 @@ class SocketManager {
     if (!this.socket) return;
 
     this.socket.on("connect", () => {
-      console.log("Socket connected");
+      console.log("[ws] socket connected");
       socketConnected.set(true);
       socketReconnecting.set(false);
       socketError.set(null);
     });
 
     this.socket.on("disconnect", (reason) => {
-      console.log("Socket disconnected:", reason);
+      console.log("[ws] socket disconnected:", reason);
       socketConnected.set(false);
 
       if (reason === "io server disconnect") {
@@ -54,29 +54,29 @@ class SocketManager {
     });
 
     this.socket.on("connect_error", (error) => {
-      console.error("Connection error:", error);
+      console.error("[ws] connection error:", error);
       socketError.set(error.message);
     });
 
     this.socket.io.on("reconnect_attempt", (attempt) => {
-      console.log(`Reconnection attempt ${attempt}`);
+      console.log(`[ws] reconnection attempt ${attempt}`);
       socketReconnecting.set(true);
     });
 
     this.socket.io.on("reconnect", (attempt) => {
-      console.log(`Reconnected after ${attempt} attempts`);
+      console.log(`[ws] reconnected after ${attempt} attempts`);
       socketReconnecting.set(false);
     });
 
     this.socket.io.on("reconnect_failed", () => {
-      console.error("Reconnection failed");
+      console.error("[ws] reconnection failed");
       socketError.set("Failed to reconnect");
     });
   }
 
   emit(event: string, data?: unknown) {
     if (!this.socket?.connected) {
-      console.warn("Socket not connected, queuing event:", event);
+      console.warn("[ws] socket not connected, queuing event:", event);
       return;
     }
     this.socket.emit(event, data);
