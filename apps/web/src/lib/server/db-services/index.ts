@@ -102,6 +102,7 @@ export {
   dbGetPlayers,
   dbGetSpectators,
   dbGetSpectatorsCount,
+  dbGetUsersActiveGames,
   dbRemoveSpectator,
   dbStartGame,
 } from "./internal/services/db.games.service";

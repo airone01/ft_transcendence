@@ -353,7 +353,7 @@ const resolveGameReason = (reason: string) => {
       </h2>
 
       <!-- Timers — always visible, at top on mobile -->
-      <div class="grid grid-cols-2 gap-2 md:order-last md:mt-4">
+      <div class="flex flex-col gap-2 md:order-last md:mt-4">
         <div
           class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive
             ? 'bg-[#b58863] text-white'

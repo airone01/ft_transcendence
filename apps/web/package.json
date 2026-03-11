@@ -29,9 +29,11 @@
     "d3-shape": "^3.2.0",
     "drizzle-orm": "^0.45.1",
     "layerchart": "2.0.0-next.43",
+    "mode-watcher": "^1.1.0",
     "pg": "^8.18.0",
     "sharp": "^0.34.5",
     "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
     "sveltekit-superforms": "^2.29.1",
     "zod": "^4.3.6"
   },

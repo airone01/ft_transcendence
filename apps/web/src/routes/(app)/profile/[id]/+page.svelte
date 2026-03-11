@@ -124,7 +124,7 @@ const formEnhance: SubmitFunction = () => {
               </form>
             </div>
           {:else}
-            <Button href="/settings/profile" variant="secondary">
+            <Button href="/settings" variant="secondary">
               {m.profile_page_button_edit_profile()}
             </Button>
           {/if}

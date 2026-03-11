@@ -1,6 +1,7 @@
 <script lang="ts">
 import {
   ContactRoundIcon,
+  EyeIcon,
   FrownIcon,
   MessageSquareIcon,
   UserMinusIcon,
@@ -38,6 +39,7 @@ const {
     bio: string;
     currentElo: number;
     status: "offline" | "online" | "ingame";
+    gameId?: string;
   }[];
   formEnhance: SubmitFunction;
 } = $props();
@@ -76,6 +78,19 @@ const {
             </UserProfileLink>
 
             <div class="flex items-center gap-1">
+              {#if friend.status === 'ingame' && friend.gameId}
+                <Button
+                  href="/game/{friend.gameId}"
+                  variant="ghost"
+                  size="icon"
+                  class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
+                  title="Spectate Game"
+                >
+                  <EyeIcon class="h-4 w-4" />
+                  <span class="sr-only">Spectate</span>
+                </Button>
+              {/if}
+
               <Button
                 href="/chat/{friend.userId}"
                 variant="ghost"

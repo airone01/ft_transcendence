@@ -27,9 +27,7 @@ const {
 } = $props();
 </script>
 
-<main
-  class="container mx-auto max-w-4xl p-4 md:p-6 h-full flex flex-col gap-6 mt-11"
->
+<main class="container mx-auto max-w-4xl p-4 md:p-6 flex flex-col gap-6 mt-11">
   <header class="text-center sm:text-left">
     <h2 class="text-3xl font-bold tracking-tight">
       {m.leaderboard_page_title()}

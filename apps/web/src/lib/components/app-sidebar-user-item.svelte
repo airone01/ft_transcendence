@@ -44,15 +44,17 @@ const stats = $derived(page.data.stats);
     </UserProfileLink>
     <DropdownMenu>
       <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
-        <Button variant="outline" size="icon" class="p-0">
-          <EllipsisIcon class="aspect-square" />
-        </Button>
+        {#snippet child({ props })}
+          <Button {...props} variant="outline" size="icon" class="p-0">
+            <EllipsisIcon class="aspect-square" />
+          </Button>
+        {/snippet}
       </DropdownMenuTrigger>
       <DropdownMenuContent class="w-56" align="start">
         <DropdownMenuItem onclick={() => logoutForm?.requestSubmit()}>
           {m.app_sidebar_user_item_logout()}
         </DropdownMenuItem>
-        <a href="/settings/profile"
+        <a href="/settings"
           ><DropdownMenuItem>
             {m.app_sidebar_user_item_settings()}
           </DropdownMenuItem></a
