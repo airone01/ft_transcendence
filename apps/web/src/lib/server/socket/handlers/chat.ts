@@ -5,6 +5,8 @@ import {
   dbSendToGlobal,
 } from "$lib/server/db-services";
 
+const MAX_MESSAGE_LENGTH = 1000;
+
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
   const username = socket.data.username;
@@ -17,6 +19,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     const content = data.content.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
 
     try {
       await dbSendToGlobal(userId, content);
@@ -43,6 +49,11 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     const content = rawContent.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
+
     const gameIdNum = parseInt(gameId, 10);
 
     if (Number.isNaN(gameIdNum)) {
@@ -76,6 +87,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       }
 
       const content = rawContent.trim();
+
+      if (content.length > MAX_MESSAGE_LENGTH) {
+        return socket.emit("chat:error", { message: "Message too long" });
+      }
 
       const friendIdNum =
         typeof friendId === "string" ? parseInt(friendId, 10) : friendId;
