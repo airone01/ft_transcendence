@@ -356,18 +356,18 @@ In no particular order, we implemented:
 
 #### 🔴 Major: Standard user management and authentication
 - **Team member(s) that worked on this module:** `elagouch` (UX and Authentication), `enpassel` (Status), `vblanc` (DB)
-- **Module choice:** ...
-- **Module implementation:** ...
+- **Module choice:** We wanted to be able to add ourselves as friend as in real life!
+- **Module implementation:** Custom authentication lib, cookie management, database queries
 
 #### 🟡 Minor: Game statistics and match history
 - **Team member(s) that worked on this module:** `elagouch` (UX), `vblanc` (DB)
-- **Module choice:** ...
-- **Module implementation:** ...
+- **Module choice:** An objective of the profile page was for it to have info about how well user is playing
+- **Module implementation:** Displaying user stats in the profile page, with a graph, and a history of wins/losses with link to user profiles
 
 #### 🟡 Minor: Implement remote authentication with OAuth 2.0
 - **Team member(s) that worked on this module:** `elagouch`
-- **Module choice:** ...
-- **Module implementation:** ...
+- **Module choice:** It's practical to be able to one-click login, and it's cool to bsee your Discord avatar and name in-game
+- **Module implementation:** Usage of the Discord APIs for OAuth 2.0 inside the custom auth library
 
 ---
 
