@@ -22,7 +22,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     }
 
     const queue = queues.get(mode);
-    if (!queue) return socket.emit("matchmaking:error, undifined queue");
+    if (!queue) return socket.emit("matchmaking:error, undifined queue ");
 
     for (const [gameId, gameRoom] of activeGames.entries()) {
       if (!gameRoom.isGameOver()) {
@@ -34,7 +34,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             `[Matchmaking] User ${userId} already has active game ${gameId}`,
           );
           return socket.emit("matchmaking:error", {
-            message: m.socket_matchmaking_join_active_game_error(),
+            message: "socket_matchmaking_join_active_game_error",
           });
         }
       }
@@ -44,7 +44,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       q.some((s) => s.data.userId === userId),
     );
     if (alreadyQueued) {
-      return socket.emit("matchmaking:error", { message: m.socket_matchmaking_join_already_queued_error() });
+      return socket.emit("matchmaking:error", { message: "socket_matchmaking_join_already_queued_error" });
     }
 
     socket.emit("matchmaking:waiting", { mode, position: queue.length + 1 });
@@ -63,10 +63,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         );
 
         player1.emit("matchmaking:error", {
-          message: m.socket_matchmaking_join_match_yourself_error(),
+          message: "socket_matchmaking_join_match_yourself_error",
         });
         player2.emit("matchmaking:error", {
-          message: m.socket_matchmaking_join_match_yourself_error(),
+          message: "socket_matchmaking_join_match_yourself_error",
         });
 
         return;
@@ -79,10 +79,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             gameRoom.getBlackId() === player1.data.userId
           ) {
             player1.emit("matchmaking:error", {
-              message: m.socket_matchmaking_join_active_game_error(),
+              message: "socket_matchmaking_join_active_game_error",
             });
             player2.emit("matchmaking:error", {
-              message: m.socket_matchmaking_join_oppenent_already_queued_error()
+              message: "socket_matchmaking_join_oppenent_already_queued_error",
             });
             queue.push(player2);
             return;
@@ -93,10 +93,10 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
             gameRoom.getBlackId() === player2.data.userId
           ) {
             player2.emit("matchmaking:error", {
-              message: m.socket_matchmaking_join_active_game_error(),
+              message: "socket_matchmaking_join_active_game_error",
             });
             player1.emit("matchmaking:error", {
-              message: m.socket_matchmaking_join_oppenent_already_queued_error()
+              message: "socket_matchmaking_join_oppenent_already_queued_error",
             });
             queue.push(player1);
             return;
@@ -131,8 +131,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         });
       } catch (error) {
         console.error("Failed to create game:", error);
-        player1.emit("matchmaking:error", { message: m.socket_matchmaking_join_failed_to_create_error() });
-        player2.emit("matchmaking:error", { message: m.socket_matchmaking_join_failed_to_create_error() });
+        player1.emit("matchmaking:error", { message: "socket_matchmaking_join_failed_to_create_error" });
+        player2.emit("matchmaking:error", { message: "socket_matchmaking_join_failed_to_create_error" });
       }
     }
   });
