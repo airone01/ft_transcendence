@@ -52,4 +52,4 @@ setInterval(() => {
       rateLimits.delete(key);
     }
   }
-}, 60000); // Toutes les 60s
+}, 60000);
