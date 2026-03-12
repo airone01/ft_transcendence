@@ -13,7 +13,7 @@ export const actions = {
     if (!checkHttpRateLimit(getClientAddress()))
       return message(
         await superValidate(request, zod(loginSchema)),
-        m.internal_server_error(),
+        "Too many login attempts, please try again in a minute.",
         { status: 429 },
       );
 

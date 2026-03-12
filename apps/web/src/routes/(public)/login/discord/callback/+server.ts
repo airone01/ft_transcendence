@@ -43,7 +43,9 @@ export const GET = async (event: RequestEvent) => {
   });
 
   if (!tokenResponse.ok) {
-    console.error(`Discord OAuth token exchange failed: ${tokenResponse.status}`);
+    console.error(
+      `Discord OAuth token exchange failed: ${tokenResponse.status}`,
+    );
     throw redirect(302, "/?error=discord_auth");
   }
   const tokens = await tokenResponse.json();

@@ -63,7 +63,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
     try {
       const players = await dbGetPlayers(gameIdNum);
-      if (players.whitePlayerId !== userId && players.blackPlayerId !== userId) {
+      if (
+        players.whitePlayerId !== userId &&
+        players.blackPlayerId !== userId
+      ) {
         return socket.emit("chat:error", { message: "Not your game" });
       }
     } catch {
