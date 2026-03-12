@@ -119,7 +119,6 @@ const commandGroups: ShellGroup[] = [
   bind:this={logoutForm}
   use:enhance={logoutFunc}
 ></form>
-
 <nav aria-label="Command Dialog">
   <CommandDialog bind:open={commandOpen}>
     <CommandInput
@@ -127,7 +126,7 @@ const commandGroups: ShellGroup[] = [
       placeholder="Type a command or search.."
     />
     <CommandList>
-      <CommandEmpty>No results found.</CommandEmpty>
+      <CommandEmpty>{m.app_shell_no_result_found()}</CommandEmpty>
       {#each commandGroups as { items, heading }, i (heading)}
         <CommandGroup {heading}>
           {#each items as { navUrl, label, onClick, icon: Icon } (label)}
@@ -172,14 +171,14 @@ const commandGroups: ShellGroup[] = [
         <div
           class="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-muted-foreground"
         >
-          <p>© {new Date().getFullYear()} Chess.io - 42 School Project</p>
+          <p>{m.app_shell_copyright()}</p>
           <div class="flex gap-4">
             <a href="/privacy" class="hover:text-foreground transition-colors">
-              Privacy Policy
+              {m.app_shell_privacy_policy()}
             </a>
             <span class="text-muted-foreground/50">•</span>
             <a href="/terms" class="hover:text-foreground transition-colors">
-              Terms of Service
+              {m.app_shell_terms_of_service()}
             </a>
           </div>
         </div>

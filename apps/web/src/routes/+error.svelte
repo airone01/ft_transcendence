@@ -10,7 +10,6 @@ import {
 import { page } from "$app/state";
 </script>
 
-<!-- TODO: i18n this page? -->
 <main class="flex justify-center items-center h-full">
   <Empty>
     <EmptyHeader>
