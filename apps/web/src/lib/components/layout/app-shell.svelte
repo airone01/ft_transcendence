@@ -123,8 +123,8 @@ const commandGroups: ShellGroup[] = [
   <CommandDialog bind:open={commandOpen}>
     <CommandInput
       bind:value={commandInput}
-      placeholder="Type a command or search.."
-    />
+      placeholder={m.app_shell_heading_placeholder()}
+      />
     <CommandList>
       <CommandEmpty>{m.app_shell_no_result_found()}</CommandEmpty>
       {#each commandGroups as { items, heading }, i (heading)}
