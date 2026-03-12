@@ -173,6 +173,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
                 ? "white"
                 : "black";
           }
+          activeGames.delete(data.gameId);
 
           io.to(`game:${gameId}`).emit("game:over", {
             winner: winnerColor,

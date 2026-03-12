@@ -166,5 +166,24 @@ const commandGroups: ShellGroup[] = [
       <SidebarTrigger />
     </header>
     {@render children?.()}
+
+    <footer class="border-t mt-auto bg-background">
+      <div class="container mx-auto px-4 py-3">
+        <div
+          class="flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-muted-foreground"
+        >
+          <p>© {new Date().getFullYear()} Chess.io - 42 School Project</p>
+          <div class="flex gap-4">
+            <a href="/privacy" class="hover:text-foreground transition-colors">
+              Privacy Policy
+            </a>
+            <span class="text-muted-foreground/50">•</span>
+            <a href="/terms" class="hover:text-foreground transition-colors">
+              Terms of Service
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
 </SidebarProvider>
