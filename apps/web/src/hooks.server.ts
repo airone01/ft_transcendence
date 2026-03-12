@@ -2,7 +2,8 @@ import { createServer } from "node:http";
 import type { Handle } from "@sveltejs/kit";
 import { sequence } from "@sveltejs/kit/hooks";
 import { db } from "@transc/db";
-import { chatChannels } from "@transc/db/schema";
+import { chatChannels, games } from "@transc/db/schema";
+import { and, eq } from "drizzle-orm";
 import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import { paraglideMiddleware } from "$lib/paraglide/server";
@@ -13,8 +14,6 @@ import {
 } from "$lib/server/auth";
 import { dbGetStats } from "$lib/server/db-services";
 import { initSocketServer } from "$lib/server/socket/index";
-import { games } from "@transc/db/schema";
-import { and, eq } from "drizzle-orm";
 
 // in prod, WS server
 if (!dev) {

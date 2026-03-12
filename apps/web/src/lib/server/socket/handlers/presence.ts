@@ -1,5 +1,4 @@
 import type { Server, Socket } from "socket.io";
-import { dbGetFriendsInfo } from "$lib/server/db-services";
 
 // In-memory map to track online users
 const onlineUsers = new Map<number, { username: string; status: string }>();
@@ -12,26 +11,26 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
   onlineUsers.set(userId, { username, status: "online" });
 
   // broadcast to all that this user is online
-io.emit("presence:online", { userId, username });
+  io.emit("presence:online", { userId, username });
 
-// send list of online users to the newly connected user
-socket.emit(
-  "presence:list",
-  Array.from(onlineUsers.entries()).map(([id, data]) => ({
-    userId: id,
-    ...data,
-  })),
-);
+  // send list of online users to the newly connected user
+  socket.emit(
+    "presence:list",
+    Array.from(onlineUsers.entries()).map(([id, data]) => ({
+      userId: id,
+      ...data,
+    })),
+  );
   // user change status
   socket.on(
     "presence:status",
     (data: { status: "online" | "away" | "ingame" }) => {
-  const user = onlineUsers.get(userId);
-  if (user) {
-    user.status = data.status;
-    io.emit("presence:status", { userId, status: data.status });
-  }
-},
+      const user = onlineUsers.get(userId);
+      if (user) {
+        user.status = data.status;
+        io.emit("presence:status", { userId, status: data.status });
+      }
+    },
   );
 
   // Cleanup on disconnect (called from index.ts after a delay)

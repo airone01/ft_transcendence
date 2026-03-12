@@ -5,8 +5,8 @@ import {
   dbGetGame,
   dbGetPlayers,
 } from "$lib/server/db-services";
-import { GameRoom } from "../rooms/GameRoom";
 import { checkRateLimit } from "../middleware/rateLimit";
+import { GameRoom } from "../rooms/GameRoom";
 
 export const activeGames = new Map<string, GameRoom>();
 

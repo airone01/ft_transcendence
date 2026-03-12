@@ -1,4 +1,4 @@
-import { error, redirect, json } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import * as m from "$lib/paraglide/messages";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";

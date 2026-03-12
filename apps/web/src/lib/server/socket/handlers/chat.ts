@@ -1,6 +1,5 @@
 import type { Server, Socket } from "socket.io";
 import {
-  dbGetPlayers,
   dbSendToFriend,
   dbSendToGame,
   dbSendToGlobal,
@@ -17,7 +16,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on("chat:global", async (data: { content: string }) => {
     if (!checkRateLimit(socket)) {
-      return socket.emit("chat:error", { message: "rate limit exceed"});
+      return socket.emit("chat:error", { message: "rate limit exceed" });
     }
 
     if (!data.content || data.content.trim().length === 0) {
@@ -50,7 +49,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content: rawContent } = data;
     if (!checkRateLimit(socket)) {
-      return socket.emit("chat:error", { message: "rate limit exceed"});
+      return socket.emit("chat:error", { message: "rate limit exceed" });
     }
 
     if (!rawContent || rawContent.trim().length === 0) {
@@ -91,7 +90,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
       if (!checkRateLimit(socket)) {
-          return socket.emit("chat:error", { message: "rate limit exceed"});
+        return socket.emit("chat:error", { message: "rate limit exceed" });
       }
 
       if (!rawContent || rawContent.trim().length === 0) {

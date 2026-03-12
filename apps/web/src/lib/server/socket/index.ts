@@ -2,12 +2,15 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
-import { registerGameHandlers, activeGames } from "./handlers/game";
+import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
-import { saveSessionOnDisconnect, restoreSessionOnReconnect } from "./utils/reconnection";
+import {
+  restoreSessionOnReconnect,
+  saveSessionOnDisconnect,
+} from "./utils/reconnection";
 
 let io: Server;
 

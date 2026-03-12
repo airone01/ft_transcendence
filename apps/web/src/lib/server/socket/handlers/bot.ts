@@ -1,9 +1,9 @@
 import type { Server, Socket } from "socket.io";
 import { parseFEN } from "$lib/chess";
 import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
+import { checkRateLimit } from "../middleware/rateLimit";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
-import { checkRateLimit } from "../middleware/rateLimit";
 
 export const BOT_USER_ID = "0";
 export const MAX_BOT_GAMES = 2;

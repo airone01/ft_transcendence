@@ -41,7 +41,11 @@ $effect(() => {
 
 onMount(() => {
   socketManager.on("game:reconnected", (eventData: unknown) => {
-    const { gameId, isSpectator = false, gameOver = false } = eventData as {
+    const {
+      gameId,
+      isSpectator = false,
+      gameOver = false,
+    } = eventData as {
       gameId: string;
       isSpectator?: boolean;
       gameOver: boolean;
@@ -54,10 +58,8 @@ onMount(() => {
       return;
     }
 
-    if (gameOver){
-        console.log(
-        `[Redirect] Skipping redirect, game ${gameId} is finish`,
-      );
+    if (gameOver) {
+      console.log(`[Redirect] Skipping redirect, game ${gameId} is finish`);
       return;
     }
 

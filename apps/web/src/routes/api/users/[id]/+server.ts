@@ -8,7 +8,11 @@ import {
 import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ params, locals, getClientAddress }) => {
+export const GET: RequestHandler = async ({
+  params,
+  locals,
+  getClientAddress,
+}) => {
   if (!locals.user)
     return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
 

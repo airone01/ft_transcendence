@@ -4,8 +4,8 @@ import {
   dbCreateGame,
   dbStartGame,
 } from "$lib/server/db-services";
-import { activeGames } from "./game";
 import { checkRateLimit } from "../middleware/rateLimit";
+import { activeGames } from "./game";
 
 export const queues = new Map<string, Socket[]>();
 
