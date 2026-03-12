@@ -70,18 +70,6 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     try {
-      const players = await dbGetPlayers(gameIdNum);
-      if (
-        players.whitePlayerId !== userId &&
-        players.blackPlayerId !== userId
-      ) {
-        return socket.emit("chat:error", { message: "Not your game" });
-      }
-    } catch {
-      return socket.emit("chat:error", { message: "Game not found" });
-    }
-
-    try {
       await dbSendToGame(userId, gameIdNum, content);
 
       io.to(`game:${gameId}`).emit("chat:game", {

@@ -121,7 +121,7 @@ export const actions: Actions = {
           b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
 
         if (!isJpeg && !isPng && !isGif && !isWebp) {
-          return fail(400, { form, message: "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed." });
+            return fail(400, withFiles({ form, message: "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed." }));
         }
 
         const processedImageBuffer = await sharp(buffer)
