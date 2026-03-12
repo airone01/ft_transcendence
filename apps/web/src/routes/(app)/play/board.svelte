@@ -14,6 +14,7 @@ import { get } from "svelte/store";
 import { type DndEvent, dndzone, TRIGGERS } from "svelte-dnd-action";
 import type { Piece as ChessPiece, GameState, Move } from "$lib/chess";
 import { getLegalMoves, parseFEN, playMove, startGame } from "$lib/chess";
+import { m } from "$lib/paraglide/messages";
 import {
   gameState as gameStore,
   joinGame,
@@ -21,7 +22,6 @@ import {
   makeMove,
 } from "$lib/stores/game.store";
 import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
-import { m } from "$lib/paraglide/messages";
 
 // Props
 const { gameId }: { gameId: string } = $props();
@@ -400,7 +400,9 @@ function confirmPromotion() {
       class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     >
       <div class="bg-background border rounded-lg p-6 space-y-4 max-w-md">
-        <h3 class="text-lg font-semibold text-center">{m.game_page_promotion_title()}</h3>
+        <h3 class="text-lg font-semibold text-center">
+          {m.game_page_promotion_title()}
+        </h3>
 
         <div class="grid grid-cols-4 gap-3">
           <button

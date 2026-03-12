@@ -1,7 +1,7 @@
 import { type Writable, writable } from "svelte/store";
-import { socketManager } from "$lib/stores/socket.svelte";
 import { toast } from "svelte-sonner";
 import { m } from "$lib/paraglide/messages";
+import { socketManager } from "$lib/stores/socket.svelte";
 
 type SocketMessageKey = keyof typeof m;
 
@@ -70,7 +70,8 @@ export function setupChatListeners(currentUserId: string) {
 
   socketManager.on("chat:error", ((data: { message: SocketMessageKey }) => {
     const translate = m[data.message] as () => string;
-    const text = typeof translate === "function" ? translate() : m.toast_error();
+    const text =
+      typeof translate === "function" ? translate() : m.toast_error();
 
     console.error("Chat error:", text);
     toast.error(`Chat error: ${text}`);

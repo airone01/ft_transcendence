@@ -4,9 +4,9 @@ import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import { socketManager } from "$lib/stores/socket.svelte";
-import { m } from "$lib/paraglide/messages";
 
 let isWaiting = $state(false);
 
@@ -75,12 +75,16 @@ function cancelQueue() {
   <main class="h-full flex flex-col items-center justify-center gap-8 p-6">
     <Spinner class="w-16 h-16" />
     <div class="text-center space-y-3">
-      <h2 class="text-2xl font-semibold">{m.play_page_mode_bot_queue_title()}</h2>
+      <h2 class="text-2xl font-semibold">
+        {m.play_page_mode_bot_queue_title()}
+      </h2>
       <p class="text-sm text-muted-foreground">
         {m.play_page_mode_bot_queue_description()}
       </p>
     </div>
-    <Button variant="outline" onclick={cancelQueue}>{m.play_page_mode_bot_queue_button_cancel()}</Button>
+    <Button variant="outline" onclick={cancelQueue}>
+      {m.play_page_mode_bot_queue_button_cancel()}
+    </Button>
   </main>
 {:else}
   <main class="h-full flex items-center justify-center p-6">

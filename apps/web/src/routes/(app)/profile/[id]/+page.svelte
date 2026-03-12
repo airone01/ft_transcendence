@@ -16,13 +16,13 @@ import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
 import EloHistoryCard from "./elo-history-card.svelte";
 import RecentMatchesCard from "./recent-matches-card.svelte";
 import WinRatioCard from "./win-ratio-card.svelte";
-import { getLocale } from "$lib/paraglide/runtime";
 
 const { data } = $props();
 
@@ -89,7 +89,9 @@ const formEnhance: SubmitFunction = () => {
                 {resolveUserStatusTranslation(user?.id)}
               </Badge>
             </div>
-            <p class="text-muted-foreground flex items-center gap-2 text-sm capitalize">
+            <p
+              class="text-muted-foreground flex items-center gap-2 text-sm capitalize"
+            >
               <CalendarIcon class="w-3 h-3" />
               {m.profile_page_user_joined_on()}
               {new Date(user?.createdAt ?? 0).toLocaleDateString(getLocale(), {

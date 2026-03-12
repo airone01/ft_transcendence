@@ -43,7 +43,9 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       q.some((s) => s.data.userId === userId),
     );
     if (alreadyQueued) {
-      return socket.emit("matchmaking:error", { message: "socket_matchmaking_join_already_queued_error" });
+      return socket.emit("matchmaking:error", {
+        message: "socket_matchmaking_join_already_queued_error",
+      });
     }
 
     socket.emit("matchmaking:waiting", { mode, position: queue.length + 1 });
@@ -130,8 +132,12 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         });
       } catch (error) {
         console.error("Failed to create game:", error);
-        player1.emit("matchmaking:error", { message: "socket_matchmaking_join_failed_to_create_error" });
-        player2.emit("matchmaking:error", { message: "socket_matchmaking_join_failed_to_create_error" });
+        player1.emit("matchmaking:error", {
+          message: "socket_matchmaking_join_failed_to_create_error",
+        });
+        player2.emit("matchmaking:error", {
+          message: "socket_matchmaking_join_failed_to_create_error",
+        });
       }
     }
   });

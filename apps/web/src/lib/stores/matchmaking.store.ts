@@ -1,9 +1,9 @@
 import { type Writable, writable } from "svelte/store";
 import { toast } from "svelte-sonner";
 import { goto } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import { socketManager } from "$lib/stores/socket.svelte";
-import { m } from "$lib/paraglide/messages";
 
 type SocketMessageKey = keyof typeof m;
 
@@ -75,11 +75,14 @@ export function setupMatchmakingListeners() {
     matchmakingState.set({ inQueue: false, mode: null, position: null });
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("matchmaking:error", ((data: { message: SocketMessageKey }) => {
+  socketManager.on("matchmaking:error", ((data: {
+    message: SocketMessageKey;
+  }) => {
     matchmakingState.set({ inQueue: false, mode: null, position: null });
-    
+
     const translate = m[data.message] as () => string;
-    const text = typeof translate === "function" ? translate() : m.toast_error();
+    const text =
+      typeof translate === "function" ? translate() : m.toast_error();
     console.error("Matchmaking error:", text);
     toast(`Error:·${text}`);
   }) as unknown as (...args: unknown[]) => void);

@@ -148,7 +148,8 @@ function playVsBot() {
             <p class="text-sm text-muted-foreground">
               {m.play_page_minutes_and_increment({minutes: 10, increment: 5})}
               <br>
-              {m.play_page_mode_bot_unranked()}</p>
+              {m.play_page_mode_bot_unranked()}
+            </p>
           </div>
         </button>
       </div>

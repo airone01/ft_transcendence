@@ -6,7 +6,6 @@ import {
   dbGetPlayers,
 } from "$lib/server/db-services";
 import { GameRoom } from "../rooms/GameRoom";
-import { m } from "$lib/paraglide/messages";
 
 export const activeGames = new Map<string, GameRoom>();
 
@@ -108,10 +107,14 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         });
       }
       if (error instanceof DBPlayersNotFoundError) {
-        return socket.emit("game:error", { message: "socket_game_join_user_not_found_error" });
+        return socket.emit("game:error", {
+          message: "socket_game_join_user_not_found_error",
+        });
       }
       console.error("Failed to join game:", error);
-      socket.emit("game:error", { message: "socket_game_join_fail_join_error" });
+      socket.emit("game:error", {
+        message: "socket_game_join_fail_join_error",
+      });
     }
   });
 
@@ -135,11 +138,15 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         }
 
         if (!gameRoom) {
-          return socket.emit("game:error", { message: "socket_game_move_game_not_found_error" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_game_not_found_error",
+          });
         }
 
         if (!gameRoom.isPlayerTurn(userId)) {
-          return socket.emit("game:error", { message: "socket_game_move_not_your_turn_error" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_not_your_turn_error",
+          });
         }
 
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
@@ -195,7 +202,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         }
       } catch (error) {
         console.error("Move error:", error);
-        socket.emit("game:error", { message: "socket_game_move_invalid_move_error" });
+        socket.emit("game:error", {
+          message: "socket_game_move_invalid_move_error",
+        });
       }
     },
   );
@@ -239,7 +248,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
     if (socket.data.isSpectator) {
-      return socket.emit("game:error", { message: "socket_game_resign_spectator_error" });
+      return socket.emit("game:error", {
+        message: "socket_game_resign_spectator_error",
+      });
     }
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) {

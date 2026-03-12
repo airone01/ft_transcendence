@@ -10,7 +10,6 @@ import {
   startGame, // [chess] Start a new game
 } from "$lib/chess";
 import { dbEndGame, type EndGameInput } from "$lib/server/db-services";
-import { m } from "$lib/paraglide/messages";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Types

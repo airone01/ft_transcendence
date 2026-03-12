@@ -1,5 +1,6 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
+import { m } from "$lib/paraglide/messages";
 import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
 import { registerGameHandlers } from "./handlers/game";
@@ -8,7 +9,6 @@ import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import { saveSessionOnDisconnect } from "./utils/reconnection";
-import {m } from "$lib/paraglide/messages";
 
 let io: Server;
 

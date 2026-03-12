@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
 import { tick, untrack } from "svelte";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 import {
   type ChatMessage,
   friendMessages,
@@ -11,7 +12,6 @@ import {
   sendFriendMessage,
   sendGlobalMessage,
 } from "$lib/stores/chat.store";
-import { getLocale } from "$lib/paraglide/runtime";
 
 const {
   mode = "global",
@@ -51,9 +51,9 @@ $effect(() => {
 
 // auto fetch users on the fly
 $effect(() => {
-  const missingIds = [...new Set(messages.map((message) => message.userId))].filter(
-    (id) => !usernameCache[id],
-  );
+  const missingIds = [
+    ...new Set(messages.map((message) => message.userId)),
+  ].filter((id) => !usernameCache[id]);
 
   missingIds.forEach(async (id) => {
     usernameCache[id] = m.loading().toLowerCase();

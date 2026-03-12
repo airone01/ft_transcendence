@@ -1,4 +1,4 @@
-{ 
+{
   "$schema": "https://inlang.com/schema/inlang-message-format",
 
   "project_name": "Chess.io",
@@ -512,7 +512,7 @@
   "socket_game_offer_draw_specator_error": "Spectators cannot offer draw",
   "socket_game_accept_draw_specator_error": "Spectators cannot accept draw",
   "socket_game_resign_spectator_error": "Spectators cannot resign",
-  
+
   "socket_matchmaking_join_active_game_error": "You already have a game in progress",
   "socket_matchmaking_join_already_queued_error": "Already in queue",
   "socket_matchmaking_join_match_yourself_error": "Cannot match with yourself",
@@ -526,7 +526,7 @@
   "socket_index_error": "Socket.io not initialized",
 
   "form_factory_error": "Could not update settings.",
-  
+
   "unkown_db_error": "Unknown database error",
   "internal_server_error": "Internal server error",
 

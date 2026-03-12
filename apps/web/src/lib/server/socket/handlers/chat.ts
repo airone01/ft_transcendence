@@ -4,7 +4,6 @@ import {
   dbSendToGame,
   dbSendToGlobal,
 } from "$lib/server/db-services";
-import { m } from "$lib/paraglide/messages";
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -32,7 +31,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send global message:", error);
-      return socket.emit("chat:error", { message: "socket_chat_fail_send_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -49,7 +50,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     const gameIdNum = parseInt(gameId, 10);
 
     if (Number.isNaN(gameIdNum)) {
-      return socket.emit("chat:error", { message: "socket_chat_game_invalid_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_game_invalid_error",
+      });
     }
 
     try {
@@ -63,7 +66,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send game message:", error);
-      return socket.emit("chat:error", { message: "socket_chat_fail_send_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -75,7 +80,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       const { friendId, content: rawContent } = data;
 
       if (!rawContent || rawContent.trim().length === 0) {
-        return socket.emit("chat:error", { message: "socket_chat_empty_error" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_empty_error",
+        });
       }
 
       const content = rawContent.trim();
@@ -86,7 +93,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         typeof userId === "string" ? parseInt(userId, 10) : (userId as number);
 
       if (Number.isNaN(friendIdNum) || Number.isNaN(userIdNum)) {
-        return socket.emit("chat:error", { message: "socket_chat_user_invalid_error" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_user_invalid_error",
+        });
       }
 
       try {
@@ -104,7 +113,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         io.to(`user:${friendId}`).emit("chat:friend", messageData);
       } catch (error) {
         console.error("Failed to send friend message:", error);
-        return socket.emit("chat:error", { message: "socket_chat_fail_send_error" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_fail_send_error",
+        });
       }
     },
   );

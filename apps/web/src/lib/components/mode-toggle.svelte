@@ -26,8 +26,14 @@ import { m } from "$lib/paraglide/messages";
     <span class="sr-only">{m.switch_language_span()}</span>
   </DropdownMenuTrigger>
   <DropdownMenuContent align="end">
-    <DropdownMenuItem onclick={() => setMode("light")}>{m.switch_language_light()}</DropdownMenuItem>
-    <DropdownMenuItem onclick={() => setMode("dark")}>{m.switch_language_dark()}</DropdownMenuItem>
-    <DropdownMenuItem onclick={() => resetMode()}>{m.switch_language_system()}</DropdownMenuItem>
+    <DropdownMenuItem onclick={() => setMode("light")}>
+      {m.switch_language_light()}
+    </DropdownMenuItem>
+    <DropdownMenuItem onclick={() => setMode("dark")}>
+      {m.switch_language_dark()}
+    </DropdownMenuItem>
+    <DropdownMenuItem onclick={() => resetMode()}>
+      {m.switch_language_system()}
+    </DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>
