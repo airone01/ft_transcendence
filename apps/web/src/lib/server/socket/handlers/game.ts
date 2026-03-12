@@ -6,14 +6,15 @@ import {
   dbGetPlayers,
 } from "$lib/server/db-services";
 import { GameRoom } from "../rooms/GameRoom";
+import { checkRateLimit } from "../middleware/rateLimit";
 
 export const activeGames = new Map<string, GameRoom>();
 
 export function registerGameHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Join a game
   socket.on("game:join", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     try {
       const { gameId } = data;
 
@@ -30,10 +31,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         String(players.whitePlayerId) !== userId &&
         String(players.blackPlayerId) !== userId
       ) {
-        console.log(
-          `[Game] User ${userId} joining as spectator for game ${gameId}`,
-        );
-        
         socket.join(`game:${gameId}`);
         socket.data.isSpectator = true;
 
@@ -120,6 +117,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       to: string;
       promotion?: string;
     }) => {
+      if (!checkRateLimit(socket)) return;
       try {
         const { gameId, from, to, promotion } = data;
 
@@ -198,6 +196,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   );
 
   socket.on("game:offer_draw", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "Spectators cannot offer draw",
@@ -209,6 +208,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("game:accept_draw", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "Spectators cannot accept draw",
@@ -233,8 +233,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     }
   });
 
-  // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", { message: "Spectators cannot resign" });
     }
@@ -268,8 +268,8 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     }
   });
 
-  // Leave game
   socket.on("game:leave", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     socket.leave(`game:${data.gameId}`);
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) gameRoom.removePlayer(socket);

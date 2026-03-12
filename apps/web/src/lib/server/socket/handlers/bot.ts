@@ -3,6 +3,7 @@ import { parseFEN } from "$lib/chess";
 import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
+import { checkRateLimit } from "../middleware/rateLimit";
 
 export const BOT_USER_ID = "0";
 export const MAX_BOT_GAMES = 2;
@@ -110,6 +111,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
   socket.on("bot:start", async (data: { difficulty: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { difficulty } = data;
 
     const alreadyInQueue = botQueue.some((p) => p.userId === userId);
@@ -136,6 +138,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("bot:cancel", () => {
+    if (!checkRateLimit(socket)) return;
     const index = botQueue.findIndex((p) => p.userId === userId);
     if (index !== -1) {
       botQueue.splice(index, 1);
@@ -147,14 +150,13 @@ export function registerBotHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("bot:quit", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { gameId } = data;
 
     if (!gameId.startsWith("bot-")) {
       return socket.emit("game:error", { message: "Not a bot game" });
     }
 
-    // Verify the requesting user owns this bot game before releasing it.
-    // Bot game IDs follow the format "bot-{userId}-{timestamp}".
     if (!gameId.startsWith(`bot-${userId}-`)) {
       return socket.emit("game:error", { message: "Not your game" });
     }
@@ -173,6 +175,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       to: string;
       promotion?: string;
     }) => {
+      if (!checkRateLimit(socket)) return;
       try {
         const { gameId, from, to, promotion } = data;
         const gameRoom = activeGames.get(gameId);

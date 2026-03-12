@@ -1,4 +1,4 @@
-import { error, redirect } from "@sveltejs/kit";
+import { error, redirect, json } from "@sveltejs/kit";
 import { env } from "$env/dynamic/private";
 import * as m from "$lib/paraglide/messages";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
@@ -8,9 +8,9 @@ import {
   dbGetUserByEmail,
   dbGetUserByOauthId,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestEvent } from "./$types";
 
-// helper interface for discord response typing
 interface DiscordUser {
   id: string;
   username: string;
@@ -20,12 +20,15 @@ interface DiscordUser {
 }
 
 export const GET = async (event: RequestEvent) => {
-  const { url, cookies, locals } = event;
+  const { url, cookies, locals, getClientAddress } = event;
+
+  if (!checkHttpRateLimit(getClientAddress(), 60))
+    throw redirect(302, "/?error=too_many_requests");
+
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const storedState = cookies.get("oauth_state");
 
-  // validate state
   if (!code || !state || !storedState || state !== storedState) {
     throw error(400, m.oauth_invalid_state_or_code());
   }
@@ -57,27 +60,21 @@ export const GET = async (event: RequestEvent) => {
   if (!userResponse.ok) throw redirect(302, "/?error=discord_auth");
   const discordUser: DiscordUser = await userResponse.json();
 
-  // reject unverified Discord accounts to prevent email-collision account takeover
   if (!discordUser.verified) {
     throw redirect(302, "/?error=unverified_discord_email");
   }
 
-  // check if this discord ID is already linked
   const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
 
-  // user is already logged in (link)
   if (locals.user) {
     if (existingAccount) {
       if (existingAccount.id === locals.user.id) {
-        // already linked to this user, just redirect back
         throw redirect(302, "/settings");
       } else {
-        // linked to a different user
         throw redirect(303, "/settings?error=already_linked");
       }
     }
 
-    // link new discord account to current user
     await dbCreateOAuthAccount({
       userId: locals.user.id,
       provider: "discord",
@@ -87,20 +84,15 @@ export const GET = async (event: RequestEvent) => {
     throw redirect(302, "/settings");
   }
 
-  // user is not logged in (login/register)
   let userId: number;
   if (existingAccount) {
-    // account exists: login
     userId = existingAccount.id;
   } else {
-    // check email collision
     const existingEmailUser = await dbGetUserByEmail(discordUser.email);
 
     if (existingEmailUser) {
-      // email match: link accs automatically
       userId = existingEmailUser.id;
     } else {
-      // brand new user
       userId = await dbCreateUser({
         email: discordUser.email,
         username: discordUser.username,
@@ -109,7 +101,6 @@ export const GET = async (event: RequestEvent) => {
       });
     }
 
-    // create link
     await dbCreateOAuthAccount({
       userId,
       provider: "discord",
@@ -117,7 +108,6 @@ export const GET = async (event: RequestEvent) => {
     });
   }
 
-  // then session and cookie
   await auth.deleteUserSessions(userId);
   const { token, expiresAt } = await auth.createSession(userId);
   setSessionTokenCookie(event, token, expiresAt);

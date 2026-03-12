@@ -5,14 +5,9 @@ interface RateLimitEntry {
 
 const store = new Map<string, RateLimitEntry>();
 
-const WINDOW_MS = 60_000; // 1 minute
-const MAX_ATTEMPTS = 10;
+const WINDOW_MS = 60_000;
 
-/**
- * Returns true when the request is allowed, false when it should be blocked.
- * Keyed by an arbitrary string (typically the client IP address).
- */
-export function checkHttpRateLimit(key: string): boolean {
+export function checkHttpRateLimit(key: string, max = 10): boolean {
   const now = Date.now();
   const entry = store.get(key);
 
@@ -21,13 +16,13 @@ export function checkHttpRateLimit(key: string): boolean {
     return true;
   }
 
-  if (entry.count >= MAX_ATTEMPTS) return false;
-
   entry.count++;
+
+  if (entry.count > max) return false;
+
   return true;
 }
 
-// Periodically clean up expired entries to prevent unbounded memory growth.
 setInterval(() => {
   const now = Date.now();
   for (const [key, entry] of store.entries()) {

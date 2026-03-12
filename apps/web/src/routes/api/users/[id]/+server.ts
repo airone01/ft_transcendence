@@ -5,13 +5,17 @@ import {
   dbGetStats,
   dbGetUser,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ params, locals }) => {
-  const userId = parseInt(params.id, 10);
-
+export const GET: RequestHandler = async ({ params, locals, getClientAddress }) => {
   if (!locals.user)
     return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
+
+  if (!checkHttpRateLimit(getClientAddress()))
+    return json({ error: "Too many requests" }, { status: 429 });
+
+  const userId = parseInt(params.id, 10);
 
   if (Number.isNaN(userId))
     return json({ error: m.api_users_id_invalid_userid() }, { status: 400 });
@@ -22,7 +26,6 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       dbGetStats(userId).catch(() => null),
     ]);
 
-    // not leaking password
     const { password, email, ...publicUser } = user;
 
     return json({
