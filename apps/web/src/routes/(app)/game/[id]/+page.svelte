@@ -23,6 +23,7 @@ import Board from "../../play/board.svelte";
 let gameId: string = page.params.id ?? "0";
 
 let resignDialogOpen = $state(false);
+let boardHeight = $state(0);
 
 function confirmResign() {
   resignDialogOpen = false;
@@ -351,14 +352,15 @@ onDestroy(() => {
         {/if}
       </div>
 
-      <div class="aspect-square w-full">
+      <div class="aspect-square w-full" bind:clientHeight={boardHeight}>
         <Board {gameId} />
       </div>
     </div>
 
     <!-- Right Panel: History + Timers -->
     <div
-      class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      class="md:w-64 lg:w-72 md:shrink-0 min-h-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      style:max-height={boardHeight ? `${boardHeight}px` : undefined}
     >
       <!-- Header — only on desktop -->
       <h2 class="hidden md:block text-lg font-semibold mb-4">

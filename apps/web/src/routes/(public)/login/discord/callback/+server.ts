@@ -45,12 +45,7 @@ export const GET = async (event: RequestEvent) => {
     }),
   });
 
-  if (!tokenResponse.ok) {
-    console.error(
-      `Discord OAuth token exchange failed: ${tokenResponse.status}`,
-    );
-    throw redirect(302, "/?error=discord_auth");
-  }
+  if (!tokenResponse.ok) throw redirect(302, "/?error=discord_auth");
   const tokens = await tokenResponse.json();
 
   const userResponse = await fetch("https://discord.com/api/users/@me", {
@@ -60,9 +55,8 @@ export const GET = async (event: RequestEvent) => {
   if (!userResponse.ok) throw redirect(302, "/?error=discord_auth");
   const discordUser: DiscordUser = await userResponse.json();
 
-  if (!discordUser.verified) {
+  if (!discordUser.verified)
     throw redirect(302, "/?error=unverified_discord_email");
-  }
 
   const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
 
@@ -75,11 +69,15 @@ export const GET = async (event: RequestEvent) => {
       }
     }
 
-    await dbCreateOAuthAccount({
-      userId: locals.user.id,
-      provider: "discord",
-      providerUserId: discordUser.id,
-    });
+    try {
+      await dbCreateOAuthAccount({
+        userId: locals.user.id,
+        provider: "discord",
+        providerUserId: discordUser.id,
+      });
+    } catch (_e) {
+      throw redirect(302, "/settings?error");
+    }
 
     throw redirect(302, "/settings");
   }
@@ -93,19 +91,27 @@ export const GET = async (event: RequestEvent) => {
     if (existingEmailUser) {
       userId = existingEmailUser.id;
     } else {
-      userId = await dbCreateUser({
-        email: discordUser.email,
-        username: discordUser.username,
-        avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
-        password: null,
-      });
+      try {
+        userId = await dbCreateUser({
+          email: discordUser.email,
+          username: discordUser.username,
+          avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
+          password: null,
+        });
+      } catch (_e) {
+        throw redirect(302, "/settings?error");
+      }
     }
 
-    await dbCreateOAuthAccount({
-      userId,
-      provider: "discord",
-      providerUserId: discordUser.id,
-    });
+    try {
+      await dbCreateOAuthAccount({
+        userId,
+        provider: "discord",
+        providerUserId: discordUser.id,
+      });
+    } catch (_e) {
+      throw redirect(302, "/settings?error");
+    }
   }
 
   await auth.deleteUserSessions(userId);

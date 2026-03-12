@@ -39,7 +39,11 @@ $effect(() => {
     toast.error(m.oauth_error(), {
       description: m.oauth_discord_other_account_connected(),
     });
+  } else if (page.url.searchParams.get("error")) {
+    toast.error(m.oauth_error());
+  }
 
+  if (page.url.searchParams.get("error")) {
     const cleanUrl = new URL(page.url);
     cleanUrl.searchParams.delete("error");
 
