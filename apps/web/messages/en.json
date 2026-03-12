@@ -492,6 +492,8 @@
   "zod_schema_avatar_size": "[i18n] Avatar must be less than 1MB",
 
   "socket_bot_start_error": "[i18n] Failed to start bot game",
+  "socket_bot_already_queued_error": "[i18n] Already in bot queue",
+  "socket_bot_already_game_error": "[i18n] Already in bot game",
   "socket_bot_quit_error": "[i18n] Not a bot game",
   "socket_bot_move_game_error": "[i18n] Game not found",
   "socket_bot_move_error": "[i18n] Invalid move",
