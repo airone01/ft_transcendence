@@ -515,6 +515,7 @@ AI tools (*ChatGPT*, *Claude*, *Gemini*, *GitHub Copilot*) were used for:
 ## Known Limitations
 
 - AI depth limited to avoid high CPU usage
+- Avatars are sent in base64 through API requests instead of being statically servev. This takes a toll on performance.
 
 ## License
 
