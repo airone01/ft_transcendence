@@ -12,8 +12,13 @@ import {
   matchmakingState,
 } from "$lib/stores/matchmaking.store";
 import { socketConnected } from "$lib/stores/socket.svelte";
+	import { page } from "$app/state";
+	import { toast } from "svelte-sonner";
 
 onMount(() => {
+  if (page.url.searchParams.get("error") === "game_not_found") {
+    toast.error("Game not found");
+  }
   return gameState.subscribe((state) => {
     if (
       state.gameId &&

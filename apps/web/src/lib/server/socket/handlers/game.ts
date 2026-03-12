@@ -33,7 +33,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         console.log(
           `[Game] User ${userId} joining as spectator for game ${gameId}`,
         );
-
+        
         socket.join(`game:${gameId}`);
         socket.data.isSpectator = true;
 

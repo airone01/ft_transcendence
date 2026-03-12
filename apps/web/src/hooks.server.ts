@@ -13,6 +13,8 @@ import {
 } from "$lib/server/auth";
 import { dbGetStats } from "$lib/server/db-services";
 import { initSocketServer } from "$lib/server/socket/index";
+import { games } from "@transc/db/schema";
+import { and, eq } from "drizzle-orm";
 
 // in prod, WS server
 if (!dev) {
@@ -25,9 +27,38 @@ if (!dev) {
   });
 }
 
+async function cleanupOngoingGames() {
+  try {
+    const result = await db
+      .update(games)
+      .set({
+        status: "finished",
+        result: "draw",
+        endedAt: new Date(),
+      })
+      .where(and(eq(games.status, "ongoing"), eq(games.status, "waiting")))
+      .returning({ id: games.id });
+
+    if (result) {
+      console.log("[Shutdown] Cleaned up");
+    }
+  } catch (error) {
+    console.error("[Shutdown] Failed to cleanup ongoing games:", error);
+  }
+}
+
+process.on("SIGTERM", async () => {
+  await cleanupOngoingGames();
+  process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+  await cleanupOngoingGames();
+  process.exit(0);
+});
+
 async function ensureGlobalChatExists() {
   try {
-    // no need to check then update, we can just ignore on conflict
     await db
       .insert(chatChannels)
       .values({ type: "global" })
