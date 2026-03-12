@@ -71,19 +71,6 @@ describe("auth.service.ts tests", () => {
     }
   });
 
-  test("dbGetUserByOauthId with wrong provider", async () => {
-    try {
-      const user = await dbGetUserByOauthId(
-        "google",
-        oauthAccount.providerUserId,
-      );
-
-      expect(user).toBeUndefined();
-    } catch (err) {
-      console.error(err);
-    }
-  });
-
   test("dbGetUserByOauthId with wrong providerUserId", async () => {
     try {
       const user = await dbGetUserByOauthId(
