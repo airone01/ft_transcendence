@@ -5,6 +5,7 @@ import {
   dbSendToGame,
   dbSendToGlobal,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
 
 const MAX_MESSAGE_LENGTH = 1000;
 
@@ -15,6 +16,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
   // ─── Global message ─────────────────────────────────────────────────────
 
   socket.on("chat:global", async (data: { content: string }) => {
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed"});
+    }
+
     if (!data.content || data.content.trim().length === 0) {
       return socket.emit("chat:error", { message: "Empty message" });
     }
@@ -44,6 +49,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content: rawContent } = data;
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed"});
+    }
 
     if (!rawContent || rawContent.trim().length === 0) {
       return socket.emit("chat:error", { message: "Empty message" });
@@ -94,6 +102,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     "chat:friend",
     async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
+      if (!checkRateLimit(socket)) {
+          return socket.emit("chat:error", { message: "rate limit exceed"});
+      }
 
       if (!rawContent || rawContent.trim().length === 0) {
         return socket.emit("chat:error", { message: "Empty message" });
