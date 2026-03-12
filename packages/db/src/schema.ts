@@ -38,11 +38,7 @@ export const users = pgTable(
 
 // ############################ OAUTH ACCOUNT ############################
 
-export const oauthProviders = pgEnum("oauth_providers", [
-  "discord",
-  "google",
-  "github",
-]);
+export const oauthProviders = pgEnum("oauth_providers", ["discord"]);
 
 export const oauthAccounts = pgTable(
   "oauth_accounts",
