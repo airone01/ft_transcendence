@@ -117,9 +117,11 @@ export async function restoreSessionOnReconnect(
 
     const gameRoom = activeGames.get(session.gameId);
     if (gameRoom) {
+      const myColor = gameRoom.getWhiteId() === userId ? "white" : "black";
       socket.emit("game:state", {
         ...gameRoom.getState(),
         gameId: session.gameId,
+        myColor,
       });
       socket.emit("game:reconnected", {
         gameId: session.gameId,

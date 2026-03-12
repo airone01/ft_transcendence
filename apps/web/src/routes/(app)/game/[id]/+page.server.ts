@@ -1,4 +1,4 @@
-import { redirect } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { DBGameNotFoundError, dbGetGame } from "$lib/server/db-services";
 import type { PageServerLoad } from "./$types";
 
@@ -14,6 +14,6 @@ export const load: PageServerLoad = async ({ params }) => {
     if (err instanceof DBGameNotFoundError) {
       throw redirect(302, "/play?error=game_not_found");
     }
-    throw redirect(302, "/play?error=game_not_found");
+    throw error(500, "Failed to load game");
   }
 };

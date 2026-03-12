@@ -24,19 +24,29 @@ export const load: PageServerLoad = async ({ locals }) => {
       activeGames: {},
     };
 
-  const friends = await dbGetFriendsInfo(locals.user.id);
-  const suggestedUsers = await dbGetRandomUsers(locals.user.id);
-  const invitations = await dbGetInvitations(locals.user.id);
+  try {
+    const friends = await dbGetFriendsInfo(locals.user.id);
+    const suggestedUsers = await dbGetRandomUsers(locals.user.id);
+    const invitations = await dbGetInvitations(locals.user.id);
 
-  const allUserIds = [...friends, ...suggestedUsers].map((u) => u.userId);
-  const activeGames = await dbGetUsersActiveGames(allUserIds);
+    const allUserIds = [...friends, ...suggestedUsers].map((u) => u.userId);
+    const activeGames = await dbGetUsersActiveGames(allUserIds);
 
-  return {
-    friends,
-    suggestedUsers,
-    invitations,
-    activeGames,
-  };
+    return {
+      friends,
+      suggestedUsers,
+      invitations,
+      activeGames,
+    };
+  } catch (err) {
+    console.error("Failed to load social data:", err);
+    return {
+      friends: [],
+      suggestedUsers: [],
+      invitations: [],
+      activeGames: {},
+    };
+  }
 };
 
 export const actions: Actions = {

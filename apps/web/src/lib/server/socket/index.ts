@@ -71,12 +71,21 @@ export function initSocketServer(httpServer: HTTPServer) {
 
       saveSessionOnDisconnect(socket);
 
-      setTimeout(async () => {
-        const userSockets = await io.in(`user:${userId}`).fetchSockets();
-        if (userSockets.length === 0) {
-          setUserOffline(userId);
-          io.emit("presence:offline", { userId });
-        }
+      setTimeout(() => {
+        io.in(`user:${userId}`)
+          .fetchSockets()
+          .then((userSockets) => {
+            if (userSockets.length === 0) {
+              setUserOffline(userId);
+              io.emit("presence:offline", { userId });
+            }
+          })
+          .catch((err) => {
+            console.error(
+              `[Socket] Failed to fetch sockets for user ${userId}:`,
+              err,
+            );
+          });
       }, 5000);
     });
 

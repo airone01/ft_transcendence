@@ -3,6 +3,7 @@ import { env } from "$env/dynamic/private";
 import * as m from "$lib/paraglide/messages";
 import { auth, setSessionTokenCookie } from "$lib/server/auth";
 import {
+  DBCreateUserUsernameAlreadyExistsError,
   dbCreateOAuthAccount,
   dbCreateUser,
   dbGetUserByEmail,
@@ -64,7 +65,13 @@ export const GET = async (event: RequestEvent) => {
     throw redirect(302, "/?error=unverified_discord_email");
   }
 
-  const existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
+  let existingAccount: Awaited<ReturnType<typeof dbGetUserByOauthId>>;
+  try {
+    existingAccount = await dbGetUserByOauthId("discord", discordUser.id);
+  } catch (err) {
+    console.error("Discord OAuth: DB lookup failed:", err);
+    throw redirect(302, "/?error=discord_auth");
+  }
 
   if (locals.user) {
     if (existingAccount) {
@@ -75,42 +82,66 @@ export const GET = async (event: RequestEvent) => {
       }
     }
 
-    await dbCreateOAuthAccount({
-      userId: locals.user.id,
-      provider: "discord",
-      providerUserId: discordUser.id,
-    });
+    try {
+      await dbCreateOAuthAccount({
+        userId: locals.user.id,
+        provider: "discord",
+        providerUserId: discordUser.id,
+      });
+    } catch (err) {
+      console.error("Discord OAuth: Failed to link account:", err);
+      throw redirect(302, "/settings?error=link_failed");
+    }
 
     throw redirect(302, "/settings");
   }
 
   let userId: number;
-  if (existingAccount) {
-    userId = existingAccount.id;
-  } else {
-    const existingEmailUser = await dbGetUserByEmail(discordUser.email);
-
-    if (existingEmailUser) {
-      userId = existingEmailUser.id;
+  try {
+    if (existingAccount) {
+      userId = existingAccount.id;
     } else {
-      userId = await dbCreateUser({
-        email: discordUser.email,
-        username: discordUser.username,
-        avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
-        password: null,
+      const existingEmailUser = await dbGetUserByEmail(discordUser.email);
+
+      if (existingEmailUser) {
+        userId = existingEmailUser.id;
+      } else {
+        try {
+          userId = await dbCreateUser({
+            email: discordUser.email,
+            username: discordUser.username,
+            avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
+            password: null,
+          });
+        } catch (err) {
+          if (err instanceof DBCreateUserUsernameAlreadyExistsError) {
+            // Append Discord ID suffix to avoid username collision
+            userId = await dbCreateUser({
+              email: discordUser.email,
+              username: `${discordUser.username}_${discordUser.id.slice(-4)}`,
+              avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
+              password: null,
+            });
+          } else {
+            throw err;
+          }
+        }
+      }
+
+      await dbCreateOAuthAccount({
+        userId,
+        provider: "discord",
+        providerUserId: discordUser.id,
       });
     }
 
-    await dbCreateOAuthAccount({
-      userId,
-      provider: "discord",
-      providerUserId: discordUser.id,
-    });
+    await auth.deleteUserSessions(userId);
+    const { token, expiresAt } = await auth.createSession(userId);
+    setSessionTokenCookie(event, token, expiresAt);
+  } catch (err) {
+    console.error("Discord OAuth: Account creation/session failed:", err);
+    throw redirect(302, "/?error=discord_auth");
   }
-
-  await auth.deleteUserSessions(userId);
-  const { token, expiresAt } = await auth.createSession(userId);
-  setSessionTokenCookie(event, token, expiresAt);
 
   throw redirect(302, "/");
 };

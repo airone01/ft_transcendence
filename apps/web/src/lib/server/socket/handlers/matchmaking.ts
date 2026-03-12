@@ -21,7 +21,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     }
 
     const queue = queues.get(mode);
-    if (!queue) return socket.emit("matchmaking:error, undifined queue");
+    if (!queue)
+      return socket.emit("matchmaking:error", { message: "undefined queue" });
 
     for (const [gameId, gameRoom] of activeGames.entries()) {
       if (!gameRoom.isGameOver()) {
@@ -53,7 +54,9 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       const player1 = queue.shift();
       const player2 = queue.shift();
       if (!player1 || !player2)
-        return socket.emit("matchmaking:error, undifined player");
+        return socket.emit("matchmaking:error", {
+          message: "undefined player",
+        });
 
       if (player1.data.userId === player2.data.userId) {
         player1.emit("matchmaking:error", {

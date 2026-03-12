@@ -12,7 +12,10 @@ import AuthDialog from "$lib/components/auth-dialog.svelte";
 import AppShell from "$lib/components/layout/app-shell.svelte";
 import * as m from "$lib/paraglide/messages";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
-import { initializeSocketListeners } from "$lib/socket-init";
+import {
+  initializeSocketListeners,
+  resetSocketListeners,
+} from "$lib/socket-init";
 import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 import "@fontsource-variable/merriweather";
 import "@fontsource-variable/montserrat";
@@ -26,6 +29,12 @@ let connectionInitialized = false;
 $effect(() => {
   if (!data.user && typeof window !== "undefined") {
     localStorage.removeItem("gameState");
+    if (connectionInitialized) {
+      connectionInitialized = false;
+      listenersInitialized = false;
+      resetSocketListeners();
+      socketManager.disconnect();
+    }
   }
 
   if (data.user && !connectionInitialized) {
