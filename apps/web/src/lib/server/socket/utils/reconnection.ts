@@ -12,7 +12,7 @@ const disconnectedSessions = new Map<
   }
 >();
 
-const MAX_DISCONNECTION_DURATION = 2 * 60 * 1000; // 2 minutes
+const MAX_DISCONNECTION_DURATION = 2 * 60 * 1000;
 
 /**
  * save the state session before deconnection
