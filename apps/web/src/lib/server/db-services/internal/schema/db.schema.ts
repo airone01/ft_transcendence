@@ -56,7 +56,7 @@ const authSessionsSchema = z.object({
 });
 
 const oauthAccountSchema = z.object({
-  provider: z.enum(["discord", "google", "github"]),
+  provider: z.enum(["discord"]),
   providerUserId: z.string(),
   userId: z.number().int(),
 });
