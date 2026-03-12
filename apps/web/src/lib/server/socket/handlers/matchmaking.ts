@@ -5,7 +5,6 @@ import {
   dbStartGame,
 } from "$lib/server/db-services";
 import { activeGames } from "./game";
-import { m } from "$lib/paraglide/messages";
 
 // Matchmaking queues
 export const queues = new Map<string, Socket[]>();

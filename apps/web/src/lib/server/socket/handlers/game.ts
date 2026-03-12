@@ -145,7 +145,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
 
         if (!result.valid) {
-          // TODO: i18n resolve
           return socket.emit("game:error", { message: result.error });
         }
 
