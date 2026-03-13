@@ -316,7 +316,7 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-        {#if !$gameState.gameOver}
+        {#if !$gameState.gameOver && !$gameState.isSpectator}
           <div class="flex gap-2">
             <Button
               size="sm"

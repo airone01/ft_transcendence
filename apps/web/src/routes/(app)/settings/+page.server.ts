@@ -21,17 +21,22 @@ import type { Actions, PageServerLoad } from "./$types";
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
 
-  const user = await dbGetUser(locals.user.id);
-  const hasPassword = user.password != null;
+  try {
+    const user = await dbGetUser(locals.user.id);
+    const hasPassword = user.password != null;
 
-  const connectedProviders = await dbGetConnectedProviders(locals.user.id);
+    const connectedProviders = await dbGetConnectedProviders(locals.user.id);
 
-  return {
-    profileForm: await superValidate(zod(profileFormSchema)),
-    accountForm: await superValidate(zod(accountSettingsSchema)),
-    connectedProviders,
-    hasPassword,
-  };
+    return {
+      profileForm: await superValidate(zod(profileFormSchema)),
+      accountForm: await superValidate(zod(accountSettingsSchema)),
+      connectedProviders,
+      hasPassword,
+    };
+  } catch (err) {
+    console.error("Failed to load settings:", err);
+    throw redirect(302, "/");
+  }
 };
 
 export const actions: Actions = {
@@ -120,7 +125,6 @@ export const actions: Actions = {
 
   profile: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    console.log("[RateLimit] IP:", getClientAddress()); // ← ici
     if (!checkHttpRateLimit(getClientAddress(), 60))
       return fail(429, { message: "Too many requests" });
 

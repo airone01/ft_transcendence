@@ -71,7 +71,10 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           incrementSeconds: game.incrementSeconds,
         });
         activeGames.set(gameId, gameRoom);
+      }
 
+      // Attach timer listeners if not yet registered (room may have been created by a spectator)
+      if (gameRoom.listenerCount("time_tick") === 0) {
         gameRoom.on(
           "time_tick",
           (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
@@ -171,7 +174,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
                 ? "white"
                 : "black";
           }
-          activeGames.delete(data.gameId);
+          activeGames.delete(gameId);
 
           io.to(`game:${gameId}`).emit("game:over", {
             winner: winnerColor,
@@ -185,8 +188,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
               s.data.currentGameId = null;
             }
           }
-
-          activeGames.delete(gameId);
         }
       } catch (error) {
         console.error("Move error:", error);
@@ -214,22 +215,28 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         message: "Spectators cannot accept draw",
       });
     }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      await gameRoom.endGame("agreement");
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: null,
-        reason: "agreement",
-      });
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        await gameRoom.endGame("agreement");
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: null,
+          reason: "agreement",
+        });
 
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of sockets) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        for (const s of sockets) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
         }
-      }
 
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Accept draw error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to accept draw" });
     }
   });
 
@@ -238,33 +245,43 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (socket.data.isSpectator) {
       return socket.emit("game:error", { message: "Spectators cannot resign" });
     }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      const winnerUserId = gameRoom.getOpponent(userId);
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        const winnerUserId = gameRoom.getOpponent(userId);
 
-      const players = await dbGetPlayers(parseInt(data.gameId, 10));
-      const winnerColor =
-        String(players.whitePlayerId) === winnerUserId ? "white" : "black";
+        const players = await dbGetPlayers(parseInt(data.gameId, 10));
+        const winnerColor =
+          String(players.whitePlayerId) === winnerUserId ? "white" : "black";
 
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      const winnerSocket = sockets.find((s) => s.data.userId === winnerUserId);
-      const winnerName = winnerSocket?.data.username || null;
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        const winnerSocket = sockets.find(
+          (s) => s.data.userId === winnerUserId,
+        );
+        const winnerName = winnerSocket?.data.username || null;
 
-      await gameRoom.endGame("resignation", winnerUserId);
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: winnerColor,
-        winnerName: winnerName,
-        reason: "resignation",
-      });
+        await gameRoom.endGame("resignation", winnerUserId);
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: winnerColor,
+          winnerName: winnerName,
+          reason: "resignation",
+        });
 
-      const socketsToClean = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of socketsToClean) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+        const socketsToClean = await io
+          .in(`game:${data.gameId}`)
+          .fetchSockets();
+        for (const s of socketsToClean) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
         }
-      }
 
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Resign error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to process resignation" });
     }
   });
 

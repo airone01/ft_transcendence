@@ -132,6 +132,8 @@ export async function dbSendToGame(
         .where(eq(chatChannels.gameId, gameId))
         .limit(1);
 
+      if (!channel) throw new DBChatChannelNotFoundError();
+
       const [_chatMessage] = await tx
         .insert(chatMessages)
         .values({
@@ -141,13 +143,12 @@ export async function dbSendToGame(
         })
         .returning();
 
-      if (!channel) throw new DBChatChannelNotFoundError();
-
       return channel.id;
     });
 
     return channel;
   } catch (err) {
+    if (err instanceof DBChatChannelNotFoundError) throw err;
     console.error(err);
     throw new UnknownError();
   }

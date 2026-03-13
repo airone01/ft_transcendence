@@ -33,8 +33,7 @@ export function registerPresenceHandlers(io: Server, socket: Socket) {
     },
   );
 
-  // Cleanup on disconnect (called from index.ts after a delay)
-  socket.on("disconnect", () => {});
+  // Cleanup on disconnect is handled from index.ts via setUserOffline()
 }
 
 // Export for cleanup from index.ts

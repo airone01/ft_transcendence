@@ -149,6 +149,16 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     }
   });
 
+  socket.on("disconnect", () => {
+    const index = botQueue.findIndex((p) => p.userId === userId);
+    if (index !== -1) {
+      botQueue.splice(index, 1);
+      console.log(
+        `[Bot Queue] Removed disconnected user ${userId}, remaining: ${botQueue.length}`,
+      );
+    }
+  });
+
   socket.on("bot:quit", (data: { gameId: string }) => {
     if (!checkRateLimit(socket)) return;
     const { gameId } = data;
@@ -204,6 +214,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         if (result.gameOver) {
           socket.emit("game:over", {
             winner: result.winner === userId ? "white" : "black",
+            winnerName: result.winner === userId ? socket.data.username : "Bot",
             reason: result.reason,
           });
 
@@ -239,6 +250,8 @@ export function registerBotHandlers(io: Server, socket: Socket) {
           if (botResult.gameOver) {
             socket.emit("game:over", {
               winner: botResult.winner === userId ? "white" : "black",
+              winnerName:
+                botResult.winner === userId ? socket.data.username : "Bot",
               reason: botResult.reason,
             });
 
