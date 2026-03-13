@@ -2,12 +2,16 @@ import { randomBytes } from "node:crypto";
 import { json, redirect } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
+import { m } from "$lib/paraglide/messages";
 import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestEvent } from "./$types";
 
 export const GET = async ({ cookies, getClientAddress }: RequestEvent) => {
   if (!checkHttpRateLimit(getClientAddress(), 10, "oauth"))
-    return json({ error: "Too many requests" }, { status: 429 });
+    return json(
+      { error: m.profile_page_action_too_many_requests() },
+      { status: 429 },
+    );
 
   const state = randomBytes(16).toString("hex");
 

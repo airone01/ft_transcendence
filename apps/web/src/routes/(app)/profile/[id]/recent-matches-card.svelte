@@ -119,8 +119,8 @@ function formatCompactDuration(start: Date, end: Date, locale?: string) {
                   </span>
                 </div>
                 <p class="text-sm text-muted-foreground">
-                  <!-- TODO: i18n or delete? -->
-                  Normal •{formatCompactDuration(game.startedAt, game.endedAt)}
+                  {m.duration_translate()}
+                  {formatCompactDuration(game.startedAt, game.endedAt)}
                 </p>
               </div>
             </div>

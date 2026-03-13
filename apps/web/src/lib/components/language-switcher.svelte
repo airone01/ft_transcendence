@@ -15,6 +15,12 @@ const languageNames: Record<string, string> = {
   fr: "Français",
   es: "Español",
 };
+
+const languageNamesEmojis: Record<string, string> = {
+  en: "🇬🇧 English",
+  fr: "🇫🇷 Français",
+  es: "🇪🇸 Español",
+};
 </script>
 
 <DropdownMenu>
@@ -36,7 +42,7 @@ const languageNames: Record<string, string> = {
         onclick={() => setLocale(lang)}
         data-sveltekit-reload
       >
-        {languageNames[lang] ?? lang.toUpperCase()}
+        {languageNamesEmojis[lang] ?? lang.toUpperCase()}
       </DropdownMenuItem>
     {/each}
   </DropdownMenuContent>

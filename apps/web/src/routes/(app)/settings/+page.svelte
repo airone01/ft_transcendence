@@ -57,7 +57,7 @@ const accountForm = superForm(data.accountForm, {
   resetForm: true,
   onUpdated: ({ form }) => {
     if (form.valid) {
-      toast.success("Security settings updated");
+      toast.success(m.toast_settings_security_updated());
     } else if (form.message) {
       toast.error(form.message);
     }
@@ -70,7 +70,7 @@ const profileForm = superForm(data.profileForm, {
   resetForm: false,
   onUpdated: ({ form }) => {
     if (form.valid) {
-      toast.success("Profile updated successfully");
+      toast.success(m.toast_setting_profile_updated());
     }
   },
 });
@@ -105,9 +105,9 @@ function handleCroppedImage(file: File) {
 const unlinkEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
     if (result.type === "failure") {
-      toast.error(result.data?.message || "Error unlinking account");
+      toast.error(result.data?.message || m.toast_unlinked_account());
     } else if (result.type === "success") {
-      toast.success("Account disconnected");
+      toast.success(m.toast_account_disconnected());
     }
     await update();
   };

@@ -86,7 +86,7 @@ const {
                   title="Spectate Game"
                 >
                   <EyeIcon class="h-4 w-4" />
-                  <span class="sr-only">Spectate</span>
+                  <span class="sr-only">{m.button_spectate()}</span>
                 </Button>
               {/if}
 
