@@ -406,12 +406,7 @@ export class GameRoom extends EventEmitter {
       return { whiteEloChange: 0, blackEloChange: 0 };
     }
 
-    if (
-      this.isGameOverFlag &&
-      reason !== "timeout" &&
-      reason !== "checkmate" &&
-      reason !== "draw"
-    ) {
+    if (this.isGameOverFlag) {
       console.log(
         `[GameRoom ${this.gameId}] Game already ended, skipping endGame()`,
       );
