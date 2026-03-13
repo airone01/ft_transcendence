@@ -3,11 +3,12 @@ services:
     image: caddy:alpine
     ports:
       - "8080:8080"
-      - "3001:3001"
       - "8443:8443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
+    environment:
+      - DOMAIN=${DOMAIN}
     depends_on:
       - web
 
