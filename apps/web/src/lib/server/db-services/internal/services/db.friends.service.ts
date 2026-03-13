@@ -316,6 +316,45 @@ export async function dbIsFriend(
   }
 }
 
+/**
+ * Retrieves only the IDs of all friends of a user.
+ * Lightweight alternative to dbGetFriendsInfo — used where only IDs are needed
+ * (e.g. presence broadcasting).
+ * @param {number} userId - The id of the user
+ * @throws {UnknownError} - If an unexpected error occurs
+ * @returns {Promise<number[]>} - A promise that resolves with the list of friend IDs
+ */
+export async function dbGetFriendIds(userId: number): Promise<number[]> {
+  try {
+    const rows = await db
+      .select({
+        friendId: users.id,
+      })
+      .from(friendships)
+      .innerJoin(
+        users,
+        or(
+          eq(friendships.firstFriendId, users.id),
+          eq(friendships.secondFriendId, users.id),
+        ),
+      )
+      .where(
+        and(
+          or(
+            eq(friendships.firstFriendId, userId),
+            eq(friendships.secondFriendId, userId),
+          ),
+          ne(users.id, userId),
+        ),
+      );
+
+    return rows.map((r) => r.friendId);
+  } catch (err) {
+    console.error(err);
+    throw new UnknownError();
+  }
+}
+
 export async function dbGetFriendsInfo(userId: number): Promise<FriendInfo[]> {
   try {
     const friends = await db

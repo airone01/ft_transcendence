@@ -5,7 +5,11 @@ import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
 import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
-import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
+import {
+  broadcastOfflineToFriends,
+  registerPresenceHandlers,
+  setUserOffline,
+} from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
 import {
@@ -42,7 +46,7 @@ export function initSocketServer(httpServer: HTTPServer) {
     await restoreSessionOnReconnect(socket, activeGames);
     registerGameHandlers(io, socket);
     registerChatHandlers(io, socket);
-    registerPresenceHandlers(io, socket);
+    await registerPresenceHandlers(io, socket);
     registerMatchmakingHandlers(io, socket);
     registerBotHandlers(io, socket);
 
@@ -75,10 +79,10 @@ export function initSocketServer(httpServer: HTTPServer) {
       setTimeout(() => {
         io.in(`user:${userId}`)
           .fetchSockets()
-          .then((userSockets) => {
+          .then(async (userSockets) => {
             if (userSockets.length === 0) {
-              setUserOffline(userId);
-              io.emit("presence:offline", { userId });
+              setUserOffline(parseInt(userId, 10));
+              await broadcastOfflineToFriends(io, userId);
             }
           })
           .catch((err) => {

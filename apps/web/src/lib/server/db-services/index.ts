@@ -86,6 +86,7 @@ export {
 /* Friends Services */
 export {
   dbAddFriend,
+  dbGetFriendIds,
   dbGetFriendsInfo,
   dbGetInvitations,
   dbIsFriend,
