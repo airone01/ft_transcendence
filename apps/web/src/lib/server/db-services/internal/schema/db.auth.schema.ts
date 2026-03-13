@@ -1,1 +1,1 @@
-export type OAuthProvider = "discord" | "google" | "github";
+export type OAuthProvider = "discord";

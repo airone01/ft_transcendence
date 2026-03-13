@@ -1,5 +1,3 @@
-// À appeler une seule fois au démarrage de l'app (dans +layout.svelte)
-
 import { setupChatListeners } from "$lib/stores/chat.store";
 import { setupGameListeners } from "$lib/stores/game.store";
 import { setupMatchmakingListeners } from "$lib/stores/matchmaking.store";
@@ -17,4 +15,8 @@ export function initializeSocketListeners(userId: number) {
 
   initialized = true;
   console.log("Socket listeners initialized");
+}
+
+export function resetSocketListeners() {
+  initialized = false;
 }

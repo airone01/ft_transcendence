@@ -4,6 +4,9 @@ import {
   dbSendToGame,
   dbSendToGlobal,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
+
+const MAX_MESSAGE_LENGTH = 1000;
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -12,6 +15,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
   // ─── Global message ─────────────────────────────────────────────────────
 
   socket.on("chat:global", async (data: { content: string }) => {
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed" });
+    }
+
     if (!data.content || data.content.trim().length === 0) {
       return socket.emit("chat:error", {
         message: "socket_chat_empty_error",
@@ -19,6 +26,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     const content = data.content.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
 
     try {
       await dbSendToGlobal(userId, content);
@@ -41,12 +52,20 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content: rawContent } = data;
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed" });
+    }
 
     if (!rawContent || rawContent.trim().length === 0) {
       return socket.emit("chat:error", { message: "socket_chat_empty_error" });
     }
 
     const content = rawContent.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
+
     const gameIdNum = parseInt(gameId, 10);
 
     if (Number.isNaN(gameIdNum)) {
@@ -78,6 +97,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     "chat:friend",
     async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
+      if (!checkRateLimit(socket)) {
+        return socket.emit("chat:error", { message: "rate limit exceed" });
+      }
 
       if (!rawContent || rawContent.trim().length === 0) {
         return socket.emit("chat:error", {
@@ -86,6 +108,10 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       }
 
       const content = rawContent.trim();
+
+      if (content.length > MAX_MESSAGE_LENGTH) {
+        return socket.emit("chat:error", { message: "Message too long" });
+      }
 
       const friendIdNum =
         typeof friendId === "string" ? parseInt(friendId, 10) : friendId;

@@ -4,6 +4,7 @@ export type ChatMessageType = {
   channelId: number;
   messageId: number;
   userId: number;
+  username: string;
   content: string;
   createdAt: Date;
 };

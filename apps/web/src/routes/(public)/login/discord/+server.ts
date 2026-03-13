@@ -1,16 +1,20 @@
 import { randomBytes } from "node:crypto";
-import { redirect } from "@sveltejs/kit";
+import { json, redirect } from "@sveltejs/kit";
 import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestEvent } from "./$types";
 
-export const GET = async ({ cookies }: RequestEvent) => {
-  const state = randomBytes(16).toString("hex"); // for sec
+export const GET = async ({ cookies, getClientAddress }: RequestEvent) => {
+  if (!checkHttpRateLimit(getClientAddress()))
+    return json({ error: "Too many requests" }, { status: 429 });
+
+  const state = randomBytes(16).toString("hex");
 
   cookies.set("oauth_state", state, {
     path: "/",
     httpOnly: true,
-    maxAge: 60 * 10, // 10 minutes
+    maxAge: 60 * 10,
     secure: !dev,
     sameSite: "lax",
   });

@@ -3,7 +3,7 @@ import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
-import { onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
@@ -23,6 +23,7 @@ import Board from "../../play/board.svelte";
 let gameId: string = page.params.id ?? "0";
 
 let resignDialogOpen = $state(false);
+let boardHeight = $state(0);
 
 function confirmResign() {
   resignDialogOpen = false;
@@ -75,6 +76,15 @@ const resolveGameReason = (reason: string) => {
       return "";
   }
 };
+
+onMount(() => {
+  if (
+    gameId.startsWith("bot-") &&
+    ($gameState.gameId !== gameId || !$gameState.isBotGame)
+  ) {
+    goto("/play?error=game_not_found");
+  }
+});
 
 onDestroy(() => {
   const currentGameId = $gameState.gameId;
@@ -157,7 +167,9 @@ onDestroy(() => {
           >
             <p class="font-semibold">{m.game_page_status_game_over()}</p>
             {#if $gameState.winner}
-              <p>{m.game_page_status_winner({ winner: $gameState.winner })}</p>
+              <p>
+                {m.game_page_status_winner({ winner: $gameState.winnerName ?? $gameState.winner })}
+              </p>
             {:else}
               <p>{m.game_page_status_draw()}</p>
             {/if}
@@ -278,8 +290,8 @@ onDestroy(() => {
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
               {m.game_page_status_game_over()} —
-              {#if $gameState.winnerName}
-                {m.game_page_status_winner({ winner: $gameState.winnerName })}
+              {#if $gameState.winner}
+                {m.game_page_status_winner({ winner: $gameState.winner })}
               {:else}
                 {m.game_page_status_draw()}
               {/if}
@@ -314,7 +326,7 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-        {#if !$gameState.gameOver}
+        {#if !$gameState.gameOver && !$gameState.isSpectator}
           <div class="flex gap-2">
             <Button
               size="sm"
@@ -350,14 +362,15 @@ onDestroy(() => {
         {/if}
       </div>
 
-      <div class="aspect-square w-full">
+      <div class="aspect-square w-full" bind:clientHeight={boardHeight}>
         <Board {gameId} />
       </div>
     </div>
 
     <!-- Right Panel: History + Timers -->
     <div
-      class="md:w-64 lg:w-72 md:shrink-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      class="md:w-64 lg:w-72 md:shrink-0 min-h-0 flex flex-col border rounded-lg p-4 lg:p-5 overflow-hidden"
+      style:max-height={boardHeight ? `${boardHeight}px` : undefined}
     >
       <!-- Header — only on desktop -->
       <h2 class="hidden md:block text-lg font-semibold mb-4">

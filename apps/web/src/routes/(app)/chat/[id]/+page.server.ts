@@ -8,14 +8,19 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   const friendId = parseInt(params.id, 10);
   if (Number.isNaN(friendId)) return { initialMessages: [] };
 
-  const messages = await dbGetFriendMessages(locals.user.id, friendId);
+  try {
+    const messages = await dbGetFriendMessages(locals.user.id, friendId);
 
-  return {
-    initialMessages: messages.reverse().map((m) => ({
-      userId: String(m.userId),
-      username: "…",
-      content: m.content,
-      timestamp: m.createdAt.toISOString(),
-    })),
-  };
+    return {
+      initialMessages: messages.reverse().map((m) => ({
+        userId: String(m.userId),
+        username: m.username,
+        content: m.content,
+        timestamp: m.createdAt.toISOString(),
+      })),
+    };
+  } catch (err) {
+    console.error("Failed to load friend messages:", err);
+    return { initialMessages: [] };
+  }
 };

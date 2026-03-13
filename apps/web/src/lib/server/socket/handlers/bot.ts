@@ -1,6 +1,7 @@
 import type { Server, Socket } from "socket.io";
 import { parseFEN } from "$lib/chess";
 import { findBestMoveTimed } from "../../chessBot/internal/bot/main";
+import { checkRateLimit } from "../middleware/rateLimit";
 import { GameRoom } from "../rooms/GameRoom";
 import { activeGames } from "./game";
 
@@ -84,7 +85,7 @@ function startNextBotGame(io: Server) {
         myColor: "white",
         isBotGame: true,
       });
-    }, 200);
+    }, 800);
 
     console.log(`[Bot] Game ${gameId} created for user ${userId}`);
   } catch (error) {
@@ -110,6 +111,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
   socket.on("bot:start", async (data: { difficulty: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { difficulty } = data;
 
     const alreadyInQueue = botQueue.some((p) => p.userId === userId);
@@ -119,10 +121,11 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       });
     }
 
-    if (socket.data.currentGameId?.startsWith("bot-")) {
-      return socket.emit("game:error", {
-        message: "socket_bot_already_game_error",
-      });
+    if (socket.data.currentGameId) {
+      const msg = socket.data.currentGameId.startsWith("bot-")
+        ? "socket_bot_already_game_error"
+        : "Already in a classic game"; // TODO i18n
+      return socket.emit("game:error", { message: msg });
     }
 
     botQueue.push({ userId, socket, difficulty });
@@ -140,6 +143,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("bot:cancel", () => {
+    if (!checkRateLimit(socket)) return;
     const index = botQueue.findIndex((p) => p.userId === userId);
     if (index !== -1) {
       botQueue.splice(index, 1);
@@ -150,11 +154,26 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     }
   });
 
+  socket.on("disconnect", () => {
+    const index = botQueue.findIndex((p) => p.userId === userId);
+    if (index !== -1) {
+      botQueue.splice(index, 1);
+      console.log(
+        `[Bot Queue] Removed disconnected user ${userId}, remaining: ${botQueue.length}`,
+      );
+    }
+  });
+
   socket.on("bot:quit", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { gameId } = data;
 
     if (!gameId.startsWith("bot-")) {
       return socket.emit("game:error", { message: "socket_bot_quit_error" });
+    }
+
+    if (!gameId.startsWith(`bot-${userId}-`)) {
+      return socket.emit("game:error", { message: "Not your game" });
     }
 
     releaseBotGame(gameId, io);
@@ -171,6 +190,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       to: string;
       promotion?: string;
     }) => {
+      if (!checkRateLimit(socket)) return;
       try {
         const { gameId, from, to, promotion } = data;
         const gameRoom = activeGames.get(gameId);
@@ -201,6 +221,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         if (result.gameOver) {
           socket.emit("game:over", {
             winner: result.winner === userId ? "white" : "black",
+            winnerName: result.winner === userId ? socket.data.username : "Bot",
             reason: result.reason,
           });
 
@@ -236,6 +257,8 @@ export function registerBotHandlers(io: Server, socket: Socket) {
           if (botResult.gameOver) {
             socket.emit("game:over", {
               winner: botResult.winner === userId ? "white" : "black",
+              winnerName:
+                botResult.winner === userId ? socket.data.username : "Bot",
               reason: botResult.reason,
             });
 

@@ -15,6 +15,13 @@
       "when": 1772900000000,
       "tag": "0001_global_chat_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773346930580,
+      "tag": "0002_unknown_black_queen",
+      "breakpoints": true
     }
   ]
 }

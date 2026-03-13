@@ -68,7 +68,7 @@ export async function dbCreateGame(
 ): Promise<number> {
   try {
     const gameId = await db.transaction(async (tx) => {
-      const [game] = await db
+      const [game] = await tx
         .insert(games)
         .values({
           timeControlSeconds: gameInput.timeControlSeconds,
@@ -369,18 +369,11 @@ export async function dbEndGame(endGameInput: EndGameInput): Promise<void> {
 
       if (achievementsPlayers.length !== 2) throw new DBPlayersNotFoundError();
 
-      const removedSpectators = await tx
+      await tx
         .delete(gamesSpectators)
-        .where(eq(gamesSpectators.gameId, game.id))
-        .returning();
+        .where(eq(gamesSpectators.gameId, game.id));
 
-      if (!removedSpectators) throw new DBGameNotFoundError();
-
-      const removedChannel = await tx
-        .delete(chatChannels)
-        .where(eq(chatChannels.gameId, game.id));
-
-      if (!removedChannel) throw new DBDeleteChatChannelError();
+      await tx.delete(chatChannels).where(eq(chatChannels.gameId, game.id));
     });
   } catch (err) {
     if (err instanceof DBGameNotFoundError) throw err;

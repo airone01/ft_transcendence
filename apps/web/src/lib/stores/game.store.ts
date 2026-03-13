@@ -154,7 +154,7 @@ export function joinGame(gameId: string) {
 export function makeMove(from: string, to: string, promotion?: string) {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) {
@@ -173,7 +173,7 @@ export function makeMove(from: string, to: string, promotion?: string) {
 export function offerDraw() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
@@ -185,7 +185,7 @@ export function offerDraw() {
 export function acceptDraw() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
@@ -195,7 +195,7 @@ export function acceptDraw() {
 export function resign() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;

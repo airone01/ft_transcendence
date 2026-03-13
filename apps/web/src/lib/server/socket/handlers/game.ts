@@ -5,6 +5,7 @@ import {
   dbGetGame,
   dbGetPlayers,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
 import { GameRoom } from "../rooms/GameRoom";
 
 export const activeGames = new Map<string, GameRoom>();
@@ -12,8 +13,8 @@ export const activeGames = new Map<string, GameRoom>();
 export function registerGameHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Join a game
   socket.on("game:join", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     try {
       const { gameId } = data;
 
@@ -30,10 +31,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         String(players.whitePlayerId) !== userId &&
         String(players.blackPlayerId) !== userId
       ) {
-        console.log(
-          `[Game] User ${userId} joining as spectator for game ${gameId}`,
-        );
-
         socket.join(`game:${gameId}`);
         socket.data.isSpectator = true;
 
@@ -74,20 +71,38 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           incrementSeconds: game.incrementSeconds,
         });
         activeGames.set(gameId, gameRoom);
+      }
 
+      // Attach timer listeners if not yet registered (room may have been created by a spectator)
+      if (gameRoom.listenerCount("time_tick") === 0) {
         gameRoom.on(
           "time_tick",
           (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
             io.to(`game:${gameId}`).emit("game:time", data);
           },
         );
-        gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
-          io.to(`game:${data.gameId}`).emit("game:over", {
-            winner: data.winner,
-            reason: "timeout",
-          });
-          activeGames.delete(data.gameId);
-        });
+        gameRoom.on(
+          "timeout",
+          async (data: { winner: string; gameId: string }) => {
+            activeGames.delete(data.gameId);
+            let winnerName: string | null = null;
+            let winnerColor: "white" | "black" | null = null;
+            if (data.winner) {
+              const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+              const winnerSocket = sockets.find(
+                (s) => s.data.userId === data.winner,
+              );
+              winnerName = winnerSocket?.data.username || null;
+              winnerColor =
+                gameRoom.getWhiteId() === data.winner ? "white" : "black";
+            }
+            io.to(`game:${data.gameId}`).emit("game:over", {
+              winner: winnerColor,
+              winnerName,
+              reason: "timeout",
+            });
+          },
+        );
       }
 
       gameRoom.addPlayer(socket);
@@ -126,6 +141,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       to: string;
       promotion?: string;
     }) => {
+      if (!checkRateLimit(socket)) return;
       try {
         const { gameId, from, to, promotion } = data;
 
@@ -183,7 +199,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
                 ? "white"
                 : "black";
           }
-          activeGames.delete(data.gameId);
+          activeGames.delete(gameId);
 
           io.to(`game:${gameId}`).emit("game:over", {
             winner: winnerColor,
@@ -197,8 +213,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
               s.data.currentGameId = null;
             }
           }
-
-          activeGames.delete(gameId);
         }
       } catch (error) {
         console.error("Move error:", error);
@@ -210,6 +224,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   );
 
   socket.on("game:offer_draw", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_offer_draw_specator_error",
@@ -221,69 +236,86 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("game:accept_draw", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_accept_draw_specator_error",
       });
     }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      await gameRoom.endGame("agreement");
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: null,
-        reason: "agreement",
-      });
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        await gameRoom.endGame("agreement");
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: null,
+          reason: "agreement",
+        });
 
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of sockets) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        for (const s of sockets) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
         }
-      }
 
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Accept draw error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to accept draw" });
     }
   });
 
-  // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_resign_spectator_error",
       });
     }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      const winnerUserId = gameRoom.getOpponent(userId);
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        const winnerUserId = gameRoom.getOpponent(userId);
 
-      const players = await dbGetPlayers(parseInt(data.gameId, 10));
-      const winnerColor =
-        String(players.whitePlayerId) === winnerUserId ? "white" : "black";
+        const players = await dbGetPlayers(parseInt(data.gameId, 10));
+        const winnerColor =
+          String(players.whitePlayerId) === winnerUserId ? "white" : "black";
 
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      const winnerSocket = sockets.find((s) => s.data.userId === winnerUserId);
-      const winnerName = winnerSocket?.data.username || null;
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        const winnerSocket = sockets.find(
+          (s) => s.data.userId === winnerUserId,
+        );
+        const winnerName = winnerSocket?.data.username || null;
 
-      await gameRoom.endGame("resignation", winnerUserId);
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: winnerColor,
-        winnerName: winnerName,
-        reason: "resignation",
-      });
+        await gameRoom.endGame("resignation", winnerUserId);
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: winnerColor,
+          winnerName: winnerName,
+          reason: "resignation",
+        });
 
-      const socketsToClean = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of socketsToClean) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+        const socketsToClean = await io
+          .in(`game:${data.gameId}`)
+          .fetchSockets();
+        for (const s of socketsToClean) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
         }
-      }
 
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Resign error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to process resignation" });
     }
   });
 
-  // Leave game
   socket.on("game:leave", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     socket.leave(`game:${data.gameId}`);
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) gameRoom.removePlayer(socket);
