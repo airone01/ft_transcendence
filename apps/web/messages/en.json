@@ -494,7 +494,8 @@
 
   "socket_bot_start_error": "[i18n] Failed to start bot game",
   "socket_bot_already_queued_error": "[i18n] Already in bot queue",
-  "socket_bot_already_game_error": "[i18n] Already in bot game",
+  "socket_bot_already_bot_game_error": "[i18n] Already in a bot game",
+  "socket_bot_already_classic_game_error": "[i18n] Already in a classic game",
   "socket_bot_quit_error": "[i18n] Not a bot game",
   "socket_bot_move_game_error": "[i18n] Game not found",
   "socket_bot_move_error": "[i18n] Invalid move",
@@ -521,6 +522,7 @@
   "socket_matchmaking_join_match_yourself_error": "[i18n] Cannot match with yourself",
   "socket_matchmaking_join_oppenent_already_queued_error": "[i18n] Match failed, opponent already in game",
   "socket_matchmaking_join_failed_to_create_error": "[i18n] Failed to create game",
+  "socket_matchmaking_error_undefined": "[i18n] Undefined queue",
 
   "socket_middleware_auth_required_error": "[i18n] Authentication required",
   "socket_middleware_rate_limit_error": "[i18n] Rate limit exceeded",
@@ -541,5 +543,8 @@
 
   "span_add": "[i18n] Add",
   "span_chat": "[i18n] Chat",
-  "span_remove": "[i18n] Remove"
+  "span_remove": "[i18n] Remove",
+
+  "component_image_cropper_toast_move_image_error": "Please move the image slightly to set the crop.",
+  "component_image_cropper_toast_crop_error": "Failed to crop image"
 }

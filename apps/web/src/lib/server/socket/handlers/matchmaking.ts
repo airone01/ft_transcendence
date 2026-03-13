@@ -22,7 +22,9 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
 
     const queue = queues.get(mode);
     if (!queue)
-      return socket.emit("matchmaking:error", { message: "undefined queue" }); // TODO i18n
+      return socket.emit("matchmaking:error", {
+        message: "socket_matchmaking_error_undefined",
+      });
 
     for (const [gameId, gameRoom] of activeGames.entries()) {
       if (!gameRoom.isGameOver()) {

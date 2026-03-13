@@ -123,8 +123,8 @@ export function registerBotHandlers(io: Server, socket: Socket) {
 
     if (socket.data.currentGameId) {
       const msg = socket.data.currentGameId.startsWith("bot-")
-        ? "socket_bot_already_game_error"
-        : "Already in a classic game"; // TODO i18n
+        ? "socket_bot_already_bot_game_error"
+        : "socket_bot_already_classic_game_error";
       return socket.emit("game:error", { message: msg });
     }
 

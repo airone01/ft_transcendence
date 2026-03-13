@@ -78,6 +78,7 @@
 
   "app_shell_heading_content": "My Content",
   "app_shell_heading_quick_nav": "Quick Navigation",
+  "app_shell_heading_placeholder": "Type a command or search..",
   "app_shell_heading_chess": "Start a game",
   "app_shell_item_play": "Start ranked match making",
   "app_shell_item_play_vs_bot": "Start a game against AI",
@@ -492,6 +493,9 @@
   "zod_schema_avatar_size": "Avatar must be less than 1MB",
 
   "socket_bot_start_error": "Failed to start bot game",
+  "socket_bot_already_queued_error": "Already in bot queue",
+  "socket_bot_already_bot_game_error": "Already in a bot game",
+  "socket_bot_already_classic_game_error": "Already in a classic game",
   "socket_bot_quit_error": "Not a bot game",
   "socket_bot_move_game_error": "Game not found",
   "socket_bot_move_error": "Invalid move",
@@ -518,6 +522,7 @@
   "socket_matchmaking_join_match_yourself_error": "Cannot match with yourself",
   "socket_matchmaking_join_oppenent_already_queued_error": "Match failed, opponent already in game",
   "socket_matchmaking_join_failed_to_create_error": "Failed to create game",
+  "socket_matchmaking_error_undefined": "Undefined queue",
 
   "socket_middleware_auth_required_error": "Authentication required",
   "socket_middleware_rate_limit_error": "Rate limit exceeded",
@@ -538,5 +543,8 @@
 
   "span_add": "Add",
   "span_chat": "Chat",
-  "span_remove": "Remove"
+  "span_remove": "Remove",
+
+  "component_image_cropper_toast_move_image_error": "Please move the image slightly to set the crop.",
+  "component_image_cropper_toast_crop_error": "Failed to crop image"
 }
