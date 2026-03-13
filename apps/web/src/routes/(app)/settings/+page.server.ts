@@ -167,8 +167,7 @@ export const actions: Actions = {
             400,
             withFiles({
               form,
-              message:
-                m.invalid_image_format(),
+              message: m.invalid_image_format(),
             }),
           );
         }

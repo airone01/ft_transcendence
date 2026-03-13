@@ -17,7 +17,10 @@ export const GET: RequestHandler = async ({
     return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
 
   if (!checkHttpRateLimit(getClientAddress(), 10, "api"))
-    return json({ error: m.profile_page_action_too_many_requests() }, { status: 429 });
+    return json(
+      { error: m.profile_page_action_too_many_requests() },
+      { status: 429 },
+    );
 
   const userId = parseInt(params.id, 10);
 

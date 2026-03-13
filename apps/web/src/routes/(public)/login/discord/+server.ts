@@ -7,7 +7,10 @@ import type { RequestEvent } from "./$types";
 
 export const GET = async ({ cookies, getClientAddress }: RequestEvent) => {
   if (!checkHttpRateLimit(getClientAddress(), 10, "oauth"))
-    return json({ error: m.profile_page_action_too_many_requests() }, { status: 429 });
+    return json(
+      { error: m.profile_page_action_too_many_requests() },
+      { status: 429 },
+    );
 
   const state = randomBytes(16).toString("hex");
 

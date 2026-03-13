@@ -2,8 +2,8 @@ import { error, redirect } from "@sveltejs/kit";
 import { db } from "@transc/db";
 import { users } from "@transc/db/schema";
 import { eq } from "drizzle-orm";
-import type { RequestHandler } from "./$types";
 import { m } from "$lib/paraglide/messages";
+import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ params, setHeaders }) => {
   const userId = parseInt(params.id, 10);

@@ -576,7 +576,7 @@
   "unsupported_avatar": "Unsupported avatar format",
 
   "invalid_image_format": "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
-  
+
   "component_image_cropper_upload": "Upload Image",
   "component_image_cropper_edit": "Edit Avatar",
   "component_image_cropper_save": "Save Changes",

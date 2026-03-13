@@ -16,7 +16,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on("chat:global", async (data: { content: string }) => {
     if (!checkRateLimit(socket)) {
-      return socket.emit("chat:error", { message: "socket_chat_rate_limit_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_rate_limit_error",
+      });
     }
 
     if (!data.content || data.content.trim().length === 0) {
@@ -28,7 +30,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     const content = data.content.trim();
 
     if (content.length > MAX_MESSAGE_LENGTH) {
-      return socket.emit("chat:error", { message: "socket_chat_message_too_long_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_message_too_long_error",
+      });
     }
 
     try {
@@ -53,7 +57,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content: rawContent } = data;
     if (!checkRateLimit(socket)) {
-      return socket.emit("chat:error", { message: "socket_chat_rate_limit_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_rate_limit_error",
+      });
     }
 
     if (!rawContent || rawContent.trim().length === 0) {
@@ -63,7 +69,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     const content = rawContent.trim();
 
     if (content.length > MAX_MESSAGE_LENGTH) {
-      return socket.emit("chat:error", { message: "socket_chat_message_too_long_error" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_message_too_long_error",
+      });
     }
 
     const gameIdNum = parseInt(gameId, 10);
@@ -98,7 +106,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
       if (!checkRateLimit(socket)) {
-        return socket.emit("chat:error", { message: "socket_chat_rate_limit_error" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_rate_limit_error",
+        });
       }
 
       if (!rawContent || rawContent.trim().length === 0) {
@@ -110,7 +120,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       const content = rawContent.trim();
 
       if (content.length > MAX_MESSAGE_LENGTH) {
-        return socket.emit("chat:error", { message: "socket_chat_message_too_long_error" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_message_too_long_error",
+        });
       }
 
       const friendIdNum =
