@@ -23,7 +23,7 @@ interface DiscordUser {
 export const GET = async (event: RequestEvent) => {
   const { url, cookies, locals, getClientAddress } = event;
 
-  if (!checkHttpRateLimit(getClientAddress(), 60))
+  if (!checkHttpRateLimit(getClientAddress(), 60, "oauth"))
     throw redirect(302, "/?error=too_many_requests");
 
   const code = url.searchParams.get("code");
