@@ -230,6 +230,10 @@
   "game_page_reason_timeout": "By Time out",
   "game_page_reason_agreement": "By Agreement",
   "game_page_reason_resignation": "By Resignation",
+  "game_page_reason_insufficient_material": "By Insufficient material",
+  "game_page_reason_threefold_repetition": "By Threefold Repetition",
+  "game_page_reason_fifty_move_rule": "By Fifty Move Rule",
+  "game_page_reason_abort": "By Abort",
 
   "game_page_popup_draw_offer_title": "Draw offer",
   "game_page_popup_draw_offer_description": "Do you want to accept this draw offer?",
@@ -253,8 +257,8 @@
 
   "privacy_page_title": "Privacy Policy",
   "privacy_page_hero_subtitle": "Your privacy matters. Here's how we protect and handle your data.",
-  "privacy_page_tldr_title": "TL;DR - Privacy Quick Facts",
-  "privacy_page_tldr_1": "We only collect data necessary to provide chess gameplay",
+  "privacy_page_tldr_title": "Privacy Quick Facts",
+  "privacy_page_tldr_1": "We only collect data necessary to provide chess.io services",
   "privacy_page_tldr_2": "We never sell your personal information",
   "privacy_page_tldr_3": "Authentication is handled and secure",
 
@@ -273,7 +277,7 @@
   "privacy_page_section_1_2_item_4": "Game timing and duration",
 
   "privacy_page_section_1_3_title": "Chat Messages",
-  "privacy_page_section_1_3_desc": "Messages sent in chat channels and global chat are not stored.",
+  "privacy_page_section_1_3_desc": "Messages sent in chat channels and global chat will never be sell.",
 
   "privacy_page_section_1_4_title": "Technical Data",
   "privacy_page_section_1_4_item_1": "Session cookies for authentication",
@@ -438,6 +442,7 @@
   "user_profile_link_joined": "Joined {date}",
   "user_profile_link_fail": "Failed to load user info.",
 
+  "profile_page_action_too_many_requests": "Too many requests",
   "profile_page_action_add_username_required": "Username is required",
   "profile_page_action_add_add_yourself": "You cannot add yourself",
   "profile_page_action_add_user_not_found": "User not found",
@@ -497,11 +502,14 @@
   "socket_bot_already_queued_error": "Already in bot queue",
   "socket_bot_already_bot_game_error": "Already in a bot game",
   "socket_bot_already_classic_game_error": "Already in a classic game",
+  "socket_bot_waiting_error": "Waiting for available slot...",
   "socket_bot_quit_error": "Not a bot game",
   "socket_bot_move_game_error": "Game not found",
   "socket_bot_move_error": "Invalid move",
 
+  "socket_chat_rate_limit_error": "Rate limit exceeded",
   "socket_chat_fail_send_error": "Failed to send message",
+  "socket_chat_message_too_long_error": "Message too long",
   "socket_chat_empty_error": "Empty message",
   "socket_chat_game_invalid_error": "Invalid game ID",
   "socket_chat_user_invalid_error": "Invalid user ID",
@@ -515,17 +523,22 @@
   "socket_game_move_not_your_turn_error": "Not your turn",
   "socket_game_move_invalid_move_error": "Invalid move",
   "socket_game_offer_draw_specator_error": "Spectators cannot offer draw",
+  "socket_game_accept_draw_error": "Failed to accept draw",
   "socket_game_accept_draw_specator_error": "Spectators cannot accept draw",
+  "socket_game_resign_error": "Failed to process resignation",
   "socket_game_resign_spectator_error": "Spectators cannot resign",
 
   "socket_matchmaking_join_active_game_error": "You already have a game in progress",
   "socket_matchmaking_join_already_queued_error": "Already in queue",
+  "socket_matchmaking_join_undefined_player_error": "Undefined player",
   "socket_matchmaking_join_match_yourself_error": "Cannot match with yourself",
   "socket_matchmaking_join_oppenent_already_queued_error": "Match failed, opponent already in game",
   "socket_matchmaking_join_failed_to_create_error": "Failed to create game",
   "socket_matchmaking_error_undefined": "Undefined queue",
 
   "socket_middleware_auth_required_error": "Authentication required",
+  "socket_middleware_auth_user_error": "Invalid or expired session",
+  "socket_middleware_auth_error": "Authentication error",
   "socket_middleware_rate_limit_error": "Rate limit exceeded",
   "socket_rooms_no_pieces_error": "No piece at source square",
   "socket_rooms_invalid_move_error": "Invalid move",
@@ -536,9 +549,18 @@
   "unkown_db_error": "Unknown database error",
   "internal_server_error": "Internal server error",
 
+  "toast_error_header": "Error:",
+  "toast_chat_error_header": "Chat Error:",
+  "toast_chat_not_found_error": "Chat not found",
   "toast_success": "Success",
   "toast_error": "An error occurred",
+  "toast_game_not_found": "Game not found",
+  "toast_settings_security_updated": "Security settings updated",
+  "toast_setting_profile_updated": "Profile updated successfully",
+  "toast_unlinked_account": "Error unlinking account",
+  "toast_account_disconnected": "Account disconnected",
 
+  "too_many_requests_wait": "Too many login attempts, please try again in a minute.",
   "unknown": "Unknown",
   "loading": "Loading...",
 
@@ -546,6 +568,15 @@
   "span_chat": "Chat",
   "span_remove": "Remove",
 
+  "duration_translate": "Duration:",
+  "button_spectate": "Spectate",
+
+  "invalid_user_id": "Invalid user ID",
+  "avatar_not_found": "Avatar not found",
+  "unsupported_avatar": "Unsupported avatar format",
+
+  "invalid_image_format": "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+  
   "component_image_cropper_upload": "Upload Image",
   "component_image_cropper_edit": "Edit Avatar",
   "component_image_cropper_save": "Save Changes",
