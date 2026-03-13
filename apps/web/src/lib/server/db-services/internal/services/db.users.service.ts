@@ -290,12 +290,14 @@ export async function dbGetUsersWithPrefix(
   prefix: string,
   userId: number,
 ): Promise<User[]> {
+  // Escape LIKE metacharacters so a prefix of e.g. "%" doesn't match all users
+  const safePrefix = prefix.replace(/[%_\\]/g, "\\$&");
   try {
     return await db
       .select()
       .from(users)
       .where(
-        and(not(eq(users.id, userId)), like(users.username, `${prefix}%`)),
+        and(not(eq(users.id, userId)), like(users.username, `${safePrefix}%`)),
       );
   } catch (err) {
     console.error(err);
