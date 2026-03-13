@@ -2,16 +2,12 @@
 import {
   CalendarIcon,
   MegaphoneIcon,
-  SwordsIcon,
-  TriangleAlertIcon,
   UserPlusIcon,
 } from "@lucide/svelte";
 import type { SubmitFunction } from "@sveltejs/kit";
 import { Avatar, AvatarFallback, AvatarImage } from "@transc/ui/avatar";
 import { Badge } from "@transc/ui/badge";
 import { Button } from "@transc/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@transc/ui/card";
-import { Skeleton } from "@transc/ui/skeleton";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
@@ -24,6 +20,13 @@ import RecentMatchesCard from "./recent-matches-card.svelte";
 import WinRatioCard from "./win-ratio-card.svelte";
 
 const { data } = $props();
+
+const user = $derived(data.user);
+const stats = $derived(data.stats);
+const matches = $derived(data.games);
+const eloHistory = $derived(data.eloHistory);
+const achievements = $derived(data.achievements);
+const peakElo = $derived(data.peakElo);
 
 const isMe = (userId: number) => page.data.user?.id === userId;
 
@@ -54,15 +57,6 @@ const formEnhance: SubmitFunction = () => {
 </script>
 
 <main>
-  {#await data.userPromise}
-    <div class="container mx-auto p-6 space-y-6">
-      <div class="h-48 w-full rounded-xl bg-muted animate-pulse"></div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Skeleton class="h-64 w-full" />
-        <Skeleton class="h-64 w-full md:col-span-2" />
-      </div>
-    </div>
-  {:then { user, stats, games: matches, eloHistory, achievements, peakElo }}
     <div class="w-full">
       <div class="container mx-auto px-6">
         <div class="flex flex-col md:flex-row md:items-center gap-4">
@@ -149,19 +143,4 @@ const formEnhance: SubmitFunction = () => {
         <RecentMatchesCard {matches} />
       </div>
     </div>
-  {:catch _e}
-    <div class="container mx-auto p-4 flex justify-center">
-      <Card class="w-full max-w-md border-destructive/50 bg-destructive/5">
-        <CardHeader>
-          <div class="flex items-center gap-2 text-destructive font-bold">
-            <TriangleAlertIcon class="h-5 w-5" />
-            <CardTitle>{m.profile_page_error_title()}</CardTitle>
-          </div>
-          <CardDescription>
-            {m.profile_page_error_description()}
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    </div>
-  {/await}
 </main>

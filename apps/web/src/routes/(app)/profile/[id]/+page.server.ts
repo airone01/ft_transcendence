@@ -1,6 +1,7 @@
 import { error, redirect } from "@sveltejs/kit";
 import * as m from "$lib/paraglide/messages";
 import {
+  DBUserNotFoundError,
   dbGetAchievements,
   dbGetEloHistory,
   dbGetPeakElo,
@@ -23,12 +24,20 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       user = locals.user ?? undefined;
     } else if (params.id != null) {
       userId = parseInt(params.id, 10);
-      const { password, ...dbUser } = await dbGetUser(userId);
-      user = { ...dbUser, password: null };
+      if (Number.isNaN(userId) || userId < 1 || userId > 2_147_483_647)
+        throw error(404, m.profile_page_fecth_user_not_found());
+      try {
+        const { password, ...dbUser } = await dbGetUser(userId);
+        user = { ...dbUser, password: null };
+      } catch (err) {
+        if (err instanceof DBUserNotFoundError)
+          throw error(404, m.profile_page_fecth_user_not_found());
+        throw err;
+      }
     }
 
-    if (Number.isNaN(userId) || userId == null)
-      throw error(400, m.profile_page_fecth_user_invalid_userid());
+    if (userId == null)
+      throw error(404, m.profile_page_fecth_user_not_found());
 
     if (!user) throw error(404, m.profile_page_fecth_user_not_found());
 
@@ -52,7 +61,5 @@ export const load: PageServerLoad = async ({ params, locals }) => {
     return { user, stats, games, eloHistory, achievements, peakElo };
   };
 
-  return {
-    userPromise: fetchUser(),
-  };
+  return await fetchUser();
 };
