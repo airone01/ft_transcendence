@@ -11,5 +11,5 @@ export function generateDefaultAvatar(seed: string): string {
     radius: 10,
   });
 
-  return avatar.toDataUri();
+  return `data:image/svg+xml;base64,${Buffer.from(avatar.toString()).toString("base64")}`;
 }
