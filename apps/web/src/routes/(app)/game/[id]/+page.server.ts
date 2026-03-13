@@ -3,8 +3,12 @@ import { DBGameNotFoundError, dbGetGame } from "$lib/server/db-services";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
+  if (params.id.startsWith("bot-")) {
+    return {};
+  }
+
   const gameId = parseInt(params.id, 10);
-  if (Number.isNaN(gameId) || params.id.startsWith("bot-")) {
+  if (Number.isNaN(gameId)) {
     throw redirect(302, "/play?error=game_not_found");
   }
 

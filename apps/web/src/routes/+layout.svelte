@@ -72,6 +72,11 @@ onMount(() => {
       return;
     }
 
+    if (gameId.startsWith("bot-")) {
+      console.log(`[Redirect] Skipping redirect, bot game ${gameId}`);
+      return;
+    }
+
     const currentPath = page.url.pathname;
 
     if (!currentPath.includes(`/game/${gameId}`)) {

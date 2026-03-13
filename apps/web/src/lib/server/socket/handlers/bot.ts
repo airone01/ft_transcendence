@@ -85,7 +85,7 @@ function startNextBotGame(io: Server) {
         myColor: "white",
         isBotGame: true,
       });
-    }, 200);
+    }, 800);
 
     console.log(`[Bot] Game ${gameId} created for user ${userId}`);
   } catch (error) {

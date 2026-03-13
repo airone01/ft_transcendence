@@ -62,6 +62,8 @@ export async function restoreSessionOnReconnect(
   if (!userId) return { restored: false, gameId: null };
 
   for (const [gameId, gameRoom] of activeGames.entries()) {
+    if (gameId.startsWith("bot-")) continue; // bot games are not restorable
+
     if (!gameRoom.isGameOver()) {
       const isPlayer =
         gameRoom.getWhiteId() === userId || gameRoom.getBlackId() === userId;
