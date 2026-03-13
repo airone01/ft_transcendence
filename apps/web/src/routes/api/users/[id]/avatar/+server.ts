@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ params, setHeaders }) => {
 
   // Discord OAuth users store a CDN URL instead of base64 — redirect to it
   if (user.avatar.startsWith("http://") || user.avatar.startsWith("https://")) {
-    redirect(302, user.avatar);
+    throw redirect(302, user.avatar);
   }
 
   // DiceBear default avatars are SVG data URIs
