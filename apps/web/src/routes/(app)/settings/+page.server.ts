@@ -135,10 +135,14 @@ export const actions: Actions = {
       const updateData: { username?: string; avatar?: string; bio?: string } =
         {};
 
-      if (form.data.username !== locals.user.username)
+      if (
+        form.data.username !== undefined &&
+        form.data.username !== locals.user.username
+      )
         updateData.username = form.data.username;
 
-      if (form.data.bio !== locals.user.bio) updateData.bio = form.data.bio;
+      if (form.data.bio !== undefined && form.data.bio !== locals.user.bio)
+        updateData.bio = form.data.bio;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {
         const buffer = Buffer.from(await form.data.avatar.arrayBuffer());

@@ -308,15 +308,24 @@ export async function dbUpdateUser(
   userInput: UpdateUserInput,
 ): Promise<void> {
   try {
+    const setData: Partial<{
+      username: string;
+      email: string;
+      password: string;
+      avatar: string;
+      bio: string;
+    }> = {};
+    if (userInput.username !== undefined) setData.username = userInput.username;
+    if (userInput.email !== undefined) setData.email = userInput.email;
+    if (userInput.password !== undefined) setData.password = userInput.password;
+    if (userInput.avatar !== undefined) setData.avatar = userInput.avatar;
+    if (userInput.bio !== undefined) setData.bio = userInput.bio;
+
+    if (Object.keys(setData).length === 0) return;
+
     const [user] = await db
       .update(users)
-      .set({
-        username: userInput.username,
-        email: userInput.email,
-        password: userInput.password,
-        avatar: userInput.avatar,
-        bio: userInput.bio,
-      })
+      .set(setData)
       .where(eq(users.id, userId))
       .returning();
 
