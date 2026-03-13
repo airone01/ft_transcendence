@@ -341,10 +341,10 @@ import { m } from "$lib/paraglide/messages";
             <Mail class="w-4 h-4 text-primary" />
             {m.privacy_page_contact_intro()}
             <a
-              href="mailto:privacy@chess.io"
+              href="mailto:fake@chess.io"
               class="font-semibold text-primary hover:underline"
             >
-              privacy@chess.io
+              fake@chess.io
             </a>
           </p>
         </div>
@@ -361,7 +361,7 @@ import { m } from "$lib/paraglide/messages";
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
           <a
-            href="mailto:privacy@chess.io"
+            href="mailto:fakeprivacy@chess.io"
             class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors"
           >
             <Mail class="w-4 h-4" />
