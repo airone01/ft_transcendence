@@ -3,6 +3,12 @@
 **Date:** 2026-03-11
 **Auditor:** Claude Code (claude-sonnet-4-6)
 **Scope:** Full codebase — `apps/web/src/`, `packages/db/src/`
+
+---
+
+> **2026-03-13 — Follow-up audit (claude-sonnet-4-6, branch `main`)**
+> All 7 original findings (CRITICAL-1, HIGH-1..6) were verified FIXED in commit `b6999a9`.
+> 14 new findings were identified; see [Second Audit](#second-audit-2026-03-13) section below.
 **Branch audited:** `feat/audit_security`
 
 ---
@@ -437,3 +443,308 @@ The following classes of vulnerabilities were checked and **not found**:
 5. **HIGH-2** — Fix before production launch.
 6. **HIGH-3** — Fix before production launch.
 7. **HIGH-5** — Fix before production launch.
+
+---
+
+---
+
+## Second Audit — 2026-03-13
+
+**Date:** 2026-03-13
+**Auditor:** Claude Code (claude-sonnet-4-6)
+**Scope:** Full codebase — `apps/web/src/`, `packages/db/src/`, `docker-compose.prod.yml`, `Caddyfile`
+**Branch audited:** `main` (HEAD `8484f58`)
+
+---
+
+## Status of Previous Findings
+
+All 7 findings from the 2026-03-11 audit were verified **fixed** in commit `b6999a9`:
+
+| ID | Fix verified |
+|----|-------------|
+| CRITICAL-1 | WebSocket auth now validates session cookie server-side via `auth.validateSession()` |
+| HIGH-1 | Discord OAuth rejects unverified emails before email-collision logic |
+| HIGH-2 | IP-based rate limiting added to login and register via `checkHttpRateLimit` |
+| HIGH-3 | `MAX_MESSAGE_LENGTH = 1000` enforced in all three chat handlers |
+| HIGH-4 | Rate limiter now keyed by `socket.data.userId` |
+| HIGH-5 | Avatar upload validates magic bytes (JPEG/PNG/GIF/WebP) before `sharp` |
+| HIGH-6 | `bot:quit` verifies `gameId.startsWith("bot-${userId}-")` ownership prefix |
+
+---
+
+## New Findings
+
+---
+
+### [NEW-HIGH-1] WebSocket Port 3001 Directly Exposed on Host — TLS Bypass & IP Spoofing
+
+**OWASP:** A05 — Security Misconfiguration
+**File:** `docker-compose.prod.yml:6`
+
+```yaml
+ports:
+  - "8080:8080"
+  - "3001:3001"   # ← raw WS port bound to all interfaces on the host
+  - "8443:8443"
+```
+
+The Socket.IO server on port 3001 is bound to the host's external network interfaces. The Caddyfile correctly routes `/socket.io/*` through Caddy (with TLS), but the raw port 3001 remains reachable by anyone who can reach the machine. An attacker can connect **directly to the WS server bypassing Caddy entirely** — including bypassing TLS and the HTTPS-only redirect. Additionally, because SvelteKit is configured with `ADDRESS_HEADER=X-Forwarded-For`, an attacker connecting directly to port 3001 can forge that header, spoofing their IP and bypassing the HTTP rate limiter on any route that calls `getClientAddress()`.
+
+#### Fix
+
+Remove the `3001:3001` port mapping. The Caddy container already reaches `web:3001` via the internal Docker network.
+
+---
+
+### [NEW-HIGH-2] Presence Broadcasts Leak Online Status to All Users
+
+**OWASP:** A01 — Broken Access Control
+**File:** `apps/web/src/lib/server/socket/handlers/presence.ts:14,31`, `socket/index.ts:81`
+
+```ts
+io.emit("presence:online", { userId, username });      // ALL connected users
+io.emit("presence:status", { userId, status: ... });   // ALL connected users
+io.emit("presence:offline", { userId });               // ALL connected users
+```
+
+Every user's connect/disconnect/status-change is broadcast to every authenticated socket. Any user can learn who is online, when they connect, and what status they set — even for complete strangers. The security commit message stated this would be restricted to friends only, but the implementation was not changed.
+
+#### Fix
+
+Look up the user's friend list on connect, then emit only to each friend's personal room:
+
+```ts
+const friendIds = await dbGetFriendIds(parseInt(userId, 10));
+for (const friendId of friendIds) {
+  io.to(`user:${friendId}`).emit("presence:online", { userId, username });
+}
+```
+
+---
+
+### [NEW-MED-1] `game:resign` Accepts Arbitrary `gameId` — Can Terminate Any Game
+
+**OWASP:** A01 — Broken Access Control
+**File:** `apps/web/src/lib/server/socket/handlers/game.ts:270-315`
+
+`game:resign` checks `socket.data.isSpectator` but does **not verify that `data.gameId` matches `socket.data.currentGameId`**. An authenticated user can send `game:resign` with any active game's ID and force-end it, recording the socket's opponent (via `gameRoom.getOpponent(userId)`) as the winner:
+
+```ts
+socket.on("game:resign", async (data: { gameId: string }) => {
+  if (!checkRateLimit(socket)) return;
+  if (socket.data.isSpectator) return;
+  // ← NO CHECK that data.gameId === socket.data.currentGameId
+  const gameRoom = activeGames.get(data.gameId);
+  if (gameRoom) {
+    const winnerUserId = gameRoom.getOpponent(userId); // userId is attacker
+    await gameRoom.endGame("resignation", winnerUserId);
+```
+
+Since `userId` is the attacker, `getOpponent(attackerId)` returns one of the two real players. The game ends and ELO is updated.
+
+#### Fix
+
+```ts
+if (data.gameId !== socket.data.currentGameId) {
+  return socket.emit("game:error", { message: "Not your game" });
+}
+```
+
+Apply the same check to `game:offer_draw`.
+
+---
+
+### [NEW-MED-2] `game:accept_draw` Has No Draw-Offer State — Any Player Can Force a Draw
+
+**OWASP:** A01 — Broken Access Control
+**File:** `apps/web/src/lib/server/socket/handlers/game.ts:238-268`
+
+There is no server-side state tracking pending draw offers. Any player in a game can send `game:accept_draw` at any time to immediately end the game as a draw, regardless of whether the opponent offered one:
+
+```ts
+socket.on("game:accept_draw", async (data: { gameId: string }) => {
+  // no check that a draw was actually offered
+  const gameRoom = activeGames.get(data.gameId);
+  if (gameRoom) {
+    await gameRoom.endGame("agreement");  // immediately ends game
+```
+
+Either player can unilaterally end their own game as a draw at any point.
+
+#### Fix
+
+Track the offering player in `GameRoom`:
+
+```ts
+private drawOfferedBy: string | null = null;
+
+offerDraw(userId: string) { this.drawOfferedBy = userId; }
+
+acceptDraw(userId: string): boolean {
+  if (!this.drawOfferedBy || this.drawOfferedBy === userId) return false;
+  this.drawOfferedBy = null;
+  return true;
+}
+```
+
+---
+
+### [NEW-MED-3] `chat:game` Has No Game Membership Check
+
+**OWASP:** A01 — Broken Access Control
+**File:** `apps/web/src/lib/server/socket/handlers/chat.ts:53-92`
+
+Any authenticated user can send `chat:game` with any `gameId`. The handler validates the gameId as an integer and calls `dbSendToGame()`, but never checks whether the sender is a participant or spectator of that game. The security commit message mentioned this fix but it was not implemented.
+
+```ts
+socket.on("chat:game", async (data: { gameId: string; content: string }) => {
+  // no membership check
+  await dbSendToGame(userId, gameIdNum, content);
+  io.to(`game:${gameId}`).emit("chat:game", { ... });
+```
+
+#### Fix
+
+```ts
+if (!socket.rooms.has(`game:${gameId}`)) {
+  return socket.emit("chat:error", { message: "Not in this game" });
+}
+```
+
+---
+
+### [NEW-MED-4] `chat:friend` Has No WS-Layer Friendship Check
+
+**OWASP:** A01 — Broken Access Control
+**File:** `apps/web/src/lib/server/socket/handlers/chat.ts:96-147`
+
+The friend chat handler does not verify friendship before attempting to send. It relies on `dbSendToFriend()` failing with `DBChatChannelNotFoundError` if no shared private channel exists. This means:
+1. Any user can probe for private channel existence between any two user IDs by attempting to send messages and observing the error.
+2. The logic is fragile — if channel creation is decoupled from friendship state, messages could be sent to stale channels.
+
+#### Fix
+
+Add an explicit `dbIsFriend(userIdNum, friendIdNum)` check before calling `dbSendToFriend`.
+
+---
+
+### [NEW-LOW-1] HTTP Rate Limiter Uses a Shared Counter Across All Endpoints
+
+**File:** `apps/web/src/lib/server/http-rate-limiter.ts`
+
+All endpoints share the same `Map<string, RateLimitEntry>` keyed by IP. The `max` parameter varies per call (60 for most endpoints, 10 for the default), but the counter increments globally. Once an IP hits 10 requests (e.g. via API calls), any endpoint with `max=10` (the default) will be blocked for that IP for the rest of the window, even if those were completely different endpoints.
+
+**Recommendation:** Use per-endpoint namespaced keys, e.g. `checkHttpRateLimit(\`login:${ip}\`)`.
+
+---
+
+### [NEW-LOW-2] `endGame()` Guard Is Inverted — Allows Double DB Write for `timeout`/`checkmate`/`draw`
+
+**File:** `apps/web/src/lib/server/socket/rooms/GameRoom.ts:371-390`
+
+```ts
+if (
+  this.isGameOverFlag &&
+  reason !== "timeout" &&
+  reason !== "checkmate" &&
+  reason !== "draw"
+) {
+  return; // skip
+}
+```
+
+This guard only skips re-entry when `reason` is **not** one of the three most common game-ending reasons. For `reason === "timeout"`, `"checkmate"`, or `"draw"`, the guard passes through even if `isGameOverFlag` is already `true`, potentially calling `dbEndGame` twice.
+
+#### Fix
+
+Simplify to:
+
+```ts
+if (this.isGameOverFlag) return;
+```
+
+---
+
+### [NEW-LOW-3] LIKE Wildcard Characters Not Escaped in `dbGetUsersWithPrefix`
+
+**File:** `apps/web/src/lib/server/db-services/internal/services/db.users.service.ts:298`
+
+```ts
+like(users.username, `${prefix}%`)
+```
+
+SQL injection is prevented by Drizzle's parameterized queries, but LIKE metacharacters (`%`, `_`) in `prefix` are not escaped. A caller passing `prefix = "%"` matches all usernames. The function is currently unused by any route, so risk is low — but it will become an information disclosure issue if wired to a search API.
+
+#### Fix
+
+```ts
+const safePrefix = prefix.replace(/[%_\\]/g, "\\$&");
+like(users.username, `${safePrefix}%`)
+```
+
+---
+
+### [NEW-LOW-4] Hardcoded Database Password in `docker-compose.prod.yml`
+
+**File:** `docker-compose.prod.yml:19,31`
+
+```yaml
+DATABASE_URL=postgres://root:mysecretpassword@db:5432/local
+```
+
+The DB password is hardcoded and committed to version control. If the web container is compromised, the attacker has the full DB connection string immediately. Use Docker Secrets or a `.env` file excluded from version control.
+
+---
+
+### [NEW-LOW-5] `bio` DB Column Has No Length Constraint
+
+**File:** `packages/db/src/schema.ts:28`
+
+```ts
+bio: varchar("bio").default("").notNull(),  // no { length } → unbounded in Postgres
+```
+
+The Zod schema enforces `max(255)` in `settings.ts`, but the DB column has no enforcement. If the Zod layer is bypassed, arbitrarily long bios can be stored.
+
+#### Fix
+
+```ts
+bio: varchar("bio", { length: 255 }).default("").notNull(),
+```
+
+---
+
+### [NEW-INFO-1] `cleanupOngoingGames` on SIGTERM Skips ELO Update
+
+**File:** `apps/web/src/hooks.server.ts:33-51`
+
+On server shutdown, ongoing games are set to `status: "finished", result: "draw"` directly via a bulk UPDATE — bypassing the `dbEndGame()` transaction that calculates and applies ELO changes. Games interrupted by a restart silently produce no ELO or stats update.
+
+---
+
+## New Findings Summary
+
+| ID | Severity | Title | File | Lines |
+|----|----------|-------|------|-------|
+| NEW-HIGH-1 | **HIGH** | WS port 3001 exposed on host — TLS bypass & IP forgery | `docker-compose.prod.yml` | 6 |
+| NEW-HIGH-2 | **HIGH** | Presence events broadcast to all users | `handlers/presence.ts`, `index.ts` | 14, 31, 81 |
+| NEW-MED-1 | **MEDIUM** | `game:resign` accepts arbitrary gameId — can end any game | `handlers/game.ts` | 270–315 |
+| NEW-MED-2 | **MEDIUM** | `game:accept_draw` — no draw-offer tracking, any player forces draw | `handlers/game.ts` | 238–268 |
+| NEW-MED-3 | **MEDIUM** | `chat:game` — no game membership check | `handlers/chat.ts` | 53–92 |
+| NEW-MED-4 | **MEDIUM** | `chat:friend` — no WS-layer friendship check | `handlers/chat.ts` | 96–147 |
+| NEW-LOW-1 | LOW | HTTP rate limiter shares one counter across all endpoints | `http-rate-limiter.ts` | — |
+| NEW-LOW-2 | LOW | `endGame()` guard allows double DB write for timeout/checkmate/draw | `rooms/GameRoom.ts` | 371–390 |
+| NEW-LOW-3 | LOW | LIKE wildcards not escaped in `dbGetUsersWithPrefix` | `db.users.service.ts` | 298 |
+| NEW-LOW-4 | LOW | Hardcoded DB password in docker-compose.prod.yml | `docker-compose.prod.yml` | 19, 31 |
+| NEW-LOW-5 | LOW | `bio` DB column has no length constraint | `packages/db/schema.ts` | 28 |
+| NEW-INFO-1 | INFO | SIGTERM cleanup skips ELO update | `hooks.server.ts` | 33–51 |
+
+## New Findings Fix Priority
+
+1. **NEW-HIGH-1** — Remove `3001:3001` from `docker-compose.prod.yml` immediately.
+2. **NEW-MED-1** — Add `data.gameId !== socket.data.currentGameId` guard in `game:resign` and `game:offer_draw`.
+3. **NEW-MED-2** — Add draw-offer state tracking in `GameRoom`.
+4. **NEW-MED-3** — Add `socket.rooms.has()` check in `chat:game`.
+5. **NEW-HIGH-2** — Restrict presence events to friends only.
+6. **NEW-LOW-2** — Simplify `endGame()` guard to `if (this.isGameOverFlag) return`.
