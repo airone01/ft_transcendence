@@ -38,7 +38,9 @@
 > [!WARNING] Subject
 > The “Description” section should also contain a clear name for the project and its key features.
 
-Our implementation of ***ft_transcendence*** is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
+***ft_transcendence*** is the flagship project of 42, and the last project of the Common Core.
+
+Our implementation, ***Chess.io***, is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
 
 #### Key Features
 
@@ -244,7 +246,7 @@ In no particular order, we implemented:
 ### Web
 
 #### Major: Use a framework for both the frontend and backend
-- **Team member(s) that worked on this module:** `enassel`, `elagouch`, `scottene`, `vblanc`
+- **Team member(s) that worked on this module:** `enpassel`, `elagouch`, `scottene`, `vblanc`
 - **Module choice:** We chose this module as using framework gains us time during development and makes DX easier. We would have used a framework even if there wasn't this module.
 - **Module implementation:** We are using SvelteKit, as it's a battle-tested framework with a straightforward syntax, without as many side effects or peculiarities as React would have.
 
@@ -308,7 +310,7 @@ In no particular order, we implemented:
 
 #### Minor: Implement remote authentication with OAuth 2.0
 - **Team member(s) that worked on this module:** `elagouch`
-- **Module choice:** It's practical to be able to one-click login, and it's cool to bsee your Discord avatar and name in-game
+- **Module choice:** It's practical to be able to one-click login, and it's cool to be able to see your Discord avatar and name in-game
 - **Module implementation:** Usage of the Discord APIs for OAuth 2.0 inside the custom auth library
 
 ---
@@ -340,7 +342,7 @@ In no particular order, we implemented:
 | Accessibility and Internationalization |   1 Major(s) and 2 Minor(s)   |   4 pts    |
 | User Management                        |   1 Major(s) and 2 Minor(s)   |   4 pts    |
 | Gaming and user experience             |   2 Major(s) and 1 Minor(s)   |   5 pts    |
-| **Total**                              | **7 Major(s) and 9 Minor(s)** | **22 pts** |
+| **Total**                              | **7 Major(s) and 8 Minor(s)** | **22 pts** |
 
 ## Individual Contributions
 
@@ -418,7 +420,7 @@ Challenges faced:
 
 ### Documentations
 - [Bun Documentation](https://bun.com/docs)
-- [Tuborepo Documentation](https://turborepo.dev/docs)
+- [Turborepo Documentation](https://turborepo.dev/docs)
 - [Svelte Documentation](https://svelte.dev/docs) and [Svelte Tutorial](https://svelte.dev/tutorial/)
 - [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
 - [Docker Documentation](https://docs.docker.com)
@@ -450,10 +452,10 @@ AI tools (*ChatGPT*, *Claude*, *Gemini*, *GitHub Copilot*) were used for:
 > Any other useful or relevant information is welcome (usage documentation, known
 > limitations, license, credits, etc.).
 
-## Known Limitations
+### Known Limitations
 
 - AI depth is limited to avoid high CPU usage
 
-## License
+### License
 
 This project was developed as part of the [42](https://42.fr/en/homepage) curriculum and is intended for educational purposes, under the [MIT License](./LICENSE).
