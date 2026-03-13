@@ -38,7 +38,7 @@
 > [!WARNING] Subject
 > The “Description” section should also contain a clear name for the project and its key features.
 
-Our implementation of ***ft_transcendence*** is a full-stack real-time web application that allows users to play chess online against other players (or optionally an AI opponent).
+Our implementation of ***ft_transcendence*** is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
 
 #### Key Features
 
@@ -60,7 +60,7 @@ Our implementation of ***ft_transcendence*** is a full-stack real-time web appli
 
 ### Tools
 
-- Any text editor
+- Any text editor (`.env` configuration)
 
 ### Environment
 
@@ -181,7 +181,7 @@ In no particular order, we implemented:
 - Avatar upload
 - Editable username
 - Profile page
-- **Developed by:** `elagouch` (UI/UX, avatar logic), `enpassel` (communication)
+- **Developed by:** `elagouch` (UI/UX, avatar logic), `enpassel` (WebSockets)
 
 ### Friends System
 - Send/remove friend requests
@@ -194,13 +194,13 @@ In no particular order, we implemented:
 - Move validation
 - Game state synchronization
 - Reconnection handling
-- **Developed by:** `scottene` (UI/UX), `enpassel` (communication), `vblanc` (logic, DB)
+- **Developed by:** `scottene` (UI/UX), `enpassel` (WebSockets), `vblanc` (logic, DB)
 
 ### AI Opponent
 - Alpha-beta pruning with adjustable difficulty
 - Positional evaluation with opening, middlegame and endgame phases
 - Time-limited search for consistent response times
-- **Developed by:** `vblanc` (logic, DB), `enpassel` (communication)
+- **Developed by:** `vblanc` (logic, DB), `enpassel` (WebSockets)
 
 ### Spectator Mode
 - Watch ongoing games
@@ -210,7 +210,7 @@ In no particular order, we implemented:
 ### Chat System
 - Private messaging
 - Real-time message updates
-- **Developed by:** `enpassel` (communication), `vblanc` (DB), `elagouch` (UI/UX)
+- **Developed by:** `enpassel` (WebSockets), `vblanc` (DB), `elagouch` (UI/UX)
 
 ### Game Statistics & Leaderboard
 - Win/loss tracking
@@ -355,10 +355,18 @@ Implemented:
 
 - Frontend design
 - Game frontend implementation
-- Various housekeeping tasks
+- Various housekeeping and quality insurance tasks
 - Translation
 
+Challenges faced:
+
+- Getting drag-and-drop to behave like we want
+- Responsiveness
+- WebSocket/chess library connection
+
 ### Valentin Blanc (`vblanc`)
+
+Implemented:
 
 - Database schemas and requests
 - Chess logic implementation
@@ -366,19 +374,41 @@ Implemented:
 - Project and ticket management
 - Documentation
 
+Challenges faced:
+
+- i18n toast implementation
+- Database architecture
+- Chess library implementation
+
 ### Enzo Passelegue (`enpassel`)
+
+Implemented:
 
 - Project management and team planning
 - WebSockets and real-time data communication
 - Game state communication
 - Presence and status of users
 
+Challenges faced:
+
+- Disconnection and reconnection of WebSockets
+- Getting the bot to work with WebSockets
+- Auditting app security
+
 ### Erwann Lagouche (`elagouch`)
+
+Implemented:
 
 - Technical stack decisions
 - Frontend implementation
 - Authentification and sessions
 - CI/CD and monorepo housekeeping
+
+Challenges faced:
+
+- Responsiveness
+- Sessions lifecycle
+- Monorepo housekeeping
 
 ## Resources
 
@@ -408,7 +438,7 @@ AI tools (*ChatGPT*, *Claude*, *Gemini*, *GitHub Copilot*) were used for:
 - Brainstorming architectural ideas
 - Improving documentation wording
 - Debugging specific errors
-- Improve translation accuracy
+- Improving translation accuracy
 
 > [!NOTE]
 > ***All code was written, reviewed, and validated by team members.</br>
@@ -422,8 +452,7 @@ AI tools (*ChatGPT*, *Claude*, *Gemini*, *GitHub Copilot*) were used for:
 
 ## Known Limitations
 
-- AI depth limited to avoid high CPU usage
-- Avatars are sent in base64 through API requests instead of being statically servev. This takes a toll on performance.
+- AI depth is limited to avoid high CPU usage
 
 ## License
 
