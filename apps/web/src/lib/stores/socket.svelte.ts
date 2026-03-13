@@ -22,6 +22,7 @@ class SocketManager {
     this.socket?.disconnect();
 
     this.socket = io(env.PUBLIC_WS_URL, {
+      path: '/socket.io',
       withCredentials: true,
       transports: ["websocket"],
       reconnection: true,
