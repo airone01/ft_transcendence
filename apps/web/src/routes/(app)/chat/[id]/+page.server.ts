@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   return {
     initialMessages: messages.reverse().map((m) => ({
       userId: String(m.userId),
-      username: "…",
+      username: m.username,
       content: m.content,
       timestamp: m.createdAt.toISOString(),
     })),
