@@ -74,6 +74,12 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     }
 
+    if (!socket.rooms.has(`game:${gameId}`)) {
+      return socket.emit("chat:error", {
+        message: "socket_chat_game_not_member_error",
+      });
+    }
+
     try {
       await dbSendToGame(userId, gameIdNum, content);
 
