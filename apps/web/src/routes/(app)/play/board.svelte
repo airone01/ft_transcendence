@@ -380,7 +380,7 @@ function confirmPromotion() {
             {@const Icon = dndPiece.icon}
             <div
               animate:flip={{ duration: flipDurationMs }}
-              class="col-start-1 row-start-1 z-10 w-full h-full cursor-grab active:cursor-grabbing flex justify-center items-center p-1"
+              class="col-start-1 row-start-1 w-full h-full cursor-grab active:cursor-grabbing flex justify-center items-center p-1"
             >
               <Icon
                 class="w-full h-full {dndPiece.isWhite

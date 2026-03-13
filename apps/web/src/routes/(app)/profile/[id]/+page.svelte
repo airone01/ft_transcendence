@@ -67,7 +67,9 @@ const formEnhance: SubmitFunction = () => {
       <div class="container mx-auto px-6">
         <div class="flex flex-col md:flex-row md:items-center gap-4">
           <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
-            <AvatarImage src={user?.avatar} />
+            <AvatarImage
+              src={user ? `/api/users/${user.id}/avatar` : undefined}
+            />
             <AvatarFallback
               class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white"
             >

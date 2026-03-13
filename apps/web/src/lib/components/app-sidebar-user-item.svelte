@@ -31,7 +31,6 @@ const stats = $derived(page.data.stats);
     >
       <UserAvatar
         userId={user.id}
-        avatarUrl={user.avatar}
         username={user.username}
         class="h-10 w-10 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8"
       />

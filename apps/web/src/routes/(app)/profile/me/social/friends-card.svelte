@@ -67,7 +67,6 @@ const {
             >
               <UserAvatar
                 userId={friend.userId}
-                avatarUrl={friend.avatar}
                 username={friend.username}
                 class="h-12 w-12 border"
               />

@@ -87,7 +87,9 @@ let hiddenFileInput: HTMLInputElement | undefined;
 const previewUrl = $derived(
   $profileFormData.avatar instanceof File
     ? URL.createObjectURL($profileFormData.avatar)
-    : (data.user?.avatar ?? null),
+    : page.data.user
+      ? `/api/users/${page.data.user.id}/avatar`
+      : null,
 );
 
 function handleCroppedImage(file: File) {
