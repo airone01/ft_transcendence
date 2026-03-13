@@ -12,7 +12,8 @@ export const load: PageServerLoad = async ({ params }) => {
   }
 
   const gameId = parseInt(params.id, 10);
-  if (Number.isNaN(gameId)) {
+  if (Number.isNaN(gameId) || gameId < 1 || gameId > 2_147_483_647) {
+    //INT MAX
     throw redirect(302, "/play?error=game_not_found");
   }
 
