@@ -63,12 +63,7 @@ const {
                 class="flex items-center gap-4"
                 href="/profile/{userId}"
               >
-                <UserAvatar
-                  {userId}
-                  {username}
-                  avatarUrl={avatar}
-                  class="h-12 w-12 border"
-                />
+                <UserAvatar {userId} {username} class="h-12 w-12 border" />
                 <div class="flex flex-col">
                   <span class="hover:underline">{username}</span>
                   <Badge variant="default">{currentElo}</Badge>

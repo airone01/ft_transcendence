@@ -12,14 +12,12 @@ import * as m from "$lib/paraglide/messages";
 let {
   userId,
   fallbackUsername = "Unknown",
-  fallbackAvatar = null,
   children,
   class: className = "",
   href,
 } = $props<{
   userId: number | string;
   fallbackUsername?: string;
-  fallbackAvatar?: string | null;
   children: Snippet;
   class?: string;
   href?: string;
@@ -47,7 +45,7 @@ let userPromise = $derived(
     {#await userPromise}
       <div class="flex items-center space-x-4">
         <Avatar>
-          <AvatarImage src={fallbackAvatar} />
+          <AvatarImage src={`/api/users/${userId}/avatar`} />
           <AvatarFallback>
             {fallbackUsername.substring(0, 2).toUpperCase()}
           </AvatarFallback>
@@ -62,7 +60,7 @@ let userPromise = $derived(
     {:then fullUser}
       <div class="flex space-x-4 items-start">
         <Avatar class="border">
-          <AvatarImage src={fullUser.avatar ?? fallbackAvatar} />
+          <AvatarImage src={`/api/users/${fullUser.id}/avatar`} />
           <AvatarFallback>
             {fullUser.username.substring(0, 2).toUpperCase()}
           </AvatarFallback>

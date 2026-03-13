@@ -22,8 +22,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       dbGetStats(userId).catch(() => null),
     ]);
 
-    // not leaking password
-    const { password, email, ...publicUser } = user;
+    // not leaking password, email, or heavy avatar blob
+    const { password, email, avatar, ...publicUser } = user;
 
     return json({
       ...publicUser,
