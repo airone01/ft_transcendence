@@ -10,7 +10,7 @@ import type { Actions } from "./$types";
 
 export const actions = {
   default: async ({ request, cookies, getClientAddress }) => {
-    if (!checkHttpRateLimit(getClientAddress()))
+    if (!checkHttpRateLimit(getClientAddress(), 10, "login"))
       return message(
         await superValidate(request, zod(loginSchema)),
         "Too many login attempts, please try again in a minute.",

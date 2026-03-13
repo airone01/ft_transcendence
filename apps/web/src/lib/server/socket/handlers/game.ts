@@ -230,6 +230,22 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         message: "socket_game_offer_draw_specator_error",
       });
     }
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
+      });
+    }
+    const gameRoom = activeGames.get(data.gameId);
+    if (!gameRoom) {
+      return socket.emit("game:error", {
+        message: "socket_game_move_game_not_found_error",
+      });
+    }
+    if (!gameRoom.offerDraw(userId)) {
+      return socket.emit("game:error", {
+        message: "socket_game_offer_draw_error",
+      });
+    }
     socket
       .to(`game:${data.gameId}`)
       .emit("game:draw_offered", { from: userId });
@@ -240,11 +256,24 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_accept_draw_specator_error",
+        // TODO: i18n this
+      });
+    }
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
+        // TODO: i18n this
       });
     }
     try {
       const gameRoom = activeGames.get(data.gameId);
       if (gameRoom) {
+        if (!gameRoom.acceptDraw(userId)) {
+          return socket.emit("game:error", {
+            message: "socket_game_accept_draw_no_offer_error",
+            // TODO: i18n this
+          });
+        }
         await gameRoom.endGame("agreement");
         io.to(`game:${data.gameId}`).emit("game:over", {
           winner: null,

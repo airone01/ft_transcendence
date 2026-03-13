@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   updatePassword: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
       return fail(429, { message: "Too many requests" });
 
     const form = await superValidate(request, zod(accountSettingsSchema));
@@ -91,7 +91,7 @@ export const actions: Actions = {
 
   unlink: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
       return fail(429, { message: "Too many requests" });
 
     const formData = await request.formData();
@@ -125,7 +125,7 @@ export const actions: Actions = {
 
   profile: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
       return fail(429, { message: "Too many requests" });
 
     const form = await superValidate(request, zod(profileFormSchema));

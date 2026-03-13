@@ -16,7 +16,7 @@ import type { Actions } from "./$types";
 
 export const actions = {
   default: async ({ request, cookies, getClientAddress }) => {
-    if (!checkHttpRateLimit(getClientAddress()))
+    if (!checkHttpRateLimit(getClientAddress(), 10, "register"))
       return message(
         await superValidate(request, zod(registerSchema)),
         m.internal_server_error(),

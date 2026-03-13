@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   add: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "social"))
       return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
@@ -87,7 +87,7 @@ export const actions: Actions = {
 
   accept: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "social"))
       return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
@@ -112,7 +112,7 @@ export const actions: Actions = {
 
   reject: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "social"))
       return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
@@ -136,7 +136,7 @@ export const actions: Actions = {
 
   remove: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
-    if (!checkHttpRateLimit(getClientAddress(), 60))
+    if (!checkHttpRateLimit(getClientAddress(), 60, "social"))
       return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
