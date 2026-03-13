@@ -33,6 +33,12 @@ export class Auth<
     return { token, expiresAt };
   }
 
+  async deleteUserSessions(userId: string | number): Promise<void> {
+    await this.config.db
+      .delete(this.config.schema.authSessions)
+      .where(eq(this.config.schema.authSessions.userId, userId));
+  }
+
   async validateSession(token: string) {
     const sessionId = hashToken(token);
 

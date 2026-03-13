@@ -3,7 +3,9 @@ import { ClockIcon, TargetIcon, XIcon, ZapIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onDestroy, onMount } from "svelte";
+import { toast } from "svelte-sonner";
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import {
@@ -14,6 +16,10 @@ import {
 import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
+  if (page.url.searchParams.get("error") === "game_not_found") {
+    toast.error("Game not found");
+    gameState.update((s) => ({ ...s, gameId: null }));
+  }
   return gameState.subscribe((state) => {
     if (
       state.gameId &&
@@ -144,8 +150,12 @@ function playVsBot() {
         >
           <TargetIcon class="w-10 h-10 text-purple-500" />
           <div class="text-center">
-            <h3 class="font-semibold text-lg">VS Bot</h3>
-            <p class="text-sm text-muted-foreground">Practice offline</p>
+            <h3 class="font-semibold text-lg">{m.play_page_mode_bot()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({minutes: 10, increment: 5})}
+              <br>
+              {m.play_page_mode_bot_unranked()}
+            </p>
           </div>
         </button>
       </div>

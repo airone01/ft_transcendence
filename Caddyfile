@@ -1,12 +1,15 @@
-localhost:8443 {
-  reverse_proxy web:3000
+{$DOMAIN}:8443 {
+	tls internal
+
+	handle /socket.io/* {
+		reverse_proxy web:3001
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
 }
 
-http://localhost:3001 {
-  # Caddy automatically upgrades HTTP to Ws
-  reverse_proxy web:3001
-}
-
-localhost:8080 {
-  redir https://localhost:8443{uri}
+http://{$DOMAIN}:8080 {
+  redir https://{$DOMAIN}:8443{uri}
 }

@@ -5,6 +5,7 @@ import {
   dbGetGame,
   dbGetPlayers,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
 import { GameRoom } from "../rooms/GameRoom";
 
 export const activeGames = new Map<string, GameRoom>();
@@ -12,14 +13,14 @@ export const activeGames = new Map<string, GameRoom>();
 export function registerGameHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Join a game
   socket.on("game:join", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     try {
       const { gameId } = data;
 
       if (gameId.startsWith("bot-")) {
         return socket.emit("game:error", {
-          message: "Bot games don't use game:join",
+          message: "socket_game_join_bot_error",
         });
       }
 
@@ -30,10 +31,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         String(players.whitePlayerId) !== userId &&
         String(players.blackPlayerId) !== userId
       ) {
-        console.log(
-          `[Game] User ${userId} joining as spectator for game ${gameId}`,
-        );
-
         socket.join(`game:${gameId}`);
         socket.data.isSpectator = true;
 
@@ -74,20 +71,38 @@ export function registerGameHandlers(io: Server, socket: Socket) {
           incrementSeconds: game.incrementSeconds,
         });
         activeGames.set(gameId, gameRoom);
+      }
 
+      // Attach timer listeners if not yet registered (room may have been created by a spectator)
+      if (gameRoom.listenerCount("time_tick") === 0) {
         gameRoom.on(
           "time_tick",
           (data: { whiteTimeLeft: number; blackTimeLeft: number }) => {
             io.to(`game:${gameId}`).emit("game:time", data);
           },
         );
-        gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
-          io.to(`game:${data.gameId}`).emit("game:over", {
-            winner: data.winner,
-            reason: "timeout",
-          });
-          activeGames.delete(data.gameId);
-        });
+        gameRoom.on(
+          "timeout",
+          async (data: { winner: string; gameId: string }) => {
+            activeGames.delete(data.gameId);
+            let winnerName: string | null = null;
+            let winnerColor: "white" | "black" | null = null;
+            if (data.winner) {
+              const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+              const winnerSocket = sockets.find(
+                (s) => s.data.userId === data.winner,
+              );
+              winnerName = winnerSocket?.data.username || null;
+              winnerColor =
+                gameRoom.getWhiteId() === data.winner ? "white" : "black";
+            }
+            io.to(`game:${data.gameId}`).emit("game:over", {
+              winner: winnerColor,
+              winnerName,
+              reason: "timeout",
+            });
+          },
+        );
       }
 
       gameRoom.addPlayer(socket);
@@ -102,13 +117,19 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       if (error instanceof DBGameNotFoundError) {
-        return socket.emit("game:error", { message: "Game not found" });
+        return socket.emit("game:error", {
+          message: "socket_game_join_game_not_found_error",
+        });
       }
       if (error instanceof DBPlayersNotFoundError) {
-        return socket.emit("game:error", { message: "Players not found" });
+        return socket.emit("game:error", {
+          message: "socket_game_join_user_not_found_error",
+        });
       }
       console.error("Failed to join game:", error);
-      socket.emit("game:error", { message: "Failed to join game" });
+      socket.emit("game:error", {
+        message: "socket_game_join_fail_join_error",
+      });
     }
   });
 
@@ -120,6 +141,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       to: string;
       promotion?: string;
     }) => {
+      if (!checkRateLimit(socket)) return;
       try {
         const { gameId, from, to, promotion } = data;
 
@@ -127,16 +149,20 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
         if (socket.data.isSpectator) {
           return socket.emit("game:error", {
-            message: "Spectators cannot move pawn",
+            message: "socket_game_move_spectator_error",
           });
         }
 
         if (!gameRoom) {
-          return socket.emit("game:error", { message: "Game not found" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_game_not_found_error",
+          });
         }
 
         if (!gameRoom.isPlayerTurn(userId)) {
-          return socket.emit("game:error", { message: "Not your turn" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_not_your_turn_error",
+          });
         }
 
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
@@ -173,7 +199,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
                 ? "white"
                 : "black";
           }
-          activeGames.delete(data.gameId);
+          activeGames.delete(gameId);
 
           io.to(`game:${gameId}`).emit("game:over", {
             winner: winnerColor,
@@ -187,20 +213,37 @@ export function registerGameHandlers(io: Server, socket: Socket) {
               s.data.currentGameId = null;
             }
           }
-
-          activeGames.delete(gameId);
         }
       } catch (error) {
         console.error("Move error:", error);
-        socket.emit("game:error", { message: "Invalid move" });
+        socket.emit("game:error", {
+          message: "socket_game_move_invalid_move_error",
+        });
       }
     },
   );
 
   socket.on("game:offer_draw", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
-        message: "Spectators cannot offer draw",
+        message: "socket_game_offer_draw_specator_error",
+      });
+    }
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
+      });
+    }
+    const gameRoom = activeGames.get(data.gameId);
+    if (!gameRoom) {
+      return socket.emit("game:error", {
+        message: "socket_game_move_game_not_found_error",
+      });
+    }
+    if (!gameRoom.offerDraw(userId)) {
+      return socket.emit("game:error", {
+        message: "socket_game_offer_draw_error",
       });
     }
     socket
@@ -209,67 +252,99 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   });
 
   socket.on("game:accept_draw", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
-        message: "Spectators cannot accept draw",
+        message: "socket_game_accept_draw_specator_error",
+        // TODO: i18n this
       });
     }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      await gameRoom.endGame("agreement");
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: null,
-        reason: "agreement",
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
+        // TODO: i18n this
       });
-
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of sockets) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+    }
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        if (!gameRoom.acceptDraw(userId)) {
+          return socket.emit("game:error", {
+            message: "socket_game_accept_draw_no_offer_error",
+            // TODO: i18n this
+          });
         }
-      }
+        await gameRoom.endGame("agreement");
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: null,
+          reason: "agreement",
+        });
 
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        for (const s of sockets) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
+        }
+
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Accept draw error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to accept draw" });
     }
   });
 
-  // Resign
   socket.on("game:resign", async (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
-      return socket.emit("game:error", { message: "Spectators cannot resign" });
-    }
-    const gameRoom = activeGames.get(data.gameId);
-    if (gameRoom) {
-      const winnerUserId = gameRoom.getOpponent(userId);
-
-      const players = await dbGetPlayers(parseInt(data.gameId, 10));
-      const winnerColor =
-        String(players.whitePlayerId) === winnerUserId ? "white" : "black";
-
-      const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
-      const winnerSocket = sockets.find((s) => s.data.userId === winnerUserId);
-      const winnerName = winnerSocket?.data.username || null;
-
-      await gameRoom.endGame("resignation", winnerUserId);
-      io.to(`game:${data.gameId}`).emit("game:over", {
-        winner: winnerColor,
-        winnerName: winnerName,
-        reason: "resignation",
+      return socket.emit("game:error", {
+        message: "socket_game_resign_spectator_error",
       });
+    }
+    try {
+      const gameRoom = activeGames.get(data.gameId);
+      if (gameRoom) {
+        const winnerUserId = gameRoom.getOpponent(userId);
 
-      const socketsToClean = await io.in(`game:${data.gameId}`).fetchSockets();
-      for (const s of socketsToClean) {
-        if (!s.data.isSpectator) {
-          s.data.currentGameId = null;
+        const players = await dbGetPlayers(parseInt(data.gameId, 10));
+        const winnerColor =
+          String(players.whitePlayerId) === winnerUserId ? "white" : "black";
+
+        const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+        const winnerSocket = sockets.find(
+          (s) => s.data.userId === winnerUserId,
+        );
+        const winnerName = winnerSocket?.data.username || null;
+
+        await gameRoom.endGame("resignation", winnerUserId);
+        io.to(`game:${data.gameId}`).emit("game:over", {
+          winner: winnerColor,
+          winnerName: winnerName,
+          reason: "resignation",
+        });
+
+        const socketsToClean = await io
+          .in(`game:${data.gameId}`)
+          .fetchSockets();
+        for (const s of socketsToClean) {
+          if (!s.data.isSpectator) {
+            s.data.currentGameId = null;
+          }
         }
-      }
 
+        activeGames.delete(data.gameId);
+      }
+    } catch (error) {
+      console.error("Resign error:", error);
       activeGames.delete(data.gameId);
+      socket.emit("game:error", { message: "Failed to process resignation" });
     }
   });
 
-  // Leave game
   socket.on("game:leave", (data: { gameId: string }) => {
+    if (!checkRateLimit(socket)) return;
     socket.leave(`game:${data.gameId}`);
     const gameRoom = activeGames.get(data.gameId);
     if (gameRoom) gameRoom.removePlayer(socket);

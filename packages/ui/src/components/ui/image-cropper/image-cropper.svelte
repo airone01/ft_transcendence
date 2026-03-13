@@ -3,6 +3,7 @@ import { Upload, ZoomIn } from "@lucide/svelte";
 import type { Snippet } from "svelte";
 import Cropper, { type OnCropCompleteEvent } from "svelte-easy-crop";
 import { toast } from "svelte-sonner";
+import { m } from "../../../../../../apps/web/src/lib/paraglide/messages";
 import { getCroppedImg } from "../../../canvas";
 import { Button } from "../button";
 import {
@@ -48,7 +49,7 @@ function onFileSelected(e: Event) {
 async function saveCrop() {
   if (!imageSrc || !pixelCrop || pixelCrop.width === 0) {
     console.error("Crop data missing:", pixelCrop);
-    toast.error("Please move the image slightly to set the crop.");
+    toast.error(m.component_image_cropper_toast_move_image_error());
     return;
   }
 
@@ -66,7 +67,7 @@ async function saveCrop() {
     }
   } catch (e) {
     console.error(e);
-    toast.error("Failed to crop image" /* i18n */);
+    toast.error(m.component_image_cropper_toast_crop_error());
   } finally {
     loading = false;
   }
@@ -89,13 +90,15 @@ function triggerFileInput() {
   onclick={triggerFileInput}
   role="button"
   tabindex="0"
+  class="w-fit"
   onkeydown={(e) => e.key === 'Enter' && triggerFileInput()}
 >
   {#if children}
     {@render children()}
   {:else}
     <Button variant="outline">
-      <Upload class="mr-2 h-4 w-4" /> Upload Image<!-- i18n -->
+      <Upload class="mr-2 h-4 w-4" />
+      {m.component_image_cropper_upload()}
     </Button>
   {/if}
 </div>
@@ -103,10 +106,7 @@ function triggerFileInput() {
 <Dialog bind:open>
   <DialogContent class="sm:max-w-125">
     <DialogHeader>
-      <DialogTitle>
-        Edit Avatar<!-- i18n --><!-- i18n -->
-        <!-- i18n --><!-- i18n -->
-      </DialogTitle>
+      <DialogTitle>{m.component_image_cropper_edit()}</DialogTitle>
     </DialogHeader>
 
     <div class="relative w-full h-100 bg-black/5 rounded-md overflow-hidden">
@@ -142,13 +142,13 @@ function triggerFileInput() {
         onclick={() => (open = false)}
         class="cursor-pointer"
       >
-        Cancel
+        {m.component_image_cropper_cancel()}
       </Button>
       <Button onclick={saveCrop} disabled={loading} class="cursor-pointer">
         {#if loading}
           <Spinner class="mr-2 h-4 w-4" />
         {/if}
-        Save Changes<!-- i18n -->
+        {m.component_image_cropper_save()}
       </Button>
     </DialogFooter>
   </DialogContent>

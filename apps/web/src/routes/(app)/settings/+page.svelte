@@ -87,7 +87,9 @@ let hiddenFileInput: HTMLInputElement | undefined;
 const previewUrl = $derived(
   $profileFormData.avatar instanceof File
     ? URL.createObjectURL($profileFormData.avatar)
-    : (data.user?.avatar ?? null),
+    : page.data.user
+      ? `/api/users/${page.data.user.id}/avatar`
+      : null,
 );
 
 function handleCroppedImage(file: File) {
@@ -151,7 +153,7 @@ const unlinkEnhance: SubmitFunction = () => {
         action="?/profile"
         enctype="multipart/form-data"
         use:profileEnhance
-        class="flex-1 md:max-w-md self-start md:self-auto w-full"
+        class="flex-1 max-w-md self-start md:self-auto w-full"
       >
         <!-- hidden file input -->
         <input
@@ -212,7 +214,7 @@ const unlinkEnhance: SubmitFunction = () => {
     </div>
 
     <div
-      class="border rounded-lg p-4 flex items-center justify-between max-w-lg"
+      class="border rounded-lg p-4 flex items-center justify-between max-w-md"
     >
       <div class="flex items-center gap-3">
         <div class="bg-[#5865F2] p-2 rounded-md text-white">

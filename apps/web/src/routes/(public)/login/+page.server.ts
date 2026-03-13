@@ -5,10 +5,18 @@ import * as m from "$lib/paraglide/messages";
 import { loginSchema } from "$lib/schemas/auth";
 import { auth, setSessionTokenCookie, verifyPassword } from "$lib/server/auth";
 import { dbGetUserByEmail } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions } from "./$types";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, getClientAddress }) => {
+    if (!checkHttpRateLimit(getClientAddress(), 10, "login"))
+      return message(
+        await superValidate(request, zod(loginSchema)),
+        "Too many login attempts, please try again in a minute.",
+        { status: 429 },
+      );
+
     const form = await superValidate(request, zod(loginSchema));
 
     if (!form.valid) return fail(400, { form });
@@ -37,6 +45,7 @@ export const actions = {
       )
         return message(form, m.login_action_default_fail(), { status: 400 });
 
+      await auth.deleteUserSessions(user.id);
       const { token, expiresAt } = await auth.createSession(user.id);
 
       setSessionTokenCookie(

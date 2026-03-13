@@ -15,28 +15,35 @@ import {
   dbUpdateUser,
   type OAuthProvider,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) throw redirect(302, "/");
 
-  const user = await dbGetUser(locals.user.id);
-  const hasPassword = user.password != null;
+  try {
+    const user = await dbGetUser(locals.user.id);
+    const hasPassword = user.password != null;
 
-  const connectedProviders = await dbGetConnectedProviders(locals.user.id);
+    const connectedProviders = await dbGetConnectedProviders(locals.user.id);
 
-  return {
-    profileForm: await superValidate(zod(profileFormSchema)),
-    accountForm: await superValidate(zod(accountSettingsSchema)),
-    //
-    connectedProviders,
-    hasPassword,
-  };
+    return {
+      profileForm: await superValidate(zod(profileFormSchema)),
+      accountForm: await superValidate(zod(accountSettingsSchema)),
+      connectedProviders,
+      hasPassword,
+    };
+  } catch (err) {
+    console.error("Failed to load settings:", err);
+    throw redirect(302, "/");
+  }
 };
 
 export const actions: Actions = {
-  updatePassword: async ({ request, locals }) => {
+  updatePassword: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
+      return fail(429, { message: "Too many requests" });
 
     const form = await superValidate(request, zod(accountSettingsSchema));
     if (!form.valid) return fail(400, { form });
@@ -49,9 +56,7 @@ export const actions: Actions = {
           return message(
             form,
             m.settings_page_account_action_updatepassword_password_required(),
-            {
-              status: 400,
-            },
+            { status: 400 },
           );
         }
         const valid = await verifyPassword(
@@ -62,15 +67,12 @@ export const actions: Actions = {
           return message(
             form,
             m.settings_page_account_action_updatepassword_password_invalid(),
-            {
-              status: 400,
-            },
+            { status: 400 },
           );
         }
       }
 
       const newHash = await hashPassword(form.data.newPassword);
-
       await dbUpdateUser(locals.user.id, { password: newHash });
 
       return message(
@@ -82,15 +84,15 @@ export const actions: Actions = {
       return message(
         form,
         m.settings_page_account_action_updatepassword_fail(),
-        {
-          status: 500,
-        },
+        { status: 500 },
       );
     }
   },
 
-  unlink: async ({ request, locals }) => {
+  unlink: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
+      return fail(429, { message: "Too many requests" });
 
     const formData = await request.formData();
     const provider = formData.get("provider") as OAuthProvider;
@@ -105,8 +107,6 @@ export const actions: Actions = {
       const hasPassword = user.password != null;
       const providers = await dbGetConnectedProviders(locals.user.id);
 
-      // don't allow unlinking if it's the only method of login for safety
-      // (user has no password and only 1 connected provider)
       if (!hasPassword && providers.length <= 1) {
         return fail(400, {
           message: m.settings_page_account_action_unlink_password_required(),
@@ -123,13 +123,13 @@ export const actions: Actions = {
     }
   },
 
-  profile: async ({ request, locals }) => {
+  profile: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
+      return fail(429, { message: "Too many requests" });
 
     const form = await superValidate(request, zod(profileFormSchema));
-    if (!form.valid) {
-      return fail(400, { form });
-    }
+    if (!form.valid) return fail(400, { form });
 
     try {
       const updateData: { username?: string; avatar?: string; bio?: string } =
@@ -141,7 +141,34 @@ export const actions: Actions = {
       if (form.data.bio !== locals.user.bio) updateData.bio = form.data.bio;
 
       if (form.data.avatar instanceof File && form.data.avatar.size > 0) {
-        const buffer = await form.data.avatar.arrayBuffer();
+        const buffer = Buffer.from(await form.data.avatar.arrayBuffer());
+
+        const b = buffer.subarray(0, 12);
+        const isJpeg = b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+        const isPng =
+          b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47;
+        const isGif = b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46;
+        const isWebp =
+          b[0] === 0x52 &&
+          b[1] === 0x49 &&
+          b[2] === 0x46 &&
+          b[3] === 0x46 &&
+          b[8] === 0x57 &&
+          b[9] === 0x45 &&
+          b[10] === 0x42 &&
+          b[11] === 0x50;
+
+        if (!isJpeg && !isPng && !isGif && !isWebp) {
+          return fail(
+            400,
+            withFiles({
+              form,
+              message:
+                "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+            }),
+          );
+        }
+
         const processedImageBuffer = await sharp(buffer)
           .resize(256, 256, { fit: "cover" })
           .webp({ quality: 80 })
@@ -152,7 +179,6 @@ export const actions: Actions = {
 
       if (Object.keys(updateData).length > 0) {
         await dbUpdateUser(locals.user.id, updateData);
-        // manually update locals so ui reflects changes immediately
         if (updateData.username) locals.user.username = updateData.username;
         if (updateData.avatar) locals.user.avatar = updateData.avatar;
         if (updateData.bio) locals.user.bio = updateData.bio;

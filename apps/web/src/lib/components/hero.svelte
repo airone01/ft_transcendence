@@ -1,20 +1,39 @@
 <script lang="ts">
-import { ChevronRightIcon, PlayIcon, TrophyIcon } from "@lucide/svelte";
+import {
+  ChessBishopIcon,
+  ChessKingIcon,
+  ChessKnightIcon,
+  ChessPawnIcon,
+  ChessQueenIcon,
+  ChessRookIcon,
+  ChevronRightIcon,
+  PlayIcon,
+  TrophyIcon,
+} from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
+import type { Component } from "svelte";
 import { authState } from "$lib/auth";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 
-// A standard 8x8 starting chess board using Unicode characters
+const pieceIconMap: Record<string, Component> = {
+  p: ChessPawnIcon,
+  n: ChessKnightIcon,
+  b: ChessBishopIcon,
+  r: ChessRookIcon,
+  q: ChessQueenIcon,
+  k: ChessKingIcon,
+};
+
 const board = [
-  ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-  ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+  ["r", "n", "b", "q", "k", "b", "n", "r"],
+  ["p", "p", "p", "p", "p", "p", "p", "p"],
   ["", "", "", "", "", "", "", ""],
   ["", "", "", "", "", "", "", ""],
   ["", "", "", "", "", "", "", ""],
   ["", "", "", "", "", "", "", ""],
-  ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-  ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
+  ["P", "P", "P", "P", "P", "P", "P", "P"],
+  ["R", "N", "B", "Q", "K", "B", "N", "R"],
 ];
 </script>
 
@@ -51,52 +70,48 @@ const board = [
         {m.hero_page_title()}
       </span>
     </h1>
-
-    <p
-      class="mb-10 max-w-lg text-lg leading-relaxed text-muted-foreground md:text-xl"
-    >
+    <p class="mb-10 max-w-xl text-lg text-muted-foreground sm:text-xl">
       {m.hero_page_desc()}
     </p>
 
-    <div class="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row">
-      {#if authState.isAuthenticated}
+    <div
+      class="flex w-full flex-col items-center justify-center gap-4 sm:flex-row lg:justify-start"
+    >
+      {#if !authState.isAuthenticated}
         <Button
-          href="/"
           size="lg"
-          class="group h-14 w-full px-8 text-base shadow-xl shadow-primary/20 transition-all hover:scale-105 sm:w-auto"
+          class="group h-14 w-full px-8 text-base sm:w-auto"
+          onclick={() => openAuthDialog("register")}
         >
-          <PlayIcon class="mr-2 h-5 w-5 fill-current" />
-          {m.hero_page_button()}
+          {m.landing_page_button_register()}
+          <ChevronRightIcon
+            class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+          />
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          class="h-14 w-full px-8 text-base sm:w-auto"
+          href="#features"
+        >
+          {m.landing_page_cta_more()}
         </Button>
       {:else}
         <Button
-          onclick={() => openAuthDialog("register")}
           size="lg"
-          class="group h-14 w-full px-8 text-base shadow-xl shadow-primary/20 transition-all hover:scale-105 sm:w-auto"
+          class="group h-14 w-full px-8 text-base sm:w-auto"
+          href="/play"
         >
-          {m.landing_page_button_register()}
+          <PlayIcon class="mr-2 h-5 w-5" />
+          {m.hero_page_button()}
         </Button>
       {/if}
-
-      <Button
-        href="#features"
-        variant="outline"
-        size="lg"
-        class="group h-14 w-full px-8 text-base sm:w-auto"
-      >
-        {m.landing_page_cta_more()}
-        <ChevronRightIcon
-          class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1"
-        />
-      </Button>
     </div>
   </div>
 
-  <div
-    class="relative z-10 mt-10 flex w-full max-w-lg flex-1 justify-center lg:mt-0 lg:max-w-none"
-  >
+  <div class="relative z-10 flex w-full max-w-125 flex-1 justify-center">
     <div
-      class="relative aspect-square w-full max-w-120 rounded-2xl border border-border/40 bg-background/40 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-700 hover:scale-[1.02]"
+      class="relative aspect-square w-full rounded-2xl bg-secondary/30 p-2 shadow-2xl backdrop-blur-sm transition-transform hover:scale-[1.02]"
       style="transform: perspective(1200px) rotateX(15deg) rotateY(-15deg) rotateZ(5deg);"
     >
       <div
@@ -108,11 +123,15 @@ const board = [
               class="flex select-none items-center justify-center text-3xl sm:text-4xl {(rowIndex%2 ^ colIndex%2) ? 'bg-[#b58863]' : 'bg-[#f0d9b5]'}"
             >
               {#if piece}
-                <span
-                  class={rowIndex < 2 ? 'text-black drop-shadow-sm' : 'text-white drop-shadow-md'}
+                {@const isWhite = piece === piece.toUpperCase()}
+                {@const Icon = pieceIconMap[piece.toLowerCase()]}
+                <div
+                  class="w-full h-full flex justify-center items-center p-1.5"
                 >
-                  {piece}
-                </span>
+                  <Icon
+                    class="w-full h-full {isWhite ? 'stroke-white fill-white/20 drop-shadow-md' : 'stroke-zinc-900 fill-zinc-900/20 drop-shadow-sm'}"
+                  />
+                </div>
               {/if}
             </div>
           {/each}
@@ -129,7 +148,7 @@ const board = [
           <TrophyIcon class="h-6 w-6" />
         </div>
         <div>
-          <p class="text-sm font-semibold">{m.landing_page_cta_join_elite()}</p>
+          <p class="text-sm font-bold">{m.landing_page_cta_join_elite()}</p>
           <p class="text-xs text-muted-foreground">
             {m.landing_page_cta_compete()}
           </p>

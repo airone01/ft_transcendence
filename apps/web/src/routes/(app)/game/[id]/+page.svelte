@@ -3,7 +3,7 @@ import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
-import { onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
@@ -77,6 +77,15 @@ const resolveGameReason = (reason: string) => {
   }
 };
 
+onMount(() => {
+  if (
+    gameId.startsWith("bot-") &&
+    ($gameState.gameId !== gameId || !$gameState.isBotGame)
+  ) {
+    goto("/play?error=game_not_found");
+  }
+});
+
 onDestroy(() => {
   const currentGameId = $gameState.gameId;
 
@@ -86,7 +95,7 @@ onDestroy(() => {
     !$gameState.gameOver
   ) {
     console.log("[Game] Page destroyed, emitting bot:quit for", currentGameId);
-    socketManager.emit("bot:quit", { gameId: currentGameId });
+    quitBotGame();
   }
 });
 </script>
@@ -97,7 +106,7 @@ onDestroy(() => {
   >
     <!-- Left Panel: Game Info — hidden on mobile/tablet, shown on desktop -->
     <div
-      class="hidden xl:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden min-h-0"
+      class="hidden xl:flex w-72 shrink-0 flex-col border rounded-lg p-5 overflow-hidden"
     >
       <!-- Header -->
       <div class="flex items-center justify-between">
@@ -158,7 +167,9 @@ onDestroy(() => {
           >
             <p class="font-semibold">{m.game_page_status_game_over()}</p>
             {#if $gameState.winner}
-              <p>{m.game_page_status_winner({ winner: $gameState.winner })}</p>
+              <p>
+                {m.game_page_status_winner({ winner: $gameState.winnerName ?? $gameState.winner })}
+              </p>
             {:else}
               <p>{m.game_page_status_draw()}</p>
             {/if}
@@ -222,10 +233,9 @@ onDestroy(() => {
           }}
           >
             <XIcon class="w-4 h-4 mr-2" />
-            Quit Bot Game
+            {m.game_page_button_leave_gamebot()}
           </Button>
         {:else if $gameState.isSpectator}
-          <!-- exit spectate mode button -->
           <Button
             variant="outline"
             class="w-full"
@@ -269,7 +279,7 @@ onDestroy(() => {
     </div>
 
     <!-- Center: Board + mobile status bar -->
-    <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3 min-h-0">
+    <div class="flex flex-col flex-1 min-w-64 xl:min-w-72 gap-3">
       <!-- Mobile/Tablet status bar -->
       <div class="flex xl:hidden items-center justify-between gap-2 flex-wrap">
         <div class="flex items-center gap-2">
@@ -280,8 +290,8 @@ onDestroy(() => {
           {:else if $gameState.gameOver}
             <span class="text-sm font-semibold text-primary">
               {m.game_page_status_game_over()} —
-              {#if $gameState.winnerName}
-                {m.game_page_status_winner({ winner: $gameState.winnerName })}
+              {#if $gameState.winner}
+                {m.game_page_status_winner({ winner: $gameState.winner })}
               {:else}
                 {m.game_page_status_draw()}
               {/if}
@@ -321,9 +331,9 @@ onDestroy(() => {
             size="sm"
             variant="outline"
             onclick={() => {
-                leaveGame();
-                window.history.back();
-              }}
+              leaveGame();
+              window.history.back();
+            }}
           >
             {m.game_page_button_leave_spectator()}
           </Button>
@@ -335,12 +345,14 @@ onDestroy(() => {
                 variant="outline"
                 class="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
                 onclick={() => {
-                    quitBotGame();
-                    goto('/play');
-                  }}
+                  quitBotGame();
+                  goto('/play');
+                }}
               >
                 <XIcon class="w-3.5 h-3.5" />
-                <span class="hidden sm:inline ml-1">Quit Bot Game</span>
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_leave_gamebot()}</span
+                >
               </Button>
             {:else}
               <Button
@@ -393,48 +405,8 @@ onDestroy(() => {
         {m.game_page_move_history_title()}
       </h2>
 
-      <!-- Move history desktop -->
-      <div
-        class="hidden md:flex flex-col flex-1 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
-      >
-        {#if movePairs().length === 0}
-          <div class="h-full flex items-center justify-center w-full min-h-0">
-            <span class="text-sm text-muted-foreground"
-              >{m.game_page_move_history_empty()}</span
-            >
-          </div>
-        {:else}
-          <div
-            class="p-2 space-y-0.5 w-full overflow-y-scroll min-h-0 shrink-1"
-          >
-            {#each movePairs() as [white, black], i}
-              <div
-                class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
-              >
-                <span class="text-muted-foreground text-xs font-mono"
-                  >{i + 1}.</span
-                >
-                <span class="font-mono"
-                  >{white.from}-{white.to}
-                  {white.promotion ?? ""}
-                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
-                >
-                {#if black}
-                  <span class="font-mono"
-                    >{black.from}-{black.to}
-                    {black.promotion ?? ""}
-                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
-                  >
-                {:else}
-                  <span></span>
-                {/if}
-              </div>
-            {/each}
-          </div>
-        {/if}
-      </div>
-
-      <div class="flex flex-col gap-2 mt-auto pt-4">
+      <!-- Timers — always visible, at top on mobile -->
+      <div class="flex flex-col gap-2 md:order-last md:mt-4">
         <div
           class="flex items-center gap-2 rounded-lg px-3 py-2.5 {whiteIsActive
             ? 'bg-[#b58863] text-white'
@@ -516,6 +488,45 @@ onDestroy(() => {
           {/if}
         </div>
       </details>
+
+      <!-- Move history desktop -->
+      <div
+        class="hidden md:flex flex-1 mt-0 rounded-lg bg-muted/50 overflow-y-auto min-h-0"
+      >
+        {#if movePairs().length === 0}
+          <div class="h-full flex items-center justify-center w-full">
+            <span class="text-sm text-muted-foreground"
+              >{m.game_page_move_history_empty()}</span
+            >
+          </div>
+        {:else}
+          <div class="p-2 space-y-0.5 w-full">
+            {#each movePairs() as [white, black], i}
+              <div
+                class="grid grid-cols-[2rem_1fr_1fr] text-sm items-center gap-1 px-1 py-0.5 rounded hover:bg-muted"
+              >
+                <span class="text-muted-foreground text-xs font-mono"
+                  >{i + 1}.</span
+                >
+                <span class="font-mono"
+                  >{white.from}-{white.to}
+                  {white.promotion ?? ""}
+                  {white.checkmate ? "#" : white.check ? "+" : ""}</span
+                >
+                {#if black}
+                  <span class="font-mono"
+                    >{black.from}-{black.to}
+                    {black.promotion ?? ""}
+                    {black.checkmate ? "#" : black.check ? "+" : ""}</span
+                  >
+                {:else}
+                  <span></span>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 

@@ -4,6 +4,9 @@ import {
   dbSendToGame,
   dbSendToGlobal,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
+
+const MAX_MESSAGE_LENGTH = 1000;
 
 export function registerChatHandlers(io: Server, socket: Socket) {
   const userId = socket.data.userId;
@@ -12,11 +15,21 @@ export function registerChatHandlers(io: Server, socket: Socket) {
   // ─── Global message ─────────────────────────────────────────────────────
 
   socket.on("chat:global", async (data: { content: string }) => {
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed" });
+    }
+
     if (!data.content || data.content.trim().length === 0) {
-      return socket.emit("chat:error", { message: "Empty message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_empty_error",
+      });
     }
 
     const content = data.content.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
 
     try {
       await dbSendToGlobal(userId, content);
@@ -29,7 +42,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send global message:", error);
-      return socket.emit("chat:error", { message: "Failed to send message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -37,16 +52,26 @@ export function registerChatHandlers(io: Server, socket: Socket) {
 
   socket.on("chat:game", async (data: { gameId: string; content: string }) => {
     const { gameId, content: rawContent } = data;
+    if (!checkRateLimit(socket)) {
+      return socket.emit("chat:error", { message: "rate limit exceed" });
+    }
 
     if (!rawContent || rawContent.trim().length === 0) {
-      return socket.emit("chat:error", { message: "Empty message" });
+      return socket.emit("chat:error", { message: "socket_chat_empty_error" });
     }
 
     const content = rawContent.trim();
+
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return socket.emit("chat:error", { message: "Message too long" });
+    }
+
     const gameIdNum = parseInt(gameId, 10);
 
     if (Number.isNaN(gameIdNum)) {
-      return socket.emit("chat:error", { message: "Invalid game ID" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_game_invalid_error",
+      });
     }
 
     try {
@@ -60,7 +85,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send game message:", error);
-      return socket.emit("chat:error", { message: "Failed to send message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -70,12 +97,21 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     "chat:friend",
     async (data: { friendId: number | string; content: string }) => {
       const { friendId, content: rawContent } = data;
+      if (!checkRateLimit(socket)) {
+        return socket.emit("chat:error", { message: "rate limit exceed" });
+      }
 
       if (!rawContent || rawContent.trim().length === 0) {
-        return socket.emit("chat:error", { message: "Empty message" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_empty_error",
+        });
       }
 
       const content = rawContent.trim();
+
+      if (content.length > MAX_MESSAGE_LENGTH) {
+        return socket.emit("chat:error", { message: "Message too long" });
+      }
 
       const friendIdNum =
         typeof friendId === "string" ? parseInt(friendId, 10) : friendId;
@@ -83,7 +119,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         typeof userId === "string" ? parseInt(userId, 10) : (userId as number);
 
       if (Number.isNaN(friendIdNum) || Number.isNaN(userIdNum)) {
-        return socket.emit("chat:error", { message: "Invalid user ID" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_user_invalid_error",
+        });
       }
 
       try {
@@ -101,7 +139,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         io.to(`user:${friendId}`).emit("chat:friend", messageData);
       } catch (error) {
         console.error("Failed to send friend message:", error);
-        return socket.emit("chat:error", { message: "Failed to send message" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_fail_send_error",
+        });
       }
     },
   );

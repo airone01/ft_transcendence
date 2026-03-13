@@ -1,6 +1,9 @@
 import { derived, get, type Writable, writable } from "svelte/store";
 import { toast } from "svelte-sonner";
+import { m } from "$lib/paraglide/messages";
 import { socketManager } from "$lib/stores/socket.svelte";
+
+type SocketMessageKey = keyof typeof m;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -151,7 +154,7 @@ export function joinGame(gameId: string) {
 export function makeMove(from: string, to: string, promotion?: string) {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) {
@@ -170,7 +173,7 @@ export function makeMove(from: string, to: string, promotion?: string) {
 export function offerDraw() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
@@ -182,7 +185,7 @@ export function offerDraw() {
 export function acceptDraw() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
@@ -192,7 +195,7 @@ export function acceptDraw() {
 export function resign() {
   const state = getCurrentGameState();
   if (!state) {
-    console.error("error: Undifened");
+    console.error("error: Undefined");
     return;
   }
   if (!state.gameId) return;
@@ -321,9 +324,20 @@ export function setupGameListeners() {
     gameState.update((state) => ({ ...state, drawOffered: true }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:error", ((data: { message: string }) => {
-    console.error("Game error:", data.message);
-    toast(`Error:·${data.message}`);
+  socketManager.on("game:error", ((data: { message: SocketMessageKey }) => {
+    const translate = m[data.message] as () => string;
+    const text =
+      typeof translate === "function" ? translate() : m.toast_error();
+
+    toast(`Error: ${text}`);
+
+    if (data.message === "socket_game_join_game_not_found_error") {
+      gameState.update((s) => ({
+        ...s,
+        gameId: null,
+        gameOver: false,
+      }));
+    }
   }) as unknown as (...args: unknown[]) => void);
 
   socketManager.on("player:joined", ((data: {
