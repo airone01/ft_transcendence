@@ -81,12 +81,21 @@ export function registerGameHandlers(io: Server, socket: Socket) {
             io.to(`game:${gameId}`).emit("game:time", data);
           },
         );
-        gameRoom.on("timeout", (data: { winner: string; gameId: string }) => {
+        gameRoom.on("timeout", async (data: { winner: string; gameId: string }) => {
+          activeGames.delete(data.gameId);
+          let winnerName: string | null = null;
+          let winnerColor: "white" | "black" | null = null;
+          if (data.winner) {
+            const sockets = await io.in(`game:${data.gameId}`).fetchSockets();
+            const winnerSocket = sockets.find((s) => s.data.userId === data.winner);
+            winnerName = winnerSocket?.data.username || null;
+            winnerColor = gameRoom.getWhiteId() === data.winner ? "white" : "black";
+          }
           io.to(`game:${data.gameId}`).emit("game:over", {
-            winner: data.winner,
+            winner: winnerColor,
+            winnerName,
             reason: "timeout",
           });
-          activeGames.delete(data.gameId);
         });
       }
 

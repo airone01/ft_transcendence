@@ -119,8 +119,11 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       return socket.emit("game:error", { message: "Already in bot queue" });
     }
 
-    if (socket.data.currentGameId?.startsWith("bot-")) {
-      return socket.emit("game:error", { message: "Already in a bot game" });
+    if (socket.data.currentGameId) {
+      const msg = socket.data.currentGameId.startsWith("bot-")
+        ? "Already in a bot game"
+        : "Already in a classic game";
+      return socket.emit("game:error", { message: msg });
     }
 
     botQueue.push({ userId, socket, difficulty });
