@@ -43,9 +43,14 @@ const stats = $derived(page.data.stats);
       </div>
     </UserProfileLink>
     <DropdownMenu>
-      <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
+      <DropdownMenuTrigger>
         {#snippet child({ props })}
-          <Button {...props} variant="outline" size="icon" class="p-0">
+          <Button
+            {...props}
+            variant="outline"
+            size="icon"
+            class="shrink-0 p-0 group-data-[collapsible=icon]:hidden"
+          >
             <EllipsisIcon class="aspect-square" />
           </Button>
         {/snippet}
