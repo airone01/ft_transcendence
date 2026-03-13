@@ -1,5 +1,9 @@
 import { error, redirect } from "@sveltejs/kit";
-import { DBGameNotFoundError, dbGetGame } from "$lib/server/db-services";
+import {
+  DBGameNotFoundError,
+  dbGetGame,
+  type Game,
+} from "$lib/server/db-services";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -12,7 +16,7 @@ export const load: PageServerLoad = async ({ params }) => {
     throw redirect(302, "/play?error=game_not_found");
   }
 
-  let game;
+  let game: Game;
   try {
     game = await dbGetGame(gameId);
   } catch (err) {
