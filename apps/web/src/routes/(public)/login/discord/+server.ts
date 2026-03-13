@@ -4,6 +4,7 @@ import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { RequestEvent } from "./$types";
+import { m } from "$lib/paraglide/messages";
 
 export const GET = async ({ cookies, getClientAddress }: RequestEvent) => {
   if (!checkHttpRateLimit(getClientAddress(), 10, "oauth"))
