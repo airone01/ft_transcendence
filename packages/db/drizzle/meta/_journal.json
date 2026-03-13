@@ -29,6 +29,13 @@
       "when": 1773561600000,
       "tag": "0003_bio_length",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773381444022,
+      "tag": "0004_daily_the_hunter",
+      "breakpoints": true
     }
   ]
 }

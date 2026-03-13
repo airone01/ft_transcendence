@@ -7,6 +7,8 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
+    environment:
+      - DOMAIN=${DOMAIN}
     depends_on:
       - web
 
