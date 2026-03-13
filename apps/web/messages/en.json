@@ -253,8 +253,8 @@
 
   "privacy_page_title": "[i18n] Privacy Policy",
   "privacy_page_hero_subtitle": "[i18n] Your privacy matters. Here's how we protect and handle your data.",
-  "privacy_page_tldr_title": "[i18n] TL;DR - Privacy Quick Facts",
-  "privacy_page_tldr_1": "[i18n] We only collect data necessary to provide chess gameplay",
+  "privacy_page_tldr_title": "[i18n] Privacy Quick Facts",
+  "privacy_page_tldr_1": "[i18n] We only collect data necessary to provide chess.io services",
   "privacy_page_tldr_2": "[i18n] We never sell your personal information",
   "privacy_page_tldr_3": "[i18n] Authentication is handled and secure",
 
@@ -273,7 +273,7 @@
   "privacy_page_section_1_2_item_4": "[i18n] Game timing and duration",
 
   "privacy_page_section_1_3_title": "[i18n] Chat Messages",
-  "privacy_page_section_1_3_desc": "[i18n] Messages sent in chat channels and global chat are not stored.",
+  "privacy_page_section_1_3_desc": "[i18n] Messages sent in chat channels and global chat will never be sell.",
 
   "privacy_page_section_1_4_title": "[i18n] Technical Data",
   "privacy_page_section_1_4_item_1": "[i18n] Session cookies for authentication",
