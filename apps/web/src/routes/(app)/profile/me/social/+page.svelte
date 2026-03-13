@@ -3,9 +3,10 @@ import { SearchIcon, UserPlusIcon } from "@lucide/svelte";
 import type { SubmitFunction } from "@sveltejs/kit";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
-import { untrack } from "svelte";
+import { onMount, untrack } from "svelte";
 import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
+import { page } from "$app/state";
 import * as m from "$lib/paraglide/messages";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import FriendsCard from "./friends-card.svelte";
@@ -13,6 +14,12 @@ import RequestsCard from "./requests-card.svelte";
 import SuggestedUsersCard from "./suggested-users-card.svelte";
 
 const { data } = $props();
+
+onMount(() => {
+  if (page.url.searchParams.get("error") === "chat_not_found") {
+    toast.error("Chat not found");
+  }
+});
 
 // svelte-ignore state_referenced_locally: idc
 let suggestedUsers = $state(
