@@ -20,7 +20,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     if (!data.content || data.content.trim().length === 0) {
-      return socket.emit("chat:error", { message: "Empty message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_empty_error",
+      });
     }
 
     const content = data.content.trim();
@@ -40,7 +42,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send global message:", error);
-      return socket.emit("chat:error", { message: "Failed to send message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -53,7 +57,7 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     }
 
     if (!rawContent || rawContent.trim().length === 0) {
-      return socket.emit("chat:error", { message: "Empty message" });
+      return socket.emit("chat:error", { message: "socket_chat_empty_error" });
     }
 
     const content = rawContent.trim();
@@ -65,7 +69,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
     const gameIdNum = parseInt(gameId, 10);
 
     if (Number.isNaN(gameIdNum)) {
-      return socket.emit("chat:error", { message: "Invalid game ID" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_game_invalid_error",
+      });
     }
 
     try {
@@ -79,7 +85,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       console.error("Failed to send game message:", error);
-      return socket.emit("chat:error", { message: "Failed to send message" });
+      return socket.emit("chat:error", {
+        message: "socket_chat_fail_send_error",
+      });
     }
   });
 
@@ -94,7 +102,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       }
 
       if (!rawContent || rawContent.trim().length === 0) {
-        return socket.emit("chat:error", { message: "Empty message" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_empty_error",
+        });
       }
 
       const content = rawContent.trim();
@@ -109,7 +119,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         typeof userId === "string" ? parseInt(userId, 10) : (userId as number);
 
       if (Number.isNaN(friendIdNum) || Number.isNaN(userIdNum)) {
-        return socket.emit("chat:error", { message: "Invalid user ID" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_user_invalid_error",
+        });
       }
 
       try {
@@ -127,7 +139,9 @@ export function registerChatHandlers(io: Server, socket: Socket) {
         io.to(`user:${friendId}`).emit("chat:friend", messageData);
       } catch (error) {
         console.error("Failed to send friend message:", error);
-        return socket.emit("chat:error", { message: "Failed to send message" });
+        return socket.emit("chat:error", {
+          message: "socket_chat_fail_send_error",
+        });
       }
     },
   );

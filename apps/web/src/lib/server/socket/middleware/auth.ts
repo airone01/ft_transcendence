@@ -1,4 +1,5 @@
 import type { Socket } from "socket.io";
+import { m } from "$lib/paraglide/messages";
 import { auth } from "$lib/server/auth";
 
 const SESSION_COOKIE_NAME = "session_token";
@@ -23,7 +24,7 @@ export async function authMiddleware(
   const token = parseSessionCookie(cookieHeader);
 
   if (!token) {
-    return next(new Error("Authentication required"));
+    return next(new Error(m.socket_middleware_auth_required_error()));
   }
 
   try {

@@ -20,7 +20,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
       if (gameId.startsWith("bot-")) {
         return socket.emit("game:error", {
-          message: "Bot games don't use game:join",
+          message: "socket_game_join_bot_error",
         });
       }
 
@@ -117,13 +117,19 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       });
     } catch (error) {
       if (error instanceof DBGameNotFoundError) {
-        return socket.emit("game:error", { message: "Game not found" });
+        return socket.emit("game:error", {
+          message: "socket_game_join_game_not_found_error",
+        });
       }
       if (error instanceof DBPlayersNotFoundError) {
-        return socket.emit("game:error", { message: "Players not found" });
+        return socket.emit("game:error", {
+          message: "socket_game_join_user_not_found_error",
+        });
       }
       console.error("Failed to join game:", error);
-      socket.emit("game:error", { message: "Failed to join game" });
+      socket.emit("game:error", {
+        message: "socket_game_join_fail_join_error",
+      });
     }
   });
 
@@ -143,16 +149,20 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
         if (socket.data.isSpectator) {
           return socket.emit("game:error", {
-            message: "Spectators cannot move pawn",
+            message: "socket_game_move_spectator_error",
           });
         }
 
         if (!gameRoom) {
-          return socket.emit("game:error", { message: "Game not found" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_game_not_found_error",
+          });
         }
 
         if (!gameRoom.isPlayerTurn(userId)) {
-          return socket.emit("game:error", { message: "Not your turn" });
+          return socket.emit("game:error", {
+            message: "socket_game_move_not_your_turn_error",
+          });
         }
 
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
@@ -206,7 +216,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         }
       } catch (error) {
         console.error("Move error:", error);
-        socket.emit("game:error", { message: "Invalid move" });
+        socket.emit("game:error", {
+          message: "socket_game_move_invalid_move_error",
+        });
       }
     },
   );
@@ -215,7 +227,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
-        message: "Spectators cannot offer draw",
+        message: "socket_game_offer_draw_specator_error",
       });
     }
     socket
@@ -227,7 +239,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
-        message: "Spectators cannot accept draw",
+        message: "socket_game_accept_draw_specator_error",
       });
     }
     try {
@@ -258,7 +270,9 @@ export function registerGameHandlers(io: Server, socket: Socket) {
   socket.on("game:resign", async (data: { gameId: string }) => {
     if (!checkRateLimit(socket)) return;
     if (socket.data.isSpectator) {
-      return socket.emit("game:error", { message: "Spectators cannot resign" });
+      return socket.emit("game:error", {
+        message: "socket_game_resign_spectator_error",
+      });
     }
     try {
       const gameRoom = activeGames.get(data.gameId);

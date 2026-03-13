@@ -240,7 +240,7 @@ export class GameRoom extends EventEmitter {
       const piece = this.state.board[from[0]][from[1]];
       if (!piece) {
         this.startTimer();
-        return { valid: false, error: "No piece at source square" };
+        return { valid: false, error: "socket_rooms_no_pieces_error" };
       }
 
       const isWhite = piece === piece.toUpperCase();
@@ -316,7 +316,7 @@ export class GameRoom extends EventEmitter {
     } catch (error) {
       console.error(`[GameRoom ${this.gameId}] Move error:`, error);
       this.startTimer();
-      return { valid: false, error: "Invalid move" };
+      return { valid: false, error: "socket_rooms_invalid_move_error" };
     }
   }
 

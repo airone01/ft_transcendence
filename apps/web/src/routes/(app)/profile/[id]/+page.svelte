@@ -16,6 +16,7 @@ import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
@@ -43,11 +44,10 @@ const resolveUserStatusTranslation = (userId: number) => {
 
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
-    // TODO: i18n maybe needed around here
     if (result.type === "failure")
-      toast.error(result.data?.error ?? "An error occurred");
+      toast.error(result.data?.error ?? m.toast_error());
     else if (result.type === "success")
-      toast.success(result.data?.message ?? "Success");
+      toast.success(result.data?.message ?? m.toast_success());
     await update();
   };
 };
@@ -91,10 +91,12 @@ const formEnhance: SubmitFunction = () => {
                 {resolveUserStatusTranslation(user?.id)}
               </Badge>
             </div>
-            <p class="text-muted-foreground flex items-center gap-2 text-sm">
+            <p
+              class="text-muted-foreground flex items-center gap-2 text-sm capitalize"
+            >
               <CalendarIcon class="w-3 h-3" />
               {m.profile_page_user_joined_on()}
-              {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, {
+              {new Date(user?.createdAt ?? 0).toLocaleDateString(getLocale(), {
                 year: "numeric",
                 month: "long",
               })}

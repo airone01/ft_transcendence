@@ -3,6 +3,7 @@ import { Upload, ZoomIn } from "@lucide/svelte";
 import type { Snippet } from "svelte";
 import Cropper, { type OnCropCompleteEvent } from "svelte-easy-crop";
 import { toast } from "svelte-sonner";
+import { m } from "../../../../../../apps/web/src/lib/paraglide/messages";
 import { getCroppedImg } from "../../../canvas";
 import { Button } from "../button";
 import {
@@ -48,7 +49,7 @@ function onFileSelected(e: Event) {
 async function saveCrop() {
   if (!imageSrc || !pixelCrop || pixelCrop.width === 0) {
     console.error("Crop data missing:", pixelCrop);
-    toast.error("Please move the image slightly to set the crop.");
+    toast.error(m.component_image_cropper_toast_move_image_error());
     return;
   }
 
@@ -66,7 +67,7 @@ async function saveCrop() {
     }
   } catch (e) {
     console.error(e);
-    toast.error("Failed to crop image" /* i18n */);
+    toast.error(m.component_image_cropper_toast_crop_error());
   } finally {
     loading = false;
   }

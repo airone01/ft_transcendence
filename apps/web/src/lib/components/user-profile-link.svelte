@@ -8,6 +8,7 @@ import {
 } from "@transc/ui/hover-card";
 import type { Snippet } from "svelte";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 
 let {
   userId,
@@ -77,8 +78,8 @@ let userPromise = $derived(
               <span>ELO {fullUser.currentElo}</span>
             {/if}
             <CalendarIcon class="w-3 h-3" />
-            <span
-              >{m.user_profile_link_joined({date: new Date(fullUser.createdAt).toLocaleDateString()})}</span
+            <span class="capitalize"
+              >{m.user_profile_link_joined({date: new Date(fullUser.createdAt).toLocaleDateString(getLocale())})}</span
             >
           </div>
         </div>

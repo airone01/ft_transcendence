@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
 import { page } from "$app/state";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import UserAvatar from "./user-avatar.svelte";
 import UserProfileLink from "./user-profile-link.svelte";
 

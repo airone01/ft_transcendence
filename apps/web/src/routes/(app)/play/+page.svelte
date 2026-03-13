@@ -149,8 +149,12 @@ function playVsBot() {
         >
           <TargetIcon class="w-10 h-10 text-purple-500" />
           <div class="text-center">
-            <h3 class="font-semibold text-lg">VS Bot</h3>
-            <p class="text-sm text-muted-foreground">Practice offline</p>
+            <h3 class="font-semibold text-lg">{m.play_page_mode_bot()}</h3>
+            <p class="text-sm text-muted-foreground">
+              {m.play_page_minutes_and_increment({minutes: 10, increment: 5})}
+              <br>
+              {m.play_page_mode_bot_unranked()}
+            </p>
           </div>
         </button>
       </div>

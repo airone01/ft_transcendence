@@ -1,5 +1,6 @@
 import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
+import { m } from "$lib/paraglide/messages";
 import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
 import { activeGames, registerGameHandlers } from "./handlers/game";
@@ -98,6 +99,6 @@ export function initSocketServer(httpServer: HTTPServer) {
 }
 
 export function getIO(): Server {
-  if (!io) throw new Error("Socket.io not initialized");
+  if (!io) throw new Error(m.socket_index_error());
   return io;
 }
