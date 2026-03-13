@@ -72,6 +72,14 @@ const resolveGameReason = (reason: string) => {
       return m.game_page_reason_agreement();
     case "resignation":
       return m.game_page_reason_resignation();
+    case "insufficient_material":
+      return m.game_page_reason_insufficient_material();
+    case "threefold_repetition":
+      return m.game_page_reason_threefold_repetition();
+    case "fifty_move_rule":
+      return m.game_page_reason_fifty_move_rule();
+    case "abort":
+      return m.game_page_reason_abort();
     default:
       return "";
   }

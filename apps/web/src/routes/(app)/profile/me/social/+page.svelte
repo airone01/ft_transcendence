@@ -17,7 +17,7 @@ const { data } = $props();
 
 onMount(() => {
   if (page.url.searchParams.get("error") === "chat_not_found") {
-    toast.error("Chat not found");
+    toast.error(m.toast_chat_not_found_error());
   }
 });
 
@@ -79,9 +79,9 @@ $effect(() => {
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
     if (result.type === "failure")
-      toast.error(result.data?.error ?? "An error occurred");
+      toast.error(result.data?.error ?? m.toast_error());
     else if (result.type === "success")
-      toast.success(result.data?.message ?? "Success");
+      toast.success(result.data?.message ?? m.toast_success());
     await update();
   };
 };

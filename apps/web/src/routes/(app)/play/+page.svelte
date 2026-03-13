@@ -17,7 +17,7 @@ import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
   if (page.url.searchParams.get("error") === "game_not_found") {
-    toast.error("Game not found");
+    toast.error(m.toast_game_not_found());
     gameState.update((s) => ({ ...s, gameId: null }));
   }
   return gameState.subscribe((state) => {

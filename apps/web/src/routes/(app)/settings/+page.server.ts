@@ -43,7 +43,7 @@ export const actions: Actions = {
   updatePassword: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
     if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
-      return fail(429, { message: "Too many requests" });
+      return fail(429, { message: m.profile_page_action_too_many_requests() });
 
     const form = await superValidate(request, zod(accountSettingsSchema));
     if (!form.valid) return fail(400, { form });
@@ -92,7 +92,7 @@ export const actions: Actions = {
   unlink: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
     if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
-      return fail(429, { message: "Too many requests" });
+      return fail(429, { message: m.profile_page_action_too_many_requests() });
 
     const formData = await request.formData();
     const provider = formData.get("provider") as OAuthProvider;
@@ -126,7 +126,7 @@ export const actions: Actions = {
   profile: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
     if (!checkHttpRateLimit(getClientAddress(), 60, "settings"))
-      return fail(429, { message: "Too many requests" });
+      return fail(429, { message: m.profile_page_action_too_many_requests() });
 
     const form = await superValidate(request, zod(profileFormSchema));
     if (!form.valid) return fail(400, { form });
@@ -168,7 +168,7 @@ export const actions: Actions = {
             withFiles({
               form,
               message:
-                "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+                m.invalid_image_format(),
             }),
           );
         }

@@ -89,7 +89,6 @@ const formEnhance: SubmitFunction = () => {
                 month: "long",
               })}
           </p>
-          <!-- TODO: fix Icon size and "div" align with the previous one -->
           <p class="text-muted-foreground flex items-center gap-2 text-sm">
             <MegaphoneIcon class="w-3 h-3" />
             {#if user?.bio === ''}

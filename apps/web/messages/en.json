@@ -230,6 +230,10 @@
   "game_page_reason_timeout": "[i18n] By Time out",
   "game_page_reason_agreement": "[i18n] By Agreement",
   "game_page_reason_resignation": "[i18n] By Resignation",
+  "game_page_reason_insufficient_material": "[i18n] By Insufficient material",
+  "game_page_reason_threefold_repetition": "[i18n] By Threefold Repetition",
+  "game_page_reason_fifty_move_rule": "[i18n] By Fifty Move Rule",
+  "game_page_reason_abort": "[i18n] By Abort",
 
   "game_page_popup_draw_offer_title": "[i18n] Draw offer",
   "game_page_popup_draw_offer_description": "[i18n] Do you want to accept this draw offer?",
@@ -438,6 +442,7 @@
   "user_profile_link_joined": "[i18n] Joined {date}",
   "user_profile_link_fail": "[i18n] Failed to load user info.",
 
+  "profile_page_action_too_many_requests": "[i18n] Too many requests",
   "profile_page_action_add_username_required": "[i18n] Username is required",
   "profile_page_action_add_add_yourself": "[i18n] You cannot add yourself",
   "profile_page_action_add_user_not_found": "[i18n] User not found",
@@ -546,9 +551,16 @@
 
   "toast_error_header": "[i18n] Error:",
   "toast_chat_error_header": "[i18n] Chat Error:",
+  "toast_chat_not_found_error": "[i18n] Chat not found",
   "toast_success": "[i18n] Success",
   "toast_error": "[i18n] An error occurred",
+  "toast_game_not_found": "[i18n] Game not found",
+  "toast_settings_security_updated": "[i18n] Security settings updated",
+  "toast_setting_profile_updated": "[i18n] Profile updated successfully",
+  "toast_unlinked_account": "[i18n] Error unlinking account",
+  "toast_account_disconnected": "Account disconnected",
 
+  "too_many_requests_wait": "Too many login attempts, please try again in a minute.",
   "unknown": "[i18n] Unknown",
   "loading": "[i18n] Loading...",
 
@@ -556,6 +568,15 @@
   "span_chat": "[i18n] Chat",
   "span_remove": "[i18n] Remove",
 
+  "duration_translate": "[i18n] Duration:",
+  "button_spectate": "[i18n] Spectate",
+
+  "invalid_user_id": "Invalid user ID",
+  "avatar_not_found": "Avatar not found",
+  "unsupported_avatar": "Unsupported avatar format",
+
+  "invalid_image_format": "Invalid image format. Only JPEG, PNG, GIF and WebP are allowed.",
+  
   "component_image_cropper_upload": "[i18n] Upload Image",
   "component_image_cropper_edit": "[i18n] Edit Avatar",
   "component_image_cropper_save": "[i18n] Save Changes",
