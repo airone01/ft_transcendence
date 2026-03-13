@@ -16,3 +16,7 @@ export function initializeSocketListeners(userId: number) {
   initialized = true;
   console.log("Socket listeners initialized");
 }
+
+export function resetSocketListeners() {
+  initialized = false;
+}

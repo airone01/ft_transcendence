@@ -12,6 +12,7 @@ import {
   dbRemoveFriend,
   dbRequestFriendship,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -23,24 +24,36 @@ export const load: PageServerLoad = async ({ locals }) => {
       activeGames: {},
     };
 
-  const friends = await dbGetFriendsInfo(locals.user.id);
-  const suggestedUsers = await dbGetRandomUsers(locals.user.id);
-  const invitations = await dbGetInvitations(locals.user.id);
+  try {
+    const friends = await dbGetFriendsInfo(locals.user.id);
+    const suggestedUsers = await dbGetRandomUsers(locals.user.id);
+    const invitations = await dbGetInvitations(locals.user.id);
 
-  const allUserIds = [...friends, ...suggestedUsers].map((u) => u.userId);
-  const activeGames = await dbGetUsersActiveGames(allUserIds);
+    const allUserIds = [...friends, ...suggestedUsers].map((u) => u.userId);
+    const activeGames = await dbGetUsersActiveGames(allUserIds);
 
-  return {
-    friends,
-    suggestedUsers,
-    invitations,
-    activeGames,
-  };
+    return {
+      friends,
+      suggestedUsers,
+      invitations,
+      activeGames,
+    };
+  } catch (err) {
+    console.error("Failed to load social data:", err);
+    return {
+      friends: [],
+      suggestedUsers: [],
+      invitations: [],
+      activeGames: {},
+    };
+  }
 };
 
 export const actions: Actions = {
-  add: async ({ request, locals }) => {
+  add: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60))
+      return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
     const username = formData.get("username")?.toString();
@@ -65,17 +78,17 @@ export const actions: Actions = {
       };
     } catch (error) {
       if (error instanceof DBAddFriendFriendshipAlreadyExistsError) {
-        return fail(400, {
-          error: m.profile_page_action_add_fail(),
-        });
+        return fail(400, { error: m.profile_page_action_add_fail() });
       }
       console.error(error);
       return fail(500, { error: m.profile_page_action_add_internal_error() });
     }
   },
 
-  accept: async ({ request, locals }) => {
+  accept: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60))
+      return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
     const senderId = Number(formData.get("userId"));
@@ -88,11 +101,7 @@ export const actions: Actions = {
     try {
       await dbAddFriend(locals.user.id, senderId);
       await dbRejectFriendship(senderId, locals.user.id);
-
-      return {
-        success: true,
-        message: m.profile_page_action_accept_success(),
-      };
+      return { success: true, message: m.profile_page_action_accept_success() };
     } catch (error) {
       console.error(error);
       return fail(500, {
@@ -101,8 +110,10 @@ export const actions: Actions = {
     }
   },
 
-  reject: async ({ request, locals }) => {
+  reject: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60))
+      return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
     const senderId = Number(formData.get("userId"));
@@ -114,10 +125,7 @@ export const actions: Actions = {
 
     try {
       await dbRejectFriendship(senderId, locals.user.id);
-      return {
-        success: true,
-        message: m.profile_page_action_reject_success(),
-      };
+      return { success: true, message: m.profile_page_action_reject_success() };
     } catch (error) {
       console.error(error);
       return fail(500, {
@@ -126,17 +134,18 @@ export const actions: Actions = {
     }
   },
 
-  remove: async ({ request, locals }) => {
+  remove: async ({ request, locals, getClientAddress }) => {
     if (!locals.user) return fail(401);
+    if (!checkHttpRateLimit(getClientAddress(), 60))
+      return fail(429, { error: "Too many requests" });
 
     const formData = await request.formData();
     const friendId = Number(formData.get("friendId"));
 
-    if (!friendId || Number.isNaN(friendId)) {
+    if (!friendId || Number.isNaN(friendId))
       return fail(400, {
         error: m.profile_page_action_remove_invalid_userid(),
       });
-    }
 
     try {
       await dbRemoveFriend(locals.user.id, friendId);

@@ -4,16 +4,16 @@ import {
   dbCreateGame,
   dbStartGame,
 } from "$lib/server/db-services";
+import { checkRateLimit } from "../middleware/rateLimit";
 import { activeGames } from "./game";
 
-// Matchmaking queues
 export const queues = new Map<string, Socket[]>();
 
 export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
   const userId = socket.data.userId;
 
-  // Join a queue
   socket.on("matchmaking:join", async (data: { mode: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { mode } = data;
 
     if (!queues.has(mode)) {
@@ -21,7 +21,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     }
 
     const queue = queues.get(mode);
-    if (!queue) return socket.emit("matchmaking:error, undifined queue");
+    if (!queue)
+      return socket.emit("matchmaking:error", { message: "undefined queue" });
 
     for (const [gameId, gameRoom] of activeGames.entries()) {
       if (!gameRoom.isGameOver()) {
@@ -49,25 +50,21 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     socket.emit("matchmaking:waiting", { mode, position: queue.length + 1 });
     queue.push(socket);
 
-    // If 2 players in the queue -> create the game
     if (queue.length >= 2) {
       const player1 = queue.shift();
       const player2 = queue.shift();
       if (!player1 || !player2)
-        return socket.emit("matchmaking:error, undifined player");
+        return socket.emit("matchmaking:error", {
+          message: "undefined player",
+        });
 
       if (player1.data.userId === player2.data.userId) {
-        console.log(
-          `[Matchmaking] Same user ${player1.data.userId} tried to match with themselves`,
-        );
-
         player1.emit("matchmaking:error", {
           message: "Cannot match with yourself",
         });
         player2.emit("matchmaking:error", {
           message: "Cannot match with yourself",
         });
-
         return;
       }
 
@@ -102,6 +99,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
           }
         }
       }
+
       try {
         const [white, black] =
           Math.random() < 0.5 ? [player1, player2] : [player2, player1];
@@ -119,7 +117,6 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
         white.data.currentGameId = String(gameId);
         black.data.currentGameId = String(gameId);
 
-        // Notify the two players
         white.emit("matchmaking:matched", {
           gameId: String(gameId),
           color: "white",
@@ -136,8 +133,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     }
   });
 
-  // Leave the queue
   socket.on("matchmaking:leave", (data: { mode: string }) => {
+    if (!checkRateLimit(socket)) return;
     const { mode } = data;
     const queue = queues.get(mode);
     if (queue) {
@@ -148,16 +145,14 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
   });
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
 function getTimeControlForMode(mode: string): number {
   switch (mode) {
     case "blitz":
-      return 300; // 5 min
+      return 300;
     case "rapid":
-      return 900; // 15 min
+      return 900;
     default:
-      return 600; // 10 min
+      return 600;
   }
 }
 

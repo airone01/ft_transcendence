@@ -11,10 +11,11 @@ export function setupPresenceListeners() {
     onlineList: { userId: string; status: "online" | "offline" | "ingame" }[],
   ) => {
     onlineUsersStore.update((map) => {
+      const newMap = new Map(map);
       onlineList.forEach((u) => {
-        map.set(u.userId, u.status);
+        newMap.set(u.userId, u.status);
       });
-      return map;
+      return newMap;
     });
   }) as unknown as (...args: unknown[]) => void);
 

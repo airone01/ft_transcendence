@@ -12,7 +12,10 @@ import AuthDialog from "$lib/components/auth-dialog.svelte";
 import AppShell from "$lib/components/layout/app-shell.svelte";
 import * as m from "$lib/paraglide/messages";
 import { locales, localizeHref } from "$lib/paraglide/runtime";
-import { initializeSocketListeners } from "$lib/socket-init";
+import {
+  initializeSocketListeners,
+  resetSocketListeners,
+} from "$lib/socket-init";
 import { socketConnected, socketManager } from "$lib/stores/socket.svelte";
 import "@fontsource-variable/merriweather";
 import "@fontsource-variable/montserrat";
@@ -24,9 +27,19 @@ let listenersInitialized = false;
 let connectionInitialized = false;
 
 $effect(() => {
+  if (!data.user && typeof window !== "undefined") {
+    localStorage.removeItem("gameState");
+    if (connectionInitialized) {
+      connectionInitialized = false;
+      listenersInitialized = false;
+      resetSocketListeners();
+      socketManager.disconnect();
+    }
+  }
+
   if (data.user && !connectionInitialized) {
     connectionInitialized = true;
-    socketManager.connect(String(data.user.id), data.user.username);
+    socketManager.connect();
   }
 
   if (data.user && $socketConnected && !listenersInitialized) {
@@ -37,15 +50,30 @@ $effect(() => {
 
 onMount(() => {
   socketManager.on("game:reconnected", (eventData: unknown) => {
-    const { gameId, isSpectator = false } = eventData as {
+    const {
+      gameId,
+      isSpectator = false,
+      gameOver = false,
+    } = eventData as {
       gameId: string;
       isSpectator?: boolean;
+      gameOver: boolean;
     };
 
     if (isSpectator) {
       console.log(
         `[Redirect] Skipping redirect, user is spectator of game ${gameId}`,
       );
+      return;
+    }
+
+    if (gameOver) {
+      console.log(`[Redirect] Skipping redirect, game ${gameId} is finish`);
+      return;
+    }
+
+    if (gameId.startsWith("bot-")) {
+      console.log(`[Redirect] Skipping redirect, bot game ${gameId}`);
       return;
     }
 

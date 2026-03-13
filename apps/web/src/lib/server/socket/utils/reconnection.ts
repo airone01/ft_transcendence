@@ -2,17 +2,15 @@ import type { Socket } from "socket.io";
 import type { GameRoom } from "../rooms/GameRoom";
 
 // Track the session users
-const disconnectedSessions = new Map<
-  string,
-  {
-    userId: string;
-    rooms: Set<string>;
-    disconnectedAt: number;
-    gameId: string | null;
-  }
->();
+type DisconnectedSession = {
+  userId: string;
+  rooms: Set<string>;
+  disconnectedAt: number;
+  gameId: string | null;
+};
 
-const MAX_DISCONNECTION_DURATION = 2 * 60 * 1000;
+const disconnectedSessions = new Map<string, DisconnectedSession>();
+const MAX_DISCONNECTION_DURATION = 2 * 60 * 1000; // 2 minutes
 
 /**
  * save the state session before deconnection
@@ -32,6 +30,7 @@ export function saveSessionOnDisconnect(socket: Socket) {
     console.log(
       `[Reconnection] User ${userId} is in bot game, not saving session`,
     );
+    return;
   }
 
   const gameId = socket.data.currentGameId || null;
@@ -63,6 +62,8 @@ export async function restoreSessionOnReconnect(
   if (!userId) return { restored: false, gameId: null };
 
   for (const [gameId, gameRoom] of activeGames.entries()) {
+    if (gameId.startsWith("bot-")) continue; // bot games are not restorable
+
     if (!gameRoom.isGameOver()) {
       const isPlayer =
         gameRoom.getWhiteId() === userId || gameRoom.getBlackId() === userId;
@@ -84,6 +85,7 @@ export async function restoreSessionOnReconnect(
         socket.emit("game:reconnected", {
           gameId,
           isSpectator: false,
+          gameOver: false,
         });
 
         console.log(
@@ -117,13 +119,16 @@ export async function restoreSessionOnReconnect(
 
     const gameRoom = activeGames.get(session.gameId);
     if (gameRoom) {
+      const myColor = gameRoom.getWhiteId() === userId ? "white" : "black";
       socket.emit("game:state", {
         ...gameRoom.getState(),
         gameId: session.gameId,
+        myColor,
       });
       socket.emit("game:reconnected", {
         gameId: session.gameId,
         isSpectator: socket.data.isSpectator || false,
+        gameOver: false,
       });
       console.log(
         `[Reconnection] Game state sent from memory for game ${session.gameId}`,
@@ -132,6 +137,11 @@ export async function restoreSessionOnReconnect(
       console.log(
         `[Reconnection] GameRoom ${session.gameId} not found in memory`,
       );
+      socket.emit("game:reconnected", {
+        gameId: session.gameId,
+        isSpectator: false,
+        gameOver: true,
+      });
     }
   }
 

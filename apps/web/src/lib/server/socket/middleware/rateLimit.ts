@@ -11,7 +11,7 @@ const RATE_LIMIT_WINDOW = 1000; // 1 sec
 const RATE_LIMIT_MAX = 10; // 10 events per sec
 
 export function checkRateLimit(socket: Socket): boolean {
-  const key = socket.id;
+  const key = socket.data.userId;
   const now = Date.now();
 
   const entry = rateLimits.get(key);
@@ -19,7 +19,7 @@ export function checkRateLimit(socket: Socket): boolean {
   if (!entry || now > entry.resetTime) {
     // New window
     rateLimits.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return true; // OK
+    return true;
   }
 
   entry.count++;
