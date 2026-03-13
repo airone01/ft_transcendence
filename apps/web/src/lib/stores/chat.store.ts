@@ -74,6 +74,6 @@ export function setupChatListeners(currentUserId: string) {
       typeof translate === "function" ? translate() : m.toast_error();
 
     console.error("Chat error:", text);
-    toast.error(`Chat error: ${text}`);
+    toast.error(`${m.toast_chat_error_header} ${text}`);
   }) as unknown as (...args: unknown[]) => void);
 }

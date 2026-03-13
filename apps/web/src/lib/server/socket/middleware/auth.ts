@@ -31,7 +31,7 @@ export async function authMiddleware(
     const { user } = await auth.validateSession(token);
 
     if (!user) {
-      return next(new Error("Invalid or expired session"));
+      return next(new Error(m.socket_middleware_auth_user_error()));
     }
 
     socket.data.userId = String(user.id);
@@ -40,6 +40,6 @@ export async function authMiddleware(
     next();
   } catch (err) {
     console.error("[Socket Auth] Session validation failed:", err);
-    return next(new Error("Authentication error"));
+    return next(new Error(m.socket_middleware_auth_error()));
   }
 }

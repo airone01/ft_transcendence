@@ -59,7 +59,7 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
       const player2 = queue.shift();
       if (!player1 || !player2)
         return socket.emit("matchmaking:error", {
-          message: "undefined player",
+          message: "socket_matchmaking_join_undefined_player_error",
         });
 
       if (player1.data.userId === player2.data.userId) {

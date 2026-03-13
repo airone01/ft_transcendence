@@ -292,7 +292,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     } catch (error) {
       console.error("Accept draw error:", error);
       activeGames.delete(data.gameId);
-      socket.emit("game:error", { message: "Failed to accept draw" });
+      socket.emit("game:error", { message: "socket_game_accept_draw_error" });
     }
   });
 
@@ -339,7 +339,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     } catch (error) {
       console.error("Resign error:", error);
       activeGames.delete(data.gameId);
-      socket.emit("game:error", { message: "Failed to process resignation" });
+      socket.emit("game:error", { message: "socket_game_resign_error" });
     }
   });
 

@@ -137,7 +137,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
       startNextBotGame(io);
     } else {
       socket.emit("bot:waiting", {
-        message: "Waiting for available slot...",
+        message: "socket_bot_waiting_error",
       });
     }
   });

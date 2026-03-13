@@ -84,6 +84,6 @@ export function setupMatchmakingListeners() {
     const text =
       typeof translate === "function" ? translate() : m.toast_error();
     console.error("Matchmaking error:", text);
-    toast(`Error:·${text}`);
+    toast(`${m.toast_error_header()} ${text}`);
   }) as unknown as (...args: unknown[]) => void);
 }

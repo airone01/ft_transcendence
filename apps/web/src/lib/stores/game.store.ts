@@ -329,7 +329,7 @@ export function setupGameListeners() {
     const text =
       typeof translate === "function" ? translate() : m.toast_error();
 
-    toast(`Error: ${text}`);
+    toast(`${m.toast_error_header()}: ${text}`);
 
     if (data.message === "socket_game_join_game_not_found_error") {
       gameState.update((s) => ({
