@@ -35,9 +35,6 @@
 
 ## Description
 
-> [!WARNING] Subject
-> The “Description” section should also contain a clear name for the project and its key features.
-
 ***ft_transcendence*** is the flagship project of 42, and the last project of the Common Core.
 
 Our implementation, ***Chess.io***, is a full-stack real-time web application that allows users to play chess online against other players or an AI opponent.
@@ -50,9 +47,6 @@ Our implementation, ***Chess.io***, is a full-stack real-time web application th
 - Chat system
 
 ## Instructions
-
-> [!WARNING] Subject
-> The “Instructions” section should mention all the needed prerequisites (software, tools, versions, configuration like .env setup, etc.), and step-by-step instructions to run the project.
 
 ### Software
 
@@ -69,14 +63,16 @@ Our implementation, ***Chess.io***, is a full-stack real-time web application th
 During production, the env variables inside of `.env` are used files for configuring the webapp.
 An example environment configuration is present at `.env.example`. Copy it to `.env` to get started.
 
-To launch the app in production mode, run `bun run prod:build` in the root of the project.
+### Step-by-step instructions
+
+- Copy `.env.example` to `.env` (at root of the repo)
+  - Change the Disord client ID and token to your own
+  - Optionally edit it depending on your preferences
+- Run `bun run prod:build`
+
+*Et voilà!*
 
 ## Team Information
-
-> [!WARNING] Subject
-> For each team member mentioned at the top of the README.md, you must provide:
-> ◦ Assigned role(s): PO, PM, Tech Lead, Developers, etc.
-> ◦ Brief description of their responsibilities.
 
 - `vblanc` as **Product Owner (PO)**
   - Maintains the product backlog.
@@ -100,13 +96,6 @@ To launch the app in production mode, run `bun run prod:build` in the root of th
   - Document their work.
 
 ## Project Management
-
-```
-Subject:
-◦ How the team organized the work (task distribution, meetings, etc.).
-◦ Tools used for project management (GitHub Issues, Trello, etc.).
-◦ Communication channels used (Discord, Slack, etc.).
-```
 
 ### Organization
 
@@ -136,13 +125,6 @@ Subject:
 
 ## Technical Stack
 
-> [!WARNING] Subject
-> ◦ Frontend technologies and frameworks used.
-> ◦ Backend technologies and frameworks used.
-> ◦ Database system and why it was chosen.
-> ◦ Any other significant technologies or libraries.
-> ◦ Justification for major technical choices.
-
 | Layer          | Technology                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend       | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![paraglide](https://img.shields.io/badge/paraglide-FFF000?style=for-the-badge&logo=i18next&logoColor=black) ![Shadcn-Svelte](https://img.shields.io/badge/shadcn--svelte-FF3E00?style=for-the-badge&logo=shadcnui&logoColor=white) |
@@ -154,21 +136,11 @@ Subject:
 
 ## Database Schema
 
-> [!WARNING] Subject
-> ◦ Visual representation or description of the database structure.
-> ◦ Tables/collections and their relationships.
-> ◦ Key fields and data types.
-
 [![DB](./.github/assets/ft_transcendence_db.jpg)](https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9)
 
 > This image was generated via [dbdiagram.io](https://dbdiagram.io/). You can find the link of the DB [here](https://dbdiagram.io/d/ft_transcendence-697a03cabd82f5fce2e446f9).
 
 ## Features List
-
-> [!WARNING] Subject
-> ◦ Complete list of implemented features.
-> ◦ Which team member(s) worked on each feature.
-> ◦ Brief description of each feature’s functionality.
 
 In no particular order, we implemented:
 
@@ -235,13 +207,6 @@ In no particular order, we implemented:
 
 
 ## Modules
-
-> [!WARNING] Subject
-> ◦ List of all chosen modules (Major and Minor).
-> ◦ Point calculation (Major = 2pts, Minor = 1pt).
-> ◦ Justification for each module choice, especially for custom "Modules of choice".
-> ◦ How each module was implemented.
-> ◦ Which team member(s) worked on each module.
 
 ### Web
 
@@ -346,11 +311,6 @@ In no particular order, we implemented:
 
 ## Individual Contributions
 
-> [!WARNING] Subject
-> ◦ Detailed breakdown of what each team member contributed.
-> ◦ Specific features, modules, or components implemented by each person.
-> ◦ Any challenges faced and how they were overcome.
-
 ### Simon Cottenet (`scottene`)
 
 Implemented:
@@ -414,9 +374,6 @@ Challenges faced:
 
 ## Resources
 
-> [!WARNING] Subject
-> A “Resources” section listing classic references related to the topic (documentation, articles, tutorials, etc.), as well as a description of how AI was used — specifying for which tasks and which parts of the project.
-
 
 ### Documentations
 - [Bun Documentation](https://bun.com/docs)
@@ -447,10 +404,6 @@ AI tools (*ChatGPT*, *Claude*, *Gemini*, *GitHub Copilot*) were used for:
 > AI was not used to generate complete features without understanding.***
 
 ## Miscellaneous
-
-> [!WARNING] Subject
-> Any other useful or relevant information is welcome (usage documentation, known
-> limitations, license, credits, etc.).
 
 ### Known Limitations
 
