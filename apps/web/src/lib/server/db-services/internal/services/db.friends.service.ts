@@ -288,15 +288,24 @@ export async function dbRemoveFriend(
  * @throws {UnknownError} - If an unexpected error occurs
  * @returns {Promise<FriendInfo[]>} - A promise that resolves with the list of friends, or rejects if an unexpected error occurs
  */
-export async function dbIsFriend(userId: number, friendId: number): Promise<boolean> {
+export async function dbIsFriend(
+  userId: number,
+  friendId: number,
+): Promise<boolean> {
   try {
     const [row] = await db
       .select({ id: friendships.firstFriendId })
       .from(friendships)
       .where(
         or(
-          and(eq(friendships.firstFriendId, userId), eq(friendships.secondFriendId, friendId)),
-          and(eq(friendships.firstFriendId, friendId), eq(friendships.secondFriendId, userId)),
+          and(
+            eq(friendships.firstFriendId, userId),
+            eq(friendships.secondFriendId, friendId),
+          ),
+          and(
+            eq(friendships.firstFriendId, friendId),
+            eq(friendships.secondFriendId, userId),
+          ),
         ),
       )
       .limit(1);

@@ -6,11 +6,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
   if (!locals.user) throw redirect(302, "/");
 
   const friendId = parseInt(params.id, 10);
-  if (Number.isNaN(friendId)) throw redirect(302, "/profile/me/social?error=chat_not_found"); //TODO
+  if (Number.isNaN(friendId))
+    throw redirect(302, "/profile/me/social?error=chat_not_found"); //TODO
 
   try {
     const areFriends = await dbIsFriend(locals.user.id, friendId);
-    if (!areFriends) throw redirect(302, "/profile/me/social?error=chat_not_found"); //TODO
+    if (!areFriends)
+      throw redirect(302, "/profile/me/social?error=chat_not_found"); //TODO
 
     const messages = await dbGetFriendMessages(locals.user.id, friendId);
 
@@ -23,7 +25,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       })),
     };
   } catch (err) {
-    if (err instanceof Response || (err as { status?: number })?.status) throw err;
+    if (err instanceof Response || (err as { status?: number })?.status)
+      throw err;
     console.error("Failed to load friend messages:", err);
     throw redirect(302, "/profile/me/social?error=chat_not_found"); //TODO
   }
