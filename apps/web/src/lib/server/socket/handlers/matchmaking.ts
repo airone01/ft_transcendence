@@ -21,12 +21,8 @@ export function registerMatchmakingHandlers(_io: Server, socket: Socket) {
     }
 
     const queue = queues.get(mode);
-<<<<<<< donttouch/i18n-save
-    if (!queue) return socket.emit("matchmaking:error, undifined queue ");
-=======
     if (!queue)
-      return socket.emit("matchmaking:error", { message: "undefined queue" });
->>>>>>> main
+      return socket.emit("matchmaking:error", { message: "undefined queue" }); // TODO i18n
 
     for (const [gameId, gameRoom] of activeGames.entries()) {
       if (!gameRoom.isGameOver()) {

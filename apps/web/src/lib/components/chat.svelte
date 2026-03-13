@@ -47,31 +47,6 @@ $effect(() => {
   });
 });
 
-<<<<<<< donttouch/i18n-save
-// auto fetch users on the fly
-$effect(() => {
-  const missingIds = [
-    ...new Set(messages.map((message) => message.userId)),
-  ].filter((id) => !usernameCache[id]);
-
-  missingIds.forEach(async (id) => {
-    usernameCache[id] = m.loading().toLowerCase();
-    try {
-      const res = await fetch(`/api/users/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        usernameCache[id] = data.username;
-      } else {
-        usernameCache[id] = m.unknown();
-      }
-    } catch {
-      usernameCache[id] = m.unknown();
-    }
-  });
-});
-
-=======
->>>>>>> main
 let messages = $derived.by(() => {
   if (mode === "global") return $globalMessages;
   if (mode === "friend" && friendId) {
@@ -120,19 +95,9 @@ function handleSend(e: Event) {
     {#each messages as msg}
       <div class="flex flex-col">
         <div class="flex items-baseline gap-2">
-<<<<<<< donttouch/i18n-save
-          <span class="font-bold text-sm text-primary">
-            {usernameCache[msg.userId] && usernameCache[msg.userId] !== 'loading'
-              ? usernameCache[msg.userId]
-              : msg.username}
-          </span>
+          <span class="font-bold text-sm text-primary"> {msg.username} </span>
           <span class="text-xs text-muted-foreground capitalize">
             {new Date(msg.timestamp).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' })}
-=======
-          <span class="font-bold text-sm text-primary"> {msg.username} </span>
-          <span class="text-xs text-muted-foreground">
-            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
->>>>>>> main
           </span>
         </div>
         <p class="text-sm mt-0.5 wrap-break-word">{msg.content}</p>
