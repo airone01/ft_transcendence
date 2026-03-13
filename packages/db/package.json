@@ -26,7 +26,6 @@
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
-    "drizzle-kit": "^0.31.8",
     "postgres": "^3.4.8",
     "zod": "^4.3.6",
     "pg": "^8.18.0"
