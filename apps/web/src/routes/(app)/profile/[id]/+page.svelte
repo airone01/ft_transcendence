@@ -95,7 +95,7 @@ const formEnhance: SubmitFunction = () => {
             {#if user?.bio === ''}
               {m.user_profile_link_bio_empty()}
             {:else}
-              {m.profile_page_user_bio()}:{user?.bio}
+              « {user?.bio} »
             {/if}
           </p>
         </div>
