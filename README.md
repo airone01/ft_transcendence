@@ -64,10 +64,10 @@ Our implementation of ***ft_transcendence*** is a full-stack real-time web appli
 
 ### Environment
 
-During production, the env variables inside of `docker-compose.prod.yml` are used in favor of the `.env` files for configuring the webapp.
-The environment is defined and can be changed there.
+During production, the env variables inside of `.env` are used files for configuring the webapp.
+An example environment configuration is present at `.env.example`. Copy it to `.env` to get started.
 
-The database settings are defined in its respective environment in `docker-compose.prod.yml`
+To launch the app in production mode, run `bun run prod:build` in the root of the project.
 
 ## Team Information
 
@@ -145,7 +145,7 @@ Subject:
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Frontend       | ![Svelte](https://img.shields.io/badge/Svelte_5-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![paraglide](https://img.shields.io/badge/paraglide-FFF000?style=for-the-badge&logo=i18next&logoColor=black) ![Shadcn-Svelte](https://img.shields.io/badge/shadcn--svelte-FF3E00?style=for-the-badge&logo=shadcnui&logoColor=white) |
 | Backend        | ![SvelteKit](https://img.shields.io/badge/Svelte--Kit-FF3E00?style=for-the-badge&logo=svelte&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white)                                                                                                                                       |
-| Database       | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)                                                                                                      |
+| Database       | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)                                                                                                                                                                                                                                                                                                                                                      |
 | Infrastructure | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![Caddy](https://img.shields.io/badge/Caddy-1F88C0?style=for-the-badge&logo=caddy&logoColor=white)                                                                                                                                                                                                                                                                                                                                                                            |
 
 **We chose this stack as it is a good combinasion of entry-level technologies for us learning students, as well as stable ones that gained us time in the long run.**
@@ -341,40 +341,6 @@ In no particular order, we implemented:
 | User Management                        |   1 Major(s) and 2 Minor(s)   |   4 pts    |
 | Gaming and user experience             |   2 Major(s) and 1 Minor(s)   |   5 pts    |
 | **Total**                              | **7 Major(s) and 9 Minor(s)** | **22 pts** |
-
-**-------------------------------------- OR - AI GENERATED --------------------------------------**
-
-## Major Modules (2 pts each)
-
-| Module                       | Points | Implementation           | Team Member(s)                               |
-| ---------------------------- | ------ | ------------------------ | -------------------------------------------- |
-| Frontend & Backend Framework | 2      | Svelte 5, Svelte Kit     | `elagouch`                                   |
-| Real-time WebSockets         | 2      | Socket.io                | `enpassel`                                   |
-| User Interaction System      | 2      | Chat, Friends, Profiles  | `elagouch` & `scottene` (UI), `vblanc` (DB)  |
-| Standard User Management     | 2      | Profile, Avatar, Friends | `elagouch` (UI & logic), `vblanc` (DB)       |
-| AI Opponent                  | 2      | Minimax, evaluation      | `vblanc` (logic), `enpassel` (communication) |
-| Complete Multiplayer Game    | 2      | Chess engine, validation | `scottene` (UI & logic), `vblanc` (DB)       |
-| Remote Players               | 2      | Reconnection logic       | `enpassel`                                   |
-| Accessibility WCAG 2.1 AA    | 2      | Full compliance audit    | `elagouch`                                   |
-
-**Total Major Points: 16**
-
----
-
-## Minor Modules (1 pt each)
-
-| Module                       | Points | Implementation                    | Team Member(s)                            |
-| ---------------------------- | ------ | --------------------------------- | ----------------------------------------- |
-| ORM (Prisma)                 | 1      | Usage                             | `vblanc`                                  |
-| SSR                          | 1      | (by default)                      |                                           |
-| Custom Design System         | 1      | 'shadcn-svelte' base              | `elagouch`                                |
-| Multi-language (3 languages) | 1      | 'paraglide'                       | `elagouch`, translation by the whole team |
-| Additional Browser Support   | 1      | (by default)                      |
-| Game Statistics              | 1      | Statistics page, UI/UX reactivity | `elagouch`                                |
-| OAuth 2.0                    | 1      | Discord social provider API       | `elagouch`                                |
-| Spectator Mode               | 1      | Full spectator support            | `enpassel`                                |
-
-**Total Minor Points: 8**
 
 ## Individual Contributions
 
