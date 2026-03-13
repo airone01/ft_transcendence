@@ -161,7 +161,8 @@
 
   "win_ratio_card_title": "[i18n] Win Ratio",
   "win_ratio_card_description": "[i18n] Total games played",
-  "win_ratio_card_empty_description": "[i18n] Play more to see your stats!",
+  "win_ratio_card_empty_title": "[i18n] No data yet",
+  "win_ratio_card_empty_description": "[i18n] Go play some more, we'll display your stats here.",
   "win_ratio_card_wins": "[i18n] W",
   "win_ratio_card_draws": "[i18n] D",
   "win_ratio_card_losses": "[i18n] L",
