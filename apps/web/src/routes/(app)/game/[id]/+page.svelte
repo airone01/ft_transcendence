@@ -3,7 +3,7 @@ import { ClockIcon, FlagIcon, HandshakeIcon, XIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import * as Dialog from "@transc/ui/dialog";
 import { Separator } from "@transc/ui/separator";
-import { onDestroy } from "svelte";
+import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
 import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
@@ -76,6 +76,15 @@ const resolveGameReason = (reason: string) => {
       return "";
   }
 };
+
+onMount(() => {
+  if (
+    gameId.startsWith("bot-") &&
+    ($gameState.gameId !== gameId || !$gameState.isBotGame)
+  ) {
+    goto("/play?error=game_not_found");
+  }
+});
 
 onDestroy(() => {
   const currentGameId = $gameState.gameId;

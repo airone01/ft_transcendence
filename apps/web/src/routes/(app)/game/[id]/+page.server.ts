@@ -12,12 +12,17 @@ export const load: PageServerLoad = async ({ params }) => {
     throw redirect(302, "/play?error=game_not_found");
   }
 
+  let game;
   try {
-    await dbGetGame(gameId);
+    game = await dbGetGame(gameId);
   } catch (err) {
     if (err instanceof DBGameNotFoundError) {
       throw redirect(302, "/play?error=game_not_found");
     }
     throw error(500, "Failed to load game");
+  }
+
+  if (game.status === "finished") {
+    throw redirect(302, "/play?error=game_not_found");
   }
 };
