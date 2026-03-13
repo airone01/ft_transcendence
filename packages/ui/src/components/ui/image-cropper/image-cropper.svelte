@@ -89,6 +89,7 @@ function triggerFileInput() {
   onclick={triggerFileInput}
   role="button"
   tabindex="0"
+  class="w-fit"
   onkeydown={(e) => e.key === 'Enter' && triggerFileInput()}
 >
   {#if children}
