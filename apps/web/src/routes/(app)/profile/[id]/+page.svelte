@@ -74,17 +74,17 @@ const formEnhance: SubmitFunction = () => {
               variant={(userStatus(user?.id) === "online")
                   ? "default"
                   : "secondary"}
-                class="uppercase text-[10px]"
-              >
-                {resolveUserStatusTranslation(user?.id)}
-              </Badge>
-            </div>
-            <p
-              class="text-muted-foreground flex items-center gap-2 text-sm capitalize"
+              class="uppercase text-[10px]"
             >
-              <CalendarIcon class="w-3 h-3" />
-              {m.profile_page_user_joined_on()}
-              {new Date(user?.createdAt ?? 0).toLocaleDateString(getLocale(), {
+              {resolveUserStatusTranslation(user?.id)}
+            </Badge>
+          </div>
+          <p
+            class="text-muted-foreground flex items-center gap-2 text-sm capitalize"
+          >
+            <CalendarIcon class="w-3 h-3" />
+            {m.profile_page_user_joined_on()}
+            {new Date(user?.createdAt ?? 0).toLocaleDateString(getLocale(), {
                 year: "numeric",
                 month: "long",
               })}
