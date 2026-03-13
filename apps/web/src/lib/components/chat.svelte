@@ -3,7 +3,8 @@ import { SendIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Input } from "@transc/ui/input";
 import { tick, untrack } from "svelte";
-import * as m from "$lib/paraglide/messages.js";
+import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 import {
   type ChatMessage,
   friendMessages,
@@ -95,8 +96,8 @@ function handleSend(e: Event) {
       <div class="flex flex-col">
         <div class="flex items-baseline gap-2">
           <span class="font-bold text-sm text-primary"> {msg.username} </span>
-          <span class="text-xs text-muted-foreground">
-            {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          <span class="text-xs text-muted-foreground capitalize">
+            {new Date(msg.timestamp).toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit' })}
           </span>
         </div>
         <p class="text-sm mt-0.5 wrap-break-word">{msg.content}</p>

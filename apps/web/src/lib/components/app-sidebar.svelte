@@ -16,7 +16,7 @@ import {
 import { page } from "$app/state";
 import UserItem from "$lib/components/app-sidebar-user-item.svelte";
 import { sidebarGroups } from "$lib/navigation";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 
 const {
   logoutForm,

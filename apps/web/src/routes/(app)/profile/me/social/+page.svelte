@@ -115,8 +115,7 @@ const formEnhance: SubmitFunction = () => {
       </div>
       <Button type="submit" size="icon" variant="secondary">
         <UserPlusIcon class="h-4 w-4" />
-        <!-- TODO: maybe i18n or delete? -->
-        <span class="sr-only">Add</span>
+        <span class="sr-only">{m.span_add()}</span>
       </Button>
     </form>
   </div>

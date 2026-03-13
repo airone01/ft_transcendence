@@ -14,7 +14,7 @@ import {
   Trash2,
   User,
 } from "@lucide/svelte";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 </script>
 
 <svelte:head>

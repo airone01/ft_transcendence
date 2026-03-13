@@ -6,14 +6,14 @@ import { onlineUsersStore } from "$lib/stores/presence.store";
 let {
   userId,
   username = "Unknown",
-  avatarUrl,
   class: className = "h-10 w-10",
 } = $props<{
   userId: string | number;
   username: string | undefined | null;
-  avatarUrl?: string | null;
   class?: string;
 }>();
+
+const avatarUrl = `/api/users/${userId}/avatar`;
 
 let status = $derived($onlineUsersStore.get(String(userId)) ?? "offline");
 let initials = $derived(username.substring(0, 2).toUpperCase());

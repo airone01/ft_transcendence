@@ -13,7 +13,7 @@ import {
 import { Button } from "@transc/ui/button";
 import type { Component } from "svelte";
 import { authState } from "$lib/auth";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 
 const pieceIconMap: Record<string, Component> = {

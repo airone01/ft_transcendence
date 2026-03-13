@@ -91,7 +91,7 @@ function startNextBotGame(io: Server) {
   } catch (error) {
     decrementBotGames();
     console.error("[Bot] Failed to create game:", error);
-    socket.emit("game:error", { message: "Failed to start bot game" });
+    socket.emit("game:error", { message: "socket_bot_start_error" });
     startNextBotGame(io);
   }
 }
@@ -116,13 +116,15 @@ export function registerBotHandlers(io: Server, socket: Socket) {
 
     const alreadyInQueue = botQueue.some((p) => p.userId === userId);
     if (alreadyInQueue) {
-      return socket.emit("game:error", { message: "Already in bot queue" });
+      return socket.emit("game:error", {
+        message: "socket_bot_already_queued_error",
+      });
     }
 
     if (socket.data.currentGameId) {
       const msg = socket.data.currentGameId.startsWith("bot-")
-        ? "Already in a bot game"
-        : "Already in a classic game";
+        ? "socket_bot_already_bot_game_error"
+        : "socket_bot_already_classic_game_error";
       return socket.emit("game:error", { message: msg });
     }
 
@@ -167,7 +169,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
     const { gameId } = data;
 
     if (!gameId.startsWith("bot-")) {
-      return socket.emit("game:error", { message: "Not a bot game" });
+      return socket.emit("game:error", { message: "socket_bot_quit_error" });
     }
 
     if (!gameId.startsWith(`bot-${userId}-`)) {
@@ -194,7 +196,9 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         const gameRoom = activeGames.get(gameId);
 
         if (!gameRoom) {
-          return socket.emit("game:error", { message: "Game not found" });
+          return socket.emit("game:error", {
+            message: "socket_bot_move_game_error",
+          });
         }
 
         const result = await gameRoom.makeMove(userId, { from, to, promotion });
@@ -263,7 +267,7 @@ export function registerBotHandlers(io: Server, socket: Socket) {
         }
       } catch (error) {
         console.error("[Bot] Move error:", error);
-        socket.emit("game:error", { message: "Invalid move" });
+        socket.emit("game:error", { message: "socket_bot_move_error" });
       }
     },
   );

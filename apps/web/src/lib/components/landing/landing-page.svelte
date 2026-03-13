@@ -8,7 +8,7 @@ import {
 import { Button } from "@transc/ui/button";
 import { authState } from "$lib/auth";
 import Hero from "$lib/components/hero.svelte";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import { openAuthDialog } from "$lib/stores/auth-dialog.svelte.js";
 import LanguageSwitcher from "../language-switcher.svelte";
 import ModeToggle from "../mode-toggle.svelte";

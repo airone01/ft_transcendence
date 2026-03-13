@@ -4,6 +4,7 @@ import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onDestroy, onMount } from "svelte";
 import { goto } from "$app/navigation";
+import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import { socketManager } from "$lib/stores/socket.svelte";
 
@@ -74,12 +75,16 @@ function cancelQueue() {
   <main class="h-full flex flex-col items-center justify-center gap-8 p-6">
     <Spinner class="w-16 h-16" />
     <div class="text-center space-y-3">
-      <h2 class="text-2xl font-semibold">Waiting for bot game...</h2>
+      <h2 class="text-2xl font-semibold">
+        {m.play_page_mode_bot_queue_title()}
+      </h2>
       <p class="text-sm text-muted-foreground">
-        All bot slots are currently in use
+        {m.play_page_mode_bot_queue_description()}
       </p>
     </div>
-    <Button variant="outline" onclick={cancelQueue}>Cancel</Button>
+    <Button variant="outline" onclick={cancelQueue}>
+      {m.play_page_mode_bot_queue_button_cancel()}
+    </Button>
   </main>
 {:else}
   <main class="h-full flex items-center justify-center p-6">
@@ -87,10 +92,10 @@ function cancelQueue() {
       <div class="text-center space-y-2">
         <div class="flex items-center justify-center gap-3 mb-4">
           <BotIcon class="w-12 h-12 text-purple-500" />
-          <h1 class="text-3xl font-bold">Play vs Bot</h1>
+          <h1 class="text-3xl font-bold">{m.play_page_mode_bot()}</h1>
         </div>
         <p class="text-muted-foreground">
-          Practice your chess skills against the computer
+          {m.play_page_mode_bot_description()}
         </p>
       </div>
 
@@ -102,10 +107,7 @@ function cancelQueue() {
           onclick={() => startBotGame('easy')}
         >
           <div class="flex flex-col items-center gap-1">
-            <span class="font-semibold">Easy</span>
-            <span class="text-xs text-muted-foreground"
-              >Good for beginners</span
-            >
+            <span class="font-semibold">{m.play_page_mode_bot_easy()}</span>
           </div>
         </Button>
 
@@ -116,10 +118,7 @@ function cancelQueue() {
           onclick={() => startBotGame('medium')}
         >
           <div class="flex flex-col items-center gap-1">
-            <span class="font-semibold">Medium</span>
-            <span class="text-xs text-muted-foreground"
-              >Balanced challenge</span
-            >
+            <span class="font-semibold">{m.play_page_mode_bot_medium()}</span>
           </div>
         </Button>
 
@@ -130,17 +129,14 @@ function cancelQueue() {
           onclick={() => startBotGame('hard')}
         >
           <div class="flex flex-col items-center gap-1">
-            <span class="font-semibold">Hard</span>
-            <span class="text-xs text-muted-foreground"
-              >For experienced players</span
-            >
+            <span class="font-semibold">{m.play_page_mode_bot_hard()}</span>
           </div>
         </Button>
       </div>
 
       <div class="text-center">
         <Button variant="ghost" onclick={() => goto('/play')}>
-          Back to game modes
+          {m.play_page_mode_bot_button_back()}
         </Button>
       </div>
     </div>

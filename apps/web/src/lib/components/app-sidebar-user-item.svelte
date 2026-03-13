@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@transc/ui/dropdown-menu";
 import { page } from "$app/state";
-import * as m from "$lib/paraglide/messages.js";
+import { m } from "$lib/paraglide/messages";
 import UserAvatar from "./user-avatar.svelte";
 import UserProfileLink from "./user-profile-link.svelte";
 
@@ -31,7 +31,6 @@ const stats = $derived(page.data.stats);
     >
       <UserAvatar
         userId={user.id}
-        avatarUrl={user.avatar}
         username={user.username}
         class="h-10 w-10 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8"
       />
@@ -43,9 +42,14 @@ const stats = $derived(page.data.stats);
       </div>
     </UserProfileLink>
     <DropdownMenu>
-      <DropdownMenuTrigger class="shrink-0 group-data-[state=collapsed]:hidden">
+      <DropdownMenuTrigger>
         {#snippet child({ props })}
-          <Button {...props} variant="outline" size="icon" class="p-0">
+          <Button
+            {...props}
+            variant="outline"
+            size="icon"
+            class="shrink-0 p-0 group-data-[collapsible=icon]:hidden"
+          >
             <EllipsisIcon class="aspect-square" />
           </Button>
         {/snippet}

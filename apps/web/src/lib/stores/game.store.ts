@@ -1,6 +1,9 @@
 import { derived, get, type Writable, writable } from "svelte/store";
 import { toast } from "svelte-sonner";
+import { m } from "$lib/paraglide/messages";
 import { socketManager } from "$lib/stores/socket.svelte";
+
+type SocketMessageKey = keyof typeof m;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -321,9 +324,12 @@ export function setupGameListeners() {
     gameState.update((state) => ({ ...state, drawOffered: true }));
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("game:error", ((data: { message: string }) => {
-    console.error("Game error:", data.message);
-    toast(`Error:·${data.message}`);
+  socketManager.on("game:error", ((data: { message: SocketMessageKey }) => {
+    const translate = m[data.message] as () => string;
+    const text =
+      typeof translate === "function" ? translate() : m.toast_error();
+
+    toast(`Error: ${text}`);
   }) as unknown as (...args: unknown[]) => void);
 
   socketManager.on("player:joined", ((data: {

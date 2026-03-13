@@ -8,6 +8,7 @@ import { toast } from "svelte-sonner";
 import { enhance } from "$app/forms";
 import { page } from "$app/state";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 import { onlineUsersStore } from "$lib/stores/presence.store";
 import BadgesCard from "./badges-card.svelte";
 import CurrentEloCard from "./current-elo-card.svelte";
@@ -42,11 +43,10 @@ const resolveUserStatusTranslation = (userId: number) => {
 
 const formEnhance: SubmitFunction = () => {
   return async ({ result, update }) => {
-    // TODO: i18n maybe needed around here
     if (result.type === "failure")
-      toast.error(result.data?.error ?? "An error occurred");
+      toast.error(result.data?.error ?? m.toast_error());
     else if (result.type === "success")
-      toast.success(result.data?.message ?? "Success");
+      toast.success(result.data?.message ?? m.toast_success());
     await update();
   };
 };
@@ -57,7 +57,9 @@ const formEnhance: SubmitFunction = () => {
     <div class="container mx-auto px-6">
       <div class="flex flex-col md:flex-row md:items-center gap-4">
         <Avatar class="w-32 h-32 ring-4 ring-background shadow-xl text-3xl">
-          <AvatarImage src={user?.avatar} />
+          <AvatarImage
+            src={user ? `/api/users/${user.id}/avatar` : undefined}
+          />
           <AvatarFallback
             class="select-none bg-linear-to-br from-neutral-800 to-neutral-900 text-white"
           >
@@ -72,15 +74,17 @@ const formEnhance: SubmitFunction = () => {
               variant={(userStatus(user?.id) === "online")
                   ? "default"
                   : "secondary"}
-              class="uppercase text-[10px]"
+                class="uppercase text-[10px]"
+              >
+                {resolveUserStatusTranslation(user?.id)}
+              </Badge>
+            </div>
+            <p
+              class="text-muted-foreground flex items-center gap-2 text-sm capitalize"
             >
-              {resolveUserStatusTranslation(user?.id)}
-            </Badge>
-          </div>
-          <p class="text-muted-foreground flex items-center gap-2 text-sm">
-            <CalendarIcon class="w-3 h-3" />
-            {m.profile_page_user_joined_on()}
-            {new Date(user?.createdAt ?? 0).toLocaleDateString(undefined, {
+              <CalendarIcon class="w-3 h-3" />
+              {m.profile_page_user_joined_on()}
+              {new Date(user?.createdAt ?? 0).toLocaleDateString(getLocale(), {
                 year: "numeric",
                 month: "long",
               })}
