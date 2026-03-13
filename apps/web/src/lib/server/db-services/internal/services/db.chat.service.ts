@@ -3,6 +3,7 @@ import {
   chatChannelMembers,
   chatChannels,
   chatMessages,
+  users,
 } from "@transc/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
@@ -165,11 +166,13 @@ export async function dbGetGlobalMessages(): Promise<ChatMessageType[]> {
         channelId: chatMessages.channelId,
         messageId: chatMessages.id,
         userId: chatMessages.userId,
+        username: users.username,
         content: chatMessages.content,
         createdAt: chatMessages.createdAt,
       })
       .from(chatMessages)
       .innerJoin(chatChannels, eq(chatMessages.channelId, chatChannels.id))
+      .innerJoin(users, eq(chatMessages.userId, users.id))
       .where(eq(chatChannels.type, "global"))
       .orderBy(desc(chatMessages.createdAt));
 
@@ -195,11 +198,13 @@ export async function dbGetGameMessages(
         channelId: chatMessages.channelId,
         messageId: chatMessages.id,
         userId: chatMessages.userId,
+        username: users.username,
         content: chatMessages.content,
         createdAt: chatMessages.createdAt,
       })
       .from(chatMessages)
       .innerJoin(chatChannels, eq(chatMessages.channelId, chatChannels.id))
+      .innerJoin(users, eq(chatMessages.userId, users.id))
       .where(eq(chatChannels.gameId, gameId))
       .orderBy(desc(chatMessages.createdAt));
 
@@ -230,6 +235,7 @@ export async function dbGetFriendMessages(
         channelId: chatMessages.channelId,
         messageId: chatMessages.id,
         userId: chatMessages.userId,
+        username: users.username,
         content: chatMessages.content,
         createdAt: chatMessages.createdAt,
       })
@@ -243,6 +249,7 @@ export async function dbGetFriendMessages(
         channelMembers2,
         eq(channelMembers1.channelId, channelMembers2.channelId),
       )
+      .innerJoin(users, eq(chatMessages.userId, users.id))
       .where(
         and(
           eq(channelMembers1.userId, userId),
