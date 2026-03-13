@@ -350,7 +350,9 @@ onDestroy(() => {
                 }}
               >
                 <XIcon class="w-3.5 h-3.5" />
-                <span class="hidden sm:inline ml-1">{m.game_page_button_leave_gamebot()}</span>
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_leave_gamebot()}</span
+                >
               </Button>
             {:else}
               <Button
