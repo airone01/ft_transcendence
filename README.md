@@ -1,13 +1,4 @@
-<div align="center">
-  <h3>
-  This project has been created as part of the 42 curriculum by
-  </br>
-    <a href="https://github.com/airone01">elagouch</a>,
-    <a href="https://github.com/EnzoPasselegue1">enpassel</a>,
-    <a href="https://github.com/SimonCottenet">scottene</a> and
-    <a href="https://github.com/v-blanc">vblanc</a>
-  </h3>
-</div>
+*This project has been created as part of the 42 curriculum by elagouch, enpassel, scottene and vblanc*.
 
 <div align="center">
     <img alt="ft_transcendence logo" src="https://raw.githubusercontent.com/ayogun/42-project-badges/main/badges/ft_transcendencem.png"/>
@@ -182,7 +173,7 @@ In no particular order, we implemented:
 ### User Authentication
 - Secure signup/login
 - Cookie-based session
-- OAuth login (Google)
+- OAuth login (Discord)
 - Password hashing (Argon2)
 - **Developed by:** `elagouch`
 
