@@ -1,5 +1,6 @@
 import type { Server, Socket } from "socket.io";
 import {
+  dbIsFriend,
   dbSendToFriend,
   dbSendToGame,
   dbSendToGlobal,
@@ -131,6 +132,13 @@ export function registerChatHandlers(io: Server, socket: Socket) {
       }
 
       try {
+        const areFriends = await dbIsFriend(userIdNum, friendIdNum);
+        if (!areFriends) {
+          return socket.emit("chat:error", {
+            message: "socket_chat_not_friends_error",
+          });
+        }
+
         await dbSendToFriend(userIdNum, friendIdNum, content);
 
         const messageData = {
