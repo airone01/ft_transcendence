@@ -451,8 +451,11 @@ export async function dbGetAchievements(userId: number): Promise<Achievements> {
       .from(achievements)
       .where(eq(achievements.userId, userId));
 
+    if (!result) throw new DBUserNotFoundError();
+
     return result;
   } catch (err) {
+    if (err instanceof DBUserNotFoundError) throw err;
     console.error(err);
     throw new UnknownError();
   }

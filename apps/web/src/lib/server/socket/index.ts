@@ -2,12 +2,15 @@ import type { Server as HTTPServer } from "node:http";
 import { Server } from "socket.io";
 import { registerBotHandlers, releaseBotGame } from "./handlers/bot";
 import { registerChatHandlers } from "./handlers/chat";
-import { registerGameHandlers } from "./handlers/game";
+import { activeGames, registerGameHandlers } from "./handlers/game";
 import { queues, registerMatchmakingHandlers } from "./handlers/matchmaking";
 import { registerPresenceHandlers, setUserOffline } from "./handlers/presence";
 import { authMiddleware } from "./middleware/auth";
 import { startHeartbeat } from "./utils/heartbeat";
-import { saveSessionOnDisconnect } from "./utils/reconnection";
+import {
+  restoreSessionOnReconnect,
+  saveSessionOnDisconnect,
+} from "./utils/reconnection";
 
 let io: Server;
 
@@ -35,6 +38,7 @@ export function initSocketServer(httpServer: HTTPServer) {
 
     socket.join(`user:${userId}`);
 
+    await restoreSessionOnReconnect(socket, activeGames);
     registerGameHandlers(io, socket);
     registerChatHandlers(io, socket);
     registerPresenceHandlers(io, socket);
@@ -67,12 +71,21 @@ export function initSocketServer(httpServer: HTTPServer) {
 
       saveSessionOnDisconnect(socket);
 
-      setTimeout(async () => {
-        const userSockets = await io.in(`user:${userId}`).fetchSockets();
-        if (userSockets.length === 0) {
-          setUserOffline(userId);
-          io.emit("presence:offline", { userId });
-        }
+      setTimeout(() => {
+        io.in(`user:${userId}`)
+          .fetchSockets()
+          .then((userSockets) => {
+            if (userSockets.length === 0) {
+              setUserOffline(userId);
+              io.emit("presence:offline", { userId });
+            }
+          })
+          .catch((err) => {
+            console.error(
+              `[Socket] Failed to fetch sockets for user ${userId}:`,
+              err,
+            );
+          });
       }, 5000);
     });
 

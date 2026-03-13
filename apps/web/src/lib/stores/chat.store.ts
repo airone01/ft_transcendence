@@ -1,4 +1,5 @@
 import { type Writable, writable } from "svelte/store";
+import { toast } from "svelte-sonner";
 import { socketManager } from "$lib/stores/socket.svelte";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
@@ -66,6 +67,6 @@ export function setupChatListeners(currentUserId: string) {
 
   socketManager.on("chat:error", ((data: { message: string }) => {
     console.error("Chat error:", data.message);
-    alert(`Chat error: ${data.message}`);
+    toast.error(`Chat error: ${data.message}`);
   }) as unknown as (...args: unknown[]) => void);
 }

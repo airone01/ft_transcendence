@@ -3,7 +3,9 @@ import { ClockIcon, TargetIcon, XIcon, ZapIcon } from "@lucide/svelte";
 import { Button } from "@transc/ui/button";
 import { Spinner } from "@transc/ui/spinner";
 import { onDestroy, onMount } from "svelte";
+import { toast } from "svelte-sonner";
 import { goto } from "$app/navigation";
+import { page } from "$app/state";
 import { m } from "$lib/paraglide/messages";
 import { gameState } from "$lib/stores/game.store";
 import {
@@ -14,6 +16,9 @@ import {
 import { socketConnected } from "$lib/stores/socket.svelte";
 
 onMount(() => {
+  if (page.url.searchParams.get("error") === "game_not_found") {
+    toast.error("Game not found");
+  }
   return gameState.subscribe((state) => {
     if (
       state.gameId &&

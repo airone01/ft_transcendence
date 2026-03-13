@@ -50,7 +50,7 @@ const {
   <CardContent
     class="flex flex-col lg:flex-row justify-start h-full gap-4 overflow-x-scroll"
   >
-    {#if (suggestedUsers?.length ?? 0 > 0)}
+    {#if (suggestedUsers?.length ?? 0) > 0}
       {#each suggestedUsers as { userId, avatar, username, currentElo }}
         <Card
           class="overflow-hidden flex flex-col flex-1 min-h-0 md:min-w-xs lg:max-w-sm max-w-full lg:w-auto"
