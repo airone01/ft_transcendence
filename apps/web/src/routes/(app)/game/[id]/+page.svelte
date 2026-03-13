@@ -95,7 +95,7 @@ onDestroy(() => {
     !$gameState.gameOver
   ) {
     console.log("[Game] Page destroyed, emitting bot:quit for", currentGameId);
-    socketManager.emit("bot:quit", { gameId: currentGameId });
+    quitBotGame();
   }
 });
 </script>
