@@ -25,7 +25,7 @@ export const users = pgTable(
     email: varchar("email").unique().notNull(),
     password: varchar("password"),
     avatar: text("avatar"), // unlimited size is fine, we encode in backend
-    bio: varchar("bio").default("").notNull(),
+    bio: varchar("bio", { length: 255 }).default("").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
