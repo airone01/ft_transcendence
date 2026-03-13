@@ -6,6 +6,11 @@
   "offline": "[i18n] Offline",
   "ingame": "[i18n] In Game",
 
+  "switch_language_span": "[i18n] Toogle theme",
+  "switch_language_light": "[i18n] Light",
+  "switch_language_dark": "[i18n] Dark",
+  "switch_language_system": "[i18n] System",
+
   "hero_page_title": "[i18n] Play Chess Now!",
   "hero_page_desc": "[i18n] The ultimate platform for chess lovers. Climb the Elo ladder, challenge your friends, and spectate live matches in real time.",
   "hero_page_button": "[i18n] Dashboard",
@@ -73,12 +78,17 @@
 
   "app_shell_heading_content": "[i18n] My Content",
   "app_shell_heading_quick_nav": "[i18n] Quick Navigation",
+  "app_shell_heading_placeholder": "[i18n] Type a command or search..",
   "app_shell_heading_chess": "[i18n] Start a game",
   "app_shell_item_play": "[i18n] Start ranked match making",
   "app_shell_item_play_vs_bot": "[i18n] Start a game against AI",
   "app_shell_heading_account": "[i18n] Account",
   "app_shell_item_settings": "[i18n] Settings",
   "app_shell_item_logout": "[i18n] Log out",
+  "app_shell_no_result_found": "[i18n] No results found",
+  "app_shell_copyright": "[i18n] Copyright © 2026 Chess.io - 42 School Project",
+  "app_shell_privacy_policy": "[i18n] Privacy Policy",
+  "app_shell_terms_of_service": "[i18n] Terms of Service",
 
   "app_shell_popup_success_logout": "[i18n] You logged out. See you soon!",
   "app_shell_popup_fail_logout": "[i18n] Failed to log out",
@@ -151,7 +161,8 @@
 
   "win_ratio_card_title": "[i18n] Win Ratio",
   "win_ratio_card_description": "[i18n] Total games played",
-  "win_ratio_card_empty_description": "[i18n] Play more to see your stats!",
+  "win_ratio_card_empty_title": "[i18n] No data yet",
+  "win_ratio_card_empty_description": "[i18n] Go play some more, we'll display your stats here.",
   "win_ratio_card_wins": "[i18n] W",
   "win_ratio_card_draws": "[i18n] D",
   "win_ratio_card_losses": "[i18n] L",
@@ -167,7 +178,18 @@
   "play_page_mode_blitz": "[i18n] Blitz",
   "play_page_mode_rapid": "[i18n] Rapid",
   "play_page_mode_casual": "[i18n] Casual",
+  "play_page_mode_bot": "[i18n] Play VS Bot",
   "play_page_minutes_and_increment": "[i18n] {minutes}min + {increment}sec/move",
+
+  "play_page_mode_bot_description": "[i18n] Practice your chess skills against the computer",
+  "play_page_mode_bot_unranked": "[i18n] (Unranked)",
+  "play_page_mode_bot_easy": "[i18n] Easy",
+  "play_page_mode_bot_medium": "[i18n] Medium",
+  "play_page_mode_bot_hard": "[i18n] Hard",
+  "play_page_mode_bot_button_back": "[i18n] Back to game modes",
+  "play_page_mode_bot_queue_title": "[i18n] Waiting for bot game...",
+  "play_page_mode_bot_queue_description": "[i18n] All bot slots are currently in use",
+  "play_page_mode_bot_queue_button_cancel": "[i18n] Cancel",
 
   "game_page_title": "[i18n] Current game",
   "game_page_disconnected": "[i18n] Disconnected",
@@ -187,6 +209,7 @@
   "game_page_button_resign": "[i18n] Resign",
   "game_page_button_leave": "[i18n] Back to lobby",
   "game_page_button_leave_spectator": "[i18n] Leave spectator mode",
+  "game_page_button_leave_gamebot": "[i18n] Leave Bot Game",
 
   "game_page_move_history_title": "[i18n] Move History",
   "game_page_move_history_empty": "[i18n] No moves yet",
@@ -194,6 +217,12 @@
   "game_page_spectator_title": "[i18n] Spectator mode",
   "game_page_spectator_description": "[i18n] You are now spectating this game.",
   "game_page_spectator_info": "[i18n] Watch only",
+
+  "game_page_promotion_title": "[i18n] Choose promotion",
+  "game_page_promotion_queen": "[i18n] Queen",
+  "game_page_promotion_rook": "[i18n] Rook",
+  "game_page_promotion_bishop": "[i18n] Bishop",
+  "game_page_promotion_knight": "[i18n] Knight",
 
   "game_page_reason_checkmate": "[i18n] By Checkmate",
   "game_page_reason_stalemate": "[i18n] By Stalemate",
@@ -372,7 +401,7 @@
   "settings_page_profile_description": "[i18n] This is how others will see you on the site.",
   "settings_page_profile_label_username": "[i18n] Username",
   "settings_page_profile_label_bio": "[i18n] Biography",
-  "settings_page_profile_action_default_fail": "Could not update profile.",
+  "settings_page_profile_action_default_fail": "[i18n] Could not update profile.",
 
   "settings_page_account_title": "[i18n] Account",
   "settings_page_account_description": "[i18n] Manage your credentials and connected services.",
@@ -382,13 +411,13 @@
   "settings_page_account_not_connected": "[i18n] Not Connected",
   "settings_page_account_button_connect": "[i18n] Connect",
   "settings_page_account_button_disconnect": "[i18n] Disconnect",
-  "settings_page_account_action_updatepassword_password_required": "Current password is required.",
-  "settings_page_account_action_updatepassword_password_invalid": "Incorrect current password.",
-  "settings_page_account_action_updatepassword_success": "Password updated successfully.",
-  "settings_page_account_action_updatepassword_fail": "Failed to update password.",
-  "settings_page_account_action_unlink_no_provider": "Provider required.",
-  "settings_page_account_action_unlink_password_required": "You must set a password before disconnecting your last login method.",
-  "settings_page_account_action_unlink_fail": "Could not unlink account.",
+  "settings_page_account_action_updatepassword_password_required": "[i18n] Current password is required.",
+  "settings_page_account_action_updatepassword_password_invalid": "[i18n] Incorrect current password.",
+  "settings_page_account_action_updatepassword_success": "[i18n] Password updated successfully.",
+  "settings_page_account_action_updatepassword_fail": "[i18n] Failed to update password.",
+  "settings_page_account_action_unlink_no_provider": "[i18n] Provider required.",
+  "settings_page_account_action_unlink_password_required": "[i18n] You must set a password before disconnecting your last login method.",
+  "settings_page_account_action_unlink_fail": "[i18n] Could not unlink account.",
 
   "settings_page_account_label_password": "[i18n] Password",
   "settings_page_account_label_password_desc": "[i18n] Change your password to keep your account secure.",
@@ -464,9 +493,63 @@
   "zod_schema_avatar_type": "[i18n] Avatar must be a file",
   "zod_schema_avatar_size": "[i18n] Avatar must be less than 1MB",
 
+  "socket_bot_start_error": "[i18n] Failed to start bot game",
+  "socket_bot_already_queued_error": "[i18n] Already in bot queue",
+  "socket_bot_already_bot_game_error": "[i18n] Already in a bot game",
+  "socket_bot_already_classic_game_error": "[i18n] Already in a classic game",
+  "socket_bot_quit_error": "[i18n] Not a bot game",
+  "socket_bot_move_game_error": "[i18n] Game not found",
+  "socket_bot_move_error": "[i18n] Invalid move",
+
+  "socket_chat_fail_send_error": "[i18n] Failed to send message",
+  "socket_chat_empty_error": "[i18n] Empty message",
+  "socket_chat_game_invalid_error": "[i18n] Invalid game ID",
+  "socket_chat_user_invalid_error": "[i18n] Invalid user ID",
+
+  "socket_game_join_bot_error": "[i18n] Bot games don't use game:join",
+  "socket_game_join_game_not_found_error": "[i18n] Game not found",
+  "socket_game_join_user_not_found_error": "[i18n] Players not found",
+  "socket_game_join_fail_join_error": "[i18n] Failed to join game",
+  "socket_game_move_spectator_error": "[i18n] Spectators cannot move pawn",
+  "socket_game_move_game_not_found_error": "[i18n] Game not found",
+  "socket_game_move_not_your_turn_error": "[i18n] Not your turn",
+  "socket_game_move_invalid_move_error": "[i18n] Invalid move",
+  "socket_game_offer_draw_specator_error": "[i18n] Spectators cannot offer draw",
+  "socket_game_accept_draw_specator_error": "[i18n] Spectators cannot accept draw",
+  "socket_game_resign_spectator_error": "[i18n] Spectators cannot resign",
+
+  "socket_matchmaking_join_active_game_error": "[i18n] You already have a game in progress",
+  "socket_matchmaking_join_already_queued_error": "[i18n] Already in queue",
+  "socket_matchmaking_join_match_yourself_error": "[i18n] Cannot match with yourself",
+  "socket_matchmaking_join_oppenent_already_queued_error": "[i18n] Match failed, opponent already in game",
+  "socket_matchmaking_join_failed_to_create_error": "[i18n] Failed to create game",
+  "socket_matchmaking_error_undefined": "[i18n] Undefined queue",
+
+  "socket_middleware_auth_required_error": "[i18n] Authentication required",
+  "socket_middleware_rate_limit_error": "[i18n] Rate limit exceeded",
+  "socket_rooms_no_pieces_error": "[i18n] No piece at source square",
+  "socket_rooms_invalid_move_error": "[i18n] Invalid move",
+  "socket_index_error": "[i18n] Socket.io not initialized",
+
+  "form_factory_error": "[i18n] Could not update settings.",
+
   "unkown_db_error": "[i18n] Unknown database error",
   "internal_server_error": "[i18n] Internal server error",
 
+  "toast_success": "[i18n] Success",
+  "toast_error": "[i18n] An error occurred",
+
   "unknown": "[i18n] Unknown",
-  "loading": "[i18n] Loading..."
+  "loading": "[i18n] Loading...",
+
+  "span_add": "[i18n] Add",
+  "span_chat": "[i18n] Chat",
+  "span_remove": "[i18n] Remove",
+
+  "component_image_cropper_upload": "[i18n] Upload Image",
+  "component_image_cropper_edit": "[i18n] Edit Avatar",
+  "component_image_cropper_save": "[i18n] Save Changes",
+  "component_image_cropper_cancel": "[i18n] Cancel",
+  "component_image_cropper_toast_move_image_error": "[i18n] Please move the image slightly to set the crop.",
+  "component_image_cropper_toast_crop_error": "[i18n] Failed to crop image"
 }

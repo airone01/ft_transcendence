@@ -2,6 +2,7 @@ import { type Action, fail, type RequestEvent, redirect } from "@sveltejs/kit";
 import { type Infer, superValidate, withFiles } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 import type { AnyZodObject, z } from "zod/v3";
+import { m } from "$lib/paraglide/messages";
 
 /**
  * @brief factory to generate server functions for a form validation server file
@@ -47,7 +48,7 @@ export function makeSettingsAction<T extends AnyZodObject>(
       // every used for `locals.user` which already has its own custom functions
     } catch (error) {
       console.error(error);
-      return fail(500, { form, message: "Could not update settings." });
+      return fail(500, { form, message: m.form_factory_error() });
     }
 
     return withFiles({ form });

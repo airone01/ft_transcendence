@@ -18,6 +18,7 @@ import {
 import { scaleUtc } from "d3-scale";
 import { AreaChart } from "layerchart";
 import * as m from "$lib/paraglide/messages";
+import { getLocale } from "$lib/paraglide/runtime";
 
 const chartConfig: ChartConfig = {
   elo: { label: "ELO", color: "var(--chart-1)" },
@@ -69,7 +70,7 @@ const { eloHistory }: { eloHistory: { date: Date; elo: number }[] } = $props();
             },
             xAxis: {
               format: (v: Date) =>
-                v.toLocaleDateString(undefined, {
+                v.toLocaleDateString(getLocale(), {
                   month: "short",
                   day: "2-digit",
                 }),

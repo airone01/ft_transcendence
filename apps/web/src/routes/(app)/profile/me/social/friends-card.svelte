@@ -67,7 +67,6 @@ const {
             >
               <UserAvatar
                 userId={friend.userId}
-                avatarUrl={friend.avatar}
                 username={friend.username}
                 class="h-12 w-12 border"
               />
@@ -98,8 +97,7 @@ const {
                 class="h-8 w-8 hover:bg-muted hover:text-primary text-muted-foreground"
               >
                 <MessageSquareIcon class="h-4 w-4" />
-                <!-- TODO: maybe i18n or delete? -->
-                <span class="sr-only">Chat</span>
+                <span class="sr-only">{m.span_chat()}</span>
               </Button>
 
               <form method="POST" action="?/remove" use:enhance={formEnhance}>
@@ -111,8 +109,7 @@ const {
                   class="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-destructive"
                 >
                   <UserMinusIcon class="h-4 w-4" />
-                  <!-- TODO: maybe i18n or delete? -->
-                  <span class="sr-only">Remove</span>
+                  <span class="sr-only">{m.span_remove()}</span>
                 </Button>
               </form>
             </div>

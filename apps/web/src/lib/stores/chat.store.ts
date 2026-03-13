@@ -1,5 +1,9 @@
 import { type Writable, writable } from "svelte/store";
+import { toast } from "svelte-sonner";
+import { m } from "$lib/paraglide/messages";
 import { socketManager } from "$lib/stores/socket.svelte";
+
+type SocketMessageKey = keyof typeof m;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -64,8 +68,12 @@ export function setupChatListeners(currentUserId: string) {
     });
   }) as unknown as (...args: unknown[]) => void);
 
-  socketManager.on("chat:error", ((data: { message: string }) => {
-    console.error("Chat error:", data.message);
-    alert(`Chat error: ${data.message}`);
+  socketManager.on("chat:error", ((data: { message: SocketMessageKey }) => {
+    const translate = m[data.message] as () => string;
+    const text =
+      typeof translate === "function" ? translate() : m.toast_error();
+
+    console.error("Chat error:", text);
+    toast.error(`Chat error: ${text}`);
   }) as unknown as (...args: unknown[]) => void);
 }

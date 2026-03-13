@@ -11,10 +11,18 @@ import {
   dbCreateUser,
   dbIsEmailTaken,
 } from "$lib/server/db-services";
+import { checkHttpRateLimit } from "$lib/server/http-rate-limiter";
 import type { Actions } from "./$types";
 
 export const actions = {
-  default: async ({ request, cookies }) => {
+  default: async ({ request, cookies, getClientAddress }) => {
+    if (!checkHttpRateLimit(getClientAddress()))
+      return message(
+        await superValidate(request, zod(registerSchema)),
+        m.internal_server_error(),
+        { status: 429 },
+      );
+
     const form = await superValidate(request, zod(registerSchema));
 
     if (!form.valid) {

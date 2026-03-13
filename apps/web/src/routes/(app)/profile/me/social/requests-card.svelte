@@ -57,7 +57,6 @@ const {
               <UserAvatar
                 username={invite.username}
                 userId={invite.userId}
-                avatarUrl={invite.avatar}
                 class="h-12 w-12 border"
               />
               <span class="hover:underline">{invite.username}</span>

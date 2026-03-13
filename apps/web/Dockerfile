@@ -51,7 +51,6 @@ USER root
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV ORIGIN=http://localhost:3000
 
 COPY --from=builder --chown=bun:bun /app/apps/web/build ./apps/web/build
 COPY --from=builder --chown=bun:bun /app/apps/web/package.json ./apps/web/package.json
