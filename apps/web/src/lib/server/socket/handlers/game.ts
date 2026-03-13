@@ -230,6 +230,11 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         message: "socket_game_offer_draw_specator_error",
       });
     }
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
+      });
+    }
     socket
       .to(`game:${data.gameId}`)
       .emit("game:draw_offered", { from: userId });
@@ -272,6 +277,11 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_resign_spectator_error",
+      });
+    }
+    if (data.gameId !== socket.data.currentGameId) {
+      return socket.emit("game:error", {
+        message: "socket_game_not_your_game_error",
       });
     }
     try {
