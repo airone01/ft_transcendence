@@ -326,30 +326,56 @@ onDestroy(() => {
         </div>
 
         <!-- Mobile controls -->
-        {#if !$gameState.gameOver && !$gameState.isSpectator}
+        {#if $gameState.isSpectator}
+          <Button
+            size="sm"
+            variant="outline"
+            onclick={() => {
+              leaveGame();
+              window.history.back();
+            }}
+          >
+            {m.game_page_button_leave_spectator()}
+          </Button>
+        {:else if !$gameState.gameOver}
           <div class="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onclick={handleOfferDraw}
-              disabled={$gameState.drawOfferSent}
-            >
-              <HandshakeIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1"
-                >{m.game_page_button_draw()}</span
+            {#if $gameState.isBotGame}
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-destructive/10 hover:bg-destructive/20 text-destructive border-destructive/20"
+                onclick={() => {
+                  quitBotGame();
+                  goto('/play');
+                }}
               >
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
-              onclick={() => (resignDialogOpen = true)}
-            >
-              <FlagIcon class="w-3.5 h-3.5" />
-              <span class="hidden sm:inline ml-1"
-                >{m.game_page_button_resign()}</span
+                <XIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1">{m.game_page_button_leave_gamebot()}</span>
+              </Button>
+            {:else}
+              <Button
+                size="sm"
+                variant="outline"
+                onclick={handleOfferDraw}
+                disabled={$gameState.drawOfferSent}
               >
-            </Button>
+                <HandshakeIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_draw()}</span
+                >
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                class="bg-[#b58863] hover:bg-[#a07552] text-white border-[#a07552]"
+                onclick={() => (resignDialogOpen = true)}
+              >
+                <FlagIcon class="w-3.5 h-3.5" />
+                <span class="hidden sm:inline ml-1"
+                  >{m.game_page_button_resign()}</span
+                >
+              </Button>
+            {/if}
           </div>
         {:else}
           <Button
