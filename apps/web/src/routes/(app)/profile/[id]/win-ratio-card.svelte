@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ChartPieIcon } from "@lucide/svelte";
+import { ChartPieIcon, SnowflakeIcon } from "@lucide/svelte";
 import {
   Card,
   CardContent,
@@ -7,6 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@transc/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@transc/ui/empty";
 import * as m from "$lib/paraglide/messages";
 import type { UserStats } from "$lib/server/db-services";
 
@@ -33,7 +40,19 @@ if (stats.wins + stats.losses + stats.draws === 0) stats.gamesPlayed = 0; // edg
     </CardDescription>
   </CardHeader>
   <CardContent class="flex-1 flex flex-col justify-center">
-    {#if stats.gamesPlayed !== 0}
+    {#if stats.gamesPlayed === 0}
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <SnowflakeIcon />
+          </EmptyMedia>
+          <EmptyTitle>{m.win_ratio_card_empty_title()}</EmptyTitle>
+          <EmptyDescription>
+            {m.win_ratio_card_empty_description()}
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    {:else}
       <div
         class="flex h-5 w-full rounded-full overflow-hidden mb-3 shadow-inner"
       >
