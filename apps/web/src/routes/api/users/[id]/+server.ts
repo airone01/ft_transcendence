@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({
   if (!locals.user)
     return json({ error: m.api_users_id_unauthorized() }, { status: 401 });
 
-  if (!checkHttpRateLimit(getClientAddress()))
+  if (!checkHttpRateLimit(getClientAddress(), 10, "api"))
     return json({ error: "Too many requests" }, { status: 429 });
 
   const userId = parseInt(params.id, 10);
