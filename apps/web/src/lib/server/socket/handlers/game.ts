@@ -256,11 +256,13 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     if (socket.data.isSpectator) {
       return socket.emit("game:error", {
         message: "socket_game_accept_draw_specator_error",
+        // TODO: i18n this
       });
     }
     if (data.gameId !== socket.data.currentGameId) {
       return socket.emit("game:error", {
         message: "socket_game_not_your_game_error",
+        // TODO: i18n this
       });
     }
     try {
@@ -269,6 +271,7 @@ export function registerGameHandlers(io: Server, socket: Socket) {
         if (!gameRoom.acceptDraw(userId)) {
           return socket.emit("game:error", {
             message: "socket_game_accept_draw_no_offer_error",
+            // TODO: i18n this
           });
         }
         await gameRoom.endGame("agreement");
