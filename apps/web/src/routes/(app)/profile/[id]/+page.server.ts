@@ -36,8 +36,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
       }
     }
 
-    if (userId == null)
-      throw error(404, m.profile_page_fecth_user_not_found());
+    if (userId == null) throw error(404, m.profile_page_fecth_user_not_found());
 
     if (!user) throw error(404, m.profile_page_fecth_user_not_found());
 
