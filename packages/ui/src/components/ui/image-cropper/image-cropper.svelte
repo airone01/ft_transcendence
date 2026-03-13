@@ -97,7 +97,8 @@ function triggerFileInput() {
     {@render children()}
   {:else}
     <Button variant="outline">
-      <Upload class="mr-2 h-4 w-4" /> Upload Image<!-- i18n -->
+      <Upload class="mr-2 h-4 w-4" />
+      {m.component_image_cropper_upload()}
     </Button>
   {/if}
 </div>
@@ -105,10 +106,7 @@ function triggerFileInput() {
 <Dialog bind:open>
   <DialogContent class="sm:max-w-125">
     <DialogHeader>
-      <DialogTitle>
-        Edit Avatar<!-- i18n --><!-- i18n -->
-        <!-- i18n --><!-- i18n -->
-      </DialogTitle>
+      <DialogTitle>{m.component_image_cropper_edit()}</DialogTitle>
     </DialogHeader>
 
     <div class="relative w-full h-100 bg-black/5 rounded-md overflow-hidden">
@@ -144,13 +142,13 @@ function triggerFileInput() {
         onclick={() => (open = false)}
         class="cursor-pointer"
       >
-        Cancel
+        {m.component_image_cropper_cancel()}
       </Button>
       <Button onclick={saveCrop} disabled={loading} class="cursor-pointer">
         {#if loading}
           <Spinner class="mr-2 h-4 w-4" />
         {/if}
-        Save Changes<!-- i18n -->
+        {m.component_image_cropper_save()}
       </Button>
     </DialogFooter>
   </DialogContent>

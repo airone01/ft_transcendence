@@ -545,6 +545,10 @@
   "span_chat": "Chat",
   "span_remove": "Remove",
 
+  "component_image_cropper_upload": "Upload Image",
+  "component_image_cropper_edit": "Edit Avatar",
+  "component_image_cropper_save": "Save Changes",
+  "component_image_cropper_cancel": "Cancel",
   "component_image_cropper_toast_move_image_error": "Please move the image slightly to set the crop.",
   "component_image_cropper_toast_crop_error": "Failed to crop image"
 }
